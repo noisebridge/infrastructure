@@ -1,0 +1,71 @@
+---
+ - name: install apache
+   apt: package=apache2 state=latest update_cache=yes cache_valid_time=3600
+   tags:
+     - ngnix
+     - apache
+
+ - name: enable modules
+   apache2_module: state=present name={{ item }}
+   with_items:
+     - rewrite
+     - headers
+   tags:
+     - ngnix
+     - apache
+
+ - name: create /srv directories
+   file:
+     state: directory
+     dest: "/srv/{{ item.key }}"
+     owner: www-data
+     group: www-data
+   with_dict: "{{ web_domains }}"
+   tags:
+     - apache
+
+ - name: allow apache2 /srv access
+   blockinfile:
+     dest: /etc/apache2/apache2.conf
+     block: |
+       <Directory /srv/>
+              Options Indexes FollowSymlinks
+              AllowOverride None
+              Require all granted
+       </Directory>
+   tags:
+     - apache
+   notify:
+     - reload-apache
+
+ - name: create virtualhosts
+   template:
+     src: http_default.conf
+     dest: "/etc/apache2/sites-available/{{ item.key }}.conf"
+     owner: root
+     group: root
+   with_dict: "{{ web_domains }}"
+   tags:
+    - apache
+
+ - name: enable virtualhosts
+   file:
+     src: "/etc/apache2/sites-available/{{ item.key }}.conf"
+     dest: "/etc/apache2/sites-enabled/{{ item.key }}.conf"
+     state: link
+     owner: root
+     group: root
+   with_dict: "{{ web_domains }}"
+   tags:
+    - apache
+   notify:
+    - reload-apache
+
+ - name: disable default apache2
+   file:
+     dest: /etc/apache2/sites-enabled/000-default.conf
+     state: absent
+   tags:
+    - apache
+   notify:
+    - reload-apache

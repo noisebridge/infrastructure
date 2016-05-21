@@ -6,8 +6,19 @@
    roles:
      - security
      - backports
+     - apache
 
    vars:
      admins:
       - leif
       - patrickod
+     web_domains:
+       noisebridge.net:
+         - noisebridge.net
+         - lists.noisebridge.net
+         - www.noisebridge.net
+     letsencrypt_certs:
+       noisebridge.net:
+         - noisebridge.net
+         - lists.noisebridge.net
+         - www.noisebridge.net
