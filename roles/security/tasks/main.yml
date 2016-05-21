@@ -1,10 +1,55 @@
 ---
+ - name: disable ssh root login
+   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
+   notify: reload-ssh
+
+ - name: disable ssh password authentication
+   replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
+   notify: reload-ssh
+
  - name: install unattended-upgrades & sudo
    items:
      - unattended-upgrades
      - apt-listchanges
+     - pwgen
      - sudo
    apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+
+ - name: add admin users
+   with_items: "{{ admins }}"
+   user:
+     name: "{{ item }}"
+     groups: sudo
+
+ - name: add admin users .ssh/ directories
+   with_items: "{{ admins }}"
+   file:
+     dest: "/home/{{ item }}/.ssh"
+     state: directory
+     owner: "{{ item }}"
+     group: "{{ item }}"
+       
+ - name: add admin user ssh keys
+   with_items: "{{ admins }}"
+   copy:
+     src: "group_files/{{ item }}.pub"
+     dest: "/home/{{ item }}/.ssh/authorized_keys"
+     owner: "{{ item }}"
+     group: "{{ item }}"
+
+ - name: generate passwords for admin users
+   with_items: "{{ admins }}"
+   shell: "/usr/bin/pwgen -s 32 1 > /home/{{ item }}/password.txt"
+   args:
+     creates: "/home/{{ item }}/password.txt"
+   become: yes
+   become_user: "{{ item }}"
+
+ - name: set admin passwords
+   with_items: "{{ admins }}"
+   shell: "echo {{ item }}:$(echo -n `cat /home/{{ item }}/password.txt`) | chpasswd"
+   args:
+     removes: "/home/{{ item }}/password.txt"
 
  - name: configure debian stable upgrades
    replace:
@@ -47,13 +92,6 @@
  - name: install fail2ban
    apt: name=fail2ban state=latest update_cache=yes cache_valid_time=3600
 
- - name: disable ssh root login
-   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
-   notify: reload-ssh
-
- - name: disable ssh password authentication
-   replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
-   notify: reload-ssh
 
  - name: install tlsdate
    apt: package=tlsdate state=latest update_cache=yes cache_valid_time=3600
