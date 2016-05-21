@@ -52,6 +52,7 @@
    args:
      creates: "/home/{{ item }}/.password_set"
 
+ # stop clobbering passwords
  - name: set password-set file
    with_items: "{{ admins }}"
    copy:

@@ -1,6 +1,5 @@
 ---
  - hosts: noisebridge-m4
-   remote_user: root
    become: yes
    become_method: sudo
    roles:
