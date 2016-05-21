@@ -12,6 +12,7 @@
      admins:
       - leif
       - patrickod
+      - superq
      web_domains:
        m4.noisebridge.net:
          - m4.noisebridge.net

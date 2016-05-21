@@ -50,7 +50,7 @@
    with_items: "{{ admins }}"
    shell: "echo {{ item }}:$(echo -n `cat /home/{{ item }}/password.txt`) | chpasswd"
    args:
-     removes: "/home/{{ item }}/.password_set"
+     creates: "/home/{{ item }}/.password_set"
 
  - name: set password-set file
    with_items: "{{ admins }}"
