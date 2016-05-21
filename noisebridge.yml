@@ -13,12 +13,12 @@
       - leif
       - patrickod
      web_domains:
-       noisebridge.net:
-         - noisebridge.net
-         - lists.noisebridge.net
-         - www.noisebridge.net
+       m4.noisebridge.net:
+         - m4.noisebridge.net
+         - lists.m4.noisebridge.net
+         - www.m4.noisebridge.net
      letsencrypt_certs:
-       noisebridge.net:
-         - noisebridge.net
-         - lists.noisebridge.net
-         - www.noisebridge.net
+       m4.noisebridge.net:
+         - m4.noisebridge.net
+         - lists.m4.noisebridge.net
+         - www.m4.noisebridge.net

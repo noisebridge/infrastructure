@@ -42,6 +42,7 @@
    shell: "/usr/bin/pwgen -s 32 1 > /home/{{ item }}/password.txt"
    args:
      creates: "/home/{{ item }}/password.txt"
+     removes: "/home/{{ item }}/.password_set"
    become: yes
    become_user: "{{ item }}"
 
@@ -49,7 +50,15 @@
    with_items: "{{ admins }}"
    shell: "echo {{ item }}:$(echo -n `cat /home/{{ item }}/password.txt`) | chpasswd"
    args:
-     removes: "/home/{{ item }}/password.txt"
+     removes: "/home/{{ item }}/.password_set"
+
+ - name: set password-set file
+   with_items: "{{ admins }}"
+   copy:
+     dest: "/home/{{ item }}/.password_set"
+     owner: "{{ item }}"
+     group: "{{ item }}"
+     content: ""
 
  - name: configure debian stable upgrades
    replace:
