@@ -1,7 +1,7 @@
 ---
   - name: install debian backports
     apt_repository:
-      repo: "deb http://httpredir.debian.org/debian jessie-backports main contrib"
+      repo: "deb http://httpredir.debian.org/debian {{ ansible_distribution_release }}-backports main contrib"
       state: present
       update_cache: yes
     tags:
