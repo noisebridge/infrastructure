@@ -1,0 +1,2 @@
+# ansible
+the noisebridge infrastucture 
