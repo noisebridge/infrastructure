@@ -1,0 +1,3 @@
+---
+ - name: reload-aliases
+   command: /usr/bin/newaliases

@@ -1,0 +1,63 @@
+---
+ - name: install unattended-upgrades & sudo
+   items:
+     - unattended-upgrades
+     - apt-listchanges
+     - sudo
+   apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+
+ - name: configure debian stable upgrades
+   replace:
+     dest: /etc/apt/apt.conf.d/50unattended-upgrades
+     regexp: '(\/\/\s+)"o=Debian,a=stable";'
+     replace: '        "o=Debian,a=stable";'
+     
+ - name: configure debian stable-update upgrades
+   replace:
+     dest: /etc/apt/apt.conf.d/50unattended-upgrades
+     regexp: '(\/\/\s+)"o=Debian,a=stable-updates";'
+     replace: '        "o=Debian,a=stable-updates";'
+
+ - name: mail root an unattended upgrade
+   replace:
+     dest: /etc/apt/apt.conf.d/50unattended-upgrades
+     regexp: '/\/\Unattended-Upgrade::Mail "root";'
+     replace: 'Unattended-Upgrade::Mail "root";'
+
+ - name: enable unattended upgrade
+   copy:
+     dest: /etc/apt/apt.conf.d/20auto-upgrades
+     src: 20auto-upgrades 
+
+ - name: install logwatch
+   apt: name=logwatch state=latest update_cache=yes cache_valid_time=3600
+
+ - name: configure daily logwatch email
+   copy:
+     src: 00logwatch
+     dest: /etc/cron.daily/00logwatch
+
+ - name: configure root email aliases
+   replace:
+     dest: /etc/aliases
+     regexp: '^root: '
+     replace: '^root: hostmaster@noisebridge.net'
+   notify: reload-aliases
+
+ - name: install fail2ban
+   apt: name=fail2ban state=latest update_cache=yes cache_valid_time=3600
+
+ - name: disable ssh root login
+   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
+   notify: reload-ssh
+
+ - name: disable ssh password authentication
+   replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
+   notify: reload-ssh
+
+ - name: install tlsdate
+   apt: package=tlsdate state=latest update_cache=yes cache_valid_time=3600
+
+ - name: enable tlsdate debian
+   service: name=tlsdated state=started enabled=yes
+   when: ansible_distribution == "Debian"
