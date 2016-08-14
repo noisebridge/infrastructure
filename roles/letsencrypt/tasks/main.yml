@@ -1,0 +1,33 @@
+---
+ - name: install letsencrypt
+   apt:
+     name: "{{item}}"
+     state: latest
+     update_cache: yes
+     cache_valid_time: 3600
+     default_release: jessie-backports
+     force: yes
+   items:
+     - python-mock
+     - letsencrypt
+   tags:
+     - letsencrypt
+     - apt
+
+ - name: ensure that all srv directories exist
+   file: 
+     dest: "/srv/{{ item.key }}"
+     state: directory
+     owner: www-data
+     group: www-data
+   with_dict: "{{ letsencrypt_certs }}"
+   tags:
+     - letsencrypt
+
+ - name: request certificates
+   command: "certbot certonly --agree-tos -n -m hostmaster@{{ item.key }} --webroot -w /srv/{{ item.key }} -d {{ item.value|join(' -d ') }}"
+   args:
+     creates: "/etc/letsencrypt/{{ item.value[0] }}/cert.pem"
+   with_dict: "{{ letsencrypt_certs }}"
+   tags:
+     - letsencrypt

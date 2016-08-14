@@ -1,0 +1,51 @@
+---
+ - name: install tor debian repository
+   items:
+     - 'deb http://deb.torproject.org/torproject.org jessie main'
+     - 'deb-src http://deb.torproject.org/torproject.org jessie main'
+   apt_repository:
+     repo: '{{ item }}'
+     state: present
+     update_cache: yes
+   tags:
+    - tor
+    - apt
+
+ - name: install tor gpg key
+   apt_key: keyserver=keys.gnupg.net id=A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89
+   tags:
+     - tor
+     - gnupg
+
+ - name: install tor
+   items:
+     - tor
+     - deb.torproject.org-keyring
+   apt: name={{item}} state=latest update_cache=yes cache_valid_time=3600 force=yes
+   tags:
+     - apt
+     - tor
+
+ - name: configure tlsdate to use tor
+   replace:
+     dest: /etc/tlsdate/tlsdated.conf
+     regexp: '	proxy none'
+     replace: '	proxy socks5://127.0.0.1:9050'
+   tags:
+     - tor
+     - tlsdate
+
+ - name: install tor apt transport
+   apt: package=apt-transport-tor state=latest update_cache=yes cache_valid_time=3600
+   tags:
+    - tor
+    - apt
+
+ - name: configure apt transport
+   replace:
+     dest: /etc/apt/sources.list
+     regexp: 'deb http'
+     replace: 'deb tor+http'
+   tags: 
+     - tor
+     - apt
