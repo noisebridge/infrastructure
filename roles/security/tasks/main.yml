@@ -94,7 +94,6 @@
    shell: "/usr/bin/pwgen -s 32 1 > /home/{{ item }}/password.txt"
    args:
      creates: "/home/{{ item }}/password.txt"
-     # removes: "/home/{{ item }}/.password_set"
    become: yes
    become_user: "{{ item }}"
 
@@ -115,11 +114,11 @@
    tags:
      - security
 
- # - name: disable ssh root login
- #   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
- #   notify: reload-ssh
- #   tags:
- #     - security
+ - name: disable ssh root login
+   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
+   notify: reload-ssh
+   tags:
+     - security
 
  - name: disable ssh password authentication
    replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
