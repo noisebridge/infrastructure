@@ -1,8 +1,10 @@
 ---
- - hosts: noisebridge-m4
-   become: yes
-   become_method: sudo
+ - hosts: noisebridge-m3
+   remote_user: root
+   # become: yes
+   # become_method: sudo
    roles:
+     - utils
      - security
      - backports
      - apache
@@ -13,12 +15,12 @@
       - patrickod
       - superq
      web_domains:
-       m4.noisebridge.net:
-         - m4.noisebridge.net
-         - lists.m4.noisebridge.net
-         - www.m4.noisebridge.net
+       m3.noisebridge.net:
+         - m3.noisebridge.net
+         - lists.m3.noisebridge.net
+         - www.m3.noisebridge.net
      letsencrypt_certs:
-       m4.noisebridge.net:
-         - m4.noisebridge.net
-         - lists.m4.noisebridge.net
-         - www.m4.noisebridge.net
+       m3.noisebridge.net:
+         - m3.noisebridge.net
+         - lists.m3.noisebridge.net
+         - www.m3.noisebridge.net

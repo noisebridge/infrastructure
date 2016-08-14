@@ -1,19 +1,71 @@
 ---
- - name: disable ssh root login
-   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
-   notify: reload-ssh
-
- - name: disable ssh password authentication
-   replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
-   notify: reload-ssh
-
- - name: install unattended-upgrades & sudo
+ - name: install unattended-upgrades
    items:
      - unattended-upgrades
      - apt-listchanges
-     - pwgen
-     - sudo
    apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+   tags:
+     - security
+
+ - name: configure debian stable upgrades
+   replace:
+     dest: /etc/apt/apt.conf.d/50unattended-upgrades
+     regexp: '(\/\/\s+)"o=Debian,a=stable";'
+     replace: '        "o=Debian,a=stable";'
+   tags:
+     - security
+     
+ - name: configure debian stable-update upgrades
+   replace:
+     dest: /etc/apt/apt.conf.d/50unattended-upgrades
+     regexp: '(\/\/\s+)"o=Debian,a=stable-updates";'
+     replace: '        "o=Debian,a=stable-updates";'
+   tags:
+     - security
+
+ - name: mail root an unattended upgrade
+   replace:
+     dest: /etc/apt/apt.conf.d/50unattended-upgrades
+     regexp: '/\/\Unattended-Upgrade::Mail "root";'
+     replace: 'Unattended-Upgrade::Mail "root";'
+   tags:
+     - security
+
+ - name: enable unattended upgrade
+   copy:
+     dest: /etc/apt/apt.conf.d/20auto-upgrades
+     src: 20auto-upgrades 
+   tags:
+     - security
+
+ - name: install logwatch & sendmail
+   items:
+     - logwatch
+     - sendmail
+   apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+   tags:
+     - security
+     - logwatch
+
+ - name: configure daily logwatch email
+   copy:
+     src: 00logwatch
+     dest: /etc/cron.daily/00logwatch
+   tags:
+     - security
+
+ - name: install fail2ban
+   apt: name=fail2ban state=latest update_cache=yes cache_valid_time=3600
+   tags:
+     - security
+
+ - name: install sudo & pwgen
+   apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+   items:
+     - sudo
+     - pwgen
+   tags:
+     - security
 
  - name: add admin users
    with_items: "{{ admins }}"
@@ -42,7 +94,7 @@
    shell: "/usr/bin/pwgen -s 32 1 > /home/{{ item }}/password.txt"
    args:
      creates: "/home/{{ item }}/password.txt"
-     removes: "/home/{{ item }}/.password_set"
+     # removes: "/home/{{ item }}/.password_set"
    become: yes
    become_user: "{{ item }}"
 
@@ -60,52 +112,35 @@
      owner: "{{ item }}"
      group: "{{ item }}"
      content: ""
+   tags:
+     - security
 
- - name: configure debian stable upgrades
-   replace:
-     dest: /etc/apt/apt.conf.d/50unattended-upgrades
-     regexp: '(\/\/\s+)"o=Debian,a=stable";'
-     replace: '        "o=Debian,a=stable";'
-     
- - name: configure debian stable-update upgrades
-   replace:
-     dest: /etc/apt/apt.conf.d/50unattended-upgrades
-     regexp: '(\/\/\s+)"o=Debian,a=stable-updates";'
-     replace: '        "o=Debian,a=stable-updates";'
+ # - name: disable ssh root login
+ #   replace: dest=/etc/ssh/sshd_config regexp='PermitRootLogin (.*)' replace='PermitRootLogin no'
+ #   notify: reload-ssh
+ #   tags:
+ #     - security
 
- - name: mail root an unattended upgrade
-   replace:
-     dest: /etc/apt/apt.conf.d/50unattended-upgrades
-     regexp: '/\/\Unattended-Upgrade::Mail "root";'
-     replace: 'Unattended-Upgrade::Mail "root";'
-
- - name: enable unattended upgrade
-   copy:
-     dest: /etc/apt/apt.conf.d/20auto-upgrades
-     src: 20auto-upgrades 
-
- - name: install logwatch
-   apt: name=logwatch state=latest update_cache=yes cache_valid_time=3600
-
- - name: configure daily logwatch email
-   copy:
-     src: 00logwatch
-     dest: /etc/cron.daily/00logwatch
-
- - name: configure root email aliases
-   replace:
-     dest: /etc/aliases
-     regexp: '^root: '
-     replace: '^root: hostmaster@noisebridge.net'
-   notify: reload-aliases
-
- - name: install fail2ban
-   apt: name=fail2ban state=latest update_cache=yes cache_valid_time=3600
-
+ - name: disable ssh password authentication
+   replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
+   notify: reload-ssh
+   tags:
+     - security
 
  - name: install tlsdate
    apt: package=tlsdate state=latest update_cache=yes cache_valid_time=3600
+   tags:
+     - security
 
  - name: enable tlsdate debian
    service: name=tlsdated state=started enabled=yes
    when: ansible_distribution == "Debian"
+   tags:
+     - security
+
+ - name: enable tlsdate ubuntu
+   service: name=tlsdate state=started enabled=yes
+   when: ansible_distribution == "Ubuntu"
+   tags:
+     - security
+
