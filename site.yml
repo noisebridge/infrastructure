@@ -1,0 +1,33 @@
+---
+
+- name: node defaults
+  hosts: all
+  become: yes
+  become_method: sudo
+  roles:
+    - utils
+    - security
+    - backports
+  vars:
+    admins:
+     - leif
+     - patrickod
+     - superq
+
+- name: noisebridge-net
+  hosts: noisebridge-net
+  become: yes
+  become_method: sudo
+  roles:
+    - apache
+  vars:
+     web_domains:
+       m3.noisebridge.net:
+         - m3.noisebridge.net
+         - lists.m3.noisebridge.net
+         - www.m3.noisebridge.net
+     letsencrypt_certs:
+       m3.noisebridge.net:
+         - m3.noisebridge.net
+         - lists.m3.noisebridge.net
+         - www.m3.noisebridge.net

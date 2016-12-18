@@ -2,6 +2,17 @@
 
 the noisebridge infrastucture playbooks
 
+## Deployment
+
+Deploying the entire thing should be possible with just one command:
+
+    ansible-playbook site.yml
+
+Usually, you will want to limit your deployment to specific host groups:
+
+    ansible-playbook site.yml --limit noisebridge-net
+
+
 ## HERE BE DRAGONS
 
 This is an aspirational repository for use to provision future noisebridge
