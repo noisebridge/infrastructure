@@ -7,7 +7,7 @@
   roles:
     - utils
     - security
-    - backports
+    - apt-backports
   vars:
     admins:
      - leif
