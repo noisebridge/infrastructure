@@ -20,13 +20,14 @@
   become_method: sudo
   roles:
     - apache
+    - certbot
   vars:
      web_domains:
        m3.noisebridge.net:
          - m3.noisebridge.net
          - lists.m3.noisebridge.net
          - www.m3.noisebridge.net
-     letsencrypt_certs:
+     certbot_certs:
        m3.noisebridge.net:
          - m3.noisebridge.net
          - lists.m3.noisebridge.net
