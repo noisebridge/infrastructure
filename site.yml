@@ -25,10 +25,10 @@
      web_domains:
        m3.noisebridge.net:
          - m3.noisebridge.net
-         - lists.m3.noisebridge.net
-         - www.m3.noisebridge.net
+         # - lists.m3.noisebridge.net
+         # - www.m3.noisebridge.net
      certbot_certs:
        m3.noisebridge.net:
          - m3.noisebridge.net
-         - lists.m3.noisebridge.net
-         - www.m3.noisebridge.net
+         # - lists.m3.noisebridge.net
+         # - www.m3.noisebridge.net
