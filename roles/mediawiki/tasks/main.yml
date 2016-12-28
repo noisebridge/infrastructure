@@ -17,8 +17,8 @@
  - name: fetch mediawiki LTS release
    get_url:
      dest: /tmp/
-     url: https://releases.wikimedia.org/mediawiki/1.27/mediawiki-1.27.0.tar.gz
-     checksum: sha256:c79d00312a4b749927e4f3f9600b3bcf9fe914a898b7fe4f8518e9f59ae8d128
+     url: "https://releases.wikimedia.org/mediawiki/{{mediawiki.release }}/mediawiki-{{ mediawiki.version }}.tar.gz"
+     checksum: "sha256:{{ mediawiki.release_sha256sum }}"
    tags:
      - mediawiki
 
@@ -33,7 +33,7 @@
 
  - name: extract mediawiki
    unarchive:
-     src: "/tmp/mediawiki-1.27.0.tar.gz"
+     src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
      dest: "/srv/{{ mediawiki.domain }}/wiki"
      remote_src: true
      extra_opts: ["--strip-components=1"]
