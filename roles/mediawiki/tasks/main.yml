@@ -1,0 +1,32 @@
+---
+ - name: install dependencies
+   apt:
+     state: latest
+     package: "{{ item }}"
+     update_cache: yes
+     cache_valid_time: 3600
+   with_items:
+     - mysql-server
+     - php5
+     - php5-mysql
+     - libapache2-mod-php5
+   tags:
+     - apt
+     - mediawiki
+
+ - name: fetch mediawiki LTS release
+   get_url:
+     dest: /tmp/
+     url: https://releases.wikimedia.org/mediawiki/1.27/mediawiki-1.27.0.tar.gz
+     checksum: sha256:c79d00312a4b749927e4f3f9600b3bcf9fe914a898b7fe4f8518e9f59ae8d128
+   tags:
+     - mediawiki
+
+ - name: make wiki directory
+   file:
+     dest: "/srv/{{ mediawiki.domain }}"
+     state: directory
+     owner: www-data
+     group: www-data
+   tags:
+     - mediawiki
