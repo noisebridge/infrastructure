@@ -2,7 +2,6 @@
  - name: install apache
    apt: package=apache2 state=latest update_cache=yes cache_valid_time=3600
    tags:
-     - ngnix
      - apache
 
  - name: enable modules
@@ -10,8 +9,8 @@
    with_items:
      - rewrite
      - headers
+     - ssl
    tags:
-     - ngnix
      - apache
 
  - name: create /srv directories

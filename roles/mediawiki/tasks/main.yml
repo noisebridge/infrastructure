@@ -10,6 +10,7 @@
      - php5
      - php5-mysql
      - libapache2-mod-php5
+     - php5-imagick
    tags:
      - apt
      - mediawiki
@@ -37,5 +38,43 @@
      dest: "/srv/{{ mediawiki.domain }}/wiki"
      remote_src: true
      extra_opts: ["--strip-components=1"]
+   tags:
+     - mediawiki
+
+ - name: ensure apache mod-php5 enabled
+   apache2_module: state=present name=php5
+   tags:
+     - mediawiki
+     - apache
+
+ - name: install TLS-enabled apache virtualhost
+   template:
+     src: apache_https.conf
+     dest: "/etc/apache2/sites-available/{{ mediawiki.domain }}-ssl.conf"
+     owner: root
+     group: root
+   tags:
+    - apache
+    - mediawiki
+
+ - name: enable virtualhosts
+   file:
+     src: "/etc/apache2/sites-available/{{ mediawiki.domain }}-ssl.conf"
+     dest: "/etc/apache2/sites-enabled/{{ mediawiki.domain }}.conf"
+     state: link
+     owner: root
+     group: root
+   tags:
+    - apache
+    - mediawiki
+   notify:
+    - reload-apache
+
+ - name: install LocalSettings.php
+   template:
+     src: LocalSettings.php
+     dest: "/srv/{{ mediawiki.domain }}/wiki/LocalSettings.php"
+     group: www-data
+     owner: www-data
    tags:
      - mediawiki
