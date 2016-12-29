@@ -1,0 +1,9 @@
+[Unit]
+Description=spiped tunnel to m2.noisebridge.net
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/spiped -F -d -s '[0.0.0.0]:3307' -t '[127.0.0.1]:3306' -k /etc/spiped/noisebridge.key
+
+[Install]
+WantedBy=multi-user.target

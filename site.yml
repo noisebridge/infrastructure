@@ -22,6 +22,7 @@
     - apache
     - certbot
     - mediawiki
+    - spiped
   vars:
     web_domains:
       m3.noisebridge.net:

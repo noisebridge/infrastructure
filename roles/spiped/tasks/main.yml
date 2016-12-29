@@ -1,0 +1,44 @@
+---
+ - name: install spiped
+   apt:
+     package: spiped
+     state: present
+     update_cache: yes
+     cache_valid_time: 3600
+   tags:
+     - apt
+     - spiped
+
+ - name: create keyfile directroy
+   file:
+     dest: /etc/spiped
+     state: directory
+     owner: root
+     group: root
+   tags:
+     - spiped
+
+ - name: copy key file
+   copy:
+     src: noisebridge.key
+     dest: /etc/spiped/noisebridge.key
+     owner: root
+     group: root
+   tags:
+     - spiped
+
+ - name: install service file
+   copy:
+     src: spiped.service
+     dest: /etc/systemd/system/spiped.service
+     owner: root
+     group: root
+   tags:
+     - spiped
+
+ - name: start spiped service
+   systemd: state=started name=spiped daemon_reload=yes
+   tags:
+     - spiped
+  
+

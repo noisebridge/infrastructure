@@ -1,2 +1,3 @@
 secrets filter=git-crypt diff=git-crypt
 group_vars/all filter=git-crypt diff=git-crypt
+roles/spiped/files/noisebridge.key filter=git-crypt diff=git-crypt
