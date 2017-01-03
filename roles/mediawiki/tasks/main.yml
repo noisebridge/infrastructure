@@ -70,11 +70,21 @@
    notify:
     - reload-apache
 
- - name: install LocalSettings.php
+ - name: copy mediawiki install script
    template:
-     src: LocalSettings.php
-     dest: "/srv/{{ mediawiki.domain }}/wiki/LocalSettings.php"
-     group: www-data
-     owner: www-data
+     src: mediawiki_install
+     dest: /tmp/mediawiki_install
+     owner: root
+     group: root
+     mode: 0755
    tags:
      - mediawiki
+
+    
+ - name: run CLI mediawiki installation
+   command: /tmp/mediawiki_install
+   args:
+     chdir: "/srv/{{ mediawiki.domain }}/wiki"
+     creates: "/srv/{{ mediawiki.domain}}/wiki/LocalSettings.php"
+   tags:
+    - mediawiki
