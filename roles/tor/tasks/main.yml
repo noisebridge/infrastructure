@@ -26,15 +26,6 @@
      - apt
      - tor
 
- - name: configure tlsdate to use tor
-   replace:
-     dest: /etc/tlsdate/tlsdated.conf
-     regexp: '	proxy none'
-     replace: '	proxy socks5://127.0.0.1:9050'
-   tags:
-     - tor
-     - tlsdate
-
  - name: install tor apt transport
    apt: package=apt-transport-tor state=latest update_cache=yes cache_valid_time=3600
    tags:

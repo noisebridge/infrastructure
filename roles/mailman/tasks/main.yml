@@ -45,7 +45,6 @@
     notify:
      - reload-apache
 
-
   - name: configure mailman
     replace:
       regexp: "{{ item.regexp }}"
