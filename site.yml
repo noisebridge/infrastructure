@@ -8,11 +8,6 @@
     - utils
     - security
     - apt-backports
-  vars:
-    admins:
-     - leif
-     - patrickod
-     - superq
 
 - name: noisebridge-net
   hosts: noisebridge-net

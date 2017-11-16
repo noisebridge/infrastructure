@@ -10,13 +10,5 @@
    tags:
      - postfix
 
- - name: configure email forwarding
-   lineinfile:
-     dest: /etc/aliases
-     line: "root: {{ admins | join(' ') }}"
-   notify: reload-aliases
-   tags:
-     - postfix
-
  - name: install mosh
    apt: package=mosh state=latest update_cache=yes cache_valid_time=3600
