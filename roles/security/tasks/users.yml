@@ -1,0 +1,25 @@
+---
+- name: Add user
+  user:
+    name={{ item.username }}
+    comment={{ item.fullname }}
+    shell={{ item.shell | default("/bin/bash") }}
+    groups=sudo
+    append=yes
+  with_items: "{{ users }}"
+
+- name: SSH key
+  authorized_key:
+    user={{ item.0.username }}
+    key={{ item.1 }}
+  with_subelements:
+    - "{{ users }}"
+    - ssh_keys
+  when: item.1
+
+- name: github SSH key
+  authorized_key:
+    user={{ item.username }}
+    key=https://github.com/{{ item.github_username }}.keys
+  with_items: "{{ users }}"
+  when: item.github_username

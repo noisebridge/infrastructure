@@ -1,0 +1,11 @@
+---
+users:
+- username: superq
+  fullname: Ben Kochie
+  email: superq@gmail.com
+  github_username: superq
+
+- username: patrickod
+  fullname: Patrick O'Doherty
+  email: p@trickod.com
+  github_username: patrickod

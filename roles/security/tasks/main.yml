@@ -1,71 +1,64 @@
 ---
-- name: install unattended-upgrades
-  items:
-    - unattended-upgrades
-    - apt-listchanges
-  apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
-  tags:
-    - security
 
-- name: configure debian stable upgrades
-  replace:
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    regexp: '(\/\/\s+)"o=Debian,a=stable";'
-    replace: '        "o=Debian,a=stable";'
-  tags:
-    - security
+- include: users.yml
+
+#- name: install unattended-upgrades
+#  items:
+#    - unattended-upgrades
+#    - apt-listchanges
+#  apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+#  tags:
+#    - security
+
+#- name: configure debian stable upgrades
+#  replace:
+#    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+#    regexp: '(\/\/\s+)"o=Debian,a=stable";'
+#    replace: '        "o=Debian,a=stable";'
+#  tags:
+#    - security
     
-- name: configure debian stable-update upgrades
-  replace:
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    regexp: '(\/\/\s+)"o=Debian,a=stable-updates";'
-    replace: '        "o=Debian,a=stable-updates";'
-  tags:
-    - security
+#- name: configure debian stable-update upgrades
+#  replace:
+#    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+#    regexp: '(\/\/\s+)"o=Debian,a=stable-updates";'
+#    replace: '        "o=Debian,a=stable-updates";'
+#  tags:
+#    - security
 
-- name: mail root an unattended upgrade
-  replace:
-    dest: /etc/apt/apt.conf.d/50unattended-upgrades
-    regexp: '/\/\Unattended-Upgrade::Mail "root";'
-    replace: 'Unattended-Upgrade::Mail "root";'
-  tags:
-    - security
+#- name: mail root an unattended upgrade
+#  replace:
+#    dest: /etc/apt/apt.conf.d/50unattended-upgrades
+#    regexp: '/\/\Unattended-Upgrade::Mail "root";'
+#    replace: 'Unattended-Upgrade::Mail "root";'
+#  tags:
+#    - security
 
-- name: enable unattended upgrade
-  copy:
-    dest: /etc/apt/apt.conf.d/20auto-upgrades
-    src: 20auto-upgrades 
-  tags:
-    - security
+#- name: enable unattended upgrade
+#  copy:
+#    dest: /etc/apt/apt.conf.d/20auto-upgrades
+#    src: 20auto-upgrades 
+#  tags:
+#    - security
 
-- name: install logwatch & sendmail
-  items:
-    - logwatch
-    - sendmail
-  apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
-  tags:
-    - security
-    - logwatch
+#- name: install logwatch & sendmail
+#  items:
+#    - logwatch
+#    - sendmail
+#  apt: name={{ item }} state=latest update_cache=yes cache_valid_time=3600
+#  tags:
+#    - security
+#    - logwatch
 
-- name: configure daily logwatch email
-  copy:
-    src: 00logwatch
-    dest: /etc/cron.daily/00logwatch
-  tags:
-    - security
+#- name: configure daily logwatch email
+#  copy:
+#    src: 00logwatch
+#    dest: /etc/cron.daily/00logwatch
+#  tags:
+#    - security
 
-- name: disable ssh password authentication
-  replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
-  notify: reload-ssh
-  tags:
-    - security
-
-- name: ssh keys
-  authorized_keys:
-    user: "{{ remote_user }}"
-    state: present
-    key: "{{ lookup('file', 'roles/security/files/pubkeys') }}"
-    manage_dir: True
-    exclusive: True
-  tags:
-    - security
+#- name: disable ssh password authentication
+#  replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
+#  notify: reload-ssh
+#  tags:
+#    - security
