@@ -18,13 +18,10 @@
     - antoiner77.caddy
     - mediawiki
   vars:
-    web_domains:
-      m3.noisebridge.net:
-        - m3.noisebridge.net
     mediawiki:
       database: noisebridge_mediawiki
       database_username: wiki
-      domain: m3.noisebridge.net
+      domain: noisebridge.net
       release: 1.27 # needed for URL construction for downloading
       release_sha256sum: 08a676c392625cf3c5730a6c1b9390ab1e11dcc17cfd0ff97a2ae3917ef5a36a
       version: 1.27.1
