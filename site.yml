@@ -14,8 +14,6 @@
   become: yes
   become_method: sudo
   roles:
-    - apache
-    - certbot
     - mediawiki
     - spiped
   vars:
