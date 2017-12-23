@@ -2,6 +2,12 @@
 
 the noisebridge infrastucture playbooks
 
+## Submodules
+
+This repo includes git submodules to vendor external source.  You need to update them with this helper command.
+
+    ./update-submodules.sh
+
 ## Deployment
 
 Deploying the entire thing should be possible with just one command:
