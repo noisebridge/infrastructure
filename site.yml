@@ -7,15 +7,12 @@
   roles:
     - utils
     - security
-    - apt-backports
 
 - name: noisebridge-net
   hosts: noisebridge-net
   become: yes
   become_method: sudo
   roles:
-    - apache
-    - certbot
     - mediawiki
     - spiped
   vars:
