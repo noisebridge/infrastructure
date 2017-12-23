@@ -1,0 +1,28 @@
+---
+- name: install mysql-server
+  apt:
+    package: mysql-server
+    status: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - apt 
+
+- name: Update mysql root password for all root accounts
+  mysql_user:
+    name: 'root'
+    host: '{{ item }}'
+    password: '{{ mysql_root_password }}'
+  with_items: [ '{{ ansible_hostname }}', '127.0.0.1', '::1', 'localhost' ]
+
+- name: remove the test db
+  mysql_db:
+    db: test
+    state: absent
+
+- name: remove anonymous user
+  mysql_user:
+    user: ""
+    host: '{{ item }}'
+    state: 'absent'
+  with_items: [ '{{ ansible_hostname }}', 'localhost' ]

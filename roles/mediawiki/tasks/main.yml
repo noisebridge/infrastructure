@@ -6,7 +6,6 @@
      update_cache: yes
      cache_valid_time: 3600
    with_items:
-     - mysql-server
      - php5
      - php5-mysql
      - libapache2-mod-php5
