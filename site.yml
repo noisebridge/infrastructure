@@ -7,7 +7,6 @@
   roles:
     - utils
     - security
-    - apt-backports
 
 - name: noisebridge-net
   hosts: noisebridge-net
