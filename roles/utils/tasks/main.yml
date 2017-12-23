@@ -20,6 +20,7 @@
   - mtr-tiny
   - screen
   - strace
+  - sudo
   - tcpdump
   - vim
 
