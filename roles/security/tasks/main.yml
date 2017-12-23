@@ -59,6 +59,6 @@
 
 #- name: disable ssh password authentication
 #  replace: dest=/etc/ssh/sshd_config regexp='(\#?)PasswordAuthentication (.*)' replace='PasswordAuthentication no'
-#  notify: reload-ssh
+#  notify: restart-ssh
 #  tags:
 #    - security

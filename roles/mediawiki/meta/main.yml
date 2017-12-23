@@ -1,4 +1,3 @@
 ---
- dependencies:
-   - { "role": "apache" }
-   - { "role": "geerlingguy.mysql" }
+dependencies:
+- { "role": "geerlingguy.mysql" }
