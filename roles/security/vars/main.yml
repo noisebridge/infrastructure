@@ -3,9 +3,11 @@ users:
 - username: superq
   fullname: Ben Kochie
   email: superq@gmail.com
+  ssh_keys: []
   github_username: superq
 
 - username: patrickod
   fullname: Patrick O'Doherty
   email: p@trickod.com
+  ssh_keys: []
   github_username: patrickod
