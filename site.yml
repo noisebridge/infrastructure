@@ -34,6 +34,8 @@
 
 - name: DNS Server
   hosts: primary-dns-server
+  become: yes
+  become_method: sudo
   tags: [primary-dns-server]
   roles:
     - coredns

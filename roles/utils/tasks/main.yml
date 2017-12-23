@@ -5,10 +5,12 @@
   - ack-grep
   - apt-transport-https
   - bash-completion
+  - bind9-host
   - ca-certificates
   - curl
   - debconf
   - debconf-utils
+  - dnsutils
   - file
   - git
   - htop
