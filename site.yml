@@ -32,3 +32,9 @@
     certbot_certs:
       m3.noisebridge.net:
         - m3.noisebridge.net
+
+- name: DNS Server
+  hosts: primary-dns-server
+  tags: [primary-dns-server]
+  roles:
+    - coredns

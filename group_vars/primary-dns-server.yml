@@ -1,0 +1,8 @@
+---
+coredns_port: 53
+coredns_config: |
+  noisebridge.net {
+    prometheus
+    errors
+    log
+  }
