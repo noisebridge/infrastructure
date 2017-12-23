@@ -1,3 +1,8 @@
+- name: Install packages
+  apt: pkg={{ item }} state=latest install_recommends=no
+  with_items:
+  - libcap2-bin
+
 - name: Create coredns user
   user:
     name: "{{ coredns_user }}"
@@ -13,6 +18,8 @@
     mode: 0755
   with_items:
     - "{{ coredns_path }}"
+    - "{{ coredns_path }}/zones"
+    - "{{ coredns_path }}/keys"
 
 - name: untar coredns tarball
   unarchive:
@@ -23,6 +30,28 @@
     copy: no
   notify:
   - restart coredns
+
+- name: Copy zone files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ coredns_path }}/zones/"
+    owner: "{{ coredns_user }}"
+    mode: 0644
+  with_fileglob:
+    - coredns/zones/*
+  notify:
+  - reload coredns
+
+- name: Copy dnssec keys
+  copy:
+    src: "{{ item }}"
+    dest: "{{ coredns_path }}/keys/"
+    owner: "{{ coredns_user }}"
+    mode: 0600
+  with_fileglob:
+    - coredns/keys/*
+  notify:
+  - reload coredns
 
 - name: Install config file
   copy:

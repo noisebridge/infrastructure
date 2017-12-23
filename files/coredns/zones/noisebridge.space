@@ -1,0 +1,160 @@
+;zone for noisebridge.space
+
+$TTL 3600
+
+noisebridge.space.	IN	SOA	ns.noisebridge.space. hostmaster.noisebridge.space.  (
+				2017020201 ; Serial
+				3600 ; Refresh
+				300 ; Retry
+				604800 ; Expire
+				300 ) ; Minimum
+
+; name server records
+@		IN	NS	ns.noisebridge.space.
+@		IN	NS	dns.hexapodia.org.
+
+; hostnameless access
+;@		IN	A	209.237.247.66
+@		IN	A	204.246.122.84
+
+; name servers
+ns1	86400	IN	A	209.237.247.66 ; m1 in cernio SFO01
+ns	86400	IN	A	204.246.122.84 ; m2 in cernio MSP01
+
+; mx records
+noisebridge.space. IN	MX	10 m2.noisebridge.space.
+
+; everything else
+;www		IN	A	209.237.247.66
+www		IN	A	204.246.122.84
+lists		IN	A	204.246.122.84
+m1		IN	A	209.237.247.66
+m2		IN	A	204.246.122.84
+m3		IN	A	204.246.122.86
+m4		IN	A	146.185.155.114
+status		IN	A	157.22.245.21
+
+; random physical and virtual machines
+pony		IN	A	75.101.62.89
+pwnie		IN	A	75.101.62.89
+mule		IN	A	208.90.214.119
+stallion	IN	A	75.101.62.90
+lights		IN	A	75.101.62.91
+minotaur	IN	A	75.101.62.92
+; changed by patrickod on 2016-02-03
+;library		IN	CNAME	stallion.noisebridge.space.
+s1		IN	CNAME	stallion.noisebridge.space.
+
+; digital ocean machines
+unicorn		IN	A	45.55.18.235
+unicorn		IN	AAAA	2604:a880:1:20::1fb:5001
+centaur		IN	A	45.55.31.123
+centaur		IN	AAAA	2604:a880:1:20::34b:d001
+homebase 	IN	AAAA 	2600:3c01::f03c:91ff:fe55:9e12
+homebase 	IN	A	23.239.22.101
+
+; Jabber
+; originally pointed to Milo's server. 
+; Updated 2015-05-24 by @patrickod to point to 
+; prosidy instance on DigitalOcean
+; old
+;xmpp		IN	A	96.126.98.79
+;_xmpp-client._tcp IN	SRV	5 0 5222 scififaster.net.
+;_xmpp-server._tcp IN	SRV	5 0 5269 scififaster.net.
+;_jabber._tcp	IN	SRV	5 0 5269 scififaster.net.
+;new
+;xmpp		IN	A	198.199.114.49
+
+; patrickod 2015-10-28
+; chat		IN	CNAME	chat.aretheducksout.info.
+
+; patrickod 2015-11-25
+chat		IN	CNAME	unicorn.noisebridge.space.
+
+; SIP
+_sip._udp	in	srv	5 0 5060 pony.noisebridge.space.
+
+; Our list serve uses the same smtp server as everyone else
+lists.noisebridge.space. IN MX	10 m2.noisebridge.space.
+
+; Our blog hosted on wordpress
+; blog		IN	CNAME	noisebridge.wordpress.com.
+; adi 20090612 - rubin is hosting a newer better blog
+; owned 2011-12-07
+; blog		IN	CNAME	noisebridge.starset.net.
+; blog		IN	CNAME	www.noisebridge.space.
+
+; patrickod 20160116 - rubin moving the blog to tumblr
+; blog		IN	CNAME	noiseblog.reforgotten.net.
+blog		IN	CNAME	domains.tumblr.com.
+
+; networking gear at 2169
+gw-2169		IN	A	75.101.62.88
+nat-sonicnet	IN	A	75.101.62.88
+
+; funding graphs and paypal IPN run by mfburdett 2010-12-21
+; cha-ching	IN	A	209.237.247.51
+; cha-ching	IN	A	66.109.99.71
+cha-ching	IN	A	216.252.162.71
+
+; requested by sai@saizai.com 2011-01-08
+wikileaks	IN	CNAME	wl.saizai.com.
+
+; requested by Andy Isaacson <adi@hexapodia.org> 2011-03-27
+observatory	IN	A	173.164.230.217
+
+; set up by Andy Isaacson <adi@hexapodia.org> 2011-06-29
+tahoe		IN	CNAME	nbtahoe.hexapodia.org.
+
+; requested by <mct@toren.net> 2011-06-29
+sign		IN	CNAME	pony
+
+; set up by adi@hexapodia.org 2011-07-25
+; updated adi@hexapodia.org 2013-03-09
+; updated superq@gmail.com 2014-03-13
+ns1.tor		IN	A	216.252.162.56
+tor		IN	NS	ns1.tor
+tor		IN	NS	dns.hexapodia.org.
+
+; requested by rubin 2011-10-01
+gate		IN	CNAME	minotaur
+
+; requested by mct 2011-10-07
+powerstation	IN	CNAME	toren.net.
+
+; requested and granted by danny 2012-11-2011
+api		IN	CNAME	minotaur
+
+; requested by gnnrok@gmail 2012-01-10
+zine		IN	A	96.126.98.79
+
+; requested by adi 2013-09-16
+; updated superq@gmail.com 2014-03-13
+cabal		IN	A	216.252.162.58
+
+; requested by rubin 2014-11-21
+; updated by patrick 2015-05-24
+; new static IP from Monkeybrains
+sonic           IN      A       75.101.62.71
+monkeybrains	IN	A	192.195.83.130
+2169            IN      CNAME   monkeybrains
+pegasus		IN	A	192.195.83.134
+
+
+; pegasus CNAMES
+parts		IN	CNAME	pegasus
+
+; requested by patrick 2015-02-02
+; updated w/ other CNAMES 2016-02-13
+ratchet		IN	CNAME	ratchet.patrickod.com.
+donate          IN      CNAME   ratchet
+library		IN	CNAME	ratchet
+
+; mailgun (patrickod 2015-07-24)
+mail		IN	TXT	("v=spf1 include:mailgun.org ~all")
+mx._domainkey.mail	IN	TXT	("k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDUivEw1Gd7ImVg3wKy7LYkeJdoGahwbtZkZ4I/Werr0kgvq3sQ5kXVn4kNhsz4+INRYr0OpUu2ZG1BUcs2W3evbnnAjt8/Xc1RCHZyZeS3fOL3h7Su4UIDyPB9flPa9C/zl+Qi75v5M9PITe9eaAclriECCiVar8VBTFUXY5IdiwIDAQAB")
+mail		IN	MX	10 mxa.mailgun.org.
+mail		IN	MX	10 mxb.mailgun.org.
+
+; m4 testing subdomains
+*.m4		IN	CNAME	m4

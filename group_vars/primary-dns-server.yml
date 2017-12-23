@@ -2,7 +2,23 @@
 coredns_port: 53
 coredns_config: |
   noisebridge.net {
+    file zones/noisebridge.net {
+      transfer to 74.207.242.164 # dns.hexapodia.org
+    }
+    dnssec noisebridge.net {
+      key file keys/Knoisebridge.net.+013+33211
+    }
     prometheus
     errors
-    log
+  }
+  noisebridge.space {
+    file zones/noisebridge.space {
+      transfer to 104.131.134.47 # nicias.patrickod.com
+      # transfer to 2604:a880:1:20::234:8001 # nicias.patrickod.com
+    }
+    dnssec noisebridge.space {
+      key file keys/Knoisebridge.space.+013+22628
+    }
+    prometheus
+    errors
   }
