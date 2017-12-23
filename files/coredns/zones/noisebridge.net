@@ -3,7 +3,7 @@
 $TTL 3600
 
 noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
-				2017122000 ; Serial
+				2017122300 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -18,8 +18,8 @@ noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
 @		IN	A	204.246.122.84
 
 ; name servers
-ns1	86400	IN	A	209.237.247.66 ; m1 in cernio SFO01
-ns	86400	IN	A	204.246.122.84 ; m2 in cernio MSP01
+ns	86400	IN	A	216.252.162.220 ; m3 in iocoop SCL
+ns	86400	IN	AAAA	2602:ff06:725:5:dc::1337 ; m3 in iocoop SCL
 
 ; mx records
 noisebridge.net. IN	MX	10 m2.noisebridge.net.
@@ -31,6 +31,7 @@ lists		IN	A	204.246.122.84
 m1		IN	A	209.237.247.66
 m2		IN	A	204.246.122.84
 m3		IN	A	216.252.162.220
+m3		IN	AAAA    2602:ff06:725:5:dc::1337
 m4		IN	A	146.185.155.114
 status		IN	A	157.22.245.21
 
