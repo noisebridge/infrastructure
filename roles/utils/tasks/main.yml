@@ -1,14 +1,32 @@
 ---
- - name: install git
-   apt: package=git-cvs state=latest update_cache=yes cache_valid_time=3600
+- name: Install packages
+  apt: package=git-cvs state=latest update_cache=yes cache_valid_time=3600
+  with_items:
+  - ack-grep
+  - apt-transport-https
+  - bash-completion
+  - ca-certificates
+  - debconf
+  - debconf-utils
+  - file
+  - git
+  - htop
+  - iftop
+  - inotify-tools
+  - iotop
+  - less
+  - lsof
+  - mosh
+  - mtr-tiny
+  - screen
+  - strace
+  - tcpdump
+  - vim
 
- - name: remove default root forwarding
-   replace:
-     dest: /etc/aliases
-     regexp: '^root .*$'
-   notify: reload-aliases
-   tags:
-     - postfix
-
- - name: install mosh
-   apt: package=mosh state=latest update_cache=yes cache_valid_time=3600
+- name: remove default root forwarding
+  replace:
+    dest: /etc/aliases
+    regexp: '^root .*$'
+  notify: reload-aliases
+  tags:
+  - postfix
