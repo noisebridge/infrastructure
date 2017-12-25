@@ -39,3 +39,12 @@
   tags: [primary-dns-server]
   roles:
     - coredns
+
+- name: Mail Server
+  hosts: mail-server
+  become: yes
+  become_method: sudo
+  tags: [noisebridge-net]
+  roles:
+    - debops.postfix
+    - debops.mailman

@@ -3,3 +3,6 @@ m3.noisebridge.net
 
 [primary-dns-server:children]
 noisebridge-net
+
+[mail-server:children]
+noisebridge-net
