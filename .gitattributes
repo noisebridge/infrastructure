@@ -1,1 +1,0 @@
-roles/spiped/files/noisebridge.key filter=git-crypt diff=git-crypt
