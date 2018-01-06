@@ -7,10 +7,10 @@
      cache_valid_time: 3600
    with_items:
      - mysql-server
-     - php5
-     - php5-mysql
-     - libapache2-mod-php5
-     - php5-imagick
+     - php7.0
+     - php7.0-mysql
+     - php7.0-imagick
+     - php7.0-fpm
    tags:
      - apt
      - mediawiki
@@ -41,35 +41,6 @@
    tags:
      - mediawiki
 
- - name: ensure apache mod-php5 enabled
-   apache2_module: state=present name=php5
-   tags:
-     - mediawiki
-     - apache
-
- - name: install TLS-enabled apache virtualhost
-   template:
-     src: apache_https.conf
-     dest: "/etc/apache2/sites-available/{{ mediawiki.domain }}-ssl.conf"
-     owner: root
-     group: root
-   tags:
-    - apache
-    - mediawiki
-
- - name: enable virtualhosts
-   file:
-     src: "/etc/apache2/sites-available/{{ mediawiki.domain }}-ssl.conf"
-     dest: "/etc/apache2/sites-enabled/{{ mediawiki.domain }}.conf"
-     state: link
-     owner: root
-     group: root
-   tags:
-    - apache
-    - mediawiki
-   notify:
-    - reload-apache
-
  - name: copy mediawiki install script
    template:
      src: mediawiki_install
@@ -80,7 +51,6 @@
    tags:
      - mediawiki
 
-    
  - name: run CLI mediawiki installation
    command: /tmp/mediawiki_install
    args:
