@@ -15,6 +15,7 @@
   become_method: sudo
   tags: [noisebridge-net]
   roles:
+    - antoiner77.caddy
     - mediawiki
   vars:
     web_domains:
