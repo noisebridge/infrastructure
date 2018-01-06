@@ -10,6 +10,7 @@
      - php7.0
      - php7.0-mysql
      - php7.0-imagick
+     - php7.0-fpm
    tags:
      - apt
      - mediawiki
