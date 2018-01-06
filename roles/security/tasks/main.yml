@@ -1,6 +1,6 @@
 ---
 
-- include: users.yml
+- import_tasks: users.yml
 
 #- name: install unattended-upgrades
 #  items:
