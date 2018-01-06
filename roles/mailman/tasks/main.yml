@@ -1,18 +1,4 @@
 ---
-- name: install mailman
-  apt: name=mailman state=latest update_cache=yes cache_valid_time=3600
-  tags:
-    - mailman
-    - apt
-
-- name: create /srv directory
-  file:
-    dest: /srv/{{ mailman.domain }}
-    state: directory
-    owner: root
-    group: root
-  tags:
-    - mailman
 
 - name: configure mailman
   replace:
