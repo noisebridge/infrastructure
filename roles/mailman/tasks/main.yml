@@ -14,37 +14,6 @@
     tags:
       - mailman
  
-  - name: install http and https virtualhosts 
-    template:
-      src: "apache_{{ item }}.conf"
-      dest: "/etc/apache2/sites-available/{{ mailman.domain }}-{{ item }}.conf"
-      owner: root
-      group: root
-    with_items: 
-      - http
-      - https
-    tags:
-      - apache
-      - mailman
-    notify:
-      - reload-apache
-
-  - name: enable virtualhosts
-    file:
-      src: "/etc/apache2/sites-available/{{ mailman.domain}}-{{ item }}.conf"
-      dest: "/etc/apache2/sites-enabled/{{ mailman.domain}}-{{ item }}.conf"
-      state: link
-      owner: root
-      group: root
-    with_items: 
-      - http
-      - https
-    tags:
-     - apache
-     - mailman
-    notify:
-     - reload-apache
-
   - name: configure mailman
     replace:
       regexp: "{{ item.regexp }}"
