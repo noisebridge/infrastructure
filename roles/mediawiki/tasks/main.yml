@@ -17,8 +17,8 @@
 - name: fetch mediawiki LTS release
   get_url:
     dest: /tmp/
-    url: "https://releases.wikimedia.org/mediawiki/{{mediawiki.release }}/mediawiki-{{ mediawiki.version }}.tar.gz"
-    checksum: "sha256:{{ mediawiki.release_sha256sum }}"
+    url: "https://releases.wikimedia.org/mediawiki/{{mediawiki.version | regex_search("\d+.\d+") }}/mediawiki-{{ mediawiki.version }}.tar.gz"
+    checksum: "sha256:{{ mediawiki.version_sha256sum }}"
   tags:
   - mediawiki
 
