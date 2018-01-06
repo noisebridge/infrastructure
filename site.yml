@@ -22,9 +22,8 @@
       database: noisebridge_mediawiki
       database_username: wiki
       domain: noisebridge.net
-      release: 1.27 # needed for URL construction for downloading
-      release_sha256sum: 08a676c392625cf3c5730a6c1b9390ab1e11dcc17cfd0ff97a2ae3917ef5a36a
-      version: 1.27.1
+      version_sha56sum: 6ffac6baacf8a0c999e2d15d24631963efc242b4dab2f632d2614c539eea3976
+      version: 1.27.4
     certbot_certs:
       m3.noisebridge.net:
         - m3.noisebridge.net
