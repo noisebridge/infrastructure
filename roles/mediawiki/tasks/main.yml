@@ -1,60 +1,59 @@
 ---
- - name: install dependencies
-   apt:
-     state: latest
-     package: "{{ item }}"
-     update_cache: yes
-     cache_valid_time: 3600
-   with_items:
-     - mysql-server
-     - php7.0
-     - php7.0-mysql
-     - php7.0-imagick
-     - php7.0-fpm
-   tags:
-     - apt
-     - mediawiki
+- name: install dependencies
+  apt:
+    state: latest
+    package: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+  - php7.0
+  - php7.0-mysql
+  - php7.0-imagick
+  - php7.0-fpm
+  tags:
+  - apt
+  - mediawiki
 
- - name: fetch mediawiki LTS release
-   get_url:
-     dest: /tmp/
-     url: "https://releases.wikimedia.org/mediawiki/{{mediawiki.release }}/mediawiki-{{ mediawiki.version }}.tar.gz"
-     checksum: "sha256:{{ mediawiki.release_sha256sum }}"
-   tags:
-     - mediawiki
+- name: fetch mediawiki LTS release
+  get_url:
+    dest: /tmp/
+    url: "https://releases.wikimedia.org/mediawiki/{{mediawiki.release }}/mediawiki-{{ mediawiki.version }}.tar.gz"
+    checksum: "sha256:{{ mediawiki.release_sha256sum }}"
+  tags:
+  - mediawiki
 
- - name: make wiki directory
-   file:
-     dest: "/srv/{{ mediawiki.domain }}/wiki"
-     state: directory
-     owner: www-data
-     group: www-data
-   tags:
-     - mediawiki
+- name: make wiki directory
+  file:
+    dest: "/srv/{{ mediawiki.domain }}/wiki"
+    state: directory
+    owner: www-data
+    group: www-data
+  tags:
+  - mediawiki
 
- - name: extract mediawiki
-   unarchive:
-     src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
-     dest: "/srv/{{ mediawiki.domain }}/wiki"
-     remote_src: true
-     extra_opts: ["--strip-components=1"]
-   tags:
-     - mediawiki
+- name: extract mediawiki
+  unarchive:
+    src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
+    dest: "/srv/{{ mediawiki.domain }}/wiki"
+    remote_src: true
+    extra_opts: ["--strip-components=1"]
+  tags:
+  - mediawiki
 
- - name: copy mediawiki install script
-   template:
-     src: mediawiki_install
-     dest: /tmp/mediawiki_install
-     owner: root
-     group: root
-     mode: 0755
-   tags:
-     - mediawiki
+- name: copy mediawiki install script
+  template:
+    src: mediawiki_install
+    dest: /tmp/mediawiki_install
+    owner: root
+    group: root
+    mode: 0755
+  tags:
+  - mediawiki
 
- - name: run CLI mediawiki installation
-   command: /tmp/mediawiki_install
-   args:
-     chdir: "/srv/{{ mediawiki.domain }}/wiki"
-     creates: "/srv/{{ mediawiki.domain}}/wiki/LocalSettings.php"
-   tags:
-    - mediawiki
+- name: run CLI mediawiki installation
+  command: /tmp/mediawiki_install
+  args:
+    chdir: "/srv/{{ mediawiki.domain }}/wiki"
+    creates: "/srv/{{ mediawiki.domain}}/wiki/LocalSettings.php"
+  tags:
+  - mediawiki
