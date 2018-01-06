@@ -6,5 +6,12 @@ caddy_config: |
   m3.noisebridge.net {
     gzip
     tls ca@noisebridge.net
-  }
 
+    root /srv/noisebridge.net/wiki
+
+    fastcgi / /var/run/php/php7.0-fpm.sock {
+      ext 	.php
+      split	.php
+      index	index.php
+    }
+  }
