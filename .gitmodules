@@ -1,3 +1,6 @@
 [submodule "roles/geerlingguy.mysql"]
 	path = roles/geerlingguy.mysql
 	url = https://github.com/geerlingguy/ansible-role-mysql.git
+[submodule "roles/antoiner77.caddy"]
+	path = roles/antoiner77.caddy
+	url = https://github.com/antoiner77/caddy-ansible.git
