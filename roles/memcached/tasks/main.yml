@@ -1,0 +1,17 @@
+---
+- name: install memcached
+  apt:
+    package: memcached
+    status: present
+    update_cache: yes
+    cache_valid_time: 3600
+  tags:
+  - memcached
+
+- name: start memcached
+  service:
+    name: memcached
+    state: running
+    enabled: yes
+  tags:
+  - memcached

@@ -27,7 +27,7 @@
 
 - name: make wiki directory
   file:
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}/wiki"
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     state: directory
     owner: www-data
     group: www-data
@@ -37,26 +37,17 @@
 - name: extract mediawiki
   unarchive:
     src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}/wiki"
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     remote_src: true
     extra_opts: ["--strip-components=1"]
   tags:
   - mediawiki
 
-- name: copy mediawiki install script
+- name: install LocalSettings
   template:
-    src: mediawiki_install
-    dest: /tmp/mediawiki_install
-    owner: root
-    group: root
-    mode: 0755
+    src: LocalSettings.php
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/LocalSettings.php"
+    owner: www-data
+    group: www-data
   tags:
   - mediawiki
-
-# - name: run CLI mediawiki installation
-#   command: /tmp/mediawiki_install
-#   args:
-#     chdir: "/srv/mediawiki/{{ mediawiki.domain }}"
-#     creates: "/srv/mediawiki/{{ mediawiki.domain}}/LocalSettings.php"
-#   tags:
-#   - mediawiki

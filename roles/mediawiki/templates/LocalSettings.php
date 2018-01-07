@@ -25,7 +25,11 @@ $wgSitename = "Noisebridge";
 ## For more information on customizing the URLs
 ## (like /w/index.php/Page_title to /wiki/Page_title) please see:
 ## https://www.mediawiki.org/wiki/Manual:Short_URL
-$wgScriptPath = "/wiki";
+$wgScriptPath = "";
+$wgScriptExtension = ".php";
+$wgScript = "$wgScriptPath/index.php";
+$wgRedirectScript = "$wgScriptPath/index.php";
+$wgArticleName = "/wiki/$1";
 
 ## The protocol and server name to use in fully-qualified URLs
 $wgServer = "https://{{ mediawiki.domain }}";
@@ -42,8 +46,8 @@ $wgLogo = "$wgResourceBasePath/resources/assets/wiki.png";
 $wgEnableEmail = true;
 $wgEnableUserEmail = true; # UPO
 
-$wgEmergencyContact = "reply-to@not.possible";
-$wgPasswordSender = "reply-to@not.possible";
+$wgEmergencyContact = "webmaster@noisebridge.net";
+$wgPasswordSender = "do-not-reply@noisebridge.net";
 
 $wgEnotifUserTalk = true; # UPO
 $wgEnotifWatchlist = true; # UPO
@@ -57,7 +61,7 @@ $wgDBuser = "{{ mediawiki.database_username }}";
 $wgDBpassword = "{{ mysql_users|selectattr('name', 'equalto', 'wiki')|map(attribute='password')|join('')}}";
 
 # MySQL specific settings
-$wgDBprefix = "";
+$wgDBprefix = "noisebridge_mediawiki";
 
 # MySQL table options to use during installation or update
 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
@@ -66,14 +70,20 @@ $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 $wgDBmysql5 = false;
 
 ## Shared memory settings
-$wgMainCacheType = CACHE_NONE;
-$wgMemCachedServers = [];
+$wgMainCacheType = CACHE_MEMCACHED;
+$wgMessageCacheType = CACHE_MEMCACHED;
+$wgCacheDirectory = '/var/cache/wikimedia/';
+$wgParserCacheType = CACHE_MEMCACHED;
+$wgMemCachedServers = array( "127.0.0.1:11211" );
+$wgEnableSidebarCache = true;
+$wgSessionsInMemcached = true;
 
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
 $wgEnableUploads = true;
-#$wgUseImageMagick = true;
-#$wgImageMagickConvertCommand = "/usr/bin/convert";
+$wgUseImageMagick = true;
+$wgUseImageResize = true;
+$wgImageMagickConvertCommand = "/usr/bin/convert";
 
 # InstantCommons allows wiki to use images from https://commons.wikimedia.org
 $wgUseInstantCommons = false;
@@ -91,14 +101,14 @@ $wgShellLocale = "en_US.utf8";
 # Site language code, should be one of the list in ./languages/data/Names.php
 $wgLanguageCode = "en";
 
-$wgSecretKey = "e99f050694e372f5eade175cd35c897763839bbe6adc8596ec43bc551175643a";
+$wgSecretKey = "{{ mediawiki_secret_key }}";
 
 # Changing this will log out all existing sessions.
 $wgAuthenticationTokenVersion = "1";
 
 # Site upgrade key. Must be set to a string (default provided) to turn on the
 # web installer while LocalSettings.php is in place
-$wgUpgradeKey = "3c6b308557f04d00";
+$wgUpgradeKey = "{{ mediawiki_upgrade_key }}";
 
 ## For attaching licensing metadata to pages, and displaying an
 ## appropriate copyright notice / icon. GNU Free Documentation
@@ -134,3 +144,5 @@ wfLoadExtension( 'Renameuser' );
 # End of automatically generated settings.
 # Add more configuration options below.
 
+$wgUseGzip = true;
+$wgUseFileCache = true;
