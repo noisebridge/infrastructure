@@ -32,7 +32,7 @@ $wgRedirectScript = "$wgScriptPath/index.php";
 $wgArticleName = "/wiki/$1";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "https://{{ mediawiki.domain }}";
+$wgServer = "https://m3.{{ mediawiki.domain }}";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
@@ -72,11 +72,11 @@ $wgDBmysql5 = false;
 ## Shared memory settings
 $wgMainCacheType = CACHE_MEMCACHED;
 $wgMessageCacheType = CACHE_MEMCACHED;
-$wgCacheDirectory = '/var/cache/wikimedia/';
 $wgParserCacheType = CACHE_MEMCACHED;
 $wgMemCachedServers = array( "127.0.0.1:11211" );
 $wgEnableSidebarCache = true;
-$wgSessionsInMemcached = true;
+$wgSessionsInObjectCache = true; # optional
+$wgSessionCacheType = CACHE_MEMCACHED; # optional
 
 ## To enable image uploads, make sure the 'images' directory
 ## is writable, then set this to true:
@@ -145,4 +145,5 @@ wfLoadExtension( 'Renameuser' );
 # Add more configuration options below.
 
 $wgUseGzip = true;
-$wgUseFileCache = true;
+$wgUseFileCache = false;
+$wgFileCacheDirectory = '/var/cache/mediawiki/';
