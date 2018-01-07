@@ -17,46 +17,74 @@ append_dot_mydomain = no
 readme_directory = no
 
 # TLS parameters
-{% if postfix.letsencrypt_cert %}
-smtpd_tls_cert_file = /etc/letsencrypt/live/{{ postfix.letsencrypt_cert }}/cert.pem
-smtpd_tls_key_file = /etc/letsencrypt/live/{{ postfix.letsencrypt_cert }}/privkey.pem
-smtpd_use_tls = yes
-
+# smtpd_tls_cert_file=/etc/postfix/noisebridge.net-cert.pem
+# smtpd_tls_key_file=/etc/postfix/noisebridge.net-key.pem
+smtpd_tls_cert_file=/etc/ssl/caddy/acme/acme-v01.api.letsencrypt.org/sites/m3.noisebridge.net/m3.noisebridge.net.crt
+smtpd_tls_key_file=/etc/ssl/caddy/acme/acme-v01.api.letsencrypt.org/sites/m3.noisebridge.net/m3.noisebridge.net.key
+smtpd_tls_ciphers = high
+smtpd_use_tls=yes
+smtpd_tls_exclude_ciphers = aNULL, MD5, DES, RC4-SHA, AES256-SHA, AES128-SHA
+smtp_tls_protocols = !SSLv2, SSLv3, TLSv1
+smtpd_tls_mandatory_protocols = TLSv1
+smtp_tls_note_starttls_offer = yes
+smtpd_tls_received_header = yes
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
-
-# try to use outgoing TLS when sending
-smtp_tls_security_level = may
-# require that all incoming mail be encrypted in transit
-smtpd_tls_security_level = encrypt
-{% endif %}
 
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
 # information on enabling SSL in the smtp client.
 
-smtpd_relay_restrictions = permit_mynetworks,
-                           permit_sasl_authenticated,
-                           defer_unauth_destination,
-                           check_policy_service inet:127.0.0.1:10023
-smtpd_recipient_restrictions = permit_mynetworks,
-                             permit_sasl_authenticated,
-                             reject_invalid_hostname,
-                             reject_unknown_recipient_domain,
-                             reject_unauth_destination,
-                             permit
-
-smtpd_helo_restrictions = reject_invalid_helo_hostname,
-                        reject_non_fqdn_helo_hostname,
-                        reject_unknown_helo_hostname
-myhostname = {{ ansible_fqdn }}
+myhostname = noisebridge.net
 alias_maps = hash:/etc/aliases
 alias_database = hash:/etc/aliases
 myorigin = /etc/mailname
-mydestination = {{ postfix.destination_domains|join(', ') }}, {{ ansible_fqdn }}, localhost.noisebridge.net, localhost
+mydestination = noisebridge.net, noisebridge.space, localhost
 relayhost = 
 mynetworks = 127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128
-mailbox_command = procmail -a "$EXTENSION"
 mailbox_size_limit = 0
 recipient_delimiter = +
-inet_interfaces = {{ postfix.interfaces | default('loopback-only') }}
-smtp_reply_filter = pcre:/etc/postfix/smtp_reply_filter
+inet_interfaces = all
+
+# Mailman settings
+owner_request_special = no
+relay_domains = lists.noisebridge.net
+transport_maps = hash:/etc/postfix/transport
+mailman_destination_recipient_limit = 1
+
+# Not sure reason for this, transfered from m1
+unknown_local_recipient_reject_code = 550
+
+# Recipient controls (spam, etc)
+smtpd_recipient_restrictions =
+  permit_mynetworks,
+  reject_unauth_destination,
+  check_client_access hash:/etc/postfix/client_access,
+  check_sender_access hash:/etc/postfix/sender_access,
+  reject_invalid_hostname,
+  reject_non_fqdn_sender,
+  reject_non_fqdn_recipient,
+  reject_unknown_sender_domain,
+  reject_unknown_recipient_domain,
+  reject_rbl_client zen.spamhaus.org,
+  reject_rbl_client bl.mailspike.net,
+  reject_rbl_client b.barracudacentral.org,
+  reject_rbl_client cbl.abuseat.org,
+  check_policy_service inet:127.0.0.1:10023
+  permit
+
+# removed 2013-09-11 adi due to blacklisting dreamhost
+#  reject_rbl_client dnsbl-1.uceprotect.net,
+
+# reroute PHP messages to postmaster
+# adi 2012-04-15
+header_checks = regexp:/etc/postfix/header_checks.regexp
+
+# Clam scanning
+#content_filter = scan:127.0.0.1:10026
+receive_override_options = no_address_mappings
+
+# increase maximum message size per StrangeCharm 2013-03-08
+message_size_limit = 100000000
+
+# SuperQ (2013-03-20): Reduce default process pools from default of 100
+default_process_limit = 50
