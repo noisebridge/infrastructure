@@ -29,7 +29,7 @@ $wgScriptPath = "";
 $wgScriptExtension = ".php";
 $wgScript = "$wgScriptPath/index.php";
 $wgRedirectScript = "$wgScriptPath/index.php";
-$wgArticleName = "/wiki/$1";
+$wgArticlePath = "/wiki/$1";
 
 ## The protocol and server name to use in fully-qualified URLs
 $wgServer = "https://m3.{{ mediawiki.domain }}";
