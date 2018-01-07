@@ -6,3 +6,5 @@
     owner: root
     user: root
     mode: 0644
+  notify:
+  - restart mailman
