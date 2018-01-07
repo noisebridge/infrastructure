@@ -3,7 +3,8 @@
 php maintenance/install.php \
     --dbuser {{ mediawiki.database_username }} \
     --dbname {{ mediawiki.database }} \
+    --dbprefix noisebridge_mediawiki \
     --dbpass {{ mysql_users|selectattr('name', 'equalto', mediawiki.database_username)|map(attribute='password')|join('') }} \
-    --confpath "/srv/{{ mediawiki.domain }}/wiki" \
+    --confpath "/srv/mediawiki/{{ mediawiki.domain }}/wiki" \
     --pass "{{ mediawiki_admin_password }}" \
-    Noisebridge Patrickod
+    Noisebridge SecretariBot

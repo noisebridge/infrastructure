@@ -6,10 +6,13 @@
     update_cache: yes
     cache_valid_time: 3600
   with_items:
+  - imagemagick
   - php7.0
   - php7.0-mysql
   - php7.0-imagick
   - php7.0-fpm
+  - php7.0-mbstring
+  - php7.0-xml
   tags:
   - apt
   - mediawiki
@@ -17,14 +20,14 @@
 - name: fetch mediawiki LTS release
   get_url:
     dest: /tmp/
-    url: "https://releases.wikimedia.org/mediawiki/{{mediawiki.version | regex_search("\d+.\d+") }}/mediawiki-{{ mediawiki.version }}.tar.gz"
+    url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki.version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki.version }}.tar.gz"
     checksum: "sha256:{{ mediawiki.version_sha256sum }}"
   tags:
   - mediawiki
 
 - name: make wiki directory
   file:
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}"
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/wiki"
     state: directory
     owner: www-data
     group: www-data
@@ -34,7 +37,7 @@
 - name: extract mediawiki
   unarchive:
     src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}"
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/wiki"
     remote_src: true
     extra_opts: ["--strip-components=1"]
   tags:
@@ -50,10 +53,10 @@
   tags:
   - mediawiki
 
-- name: run CLI mediawiki installation
-  command: /tmp/mediawiki_install
-  args:
-    chdir: "/srv/mediawiki/{{ mediawiki.domain }}"
-    creates: "/srv/mediawiki/{{ mediawiki.domain}}/LocalSettings.php"
-  tags:
-  - mediawiki
+# - name: run CLI mediawiki installation
+#   command: /tmp/mediawiki_install
+#   args:
+#     chdir: "/srv/mediawiki/{{ mediawiki.domain }}"
+#     creates: "/srv/mediawiki/{{ mediawiki.domain}}/LocalSettings.php"
+#   tags:
+#   - mediawiki
