@@ -1,1 +1,10 @@
 ---
+- name: configure mailman
+  template:
+    src: mm_cfg.py.j2
+    dest: /etc/mailman/mm_cfg.py
+    owner: root
+    user: root
+    mode: 0644
+  notify:
+  - restart mailman
