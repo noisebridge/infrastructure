@@ -1,9 +1,10 @@
+; vim: ts=8
 ;zone for noisebridge.net
 
 $TTL 3600
 
 noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
-				2017122300 ; Serial
+				2018011500 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -15,23 +16,26 @@ noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
 
 ; hostnameless access
 ;@		IN	A	209.237.247.66
-@		IN	A	204.246.122.84
+@	300	IN	A	216.252.162.220
+@	300	IN	AAAA	2602:ff06:725:5:dc::1337
 
 ; name servers
 ns	86400	IN	A	216.252.162.220 ; m3 in iocoop SCL
 ns	86400	IN	AAAA	2602:ff06:725:5:dc::1337 ; m3 in iocoop SCL
 
 ; mx records
-noisebridge.net. IN	MX	10 m2.noisebridge.net.
+noisebridge.net.	300	IN	MX	10 m3.noisebridge.net.
 
 ; everything else
 ;www		IN	A	209.237.247.66
-www		IN	A	204.246.122.84
-lists		IN	A	204.246.122.84
+www	300	IN	A	216.252.162.220
+www	300	IN	AAAA	2602:ff06:725:5:dc::1337
+lists	300	IN	A	216.252.162.220
+lists	300	IN	AAAA	2602:ff06:725:5:dc::1337
 m1		IN	A	209.237.247.66
 m2		IN	A	204.246.122.84
 m3		IN	A	216.252.162.220
-m3		IN	AAAA    2602:ff06:725:5:dc::1337
+m3		IN	AAAA	2602:ff06:725:5:dc::1337
 m4		IN	A	146.185.155.114
 status		IN	A	157.22.245.21
 
@@ -73,10 +77,10 @@ homebase 	IN	A	23.239.22.101
 chat		IN	CNAME	unicorn.noisebridge.net.
 
 ; SIP
-_sip._udp	in	srv	5 0 5060 pony.noisebridge.net.
+_sip._udp	IN	SRV	5 0 5060 pony.noisebridge.net.
 
 ; Our list serve uses the same smtp server as everyone else
-lists.noisebridge.net. IN MX	10 m2.noisebridge.net.
+lists.noisebridge.net.	300	IN MX	10 m3.noisebridge.net.
 
 ; Our blog hosted on wordpress
 ; blog		IN	CNAME	noisebridge.wordpress.com.
