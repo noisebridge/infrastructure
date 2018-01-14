@@ -1,86 +1,90 @@
 ---
- - name: install postfix
-   apt: name="{{ item }}" state=latest update_cache=yes cache_valid_time=3600
-   with_items:
-     - postfix
-     - postfix-pcre
-     - postgrey
-     - procmail
-   tags:
+- name: install postfix
+  apt:
+    name: "{{ item }}"
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - postfix
+    - postfix-pcre
+    - postgrey
+    - procmail
+  tags:
     - postfix
     - mail
 
- - name: install procmailrc
-   copy:
-     src: procmailrc
-     dest: /etc/procmailrc
-     owner: root
-     group: root
-   tags:
-     - postfix
+- name: install procmailrc
+  copy:
+    src: procmailrc
+    dest: /etc/procmailrc
+    owner: root
+    group: root
+  tags:
+    - postfix
 
- - name: configure postgrey
-   replace:
-     dest: /etc/default/postgrey
-     regexp: "POSTGREY_OPTS=.*"
-     replace: "POSTGREY_OPTS=\"--inet=10023 --delay=60\""
-   tags:
-     - postgrey
-     - postfix
-   notify:
-     - restart postgrey
+- name: configure postgrey
+  replace:
+    dest: /etc/default/postgrey
+    regexp: "POSTGREY_OPTS=.*"
+    replace: "POSTGREY_OPTS=\"--inet=10023 --delay=60\""
+  tags:
+    - postgrey
+    - postfix
+  notify:
+    - restart postgrey
 
- - name: disable default configuration
-   debconf:
-     name: 'postfix'
-     question: 'postfix/main_mailer_type'
-     vtype: 'select'
-     value: 'No configuration'
-   tags:
+- name: disable default configuration
+  debconf:
+    name: 'postfix'
+    question: 'postfix/main_mailer_type'
+    vtype: 'select'
+    value: 'No configuration'
+  tags:
     - postfix
     - mail
 
- - name: configure mailname file
-   copy:
-     dest: /etc/mailname
-     group: root
-     owner: root
-     content: "{{ postfix.mailname | default(ansible_fqdn) }}"
-   tags:
-     - postfix
-     - mail
-
- - name: install postfix configuration
-   template:
-     src: main.cf
-     dest: /etc/postfix/main.cf
-     owner: root
-     group: root
-   notify:
-    - restart postfix 
-   tags:
+- name: configure mailname file
+  copy:
+    dest: /etc/mailname
+    group: root
+    owner: root
+    content: "{{ postfix_mailname | default(ansible_fqdn) }}"
+  tags:
     - postfix
     - mail
 
- - name: install Gmail IPv6 -> IPv4 retry behavior
-   copy:
-     dest: /etc/postfix/smtp_reply_filter
-     src: smtp_reply_filter
-     owner: root
-     group: root
-   tags:
+- name: install postfix configuration
+  template:
+    src: main.cf
+    dest: /etc/postfix/main.cf
+    owner: root
+    group: root
+  notify:
+    - restart postfix
+  tags:
     - postfix
     - mail
-   notify:
-    - restart postfix 
 
- - name: configure secure submission port
-   replace:
-     regexp: "^#submission .*"
-     replace: "submission inet n       -       -       -       -       smtpd"
-     dest: /etc/postfix/master.cf
-   tags:
+- name: install Gmail IPv6 -> IPv4 retry behavior
+  copy:
+    dest: /etc/postfix/smtp_reply_filter
+    src: smtp_reply_filter
+    owner: root
+    group: root
+  tags:
     - postfix
     - mail
-   notify:
-    - restart postfix 
+  notify:
+    - restart postfix
+
+- name: configure secure submission port
+  replace:
+    regexp: "^#submission .*"
+    replace: "submission inet n       -       -       -       -       smtpd"
+    dest: /etc/postfix/master.cf
+  tags:
+    - postfix
+    - mail
+  notify:
+    - restart postfix
