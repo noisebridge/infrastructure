@@ -4,6 +4,3 @@
 
 - name: apt-update
   apt: update_cache=yes
-
-- name: reload-aliases
-  command: /usr/sbin/newaliases

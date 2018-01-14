@@ -66,6 +66,18 @@
     - postfix
     - mail
 
+- name: configure aliases
+  copy:
+    src: aliases
+    dest: /etc/alises
+    owner: root
+    group: root
+  notify:
+    - reload-aliases
+  tags:
+    - postfix
+    - mail
+
 - name: install Gmail IPv6 -> IPv4 retry behavior
   copy:
     dest: /etc/postfix/smtp_reply_filter
