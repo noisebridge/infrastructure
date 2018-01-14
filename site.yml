@@ -17,6 +17,8 @@
   roles:
     - antoiner77.caddy
     - mediawiki
+    - cloudalchemy.node-exporter
+    - cloudalchemy.prometheus
   vars:
     mediawiki:
       database: noisebridge_mediawiki
