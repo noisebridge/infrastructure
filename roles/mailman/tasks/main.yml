@@ -15,3 +15,17 @@
     dest: /srv/mailman/lists.noisebridge.net
     owner: www-data
     group: www-data
+
+- name: add the www-data user to the list group
+  user:
+    name: www-data
+    groups: list
+    append: yes
+
+- name: make the mailman logs group rw
+  file:
+    dest: /var/log/mailman
+    owner: list
+    group: list
+    mode: 0660
+    recurse: yes
