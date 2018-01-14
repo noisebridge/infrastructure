@@ -49,7 +49,7 @@
     dest: /etc/mailname
     group: root
     owner: root
-    content: "{{ postfix.mailname | default(ansible_fqdn) }}"
+    content: "{{ postfix_mailname | default(ansible_fqdn) }}"
   tags:
     - postfix
     - mail
