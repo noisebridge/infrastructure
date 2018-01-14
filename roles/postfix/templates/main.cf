@@ -19,8 +19,8 @@ readme_directory = no
 # TLS parameters
 # smtpd_tls_cert_file=/etc/postfix/noisebridge.net-cert.pem
 # smtpd_tls_key_file=/etc/postfix/noisebridge.net-key.pem
-smtpd_tls_cert_file=/etc/ssl/caddy/acme/acme-v01.api.letsencrypt.org/sites/m3.noisebridge.net/m3.noisebridge.net.crt
-smtpd_tls_key_file=/etc/ssl/caddy/acme/acme-v01.api.letsencrypt.org/sites/m3.noisebridge.net/m3.noisebridge.net.key
+smtpd_tls_cert_file=/etc/ssl/caddy/acme/acme-v01.api.letsencrypt.org/sites/noisebridge.net/noisebridge.net.crt
+smtpd_tls_key_file=/etc/ssl/caddy/acme/acme-v01.api.letsencrypt.org/sites/noisebridge.net/noisebridge.net.key
 smtpd_tls_ciphers = high
 smtpd_use_tls=yes
 smtpd_tls_exclude_ciphers = aNULL, MD5, DES, RC4-SHA, AES256-SHA, AES128-SHA
