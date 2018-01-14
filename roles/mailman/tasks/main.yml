@@ -4,7 +4,28 @@
     src: mm_cfg.py.j2
     dest: /etc/mailman/mm_cfg.py
     owner: root
-    user: root
+    group: root
     mode: 0644
   notify:
   - restart mailman
+
+- name: create mailman srv directory
+  file:
+    state: directory
+    dest: /srv/mailman/lists.noisebridge.net
+    owner: www-data
+    group: www-data
+
+- name: add the www-data user to the list group
+  user:
+    name: www-data
+    groups: list
+    append: yes
+
+- name: make the mailman logs group rw
+  file:
+    dest: /var/log/mailman
+    owner: list
+    group: list
+    mode: 0660
+    recurse: yes
