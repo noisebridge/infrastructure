@@ -8,3 +8,10 @@
     mode: 0644
   notify:
   - restart mailman
+
+- name: create mailman srv directory
+  file:
+    state: directory
+    dest: /srv/mailman/lists.noisebridge.net
+    owner: www-data
+    group: www-data
