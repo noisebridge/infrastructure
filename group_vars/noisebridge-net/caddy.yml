@@ -4,6 +4,11 @@ caddy_setcap: yes
 caddy_systemd_capabilities_enabled: True
 caddy_systemd_capabilities: "CAP_NET_BIND_SERVICE"
 caddy_config: |
+  noisebridge.net {
+    gzip
+    tls ca@noisebridge.net
+    redir https://www.noisebridge.net{uri}
+  }
 
   www.noisebridge.net {
     gzip
@@ -29,10 +34,12 @@ caddy_config: |
     }
   }
 
-  noisebridge.net {
-    gzip
-    tls ca@noisebridge.net
-    redir https://www.noisebridge.net{uri}
+  www.noisebridge.net/pipermail/ {
+    redir https://lists.noisebridge.net{uri}
+  }
+
+  www.noisebridge.net/mailman/ {
+    redir https://lists.noisebridge.net{uri}
   }
 
   lists.noisebridge.net {
