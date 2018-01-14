@@ -13,6 +13,12 @@ caddy_config: |
 
     index index.php
 
+    header / {
+      Strict-Transport-Security "max-age=31536000;includeSubdomains"
+      X-XSS-Protection "1; mode=block"
+      X-Content-Type-Options "nosniff"
+    }
+
     fastcgi / unix:/run/php/php7.0-fpm.sock php {
         except /images
     }
@@ -24,6 +30,8 @@ caddy_config: |
   }
 
   noisebridge.net {
+    gzip
+    tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
   }
 
