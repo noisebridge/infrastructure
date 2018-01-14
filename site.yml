@@ -24,9 +24,6 @@
       domain: noisebridge.net
       version_sha256sum: 6ffac6baacf8a0c999e2d15d24631963efc242b4dab2f632d2614c539eea3976
       version: 1.27.4
-    certbot_certs:
-      m3.noisebridge.net:
-        - m3.noisebridge.net
 
 - name: List server
   hosts: lists-noisebridge-net
