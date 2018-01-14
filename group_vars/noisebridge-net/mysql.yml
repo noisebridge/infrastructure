@@ -1,0 +1,7 @@
+---
+mysql_packages:
+- percona-server-server-5.7
+- percona-server-client-5.7
+mysql_bind_address: 127.0.0.1
+mysql_databases:
+- name: noisebridge_mediawiki
