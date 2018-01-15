@@ -7,3 +7,8 @@
 
 - name: reload-aliases
   command: /usr/bin/newaliases
+
+- name: postmap-hash
+  command: "/usr/sbin/postmap hash:/etc/postfix/{{ item.item }}"
+  when: item.changed
+  with_items: "{{ postfix_hash_maps.results }}"

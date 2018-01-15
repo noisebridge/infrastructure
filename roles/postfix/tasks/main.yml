@@ -49,7 +49,8 @@
     dest: /etc/mailname
     group: root
     owner: root
-    content: "{{ postfix_mailname | default(ansible_fqdn) }}"
+    mode: 0644
+    content: "{{ postfix_mailname | default(ansible_fqdn) }}\n"
   tags:
     - postfix
     - mail
@@ -78,12 +79,16 @@
     - postfix
     - mail
 
-- name: install Gmail IPv6 -> IPv4 retry behavior
+- name: copy config files
   copy:
-    dest: /etc/postfix/smtp_reply_filter
-    src: smtp_reply_filter
+    src: "{{ item }}"
+    dest: "/etc/postfix/{{ item }}"
     owner: root
     group: root
+    mode: 0644
+  with_items:
+    - header_checks.regexp
+    - smtp_reply_filter
   tags:
     - postfix
     - mail
@@ -100,3 +105,21 @@
     - mail
   notify:
     - restart postfix
+
+- name: Deploy hash map files
+  copy:
+    src: "maps/{{ item }}"
+    dest: "/etc/postfix/{{ item }}"
+    owner: root
+    group: root
+  register: postfix_hash_maps
+  with_items:
+    - client_access
+    - sender_access
+    - transport
+  tags:
+    - postfix
+    - mail
+    - hashmaps
+  notify:
+    - postmap-hash
