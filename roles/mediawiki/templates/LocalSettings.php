@@ -32,7 +32,7 @@ $wgRedirectScript = "$wgScriptPath/index.php";
 $wgArticlePath = "/wiki/$1";
 
 ## The protocol and server name to use in fully-qualified URLs
-$wgServer = "https://m3.{{ mediawiki.domain }}";
+$wgServer = "https://www.{{ mediawiki.domain }}";
 
 ## The URL path to static resources (images, scripts, etc.)
 $wgResourceBasePath = $wgScriptPath;
