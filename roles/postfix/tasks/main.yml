@@ -70,7 +70,7 @@
 - name: configure aliases
   copy:
     src: aliases
-    dest: /etc/alises
+    dest: /etc/aliases
     owner: root
     group: root
   notify:
