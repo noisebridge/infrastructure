@@ -1,2 +1,2 @@
 ---
-postfix_mailname: "noisebridge.net"
+postfix_mailname: "{{ ansible_fqdn }}"
