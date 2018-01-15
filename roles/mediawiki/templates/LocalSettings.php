@@ -137,9 +137,14 @@ wfLoadSkin( 'Vector' );
 # wfLoadExtensions('ExtensionName');
 # to LocalSettings.php. Check specific extension documentation for more details.
 # The following extensions were automatically enabled:
-wfLoadExtension( 'ConfirmEdit' );
 wfLoadExtension( 'Renameuser' );
+wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha' ]);
 
+# Configure ReCaptcha
+$wgCaptchaClass = 'ReCaptchaNoCaptcha';
+$wgReCaptchaSiteKey = '{{ mediawiki_recaptcha_site_key }}';
+$wgReCaptchaSecretKey = '{{ mediawiki_recaptcha_secret_key }}';
+$wgReCaptchaSendRemoteIP = false;
 
 # End of automatically generated settings.
 # Add more configuration options below.
