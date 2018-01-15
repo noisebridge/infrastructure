@@ -5,3 +5,13 @@ mysql_packages:
 mysql_bind_address: 127.0.0.1
 mysql_databases:
 - name: noisebridge_mediawiki
+
+## Tuning params
+
+# Disable query cache (Useless for InnoDB, mostly broken)
+mysql_query_cache_type: "0"
+mysql_query_cache_size: "0"
+mysql_query_cache_limit: "0"
+
+# Control how much RAM is used for InnoDB buffer pool.
+mysql_innodb_buffer_pool_size: "256M"
