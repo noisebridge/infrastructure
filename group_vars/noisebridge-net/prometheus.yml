@@ -1,0 +1,25 @@
+---
+node_exporter_web_listen_address: "127.0.0.1:9100"
+prometheus_web_listen_address: "127.0.0.1:9090"
+prometheus_storage_retention: "90d"
+prometheus_global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  evaluation_interval: 30s
+prometheus_scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets:
+        - "localhost:9090"
+  - job_name: "node"
+    static_configs:
+      - targets:
+        - "localhost:9100"
+  - job_name: "caddy"
+    static_configs:
+      - targets:
+        - "localhost:9180"
+  - job_name: "coredns"
+    static_configs:
+      - targets:
+        - "localhost:9153"

@@ -4,3 +4,9 @@
 [submodule "roles/antoiner77.caddy"]
 	path = roles/antoiner77.caddy
 	url = https://github.com/antoiner77/caddy-ansible.git
+[submodule "roles/cloudalchemy.prometheus"]
+	path = roles/cloudalchemy.prometheus
+	url = https://github.com/cloudalchemy/ansible-prometheus.git
+[submodule "roles/cloudalchemy.node-exporter"]
+	path = roles/cloudalchemy.node-exporter
+	url = https://github.com/cloudalchemy/ansible-node-exporter.git
