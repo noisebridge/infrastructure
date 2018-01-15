@@ -1,6 +1,7 @@
 ---
 node_exporter_web_listen_address: "127.0.0.1:9100"
 prometheus_web_listen_address: "127.0.0.1:9090"
+prometheus_storage_retention: "90d"
 prometheus_global:
   scrape_interval: 15s
   scrape_timeout: 10s
