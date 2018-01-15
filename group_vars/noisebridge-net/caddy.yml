@@ -8,7 +8,7 @@ caddy_config: |
     prometheus
     gzip
     log "{{ caddy_log_dir }}/noisebridge.net.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -21,7 +21,7 @@ caddy_config: |
     prometheus
     gzip
     log "{{ caddy_log_dir }}/www.noisebridge.net.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -51,7 +51,7 @@ caddy_config: |
   www.noisebridge.net/pipermail/ {
     prometheus
     log "{{ caddy_log_dir }}/www.noisebridge.net-pipermail.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -62,7 +62,7 @@ caddy_config: |
   www.noisebridge.net/mailman/ {
     prometheus
     log "{{ caddy_log_dir }}/www.noisebridge.net-mailman.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -74,7 +74,7 @@ caddy_config: |
     prometheus
     gzip
     log "{{ caddy_log_dir }}/lists.noisebridge.net.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -87,7 +87,7 @@ caddy_config: |
   lists.noisebridge.net/mailman/ {
     prometheus
     log "{{ caddy_log_dir }}/lists.noisebridge.net-mailman.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -101,7 +101,7 @@ caddy_config: |
     prometheus
     gzip
     log "{{ caddy_log_dir }}/lists.noisebridge.net-pipermail.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
@@ -115,7 +115,7 @@ caddy_config: |
     prometheus
     gzip
     log "{{ caddy_log_dir }}/lists.noisebridge.net-images-mailman.log" {
-      rotate_size 50M
+      rotate_size 50
       rotate_age 7
       rotate_keep 520
       rotate_compress
