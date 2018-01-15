@@ -6,4 +6,4 @@
   service: name=postgrey state=restarted
 
 - name: reload-aliases
-  command: /usr/sbin/newaliases
+  command: /usr/bin/newaliases
