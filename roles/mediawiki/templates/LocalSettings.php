@@ -140,11 +140,6 @@ wfLoadSkin( 'Vector' );
 wfLoadExtension( 'Renameuser' );
 wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha' ]);
 
-# Configure ReCaptcha
-$wgCaptchaClass = 'ReCaptchaNoCaptcha';
-$wgReCaptchaSiteKey = '{{ mediawiki_recaptcha_site_key }}';
-$wgReCaptchaSecretKey = '{{ mediawiki_recaptcha_secret_key }}';
-$wgReCaptchaSendRemoteIP = false;
 
 # End of automatically generated settings.
 # Add more configuration options below.
@@ -153,4 +148,26 @@ $wgUseGzip = true;
 $wgUseFileCache = false;
 $wgFileCacheDirectory = '/var/cache/mediawiki/';
 
-$wgDebugLogFile = "/tmp/mediawiki-debug.log";
+
+# Require email confirmation before editing
+$wgEmailConfirmToEdit = true;
+
+#
+# Configure ReCaptcha
+$wgCaptchaClass = 'ReCaptchaNoCaptcha';
+$wgReCaptchaSiteKey = '{{ mediawiki_recaptcha_site_key }}';
+$wgReCaptchaSecretKey = '{{ mediawiki_recaptcha_secret_key }}';
+$wgReCaptchaSendRemoteIP = false;
+
+# Require CAPTCHA for edit, create, new account.
+$wgCaptchaTriggers['edit'] = true;
+$wgCaptchaTriggers['create'] = true;
+$wgCaptchaTriggers['addurl'] = true;
+$wgCaptchaTriggers['createaccount'] = true;
+$wgCaptchaTriggers['badlogin'] = true;
+
+$wgGroupPermissions['*'            ]['skipcaptcha'] = false;
+$wgGroupPermissions['user'         ]['skipcaptcha'] = true;
+$wgGroupPermissions['autoconfirmed']['skipcaptcha'] = true;
+$wgGroupPermissions['bot'          ]['skipcaptcha'] = true; // registered bots
+$wgGroupPermissions['sysop'        ]['skipcaptcha'] = true;
