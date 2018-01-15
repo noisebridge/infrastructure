@@ -148,16 +148,13 @@ $wgUseGzip = true;
 $wgUseFileCache = false;
 $wgFileCacheDirectory = '/var/cache/mediawiki/';
 
-
-# Require email confirmation before editing
-$wgEmailConfirmToEdit = true;
-
 #
 # Configure ReCaptcha
 $wgCaptchaClass = 'ReCaptchaNoCaptcha';
 $wgReCaptchaSiteKey = '{{ mediawiki_recaptcha_site_key }}';
 $wgReCaptchaSecretKey = '{{ mediawiki_recaptcha_secret_key }}';
 $wgReCaptchaSendRemoteIP = false;
+$ceAllowConfirmedEmail = true;
 
 # Require CAPTCHA for edit, create, new account.
 $wgCaptchaTriggers['edit'] = true;
@@ -166,8 +163,9 @@ $wgCaptchaTriggers['addurl'] = true;
 $wgCaptchaTriggers['createaccount'] = true;
 $wgCaptchaTriggers['badlogin'] = true;
 
-$wgGroupPermissions['*'            ]['skipcaptcha'] = false;
-$wgGroupPermissions['user'         ]['skipcaptcha'] = true;
-$wgGroupPermissions['autoconfirmed']['skipcaptcha'] = true;
-$wgGroupPermissions['bot'          ]['skipcaptcha'] = true; // registered bots
-$wgGroupPermissions['sysop'        ]['skipcaptcha'] = true;
+$wgGroupPermissions['*'             ]['skipcaptcha'] = false;
+$wgGroupPermissions['user'          ]['skipcaptcha'] = false;
+$wgGroupPermissions['autoconfirmed' ]['skipcaptcha'] = true;
+$wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
+$wgGroupPermissions['bot'           ]['skipcaptcha'] = true; // registered bots
+$wgGroupPermissions['sysop'         ]['skipcaptcha'] = true;
