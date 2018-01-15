@@ -147,3 +147,5 @@ wfLoadExtension( 'Renameuser' );
 $wgUseGzip = true;
 $wgUseFileCache = false;
 $wgFileCacheDirectory = '/var/cache/mediawiki/';
+
+$wgDebugLogFile = "/tmp/mediawiki-debug.log";
