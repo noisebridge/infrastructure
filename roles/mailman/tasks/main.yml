@@ -29,3 +29,10 @@
     group: list
     mode: 0660
     recurse: yes
+
+- name: allow the www-data user to list the logs directory
+  file:
+    dest: /var/log/mailman
+    owner: list
+    group: list
+    mode: 0670
