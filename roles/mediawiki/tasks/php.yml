@@ -1,0 +1,29 @@
+---
+- name: install php
+  apt:
+    state: latest
+    package: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+  - imagemagick
+  - php7.0
+  - php7.0-mysql
+  - php7.0-imagick
+  - php7.0-fpm
+  - php7.0-mbstring
+  - php7.0-xml
+  tags:
+  - apt
+  - php
+  - mediawiki
+
+- name: Configure PHP FPM
+  copy:
+    src: php/www.conf
+    dest: /etc/php/7.0/fpm/pool.d/www.conf
+  tags:
+    - php
+    - mediawiki
+  notify:
+    - restart php7.0-fpm

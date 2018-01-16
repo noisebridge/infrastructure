@@ -1,21 +1,5 @@
 ---
-- name: install dependencies
-  apt:
-    state: latest
-    package: "{{ item }}"
-    update_cache: yes
-    cache_valid_time: 3600
-  with_items:
-  - imagemagick
-  - php7.0
-  - php7.0-mysql
-  - php7.0-imagick
-  - php7.0-fpm
-  - php7.0-mbstring
-  - php7.0-xml
-  tags:
-  - apt
-  - mediawiki
+- include: php.yml
 
 - name: fetch mediawiki LTS release
   get_url:
