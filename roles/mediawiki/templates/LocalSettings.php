@@ -171,3 +171,5 @@ $wgGroupPermissions['autoconfirmed' ]['skipcaptcha'] = true;
 $wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 $wgGroupPermissions['bot'           ]['skipcaptcha'] = true; // registered bots
 $wgGroupPermissions['sysop'         ]['skipcaptcha'] = true;
+
+$wgSFSAPIKey = "{{ mediawiki_stopforumspam_key }}";
