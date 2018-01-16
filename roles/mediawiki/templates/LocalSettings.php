@@ -139,6 +139,7 @@ wfLoadSkin( 'Vector' );
 # The following extensions were automatically enabled:
 wfLoadExtension( 'Renameuser' );
 wfLoadExtension( 'Nuke' );
+wfLoadExtension( 'StopForumSpam' );
 wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha' ]);
 
 

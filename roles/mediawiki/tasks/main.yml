@@ -43,6 +43,14 @@
   tags:
   - mediawiki
 
+- name: install StopForumSpam
+  git:
+    repo: 'https://github.com/wikimedia/mediawiki-extensions-StopForumSpam.git'
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/StopForumSpam"
+    version: "REL1_27"
+  tags:
+  - mediawiki
+
 - name: install LocalSettings
   template:
     src: LocalSettings.php
