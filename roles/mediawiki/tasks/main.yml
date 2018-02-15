@@ -51,3 +51,4 @@
     group: www-data
   tags:
   - mediawiki
+  - mediawiki-localsettings
