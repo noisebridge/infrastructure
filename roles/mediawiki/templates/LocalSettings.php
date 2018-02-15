@@ -170,3 +170,14 @@ $wgGroupPermissions['autoconfirmed' ]['skipcaptcha'] = true;
 $wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 $wgGroupPermissions['bot'           ]['skipcaptcha'] = true; // registered bots
 $wgGroupPermissions['sysop'         ]['skipcaptcha'] = true;
+
+$wgAutoConfirmCount = 7;
+$wgAutoConfirmAge = 86400*3; // three days
+
+$wgAutopromote = array(
+	"autoconfirmed" => array( "&",
+		array( APCOND_EDITCOUNT, &$wgAutoConfirmCount ),
+		array( APCOND_AGE, &$wgAutoConfirmAge ),
+		APCOND_EMAILCONFIRMED
+	),
+);
