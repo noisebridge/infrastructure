@@ -164,6 +164,16 @@ $wgCaptchaTriggers['addurl'] = true;
 $wgCaptchaTriggers['createaccount'] = true;
 $wgCaptchaTriggers['badlogin'] = true;
 
+$wgGroupPermissions['*']['createpage'] = false;
+$wgGroupPermissions['user']['createpage'] = false;
+$wgGroupPermissions['autoconfirmed' ]['createpage'] = true;
+$wgGroupPermissions['*']['move'] = false;
+$wgGroupPermissions['user']['move'] = false;
+$wgGroupPermissions['autoconfirmed' ]['move'] = true;
+$wgGroupPermissions['*']['upload'] = false;
+$wgGroupPermissions['user']['upload'] = false;
+$wgGroupPermissions['autoconfirmed' ]['upload'] = true;
+
 $wgGroupPermissions['*'             ]['skipcaptcha'] = false;
 $wgGroupPermissions['user'          ]['skipcaptcha'] = false;
 $wgGroupPermissions['autoconfirmed' ]['skipcaptcha'] = true;
