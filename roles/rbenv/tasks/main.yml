@@ -1,0 +1,49 @@
+- name: install dependencies
+  apt:
+    package: {{ item }}
+    state: latest
+    update_cache: yes
+    cache_valid_time: 3600
+  with_items:
+    - git-core
+    - curl
+    - zlib1g-dev
+    - build-essential
+    - libssl-dev
+    - libreadline-dev
+    - libyaml-dev
+    - libsqlite3-dev
+    - sqite3
+    - libxml2-dev
+    - libxslt1-dev
+    - libcurl4-openssl-dev
+    - python-software-properties
+    - libffi-dev
+
+- name: ensure group for local user exists
+  group:
+    name: {{ user }}
+    state: present
+
+- name: ensure local user exists
+  user:
+    name: {{ user }}
+    groups: {{ user }}
+    home: "/srv/{{ user }}"
+    createhome: yes
+  
+- name: clone rbenv into user home
+  git:
+    repo: https://github.com/sstephenson/rbenv.git
+    dest: "/srv/{{ user }}/.rbenv"
+
+- name: configure rbenv shell script for user
+  blockinfile:
+    owner: {{ user }}
+    group: {{ user }}
+    create: yes
+    dest: "/srv/{{ user }}/.bash_profile"
+    block: |
+      export PATH="$HOME/.rbenv/bin:$PATH"
+      eval "$(rbenv init -)"
+
