@@ -1,0 +1,10 @@
+---
+- name: install application dependencies
+  with_items:
+    - postgresql-9.6 # postgresql database
+    - libpq-dev      # postgresql client headers for ruby gem
+  apt:
+    state: latest
+    package: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 3600

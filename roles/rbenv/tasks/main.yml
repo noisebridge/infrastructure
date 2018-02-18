@@ -1,49 +1,67 @@
 - name: install dependencies
   apt:
-    package: {{ item }}
+    package: "{{ item }}"
     state: latest
     update_cache: yes
     cache_valid_time: 3600
   with_items:
-    - git-core
-    - curl
-    - zlib1g-dev
     - build-essential
-    - libssl-dev
+    - curl
+    - git-core
+    - libcurl4-openssl-dev
+    - libffi-dev
+    - libpq-dev
     - libreadline-dev
-    - libyaml-dev
     - libsqlite3-dev
-    - sqite3
+    - libssl-dev
     - libxml2-dev
     - libxslt1-dev
-    - libcurl4-openssl-dev
-    - python-software-properties
-    - libffi-dev
+    - libyaml-dev
+    - sqlite3
+    - zlib1g-dev
 
 - name: ensure group for local user exists
   group:
-    name: {{ user }}
+    name: "{{ user }}"
     state: present
 
 - name: ensure local user exists
   user:
-    name: {{ user }}
-    groups: {{ user }}
+    name: "{{ user }}"
+    groups: "{{ user }}"
     home: "/srv/{{ user }}"
     createhome: yes
+    shell: /bin/bash
   
 - name: clone rbenv into user home
+  become_user: "{{ user }}"
+  become_method: sudo
   git:
     repo: https://github.com/sstephenson/rbenv.git
     dest: "/srv/{{ user }}/.rbenv"
 
+- name: install ruby-build dependency
+  become_user: "{{ user }}"
+  become_method: sudo
+  git:
+    repo: https://github.com/rbenv/ruby-build.git
+    dest: "/srv/{{ user }}/.rbenv/plugins/ruby-build"
+
 - name: configure rbenv shell script for user
   blockinfile:
-    owner: {{ user }}
-    group: {{ user }}
+    owner: "{{ user }}"
+    group: "{{ user }}"
     create: yes
-    dest: "/srv/{{ user }}/.bash_profile"
+    dest: "/srv/{{ user }}/.bashrc"
     block: |
       export PATH="$HOME/.rbenv/bin:$PATH"
       eval "$(rbenv init -)"
+
+- name: install ruby version
+  become_user: "{{ user }}"
+  become_method: sudo
+  shell: "rbenv install {{ ruby_version }}"
+  args:
+    chdir: "/srv/{{ user }}"
+    creates: "/srv/{{ user }}/.rbenv/versions/{{ ruby_version }}/bin/ruby"
 
