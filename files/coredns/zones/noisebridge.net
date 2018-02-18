@@ -5,6 +5,7 @@ $TTL 3600
 
 noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
 				2018011500 ; Serial
+        2018021600 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -172,3 +173,6 @@ arion		IN	AAAA	2604:a880:1:20::197e:b001
 
 upotagma	IN	A	107.170.233.49
 upotagma	IN	AAAA	2604:a880:1:20:0:0:c3:a001
+
+; new donate.noisebridge.net host
+xanthus	IN	A	45.63.92.16
