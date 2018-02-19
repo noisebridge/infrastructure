@@ -32,7 +32,7 @@
     home: "/srv/{{ user }}"
     createhome: yes
     shell: /bin/bash
-  
+
 - name: clone rbenv into user home
   become_user: "{{ user }}"
   become_method: sudo
@@ -65,3 +65,9 @@
     chdir: "/srv/{{ user }}"
     creates: "/srv/{{ user }}/.rbenv/versions/{{ ruby_version }}/bin/ruby"
 
+- name: install bundler
+  become_user: "{{ user }}"
+  become_method: sudo
+  shell: "/srv/{{ user }}/.rbenv/versions/{{ ruby_version}}/bin/gem install bundler"
+  args:
+    creates: "/srv/{{ user }}/.rbenv/versions/{{ ruby_version }}/bin/bundler"

@@ -8,3 +8,77 @@
     package: "{{ item }}"
     update_cache: yes
     cache_valid_time: 3600
+
+- name: install ansible postgresql utilities dependencies
+  apt:
+    package: "{{ item }}"
+    state: present 
+  with_items:
+    python-psycopg2
+
+- name: create the donate database
+  become_user: postgres
+  become_method: sudo
+  postgresql_db:
+    db: "{{ database_name }}"
+    encoding: UTF-8
+    state: present
+
+- name: create the donate user
+  become_user: postgres
+  become_method: sudo
+  postgresql_user:
+    name: "{{ database_username }}"
+    state: present
+    password: "{{ database_password }}"
+
+- name: grant privs for database
+  become_user: postgres
+  become_method: sudo
+  postgresql_privs:
+    db: "{{ database_name }}"
+    privs: ALL
+    role: "{{ database_username }}"
+    type: database
+
+- name: clone the application source
+  become: "{{ user }}"
+  become_method: sudo
+  git:
+    repo: https://github.com/noisebridge/donate.noisebridge.net.git
+    dest: "/srv/{{ user }}/noisebridge-donate"
+
+- name: determine the HEAD of the repository
+  become: "{{ user }}"
+  become_method: sudo
+  shell: git rev-parse HEAD
+  args:
+    chdir: "/srv/{{ user }}/noisebridge-donate"
+  register: donate_head
+
+- name: determine if source is checked out
+  stat:
+    path: "/srv/{{ user }}/noisebridge-donate-{{ donate_head.stdout }}"
+  register: donate_checkout
+
+- name: ensure checkout of latest master exists
+  file:
+    path: "/srv/{{ user }}/noisebridge-donate-{{ donate_head.stdout }}"
+    state: directory
+    owner: "{{ user }}"
+    group: "{{ user }}"
+
+- name: extract the git archive
+  become: "{{ user }}"
+  become_method: sudo
+  shell: "git archive master | tar -x -C /srv/{{ user}}/noisebridge-donate-{{ donate_head.stdout }}"
+  args:
+    chdir: "/srv/{{ user }}/noisebridge-donate"
+
+- name: install Ruby dependencies
+  become: "{{ user }}"
+  become_method: sudo
+  shell: "/srv/{{ user }}/.rbenv/bin/rbenv exec bundle install" 
+  args:
+    chdir: "/srv/{{ user }}/noisebridge-donate-{{ donate_head.stdout }}"
+
