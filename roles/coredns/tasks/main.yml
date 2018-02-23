@@ -1,8 +1,3 @@
-- name: Install packages
-  apt: pkg={{ item }} state=latest install_recommends=no
-  with_items:
-  - libcap2-bin
-
 - name: Create coredns user
   user:
     name: "{{ coredns_user }}"
@@ -28,6 +23,13 @@
     mode: 0755
     owner: "{{ coredns_user }}"
     copy: no
+  notify:
+  - restart coredns
+
+- name: Set coredns capabilities
+  capabilities:
+    path: "{{ coredns_path }}/coredns"
+    capability: cap_net_bind_service+ep
   notify:
   - restart coredns
 
@@ -62,11 +64,11 @@
   - reload coredns
 
 - name: Install coredns systemd service file
-  notify:
-  - restart coredns
   template:
     src: coredns.service.j2
     dest: /etc/systemd/system/coredns.service
+  notify:
+  - restart coredns
 
 - name: Enable and start coredns service
   systemd:
