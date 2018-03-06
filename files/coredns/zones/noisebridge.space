@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.space.	IN	SOA	ns.noisebridge.space. hostmaster.noisebridge.space.  (
-				2018011500 ; Serial
+				2018030600 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -15,28 +15,32 @@ noisebridge.space.	IN	SOA	ns.noisebridge.space. hostmaster.noisebridge.space.  (
 @		IN	NS	dns.hexapodia.org.
 
 ; hostnameless access
-;@		IN	A	209.237.247.66
 @	300	IN	A	216.252.162.220
 @	300	IN	AAAA	2602:ff06:725:5:dc::1337
 
 ; name servers
 ns	86400	IN	A	216.252.162.220 ; m3 in iocoop SCL
 ns	86400	IN	AAAA	2602:ff06:725:5:dc::1337 ; m3 in iocoop SCL
+ns1	86400	IN	A	216.252.162.220 ; m3 in iocoop SCL
+ns1	86400	IN	AAAA	2602:ff06:725:5:dc::1337 ; m3 in iocoop SCL
+ns2	86400	IN	A	204.246.122.84 ; m5 in iocoop MSP
+ns2	86400	IN	AAAA	2602:ff06:677:4:54::1337 ; m5 in iocoop MSP
 
 ; mx records
 noisebridge.space.	300	IN	MX	10 m3.noisebridge.space.
 
-; everything else
-;www		IN	A	209.237.247.66
-www	300	IN	A	216.252.162.220
-www	300	IN	AAAA	2602:ff06:725:5:dc::1337
-lists	300	IN	A	216.252.162.220
-lists	300	IN	AAAA	2602:ff06:725:5:dc::1337
-m1		IN	A	209.237.247.66
-m2		IN	A	204.246.122.84
-m3		IN	A	216.252.162.220
-m3		IN	AAAA	2602:ff06:725:5:dc::1337
-m4		IN	A	146.185.155.114
+; aliases
+www	300	IN	CNAME	m3.noisebridge.net.
+lists	300	IN	CNAME	m3.noisebridge.net.
+
+; Primary hosting servers.
+m2		IN	A	204.246.122.84 ; Old iocoop MSP VPS
+m3		IN	A	216.252.162.220 ; iocoop SCL VPS
+m3		IN	AAAA	2602:ff06:725:5:dc::1337 ; iocoop SCL VPS
+m4		IN	A	146.185.155.114 ; Unknown
+m5		IN	A	204.246.122.84 ; New iocoop MSP VPS
+m5		IN	AAAA	2602:ff06:677:4:54::1337 ; iocoop MSP VPS
+
 status		IN	A	157.22.245.21
 
 ; random physical and virtual machines
