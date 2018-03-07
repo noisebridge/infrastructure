@@ -4,6 +4,19 @@ caddy_setcap: yes
 caddy_systemd_capabilities_enabled: True
 caddy_systemd_capabilities: "CAP_NET_BIND_SERVICE"
 caddy_config: |
+  noisebridge.com, www.noisebridge.com {
+    prometheus
+    gzip
+    log "{{ caddy_log_dir }}/noisebridge.com.log" {
+      rotate_size 50
+      rotate_age 7
+      rotate_keep 520
+      rotate_compress
+    }
+    tls ca@noisebridge.net
+    redir https://www.noisebridge.net{uri}
+  }
+
   noisebridge.net {
     prometheus
     gzip
@@ -122,4 +135,17 @@ caddy_config: |
     }
     tls ca@noisebridge.net
     root /var/lib/mailman/icons/
+  }
+
+  noisebridge.org, www.noisebridge.org {
+    prometheus
+    gzip
+    log "{{ caddy_log_dir }}/noisebridge.org.log" {
+      rotate_size 50
+      rotate_age 7
+      rotate_keep 520
+      rotate_compress
+    }
+    tls ca@noisebridge.net
+    redir https://www.noisebridge.net{uri}
   }

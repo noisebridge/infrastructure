@@ -1,6 +1,14 @@
 ---
 coredns_port: 53
 coredns_config: |
+  noisebridge.com {
+    file zones/noisebridge.com {
+      transfer to 74.207.242.164 # dns.hexapodia.org
+      transfer to 204.246.122.84 # m2.noisebridge.net
+    }
+    prometheus
+    errors
+  }
   noisebridge.net {
     file zones/noisebridge.net {
       transfer to 74.207.242.164 # dns.hexapodia.org
@@ -8,6 +16,14 @@ coredns_config: |
     }
     dnssec noisebridge.net {
       key file keys/Knoisebridge.net.+013+33211
+    }
+    prometheus
+    errors
+  }
+  noisebridge.org {
+    file zones/noisebridge.org {
+      transfer to 74.207.242.164 # dns.hexapodia.org
+      transfer to 204.246.122.84 # m2.noisebridge.net
     }
     prometheus
     errors
