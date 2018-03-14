@@ -182,6 +182,9 @@ $wgGroupPermissions['emailconfirmed']['skipcaptcha'] = true;
 $wgGroupPermissions['bot'           ]['skipcaptcha'] = true; // registered bots
 $wgGroupPermissions['sysop'         ]['skipcaptcha'] = true;
 
+
+$wgGroupPermissions['confirmed' ] = $wgGroupPermissions['autoconfirmed' ];
+
 $wgAutoConfirmCount = 7;
 $wgAutoConfirmAge = 86400*3; // three days
 
