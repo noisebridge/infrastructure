@@ -4,6 +4,9 @@ m3.noisebridge.net
 [space-noisebridge-net]
 pegasus.noisebridge.net
 
+[smartpi]
+entropi.noise
+
 [lists-noisebridge-net:children]
 noisebridge-net
 
