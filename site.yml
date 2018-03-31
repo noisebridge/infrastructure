@@ -52,3 +52,4 @@
   roles:
     - cloudalchemy.node-exporter
     - cloudalchemy.prometheus
+    - ansiblebit.grafana
