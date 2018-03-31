@@ -10,3 +10,6 @@
 [submodule "roles/cloudalchemy.node-exporter"]
 	path = roles/cloudalchemy.node-exporter
 	url = https://github.com/cloudalchemy/ansible-node-exporter.git
+[submodule "roles/ansiblebit.grafana"]
+	path = roles/ansiblebit.grafana
+	url = https://github.com/ansiblebit/grafana.git
