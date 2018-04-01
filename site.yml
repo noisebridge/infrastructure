@@ -36,10 +36,18 @@
     - postfix
     - mailman
 
-- name: DNS Server
+- name: Primary DNS Server
   hosts: primary-dns-server
   become: yes
   become_method: sudo
   tags: [primary-dns-server]
+  roles:
+    - coredns
+
+- name: Secondary DNS Server
+  hosts: secondary-dns-server
+  become: yes
+  become_method: sudo
+  tags: [secondary-dns-server]
   roles:
     - coredns

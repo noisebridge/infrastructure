@@ -1,8 +1,14 @@
 [noisebridge-net]
 m3.noisebridge.net
 
+[donate-noisebridge-net]
+m4.noisebridge.net
+
 [lists-noisebridge-net:children]
 noisebridge-net
 
 [primary-dns-server:children]
 noisebridge-net
+
+[secondary-dns-server:children]
+donate-noisebridge-net
