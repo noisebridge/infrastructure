@@ -8,6 +8,7 @@ grafana_conf_data: |
   plugins = {{ grafana_dir_plugins }}
   [server]
   protocol = http
+  http_addr = 127.0.0.1
   http_port = {{ grafana_http_port }}
   [database]
   type = {{ grafana_database.type }}
