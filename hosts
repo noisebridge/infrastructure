@@ -7,8 +7,14 @@ pegasus.noisebridge.net
 [smartpi]
 entropi.noise
 
+[donate-noisebridge-net]
+m4.noisebridge.net
+
 [lists-noisebridge-net:children]
 noisebridge-net
 
 [primary-dns-server:children]
 noisebridge-net
+
+[secondary-dns-server:children]
+donate-noisebridge-net
