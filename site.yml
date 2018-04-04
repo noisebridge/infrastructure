@@ -44,6 +44,16 @@
   roles:
     - coredns
 
+- name: Space
+  hosts: space-noisebridge-net
+  become: yes
+  become_method: sudo
+  tags: [space-noisebridge-net]
+  roles:
+    - cloudalchemy.node-exporter
+    - cloudalchemy.prometheus
+    - ansiblebit.grafana
+    
 - name: Secondary DNS Server
   hosts: secondary-dns-server
   become: yes
