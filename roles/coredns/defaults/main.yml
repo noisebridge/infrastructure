@@ -2,7 +2,7 @@ coredns_user: coredns
 coredns_port: 53
 
 coredns_path: /srv/coredns
-coredns_version: "1.0.6"
+coredns_version: "1.1.1"
 coredns_download_url: https://github.com/coredns/coredns/releases/download
 
 coredns_config: |
