@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.space.	IN	SOA	ns.noisebridge.space. hostmaster.noisebridge.space.  (
-				2018030600 ; Serial
+				2018040400 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -43,12 +43,7 @@ m4		IN	AAAA	2602:ff06:677:4:54::1337 ; iocoop MSP VPS
 status		IN	A	157.22.245.21
 
 ; random physical and virtual machines
-pony		IN	A	75.101.62.89
-pwnie		IN	A	75.101.62.89
 mule		IN	A	208.90.214.119
-stallion	IN	A	75.101.62.90
-lights		IN	A	75.101.62.91
-minotaur	IN	A	75.101.62.92
 ; changed by patrickod on 2016-02-03
 ;library		IN	CNAME	stallion.noisebridge.space.
 s1		IN	CNAME	stallion.noisebridge.space.
@@ -96,10 +91,6 @@ lists.noisebridge.space. 300	IN MX	10 m3.noisebridge.space.
 ; blog		IN	CNAME	noiseblog.reforgotten.net.
 blog		IN	CNAME	domains.tumblr.com.
 
-; networking gear at 2169
-gw-2169		IN	A	75.101.62.88
-nat-sonicnet	IN	A	75.101.62.88
-
 ; funding graphs and paypal IPN run by mfburdett 2010-12-21
 ; cha-ching	IN	A	209.237.247.51
 ; cha-ching	IN	A	66.109.99.71
@@ -143,7 +134,6 @@ cabal		IN	A	216.252.162.58
 ; requested by rubin 2014-11-21
 ; updated by patrick 2015-05-24
 ; new static IP from Monkeybrains
-sonic           IN      A       75.101.62.71
 monkeybrains	IN	A	192.195.83.130
 2169            IN      CNAME   monkeybrains
 pegasus		IN	A	192.195.83.134
