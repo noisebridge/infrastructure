@@ -3,7 +3,7 @@
 
 $TTL 3600
 
-noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
+noisebridge.net.	IN	SOA	ns1.noisebridge.net. hostmaster.noisebridge.net.  (
 				2018033100 ; Serial
 				3600 ; Refresh
 				300 ; Retry
@@ -11,8 +11,8 @@ noisebridge.net.	IN	SOA	ns.noisebridge.net. hostmaster.noisebridge.net.  (
 				300 ) ; Minimum
 
 ; name server records
-@		IN	NS	ns.noisebridge.net.
-@		IN	NS	dns.hexapodia.org.
+@		IN	NS	ns1.noisebridge.net.
+@		IN	NS	ns2.noisebridge.net.
 
 ; hostnameless access
 @	300	IN	A	216.252.162.220
