@@ -167,7 +167,10 @@ $wgCaptchaTriggers['badlogin'] = true;
 
 $wgGroupPermissions['*']['createpage'] = false;
 $wgGroupPermissions['user']['createpage'] = false;
+$wgGroupPermissions['*']['createtalk'] = false;
+$wgGroupPermissions['user']['createtalk'] = false;
 $wgGroupPermissions['autoconfirmed' ]['createpage'] = true;
+$wgGroupPermissions['autoconfirmed' ]['createtalk'] = true;
 $wgGroupPermissions['*']['move'] = false;
 $wgGroupPermissions['user']['move'] = false;
 $wgGroupPermissions['autoconfirmed' ]['move'] = true;
