@@ -188,7 +188,7 @@ $wgGroupPermissions['sysop'         ]['skipcaptcha'] = true;
 
 $wgGroupPermissions['confirmed' ] = $wgGroupPermissions['autoconfirmed' ];
 
-$wgAutoConfirmCount = 7;
+$wgAutoConfirmCount = 5;
 $wgAutoConfirmAge = 86400*3; // three days
 
 $wgAutopromote = array(
