@@ -144,6 +144,13 @@ grafana		IN	CNAME	pegasus
 parts		IN	CNAME	pegasus
 matrix		IN	CNAME	pegasus
 
+; zeppelin config
+; 2018-05-21 @rizend
+zeppelin       IN A 192.195.83.133
+zp                     IN CNAME zeppelin
+*.zp           IN CNAME zeppelin
+*.zeppelin     IN CNAME zeppelin
+
 ; requested by patrick 2015-02-02
 ; updated w/ other CNAMES 2016-02-13
 ratchet		IN	CNAME	ratchet.patrickod.com.
