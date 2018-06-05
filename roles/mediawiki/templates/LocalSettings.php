@@ -198,3 +198,5 @@ $wgAutopromote = array(
 		APCOND_EMAILCONFIRMED
 	),
 );
+
+$wgFileExtensions[] = 'pdf';
