@@ -11,3 +11,9 @@ users:
   email: p@trickod.com
   ssh_keys: []
   github_username: patrickod
+
+- username: r
+  fullname: Aria Wazeldorf
+  email: nba@tegitur.com
+  ssh_keys: []
+  github_username: rizend
