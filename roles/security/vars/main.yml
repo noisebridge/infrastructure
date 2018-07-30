@@ -11,3 +11,8 @@ users:
   email: p@trickod.com
   ssh_keys: []
   github_username: patrickod
+- username: ruthgracewong
+  fullname: Ruth Grace Wong
+  email: ruthgracewong@gmail.com
+  ssh_keys: []
+  github_username: ruthgrace
