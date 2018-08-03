@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.	IN	SOA	ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-				2018040400 ; Serial
+				2018081200 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -37,8 +37,12 @@ lists	300	IN	CNAME	m3.noisebridge.net.
 m2		IN	A	204.246.122.84 ; Old iocoop MSP VPS
 m3		IN	A	216.252.162.220 ; iocoop SCL VPS
 m3		IN	AAAA	2602:ff06:725:5:dc::1337 ; iocoop SCL VPS
-m4		IN	A	204.246.122.84 ; New iocoop MSP VPS
+m4		IN	A	204.246.122.84 ; iocoop MSP VPS
 m4		IN	AAAA	2602:ff06:677:4:54::1337 ; iocoop MSP VPS
+m5		IN	A	216.252.162.195 ; iocoop SCL VPS
+m5		IN	AAAA	2602:ff06:725:5:dc::195 ; iocoop SCL VPS
+m6		IN	A	216.252.162.196 ; iocoop SCL VPS
+m6		IN	AAAA	2602:ff06:725:5:dc::196 ; iocoop SCL VPS
 
 status		IN	A	157.22.245.21
 

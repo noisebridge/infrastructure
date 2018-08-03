@@ -61,3 +61,12 @@
   tags: [secondary-dns-server]
   roles:
     - coredns
+
+- name: Mailman-3 List server
+  hosts: lists
+  become: yes
+  become_method: sudo
+  tags: [lists-noisebridge-net]
+  roles:
+    - postfix
+    - mailman3
