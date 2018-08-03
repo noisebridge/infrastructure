@@ -94,20 +94,27 @@ caddy_config: |
     }
     tls ca@noisebridge.net
     root /srv/mailman/lists.noisebridge.net
-    redir / /mailman/listinfo
-  }
 
-  lists.noisebridge.net/mailman/ {
-    prometheus
-    log "{{ caddy_log_dir }}/lists.noisebridge.net-mailman.log" {
-      rotate_size 50
-      rotate_age 7
-      rotate_keep 520
-      rotate_compress
+    cgi /admin /var/lib/mailman/cgi-bin/admin
+    cgi /admindb /var/lib/mailman/cgi-bin/admindb
+    cgi /confirm /var/lib/mailman/cgi-bin/confirm
+    cgi /create /var/lib/mailman/cgi-bin/create
+    cgi /edithtml /var/lib/mailman/cgi-bin/edithtml
+    cgi /listinfo /var/lib/mailman/cgi-bin/listinfo
+    cgi /options /var/lib/mailman/cgi-bin/options
+    cgi /private /var/lib/mailman/cgi-bin/private
+    cgi /rmlist /var/lib/mailman/cgi-bin/rmlist
+    cgi /roster /var/lib/mailman/cgi-bin/roster
+    cgi /subscribe /var/lib/mailman/cgi-bin/subscribe
+
+    redir 302 {
+      if {path} is /
+      / /listinfo
     }
-    cgi /* /var/lib/mailman/cgi-bin/{match}
-
-    redir /mailman /mailman/listinfo
+    rewrite /mailman {
+      r /(.*)
+      to {path} {path}/ /{1}
+    }
   }
 
   lists.noisebridge.net/pipermail/ {
