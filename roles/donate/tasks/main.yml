@@ -20,7 +20,7 @@
   become_user: postgres
   become_method: sudo
   postgresql_db:
-    db: "{{ database_name }}"
+    db: "{{ noisebridge_donate.database_name }}"
     encoding: UTF-8
     state: present
 
@@ -28,17 +28,17 @@
   become_user: postgres
   become_method: sudo
   postgresql_user:
-    name: "{{ database_username }}"
+    name: "{{ noisebridge_donate.database_username }}"
     state: present
-    password: "{{ database_password }}"
+    password: "{{ noisebridge_donate.database_password }}"
 
 - name: grant privs for database
   become_user: postgres
   become_method: sudo
   postgresql_privs:
-    db: "{{ database_name }}"
+    db: "{{ noisebridge_donate.database_name }}"
     privs: ALL
-    role: "{{ database_username }}"
+    role: "{{ noisebridge_donate.database_username }}"
     type: database
 
 - name: clone the application source
