@@ -200,3 +200,4 @@ $wgAutopromote = array(
 );
 
 $wgFileExtensions[] = 'pdf';
+$wgFileExtensions[] = 'svg';
