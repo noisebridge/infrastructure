@@ -29,9 +29,9 @@
 
 - name: install mwGoogleSheets extension
   git:
-      repo: 'https://github.com/marcidy/mwGoogleSheet.git'
-      dest: "/src/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
-      version: REL1_27
+    repo: 'https://github.com/marcidy/mwGoogleSheet.git'
+    dest: "/src/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
+    version: REL1_27
   tags:
   - mediawiki
 
