@@ -27,6 +27,14 @@
   tags:
   - mediawiki
 
+- name: install mwGoogleSheets extension
+  git:
+    repo: 'https://github.com/marcidy/mwGoogleSheet.git'
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
+    version: REL1_27
+  tags:
+  - mediawiki
+
 - name: install LocalSettings
   template:
     src: LocalSettings.php

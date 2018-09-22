@@ -141,7 +141,7 @@ wfLoadExtension( 'Renameuser' );
 wfLoadExtension( 'Nuke' );
 wfLoadExtension( 'ParserFunctions' );
 wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha' ]);
-
+wfLoadExtension( 'mwGoogleSheet' );
 
 # End of automatically generated settings.
 # Add more configuration options below.
