@@ -12,14 +12,13 @@
 
 - name: noisebridge-donate
   remote_user: root
-  hosts: noisebridge-donate
+  hosts: donate
   become: yes
   become_method: sudo
-  tags: [noisebridge-donate]
+  tags: [donate]
   roles:
     - antoiner77.caddy
-    - { role: rbenv, user: donate }
-    - { role: donate, user: donate }
+    - donate
 
 - name: noisebridge-net
   hosts: noisebridge-net

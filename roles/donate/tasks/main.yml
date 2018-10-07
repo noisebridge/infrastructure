@@ -4,8 +4,43 @@
     - postgresql-9.6  # postgresql database
     - libpq-dev       # postgresql client headers for ruby gem
     - python-psycopg2 # ansible postgresql utilities dependencies
+    - rbenv           # Ruby version manager
   apt:
     package: "{{ item }}"
+
+- name: ensure group for local user exists
+  group:
+    name: "{{ donate_user }}"
+    state: present
+
+- name: ensure local user exists
+  user:
+    name: "{{ donate_user }}"
+    groups: "{{ donate_user }}"
+    home: "/srv/{{ donate_user }}"
+    createhome: yes
+    shell: /bin/bash
+
+- name: Get the current ruby version
+  set_fact:
+    ruby_version: "{{ lookup('url', 'https://raw.githubusercontent.com/noisebridge/donate.noisebridge.net/master/.ruby-version') }}"
+
+- name: install ruby version
+  become_user: "{{ donate_user }}"
+  become_method: sudo
+  shell: "rbenv install {{ ruby_version }}"
+  args:
+    chdir: "/srv/{{ donate_user }}"
+    creates: "/srv/{{ donate_user }}/.rbenv/versions/{{ ruby_version }}/bin/ruby"
+
+- name: configure rbenv shell script for user
+  blockinfile:
+    owner: "{{ donate_user }}"
+    group: "{{ donate_user }}"
+    create: yes
+    dest: "/srv/{{ donate_user }}/.bashrc"
+    block: |
+      eval "$(rbenv init -)"
 
 - name: create the donate database
   become_user: postgres
@@ -33,42 +68,16 @@
     type: database
 
 - name: clone the application source
-  become: "{{ user }}"
+  become: "{{ donate_user }}"
   become_method: sudo
   git:
     repo: https://github.com/noisebridge/donate.noisebridge.net.git
-    dest: "/srv/{{ user }}/noisebridge-donate"
+    dest: "/srv/{{ donate_user }}/noisebridge-donate"
 
-- name: determine the HEAD of the repository
-  become: "{{ user }}"
-  become_method: sudo
-  shell: git rev-parse HEAD
-  args:
-    chdir: "/srv/{{ user }}/noisebridge-donate"
-  register: donate_head
 
-- name: determine if source is checked out
-  stat:
-    path: "/srv/{{ user }}/noisebridge-donate-{{ donate_head.stdout }}"
-  register: donate_checkout
-
-- name: ensure checkout of latest master exists
-  file:
-    path: "/srv/{{ user }}/noisebridge-donate-{{ donate_head.stdout }}"
-    state: directory
-    owner: "{{ user }}"
-    group: "{{ user }}"
-
-- name: extract the git archive
-  become: "{{ user }}"
-  become_method: sudo
-  shell: "git archive master | tar -x -C /srv/{{ user}}/noisebridge-donate-{{ donate_head.stdout }}"
-  args:
-    chdir: "/srv/{{ user }}/noisebridge-donate"
-
-- name: install Ruby dependencies
-  become: "{{ user }}"
-  become_method: sudo
-  shell: "/srv/{{ user }}/.rbenv/bin/rbenv exec bundle install" 
-  args:
-    chdir: "/srv/{{ user }}/noisebridge-donate-{{ donate_head.stdout }}"
+#- name: install Ruby dependencies
+#  become: "{{ donate_user }}"
+#  become_method: sudo
+#  shell: "/srv/{{ donate_user }}/.rbenv/bin/rbenv exec bundle install" 
+#  args:
+#    chdir: "/srv/{{ donate_user }}/noisebridge-donate-{{ donate_head.stdout }}"
