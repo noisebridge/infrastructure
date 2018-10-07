@@ -1,5 +1,14 @@
-[noisebridge-net]
+[m3-noisebridge-net]
 m3.noisebridge.net
+
+[m4-noisebridge-net]
+m4.noisebridge.net
+
+[m5-noisebridge-net]
+m5.noisebridge.net
+
+[m6-noisebridge-net]
+m6.noisebridge.net
 
 [space-noisebridge-net]
 pegasus.noisebridge.net
@@ -7,14 +16,17 @@ pegasus.noisebridge.net
 [smartpi]
 entropi.noise
 
-[donate-noisebridge-net]
-m4.noisebridge.net
-
 [lists-noisebridge-net:children]
-noisebridge-net
+m3-noisebridge-net
 
 [primary-dns-server:children]
-noisebridge-net
+m3-noisebridge-net
 
 [secondary-dns-server:children]
-donate-noisebridge-net
+m4-noisebridge-net
+
+[donate:children]
+m5-noisebridge-net
+
+[lists:children]
+m6-noisebridge-net
