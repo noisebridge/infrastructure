@@ -8,4 +8,4 @@ stop:
 	docker-compose down
 
 dump-db:
-	docker exec nextcloud_db mysqldump --all-databases > dump.sql
+	docker exec nextcloud_db mysqldump --all-databases > nextcloud-mariadb-dump.sql

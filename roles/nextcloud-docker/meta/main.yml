@@ -1,3 +1,3 @@
 ---
 dependencies:
-  - { role: docker-host }
+  - { role: nickjj.docker }

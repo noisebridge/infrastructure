@@ -10,6 +10,13 @@
     dest: "{{ nextcloud_docker_files_path }}"
     state: directory
 
+- name: make scripts dir
+  file:
+    dest: "{{ item }}/scripts"
+    state: directory
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
 - name: make nextcloud backups directory
   file: 
     dest: "{{ item }}/backups"
@@ -50,5 +57,21 @@
   template:
     src: files/nextcloud/README.md
     dest: "{{ item }}/README.md"
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: docker volume list script
+  copy:
+    src: files/nextcloud/scripts/docker_get_data_volume_info.sh
+    dest: "{{ item }}/scripts/docker_get_data_volume_info.sh"
+    mode: 0755
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: docker volume copy script
+  copy:
+    src: files/nextcloud/scripts/docker_clone_volume.sh
+    dest: "{{ item }}/scripts/docker_clone_volume.sh"
+    mode: 0755
   with_items:
     - "{{ nextcloud_docker_files_path }}"

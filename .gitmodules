@@ -13,3 +13,9 @@
 [submodule "roles/ansiblebit.grafana"]
 	path = roles/ansiblebit.grafana
 	url = https://github.com/ansiblebit/grafana.git
+[submodule "roles/nickjj.docker"]
+	path = roles/nickjj.docker
+	url = https://github.com/nickjj/ansible-docker
+[submodule "ansible-docker"]
+	path = ansible-docker
+	url = https://github.com/nickjj/ansible-docker
