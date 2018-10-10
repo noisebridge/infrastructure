@@ -1,0 +1,6 @@
+---
+postfix_mailname: noisebridge.net
+postfix_destinations:
+- noisebridge.net
+- noisebridge.space
+- "{{ ansible_fqdn }}"

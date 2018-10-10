@@ -16,6 +16,9 @@ pegasus.noisebridge.net
 [smartpi]
 entropi.noise
 
+[noisebridge-net:children]
+m3-noisebridge-net
+
 [lists-noisebridge-net:children]
 m3-noisebridge-net
 
