@@ -19,6 +19,9 @@ entropi.noise
 [cloud]
 cloud.noise
 
+[noisebridge-net:children]
+m3-noisebridge-net
+
 [lists-noisebridge-net:children]
 m3-noisebridge-net
 
