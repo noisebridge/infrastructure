@@ -70,3 +70,11 @@
   roles:
     - postfix
     - mailman3
+
+- name: Nextcloud on debian box in space
+  hosts: cloud
+  become: yes
+  become_method: sudo
+  tags: [cloud]
+  roles:
+    - nextcloud-docker

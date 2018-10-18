@@ -16,6 +16,9 @@ pegasus.noisebridge.net
 [smartpi]
 entropi.noise
 
+[cloud]
+cloud.noise
+
 [noisebridge-net:children]
 m3-noisebridge-net
 
@@ -33,3 +36,6 @@ m5-noisebridge-net
 
 [lists:children]
 m6-noisebridge-net
+
+[cloud:children]
+cloud

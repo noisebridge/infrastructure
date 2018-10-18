@@ -1,0 +1,77 @@
+---
+#- name: debug
+#  debug:
+#    msg: "{{ nextcloud_docker_files_path }}"
+
+#nextcloud_docker_files_path: "/srv/docker/nextcloud"
+
+- name: make nextcloud directory
+  file:
+    dest: "{{ nextcloud_docker_files_path }}"
+    state: directory
+
+- name: make scripts dir
+  file:
+    dest: "{{ item }}/scripts"
+    state: directory
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: make nextcloud backups directory
+  file: 
+    dest: "{{ item }}/backups"
+    state: directory
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: make nextcloud mariadb conf directory
+  file:
+    dest: "{{ item }}/mariadb"
+    state: directory
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: docker-compose.yml
+  template:
+    src: files/nextcloud/docker-compose.yml
+    dest: "{{ item }}/docker-compose.yml"
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: sample env file
+  template:
+    src: files/nextcloud/env
+    dest: "{{ item }}/env"
+    mode: 0600
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: Makefile
+  template:
+    src: files/nextcloud/Makefile
+    dest: "{{ item }}/Makefile"
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: README.md
+  template:
+    src: files/nextcloud/README.md
+    dest: "{{ item }}/README.md"
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: docker volume list script
+  copy:
+    src: files/nextcloud/scripts/docker_get_data_volume_info.sh
+    dest: "{{ item }}/scripts/docker_get_data_volume_info.sh"
+    mode: 0755
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
+
+- name: docker volume copy script
+  copy:
+    src: files/nextcloud/scripts/docker_clone_volume.sh
+    dest: "{{ item }}/scripts/docker_clone_volume.sh"
+    mode: 0755
+  with_items:
+    - "{{ nextcloud_docker_files_path }}"
