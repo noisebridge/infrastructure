@@ -1,25 +1,39 @@
 ---
 - name: Add user
   user:
-    name={{ item.username }}
-    comment={{ item.fullname }}
-    shell={{ item.shell | default("/bin/bash") }}
-    groups=sudo
-    append=yes
-  with_items: "{{ users }}"
+    name: "{{ item }}"
+    comment: "{{ users[item].fullname }}"
+    shell: "{{ users[item].shell | default('/bin/bash') }}"
+  with_flattened:
+  - "{{ noisebridge_admins }}"
+  - "{{ noisebridge_local_admins }}"
+  - "{{ noisebridge_users }}"
 
-- name: SSH key
-  authorized_key:
-    user={{ item.0.username }}
-    key={{ item.1 }}
-  with_subelements:
-    - "{{ users }}"
-    - ssh_keys
-  when: item.1
+- name: Grant sudo
+  user:
+    name: "{{ item }}"
+    groups:
+    - "sudo"
+    append: yes
+  with_flattened:
+  - "{{ noisebridge_admins | d([]) }}"
+  - "{{ noisebridge_local_admins | d([]) }}"
+
+## TODO: Fix inline key setup.
+#- name: SSH key
+#  authorized_key:
+#    user={{ item.0.username }}
+#    key={{ item.1 }}
+#  with_flattened:
+#  - "{{ noisebridge_admins | d([]) }}"
+#  - "{{ noisebridge_users | d([]) }}"
+#  when: users[item].ssh_keys
 
 - name: github SSH key
   authorized_key:
-    user={{ item.username }}
-    key=https://github.com/{{ item.github_username }}.keys
-  with_items: "{{ users }}"
-  when: item.github_username
+    user: "{{ item }}"
+    key: "https://github.com/{{ users[item].github_username }}.keys"
+  with_flattened:
+  - "{{ noisebridge_admins | d([]) }}"
+  - "{{ noisebridge_users | d([]) }}"
+  when: users[item].github_username

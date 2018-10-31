@@ -1,13 +1,23 @@
 ---
-users:
-- username: superq
-  fullname: Ben Kochie
-  email: superq@gmail.com
-  ssh_keys: []
-  github_username: superq
+noisebridge_admins:
+- superq
+- patrickod
 
-- username: patrickod
-  fullname: Patrick O'Doherty
-  email: p@trickod.com
-  ssh_keys: []
-  github_username: patrickod
+users:
+  danh:
+    fullname: ...
+    email: ...
+    ssh_keys: []
+    github_username: danhimalplanet
+
+  patrickod:
+    fullname: Patrick O'Doherty
+    email: p@trickod.com
+    ssh_keys: []
+    github_username: patrickod
+
+  superq:
+    fullname: Ben Kochie
+    email: superq@gmail.com
+    ssh_keys: []
+    github_username: superq
