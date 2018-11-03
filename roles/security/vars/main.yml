@@ -4,20 +4,89 @@ noisebridge_admins:
 - patrickod
 
 users:
+  beka:
+    fullname: ''
+    email: ...
+
+  cole:
+    fullname: ''
+    email: ...
+
+  cowlicks:
+    fullname: 'blake,,,'
+    email: ...
+
   danh:
     fullname: ...
     email: ...
-    ssh_keys: []
     github_username: danhimalplanet
+
+  elf:
+    fullname: ''
+    email: ...
+
+  gareth:
+    fullname: ',,,'
+    email: ...
+
+  hzeller:
+    fullname: 'Henner Zeller,,,'
+    email: ...
+
+  jams:
+    fullname: 'Jeremy,,,'
+    email: ...
+
+  jerm:
+    fullname: ',,,'
+    email: ...
+
+  jof:
+    fullname: 'Jonathan Lassoff,,,'
+    email: ...
+
+  lizzie:
+    fullname: ',,,'
+    email: ...
+
+  miloh:
+    fullname: 'Ronald Miloh Alexander,,,'
+    email: ...
+
+  nthmost:
+    fullname: 'Naomi Most,,,'
+    email: ...
 
   patrickod:
     fullname: Patrick O'Doherty
     email: p@trickod.com
-    ssh_keys: []
     github_username: patrickod
+
+  r:
+    fullname: ',,,'
+    email: ...
+
+  rando:
+    fullname: 'Matthew Arcidy,,,'
+    email: ...
+
+  robbintt:
+    fullname: 'Robin Trent'
+    email: ...
+
+  steele:
+    fullname: 'Lee Azzarello,,,'
+    email: ...
 
   superq:
     fullname: Ben Kochie
     email: superq@gmail.com
-    ssh_keys: []
     github_username: superq
+
+  tdfischer:
+    fullname: 'Torrie Fischer,,,'
+    email: ...
+
+  teapot:
+    fullname: 'Bill Williams,,,'
+    email: ...
