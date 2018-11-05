@@ -19,3 +19,6 @@ noisebridge_local_admins:
   - steele
   - tdfischer
   - teapot
+
+noisebridge_users:
+  - eenblam
