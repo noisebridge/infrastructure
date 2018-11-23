@@ -21,6 +21,10 @@ users:
     email: ...
     github_username: danhimalplanet
 
+  eenblam:
+    fullname: ''
+    email: ...
+
   elf:
     fullname: ''
     email: ...
