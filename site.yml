@@ -8,6 +8,7 @@
   roles:
     - utils
     - security
+    - jnv.unattended-upgrades
 
 - name: noisebridge-net
   hosts: noisebridge-net

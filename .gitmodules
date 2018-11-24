@@ -16,3 +16,6 @@
 [submodule "roles/nickjj.docker"]
 	path = roles/nickjj.docker
 	url = https://github.com/nickjj/ansible-docker
+[submodule "roles/jnv.unattended-upgrades"]
+	path = roles/jnv.unattended-upgrades
+	url = https://github.com/jnv/ansible-role-unattended-upgrades.git
