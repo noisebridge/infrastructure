@@ -21,8 +21,12 @@
    items:
      - tor
      - deb.torproject.org-keyring
-   apt: name={{item}} state=latest update_cache=yes cache_valid_time=3600 force=yes
-   tags:
+   apt:
+     state: latest
+     update_cache: yes
+     cache_valid_time: 3600
+     force: yes
+     package:
      - apt
      - tor
 

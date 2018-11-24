@@ -9,9 +9,9 @@
   - memcached
 
 - name: start memcached
-  service:
+  systemd:
     name: memcached
-    state: running
+    state: started
     enabled: yes
   tags:
   - memcached
