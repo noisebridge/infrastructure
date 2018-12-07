@@ -19,3 +19,6 @@
 [submodule "roles/jnv.unattended-upgrades"]
 	path = roles/jnv.unattended-upgrades
 	url = https://github.com/jnv/ansible-role-unattended-upgrades.git
+[submodule "roles/cloudalchemy.snmp-exporter"]
+	path = roles/cloudalchemy.snmp-exporter
+	url = https://github.com/cloudalchemy/ansible-snmp-exporter.git
