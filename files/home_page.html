@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Noisebridge - a hacker space ship</title>
+    <base href="https://www.noisebridge.net/">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css">
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  </head>
+  <body>
+  <div>
+    <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
+      <div class="navbar-brand">
+        <a class="navbar-item" href="https://www.noisebridge.net">
+          <img src="https://www.noisebridge.net/images/d/d0/Nb-logo-131.png">
+          &nbsp;&nbsp;Noisebridge
+        </a>
+
+        <div id="burger" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbar">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </div>
+      </div>
+
+      <div id="navbar" class="navbar-menu">
+        <div class="navbar-start">
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">About</a>
+            <div class="navbar-dropdown">
+              <div class="navbar-item">
+                Physical Location: 2169 Mission St. (3rd floor), San Francisco, CA 94110
+              </div>
+              <div class="navbar-item">
+                Mailing Address: Noisebridge, 2261 Market Street #235-A, San Francisco, CA 94114
+              </div>
+              <div class="navbar-item">
+                Hours: 11AM-10PM* daily
+              </div>
+              <a class="navbar-item" href="Hours">*Hours Caveats</a>
+              <a class="navbar-item" href="Getting_In">How to Get In</a>
+              <a class="navbar-item" href="Getting_Here">How to Get to Noisebridge</a>
+              <a class="navbar-item" href="About">About</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Classes and Groups</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="Gamebridge">Gamebridge</a>
+              <a class="navbar-item" href="Circuit_Hacking_Monday">Circuit hacking mondays</a>
+              <a class="navbar-item" href="VRBridge">VR</a>
+              <a class="navbar-item" href="DreamTeam">Neuro hacking</a>
+              <a class="navbar-item" href="Noisebridge_Gaming_Archivists">Gaming Archivists</a>
+              <a class="navbar-item" href="Laser_cutter_class">Laser Cutter</a>
+              <a class="navbar-item" href="3D_Printing">3D Printing</a>
+              <a class="navbar-item" href="Haskell_Hackers">Haskell</a>
+              <a class="navbar-item" href="Songbridge">Music</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Events</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="Category:Events#Upcoming_Events_edit">Upcoming</a>
+              <a class="navbar-item" href="Category:Events#Past_Events">Previous</a>
+              <a class="navbar-item" href="https://www.meetup.com/noisebridge/events/">meetup.com events</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Projects</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="NGALAC">Noisebridge Gaming Archivists Live-streaming Arcade Cabinet</a>
+              <a class="navbar-item" href="Ordibooth">Ordibooth</a>
+              <a class="navbar-item" href="Flaschen_Taschen">Flaschen Taschen</a>
+              <a class="navbar-item" href="OpenEEG">OpenEEG</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Donate</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="https://www.patreon.com/noisebridge">Patreon</a>
+              <a class="navbar-item" href="Donate_or_Pay_Dues#Alternatives_to_Paypal">Check or Cash</a>
+              <a class="navbar-item" href="Bitcoin">Bitcoin</a>
+              <a class="navbar-item" href="Donations">Materials</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Areas</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="Resources/Shop">Woodworking</a>
+              <a class="navbar-item" href="Hackatorium">Hackatorium</a>
+              <a class="navbar-item" href="Classrooms#Church">Church</a>
+              <a class="navbar-item" href="Classrooms#Turing">Turing</a>
+              <a class="navbar-item" href="SparkleForge">Sparkleforge</a>
+              <a class="navbar-item" href="Library">Library</a>
+              <a class="navbar-item" href="Naw">NAW - Noise Audio Workstation</a>
+              <a class="navbar-item" href="GNAR">GNAR - GNAR's Not Audio Research</a>
+              <a class="navbar-item" href="https://parts.noisebridge.net/">Electronic Components Library</a>
+              <a class="navbar-item" href="Sewing">Sewing</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Tools</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="Sewing#Sewing_Machines">Sewing Machines</a>
+              <a class="navbar-item" href="Table_Saw">Saw Stop Table Saw</a>
+              <a class="navbar-item" href="Othermill">Othermill</a>
+              <a class="navbar-item" href="Roland_MDX-40a">Roland MDX-40A</a>
+              <a class="navbar-item" href="MaslowCNC">Maslow CNC</a>
+              <a class="navbar-item" href="SparkleForge#Welding">Welder</a>
+              <a class="navbar-item" href="SparkleForge#Kiln">Kiln</a>
+              <a class="navbar-item" href="Router_table">Router Table</a>
+              <a class="navbar-item" href="Microscope">Microscope</a>
+              <a class="navbar-item" href="Vinyl_cutter">Vinyl Cutter</a>
+              <a class="navbar-item" href="Button_maker">Button Maker</a>
+              <a class="navbar-item" href="Lathe">Lathe</a>
+              <a class="navbar-item" href="Manual_Mill">Mill</a>
+              <a class="navbar-item" href="Drill_press">Drill Press</a>
+              <a class="navbar-item" href="Laser_Cutter/Kaitian_CM1309">Industrial Laser Cutter</a>
+              <a class="navbar-item" href="Laser_Cutter/Full_Spectrum_Laser_40W">Experimental Laser Cutter</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">History</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="Meeting_notes">Meetings</a>
+            </div>
+          </div>
+
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">Media</a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="Photos_of_the_Space">Pictures</a>
+              <a class="navbar-item" href="https://www.flickr.com/groups/noisebridge/pool/">Flickr Photos</a>
+              <a class="navbar-item" href="https://www.twitch.tv/noisebridge">Twitch Streaming</a>
+            </div>
+          </div>
+
+<!-- @todo: search on right side -->
+        </div>
+      </div>
+    </nav>
+  </div>
+<noscript><!--
+  <div class="section">
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title" style="text-indent: 1em">
+            What is noisebridge?
+          </h1>
+          <p>
+            Noisebridge an anarchist hackerspace in San Francisco, and one of the oldest hackerspaces in the US. We grew out of conversations between attendees of Chaos Communication Congress 2007 (24c3), and were originally modeled on c-base in Berlin and Metalab in Vienna. We aim to provide a space for people to hack, create, learn, and explore in a safe, welcoming, and accessible environment.
+          </p>
+          <p>
+            You don't have to be a member or pay anything to participate in Noisebridge, we're free and open. You just have to follow the one rule: Be Excellent to Each Other!
+          </p>
+        </div>
+      </div>
+    </section>
+--></noscript>
+    <section class="section">
+      <div class="container">
+
+        <div class="tile is-ancestor is-vertical">
+          <!--div class="tile is-parent is-vertical"-->
+
+<div class="tile is-parent">
+            <div class="tile is-child is-5" style="padding: 10px 20px">
+              <div class="content notification is-danger">
+                <h1 class="title">
+                  What is Noisebridge?
+                </h1>
+                <p>
+                   Noisebridge an anarchist hackerspace in San Francisco, and one of the oldest hackerspaces in the US. We grew out of conversations between attendees of Chaos Communication Congress 2007 (24c3), and were originally modeled on c-base in Berlin and Metalab in Vienna. We aim to provide a space for people to hack, create, learn, and explore in a safe, welcoming, and accessible environment.
+                </p>
+                <p>
+                  You don't have to be a member or pay anything to participate in Noisebridge, we're free and open. You just have to follow the one rule: Be Excellent to Each Other!
+                </p>
+                <figure class="image is-square">
+                  <img src="https://www.noisebridge.net/images/0/0d/Noisebridge_logo_not_by_idiots_for_cnc.svg">
+                </figure>
+              </div>
+            </div>
+
+            <div class="tile is-child is-7" style="padding: 10px 20px">
+              <div class="content notification is-info">
+                <h1 class="title">
+                  Getting here and getting in
+                </h1>
+                <p>
+                  We are located at: 2169 Mission St. (3rd floor), San Francisco, CA 94110.
+                  Common transit options include 16th Street Mission bart just a block and half up mission street,
+                  taking the "14 mission" Muni bus to the 18th and Mission bus stop,
+                  biking (we have a bike rack inside of our space),
+                  or taking a car.
+                </p>
+                <p>
+                  Once you make you way to Noisebridge, you probably want to get in.
+                  On your first couple trips, you can ring the doorbell labeled Noisebridge on the right side of the gate.
+                  The gate is on the left side of a small grocery store "Mi Ranchito", made obvious by the large red awning hanging over the sidewalk in front of it.
+                  Once the light on the top of the box with the doorbell turns green (it may be a bit faint so look carefully) or you hear a buzzing sound from the gate, push the gate open and walk up the colorfully painted stairs to the third floor.
+                  At the top of the stairs there is another door; if it is not open, you may need to ring a second bell.
+                  You can ring the upstairs door bell by pressing the power button on the keyboard to the right of the door.
+                  Hopefully someone will open the door and ask if you'd like a tour.
+                </p>
+                <p>
+                  We aim to be open from 11AM to 10PM daily.
+                  In practice, we're open as long as there's someone in the space willing to answer the doorbell.
+                  This results in us often not being open at precisely 11AM and usually not closing until well after 10PM.
+                  If you have a non-expired daytime access token, it should get you into the space between 10AM and 11PM.
+                </p>
+                <p>
+                  
+                </p>
+                <p>
+                  For more information on how to get to and get into Noisebridge, take a look at our pages on 
+                  <a href="Getting_Here">Getting Here</a>,
+                  <a href="Getting_In">Getting In,
+                  <a href="Hours">Hours</a>,
+                  and <a href="Visitor_advice">visitor advice</a>.
+                </p>
+              </div>
+            </div>
+</div>
+
+<div class="tile is-parent">
+
+            <div class="tile is-child is-2"></div>
+
+            <div class="tile is-child is-8" style="padding: 5px 20px">
+              <div class="content notification is-primary">
+                <h1 class="title">Noisebridge is growing</h1>
+                <p>
+                  and we need a new bigger space! We plan to leave our current location by August of next year. It’s all very exciting, but we need your help to pull it off! Join Noisebridge in building the largest non profit hacker community in San Francisco by contributing your volunteer hours, or your tax deductible monetary donations!
+                </p>
+                  <h1 class="title">Donate now</h1>
+                <p>
+                  on <a href="https://www.patreon.com/noisebridge">Patreon</a>,
+                  with a <a href="https://donate.noisebridge.net">credit card</a>,
+                  via <a href="Donate_or_Pay_Dues#How_can_I_donate_or_pay_dues_to_Noisebridge.3F">paypal</a>,
+                  or use one of our <a href="Donate_or_Pay_Dues#Alternatives_to_Paypal">other supported payment methods</a>!
+                </p>
+                <h1 class="title">State of the Lease</h1>
+                <p>
+                  Our landlord has renewed our lease and it's a whopping 50% higher than it was before -- our rent this year is the same as our average per month income last year. With the hard work and recurring support of many community members, our donations these past few months have been high enough to afford the new rent. We can't thank you enough.
+                </p>
+                <p>
+                  With this extra year of runway, we have an incredible opportunity. We have partnered with professional non-profit fundraising firm Scandiuzzi Krebs, to make a fundraising plan. We want to raise enough for a deposit for our own building, so that Noisebridge's destiny will no longer be dependant on the rental market. Our biggest needs right now are recurring monthly donations, and volunteer hours. If you have time to spare and any experience raising money for non profits, we are especially interested in talking to you.
+                </p>
+              </div>
+            </div>
+
+            <div class="tile is-child is-2"></div>
+<!--
+            <div class="tile notification is-child is-4">
+              <div class="content notification is-success">
+                <h1 class="title">Picture here?</h1>
+                <figure class="image is-square">
+                  <img src="https://bulma.io/images/placeholders/128x128.png">
+                </figure>
+              </div>
+            </div>
+-->
+</div>
+
+          <!--/div-->
+        </div>
+
+      </div>
+    </section>
+  </div>
+  <footer class="footer">
+    <div class="content has-text-centered has-text-black">
+      <p>
+        <a class="icon has-text-black" href="https://www.github.com/noisebridge">
+          <i class="fab fa-github"></i>
+        </a>
+        <a class="icon has-text-black" href="https://twitter.com/noisebridge">
+          <i class="fab fa-twitter"></i>
+        </a>
+        <a class="icon has-text-black" href="https://www.patreon.com/noisebridge">
+          <i class="fab fa-patreon"></i>
+        </a>
+        <a class="icon has-text-black" href="https://www.facebook.com/noisebridge">
+          <i class="fab fa-facebook"></i>
+        </a>
+        <a class="icon has-text-black" href="https://noisebridge.slack.com/">
+          <i class="fab fa-slack"></i>
+        </a>
+        <a class="icon has-text-black" href="https://lists.noisebridge.net/listinfo">
+          <i class="fas fa-envelope"></i>
+        </a>
+        <a class="icon has-text-black" href="https://www.flickr.com/groups/noisebridge">
+          <i class="fab fa-flickr"></i>
+        </a>
+        <a class="icon has-text-black" href="https://foursquare.com/v/noisebridge/4a8b745ff964a5207e0c20e3">
+          <i class="fab fa-foursquare"></i>
+        </a>
+        <a class="icon has-text-black" href="https://plus.google.com/+NoisebridgeSanFrancisco">
+          <i class="fab fa-google-plus"></i>
+        </a>
+        <a class="icon has-text-black" href="https://www.instagram.com/noisebridgehackerspace/">
+          <i class="fab fa-instagram"></i>
+        </a>
+        <a class="icon has-text-black" href="https://www.meetup.com/noisebridge/">
+          <i class="fab fa-meetup"></i>
+        </a>
+        <a class="icon has-text-black" href="http://blog.noisebridge.net/">
+          <i class="fab fa-tumblr"></i>
+        </a>
+        <a class="icon has-text-black" href="https://www.youtube.com/channel/UC6oE60rGWqFynD34ielQzxA">
+          <i class="fab fa-youtube"></i>
+        </a>
+        <a class="icon has-text-black" href="irc://chat.freenode.net/#noisebridge">
+          <i class="fas fa-hashtag"></i>
+        </a>
+      </p>
+<!--
+      <p>
+        <a class="has-text-black" href="Press">Press</a>
+        &nbsp;&bull;&nbsp;
+        <a class="has-text-black" href="">Legal</a>
+        &nbsp;&bull;&nbsp;
+        <a class="has-text-black" href="mailto:noisebridge-discuss@lists.noisebridge.net">Contact</a>
+      </p>
+-->
+    </div>
+  </footer>
+    <script>
+      (function() {
+        var burger = document.getElementById("burger");
+        var menu = document.getElementById("navbar");
+        burger.addEventListener("click", function() {
+          if (burger.classList.contains("is-active")) {
+            burger.classList.remove("is-active");
+            menu.classList.remove("is-active");
+          } else {
+            burger.classList.add("is-active");
+            menu.classList.add("is-active");
+          }
+        });
+      })();
+    </script>
+  </body>
+</html>
