@@ -12,6 +12,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
@@ -25,6 +26,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
@@ -38,6 +40,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
 
@@ -68,6 +71,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     redir https://lists.noisebridge.net{uri}
   }
@@ -79,6 +83,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     redir https://lists.noisebridge.net{uri}
   }
@@ -91,6 +96,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
     root /srv/mailman/lists.noisebridge.net
@@ -125,6 +131,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
     root /var/lib/mailman/archives/public
@@ -139,6 +146,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
     root /var/lib/mailman/icons/
@@ -152,6 +160,7 @@ caddy_config: |
       rotate_age 7
       rotate_keep 520
       rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
