@@ -43,7 +43,7 @@ caddy_config: |
 
     root /srv/mediawiki/noisebridge.net
 
-    index home_page.html index.php
+    index index.html index.php
 
     header / {
       Strict-Transport-Security "max-age=31536000;includeSubdomains"

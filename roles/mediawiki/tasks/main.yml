@@ -47,8 +47,8 @@
 
 - name: install home page
   copy:
-    src: home_page.html
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}/home_page.html"
+    src: index.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/index.html"
     owner: root
     group: root
     mode: 0644
