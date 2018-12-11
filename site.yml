@@ -20,14 +20,6 @@
     - mediawiki
     - cloudalchemy.node-exporter
     - cloudalchemy.prometheus
-  tasks:
-    - name: Copy home page to web root
-      copy:
-        src: home_page.html
-        dest: /srv/mediawiki/noisebridge.net/home_page.html
-        owner: root
-        group: root
-        mode: 0644
   vars:
     mediawiki:
       database: noisebridge_mediawiki

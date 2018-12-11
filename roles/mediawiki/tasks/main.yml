@@ -44,3 +44,13 @@
   tags:
   - mediawiki
   - mediawiki-localsettings
+
+- name: install home page
+  copy:
+    src: home_page.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/home_page.html"
+    owner: root
+    group: root
+    mode: 0644
+    tags:
+    - mediawiki
