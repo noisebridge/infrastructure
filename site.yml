@@ -25,8 +25,8 @@
       database: noisebridge_mediawiki
       database_username: wiki
       domain: noisebridge.net
-      version_sha256sum: 6ffac6baacf8a0c999e2d15d24631963efc242b4dab2f632d2614c539eea3976
-      version: 1.27.4
+      version_sha256sum: e2b2b9a68a6640c561dd9edb8fb594b738f8d5d6f97041a032072026460fc071
+      version: 1.27.5
 
 - name: List server
   hosts: lists-noisebridge-net

@@ -22,6 +22,8 @@
   unarchive:
     src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
+    owner: root
+    group: root
     remote_src: true
     extra_opts: ["--strip-components=1"]
   tags:
@@ -39,18 +41,19 @@
   template:
     src: LocalSettings.php
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/LocalSettings.php"
-    owner: www-data
+    owner: root
     group: www-data
+    mode: 0640
   tags:
   - mediawiki
   - mediawiki-localsettings
 
 - name: install home page
-  copy:
+  template:
     src: index.html
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/index.html"
     owner: root
     group: root
     mode: 0644
-    tags:
-    - mediawiki
+  tags:
+  - mediawiki
