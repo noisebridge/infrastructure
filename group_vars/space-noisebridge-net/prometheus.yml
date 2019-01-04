@@ -20,5 +20,9 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
         - "entropi.noise:9246"
+  - job_name: "earl"
+    static_configs:
+      - targets:
+        - "earl.noise:1212"
 
 prometheus_targets: {}
