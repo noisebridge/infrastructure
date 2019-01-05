@@ -1,0 +1,80 @@
+---
+- name: Download binary
+  become: false
+  get_url:
+    url: "https://github.com/noisebridge/rfid-access-control/releases/download/v{{ earl_version }}/earl-v{{ earl_version }}.{{ go_arch }}.tar.gz"
+    dest: "/tmp/earl-v{{ earl_version }}.{{ go_arch }}.tar.gz"
+  register: _download_binary
+  until: _download_binary is succeeded
+  retries: 5
+  delay: 2
+  delegate_to: localhost
+  check_mode: false
+
+- name: Unpack binary
+  become: false
+  unarchive:
+    src: "/tmp/earl-v{{ earl_version }}.{{ go_arch }}.tar.gz"
+    dest: "/tmp"
+    creates: "/tmp/earl-{{ go_arch }}"
+  delegate_to: localhost
+  check_mode: false
+
+- name: Deploy binary
+  copy:
+    src: "/tmp/earl-{{ go_arch }}"
+    dest: "/usr/local/bin/earl"
+    mode: 0755
+    owner: root
+    group: root
+  notify: restart earl
+  when: not ansible_check_mode
+
+- name: create earl system group
+  group:
+    name: earl
+    system: true
+    state: present
+
+- name: create earl system user
+  user:
+    name: earl
+    system: true
+    shell: "/sbin/nologin"
+    group: earl
+    groups:
+    - gpio
+    - dialout
+    createhome: false
+    home: /var/lib/earl
+
+- name: Create dirs
+  file:
+    path: "{{ item }}"
+    owner: earl
+    group: earl
+    state: directory
+    mode: 0755
+  with_items:
+  - /etc/earl
+  - /var/log/earl
+  - /var/lib/earl
+  - /var/lib/earl/doorbell-sounds
+
+- name: Create service
+  template:
+    src:  earl.service.j2
+    dest: /etc/systemd/system/earl.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart earl
+
+- name: ensure earl service is started and enabled
+  become: true
+  systemd:
+    daemon_reload: true
+    name: earl
+    state: started
+    enabled: true

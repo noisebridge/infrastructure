@@ -21,3 +21,14 @@ Deploying the entire thing should be possible with just one command:
 Usually, you will want to limit your deployment to specific host groups:
 
     ansible-playbook site.yml --limit noisebridge-net
+
+### Remote access to .noise
+
+In order to deploy to machines remotely, you will need to configure a bastion bouncer.
+
+In your `~/.ssh/config` add the folowing.
+
+    Host *.noise
+      User         YOU
+      ProxyCommand ssh pegasus.noisebridge.net -W %h:%p
+

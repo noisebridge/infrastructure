@@ -83,3 +83,11 @@
   roles:
     - antoiner77.caddy
     - { role: stuff-org, tags: [ 'stuff-org' ] }
+
+- name: Earl RFID Access
+  hosts: earl
+  become: yes
+  become_method: sudo
+  tags: [earl]
+  roles:
+    - earl
