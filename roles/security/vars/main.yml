@@ -8,6 +8,10 @@ users:
     fullname: ''
     email: ...
 
+  chaz:
+    fullname: 'chaz'
+    github_username: chazchaz101
+
   cole:
     fullname: ''
     email: ...
