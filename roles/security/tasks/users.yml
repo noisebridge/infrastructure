@@ -35,5 +35,6 @@
     key: "https://github.com/{{ users[item].github_username }}.keys"
   with_flattened:
   - "{{ noisebridge_admins | d([]) }}"
+  - "{{ noisebridge_local_admins | d([]) }}"
   - "{{ noisebridge_users | d([]) }}"
-  when: users[item].github_username
+  when: users[item].github_username is defined
