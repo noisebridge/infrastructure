@@ -46,7 +46,7 @@ caddy_config: |
 
     root /srv/mediawiki/noisebridge.net
 
-    index index.html index.php
+    index index.php
 
     header / {
       Strict-Transport-Security "max-age=31536000;includeSubdomains"
@@ -63,6 +63,7 @@ caddy_config: |
         if {path} not /
         to {path} {path}/ /index.php?title={1}
     }
+    rewrite / /index.html
   }
 
   www.noisebridge.net/pipermail/ {
