@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+BACKUP_DIR="{{ mydumper_backup_dir }}"
+METRICS_FILE="{{ mydumper_metrics_textfile }}"
+LOGFILE="{{ mydumper_log_file }}"
+MAXAGE=7 # Days

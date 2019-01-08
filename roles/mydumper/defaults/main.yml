@@ -1,0 +1,8 @@
+---
+mydumper_contact: "root"
+mydumper_backup_dir: "/var/backups/mysql"
+mydumper_log_file: "/var/log/mysql_backup.log"
+mydumper_version: 0.9.5
+mydumper_package_rev: 2
+# Make sure to include .prom in the filename.
+mydumper_metrics_textfile: "/var/lib/node_exporter/mydumper.prom"
