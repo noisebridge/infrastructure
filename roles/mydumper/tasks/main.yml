@@ -1,0 +1,42 @@
+---
+- name: Install utils
+  apt:
+    package:
+    - moreutils
+
+- name: Install mydumper
+  apt:
+    deb: "https://github.com/maxbube/mydumper/releases/download/v{{ mydumper_version }}/mydumper_{{ mydumper_version }}-{{ mydumper_package_rev }}.stretch_amd64.deb"
+
+- name: Create backup directory
+  file:
+    path: "{{ mydumper_backup_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+
+- name: Deploy backup script
+  copy:
+    src: mysql_backup.sh
+    dest: /usr/local/sbin/mysql_backup
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Deploy backup config file
+  template:
+    src: defaults
+    dest: /etc/default/mysql_backup
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Install cron job
+  cron:
+    name: MySQL Backup
+    cron_file: mysql_backup
+    user: root
+    hour: 11
+    minute: 11
+    job: /usr/local/sbin/mysql_backup
