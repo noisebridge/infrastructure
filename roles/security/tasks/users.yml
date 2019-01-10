@@ -6,7 +6,6 @@
     shell: "{{ users[item].shell | default('/bin/bash') }}"
   with_flattened:
   - "{{ noisebridge_admins }}"
-  - "{{ noisebridge_local_admins }}"
   - "{{ noisebridge_users }}"
 
 - name: Grant sudo
@@ -17,17 +16,6 @@
     append: yes
   with_flattened:
   - "{{ noisebridge_admins | d([]) }}"
-  - "{{ noisebridge_local_admins | d([]) }}"
-
-## TODO: Fix inline key setup.
-#- name: SSH key
-#  authorized_key:
-#    user={{ item.0.username }}
-#    key={{ item.1 }}
-#  with_flattened:
-#  - "{{ noisebridge_admins | d([]) }}"
-#  - "{{ noisebridge_users | d([]) }}"
-#  when: users[item].ssh_keys
 
 - name: github SSH key
   authorized_key:
@@ -35,6 +23,5 @@
     key: "https://github.com/{{ users[item].github_username }}.keys"
   with_flattened:
   - "{{ noisebridge_admins | d([]) }}"
-  - "{{ noisebridge_local_admins | d([]) }}"
   - "{{ noisebridge_users | d([]) }}"
   when: users[item].github_username is defined

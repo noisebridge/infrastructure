@@ -1,8 +1,4 @@
 ---
-noisebridge_admins:
-- superq
-- patrickod
-
 users:
   beka:
     fullname: ''
