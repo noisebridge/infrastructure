@@ -1,0 +1,267 @@
+interfaces {
+    ethernet eth0 {
+        address 10.20.0.1/16
+        description "NB LAN"
+        duplex auto
+        speed auto
+    }
+    ethernet eth1 {
+        duplex auto
+        speed auto
+    }
+    ethernet eth2 {
+        address 192.195.83.130/29
+        address 192.195.83.134/29
+        address 192.195.83.133/29
+        description "MonkeyBrains WAN"
+        duplex auto
+        ip {
+            enable-proxy-arp
+        }
+        speed auto
+    }
+    ethernet eth3 {
+        duplex auto
+        speed auto
+    }
+}
+port-forward {
+    auto-firewall enable
+    hairpin-nat enable
+    lan-interface eth0
+    wan-interface eth2
+}
+protocols {
+    static {
+        route 0.0.0.0/0 {
+            next-hop 192.195.83.129 {
+            }
+        }
+    }
+}
+service {
+    dhcp-server {
+        disabled false
+        hostfile-update disable
+        shared-network-name noise {
+            authoritative disable
+            subnet 10.20.0.0/16 {
+                default-router 10.20.0.1
+                dns-server 10.20.0.1
+                lease 86400
+                start 10.20.1.0 {
+                    stop 10.20.9.254
+                }
+                static-mapping center-ap.noise {
+                    ip-address 10.20.0.13
+                    mac-address 80:2a:a8:c0:f7:44
+                }
+                static-mapping church-ap.noise {
+                    ip-address 10.20.0.12
+                    mac-address dc:9f:db:1a:70:90
+                }
+                static-mapping earl.noise {
+                    ip-address 10.20.0.10
+                    mac-address b8:27:eb:0c:c6:e9
+                }
+                static-mapping edgeswitch.noise {
+                    ip-address 10.20.0.4
+                    mac-address 04:18:D6:31:70:B8
+                }
+                static-mapping entropi.noise {
+                    ip-address 10.20.0.23
+                    mac-address b8:27:eb:f7:0c:2a
+                }
+                static-mapping flaschen-ap.noise {
+                    ip-address 10.20.0.15
+                    mac-address dc:9f:db:b0:a4:9e
+                }
+                static-mapping ft.noise {
+                    ip-address 10.20.0.42
+                    mac-address b8:27:eb:cf:d9:27
+                }
+                static-mapping pegasus.noise {
+                    ip-address 10.20.0.22
+                    mac-address 00:50:c2:28:30:70
+                }
+                static-mapping sparkle-ap.noise {
+                    ip-address 10.20.0.14
+                    mac-address dc:9f:db:b0:a6:f5
+                }
+                static-mapping unifi.noise {
+                    ip-address 10.20.0.5
+                    mac-address 80:2A:A8:CD:F1:2C
+                }
+                static-mapping west-ap.noise {
+                    ip-address 10.20.0.11
+                    mac-address dc:9f:db:1a:6f:b6
+                }
+                static-mapping zeppelin.noise {
+                    ip-address 10.20.0.46
+                    mac-address 00:26:2d:29:fa:1e
+                }
+            }
+        }
+        use-dnsmasq enable
+    }
+    nat {
+        rule 1 {
+            description "pegasus DNAT"
+            destination {
+                address 192.195.83.134
+                port 22,80,443
+            }
+            inbound-interface eth2
+            inside-address {
+                address 10.20.0.22
+            }
+            log disable
+            protocol tcp
+            type destination
+        }
+        rule 2 {
+            description "zeppelin DNAT"
+            destination {
+                address 192.195.83.133
+                port 22,80,443
+            }
+            inbound-interface eth2
+            inside-address {
+                address 10.20.0.46
+            }
+            log disable
+            protocol tcp
+            type destination
+        }
+        rule 5000 {
+            description "source NAT for WAN"
+            log disable
+            outbound-interface eth2
+            outside-address {
+                address 192.195.83.130
+            }
+            protocol all
+            source {
+                address 10.20.0.0/16
+            }
+            type source
+        }
+    }
+    ssh {
+        port 22
+        protocol-version v2
+    }
+    unms {
+        disable
+    }
+}
+system {
+    domain-name noise
+    host-name cycletrailer
+    login {
+        user rando {
+            authentication {
+                encrypted-password $6$TS3KJlxA$rs53wgIz0y0L7h3xFEoXoLTJYvzbP61DraKUaQlLciDeZ2xxF2p8UqVTcKjuBOaux44wJEznP8mTWCMt693k5.
+                plaintext-password ""
+                public-keys marcidy@gmail.com {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAACAQDDRslOaMDqSWxU+Gx2AXAhoNc9nUnoZCQdjuvxFuuvpU5oM9d+U0oUTDxUvF/AtlP++uV0APyrxXYaRKZ1YS9877DZZhpuEME7w3XPaxkIa6vssHiq01wPcmX3CRDeFTVJyl6hY7Oy30ASDi8zYMz3mpHJzy+XtxrbJGGK7UtttTtMCtmgpQHcW73bwcsyE+iJZFsjx59T+1LLuuQ+lLS/P8iXlqTv6GHK+iTFYQaY6TGm1bdd9isVvjtNNXaegcP0oPxFvKFLHYqXyPKQzmQhIRTHdgtkWacN0p6WsLxph0Xp0HsBLAnMwQONSMVm2Echs+lljwtE5qEyti11ljpOEaNqKzE9nVHIAVrgBacs1r5TxKkTJszAa5W9gf9cy1ySTX9irCCa4PASPHfEKGU0SFEoTe+iyIMw4Je7wWlGzeEn6F6jaFui6OjIMJMTAb9SsWeVAVQHoFetr5U/BkIXxhSz1SiPI1iHZNCTV5SiEQXC+TSYyy7hypQRTEGliTvQQR5GPFZbZbRrJkzBdYohsjNIsniGfbzskfDaCJ9dHfcMM9Okhu1gsdDikuikQjun5/1+KTN1iW6oKsuU5/pRMZqTNFSuFhNZpB2pjwnG1nZHOw4JDBiO6VPrPdLEZ5HEEfR1viXIaU4inX0OrN4LKpLEJ+FLlnfC+xzc46C/7Q==
+                    type ssh-rsa
+                }
+            }
+            level admin
+        }
+        user rr {
+            authentication {
+                encrypted-password $6$0fV7Y6dMtzRi0q$Cc4DlO4Br/OjM0l3Rx9dCtr/Nf/VWfcgZhoP7U/k6tXwrZxGmsfx4dGbpF5dff1khFOY3iHLyPYYupJz1qU9Q0
+                plaintext-password ""
+                public-keys r@ablue {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAABAQCvHlZKV8yBsJOkeu2FkWZ1UDY/uTS8bBUbqh1W0pJ3BMec55uvRLNv1AT5Z7RHKbwdjiZTBm6sP0CRVjsOxeGRCVeddHx1SxsXeihZIRQLHX+Z7M1YwYdzmzRDIEhuZhp+RnGH71ESVEHlmUhNPYsNmlgE3nyNbbDatYRZQqC204pal6cz4CHRUWYIozAQvpO8BF+cNDbNgT1yR5DWflwHErlv8yltmxNjh+gQQgp7RzI+05uzpRgumLCIqdHIKUflDJGvZXnUNAr5nv8Xe3W77AZz348nK2SYoD7dOBw23LpEzmy0mENL+/d3ZCuricslc1eBqCpVxJiF7s/RCtix
+                    type ssh-rsa
+                }
+            }
+            full-name ""
+            level admin
+        }
+        user superq {
+            authentication {
+                encrypted-password $6$holig6d5nvUE7d$LQCE1Vse4DXcPJkdwoRmxAXCYr3ko8eVcKEiQIHG1G0324eH.M3QUu848JVNoNevyW4qe1lPHl1or0XY4J27S.
+                plaintext-password ""
+                public-keys github-rsa {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAACAQDfYfZFTGkdHoRoUfnhzp8RLuOgOEgyTH4dncpP+eN2yBbTw5kY84t8sSa60vtjfiPFQGBYaBZdZV9hTdOZgR+wyQXeSWy2evM9e/6h9ZCwhV8vXiRsisV7cJyuqfTdeTaqwgggR24ETS6nTs8UEPRjfzXDTPGv8e4B4vcvoGjEtgkWfOD1V10RuULxZc+kccxYWopTsnpEdrO1o/3IDlno8+7cTNFYDV+HEdjr7BMWXJJvuqW+59WQzkwggQtLLL72gQD2VrDb9+1g0xWSRBd1Jp/Yv956uLJGaVGjJ2yOdyy5nNAqoTRYPoRniMnGOOHPk6fR1LsqXK5S4hxyInTEQvszKUwz0aRDITxtHxdBlruYaAotGB2VEMax3h4t2HJRYsEt+zxgh+ZEDJTsk0GgywO01obn9dgrCF2gwa4DUR2trcc4uaW0ZbqzQ9PiOZ6+ENYJiR6DkXWSrVXB75Vo9tw0DAC/ArxHJ6kl9W52h0Z7hFDQrniRAmYCWF7/jOhFYuqvzmeLOZJajJ9TE4Z5an0maeYchsISODeVaQWQ8ZPSR/9WjXFtVRMu57H+MVsvgNodaq/G2y7Y+S0djjKAUVtqPiM/AUDXCk88eHl0XfSgUEoveuMZiWfgcGW28LoF36OMihTwx6xJ5bLxVUp+FkLIM+3ET/foabLupCIAoQ==
+                    type ssh-rsa
+                }
+            }
+            level admin
+        }
+    }
+    name-server 8.8.8.8
+    name-server 8.8.4.4
+    ntp {
+        server 0.ubnt.pool.ntp.org {
+        }
+        server 1.ubnt.pool.ntp.org {
+        }
+        server 2.ubnt.pool.ntp.org {
+        }
+        server 3.ubnt.pool.ntp.org {
+        }
+    }
+    static-host-mapping {
+        host-name center-ap.noise {
+            inet 10.20.0.13
+        }
+        host-name church-ap.noise {
+            inet 10.20.0.12
+        }
+        host-name cycletrailer.noise {
+            inet 10.20.0.1
+        }
+        host-name earl.noise {
+            inet 10.20.0.10
+        }
+        host-name edgeswitch.noise {
+            inet 10.20.0.4
+        }
+        host-name entropi.noise {
+            inet 10.20.0.23
+        }
+        host-name flaschen-ap.noise {
+            inet 10.20.0.15
+        }
+        host-name ft.noise {
+            inet 10.20.0.42
+        }
+        host-name pegasus.noise {
+            inet 10.20.0.22
+        }
+        host-name pegasus.noisebridge.net {
+            inet 10.20.0.22
+        }
+        host-name sparkle-ap.noise {
+            inet 10.20.0.14
+        }
+        host-name unifi.noise {
+            inet 10.20.0.5
+        }
+        host-name west-ap.noise {
+            inet 10.20.0.11
+        }
+        host-name zeppelin.noise {
+            inet 10.20.0.46
+        }
+        host-name zeppelin.noisebridge.net {
+            inet 10.20.0.46
+        }
+    }
+    syslog {
+        global {
+            facility all {
+                level notice
+            }
+            facility protocols {
+                level debug
+            }
+        }
+    }
+    time-zone UTC
+}

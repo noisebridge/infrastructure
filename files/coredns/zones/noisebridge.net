@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.	IN	SOA	ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-				2018081200 ; Serial
+				2019011100 ; Serial
 				3600 ; Refresh
 				300 ; Retry
 				604800 ; Expire
@@ -138,8 +138,8 @@ cabal		IN	A	216.252.162.58
 ; requested by rubin 2014-11-21
 ; updated by patrick 2015-05-24
 ; new static IP from Monkeybrains
-monkeybrains	IN	A	192.195.83.130
-2169            IN      CNAME   monkeybrains
+cycletrailer	IN	A	192.195.83.130
+2169            IN      CNAME   cycletrailer
 pegasus		IN	A	192.195.83.134
 grafana		IN	CNAME	pegasus
 
