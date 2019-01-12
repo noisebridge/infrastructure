@@ -55,7 +55,7 @@
     - cloudalchemy.node-exporter
     - cloudalchemy.snmp-exporter
     - cloudalchemy.prometheus
-    - ansiblebit.grafana
+    - cloudalchemy.grafana
     
 - name: Secondary DNS Server
   hosts: secondary-dns-server
