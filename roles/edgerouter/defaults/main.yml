@@ -1,0 +1,6 @@
+---
+edgerouter_dhcp_subnets:
+  internal:
+    subnet: 192.168.0.0/24
+
+edgerouter_static_hosts: {}

@@ -1,7 +1,7 @@
 ---
 
 - name: node defaults
-  hosts: all
+  hosts: all:!routers
   become: yes
   become_method: sudo
   tags: [common]
@@ -82,3 +82,9 @@
   tags: [cloud]
   roles:
     - nextcloud-docker
+
+- name: Routers
+  hosts: routers
+  tags: [routers]
+  roles:
+    - edgerouter
