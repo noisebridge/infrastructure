@@ -15,6 +15,7 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
         - "pegasus.noisebridge.net:9100"
+        - "cycletrailer.noise:9100"
   - job_name: "smartpi"
     scrape_interval: 1s
     static_configs:
