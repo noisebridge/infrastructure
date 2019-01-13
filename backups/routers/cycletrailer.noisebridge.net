@@ -13,6 +13,7 @@ interfaces {
         address 192.195.83.130/29
         address 192.195.83.134/29
         address 192.195.83.133/29
+        address 10.19.0.1/24
         description "MonkeyBrains WAN"
         duplex auto
         ip {
@@ -48,6 +49,7 @@ service {
             subnet 10.20.0.0/16 {
                 default-router 10.20.0.1
                 dns-server 10.20.0.1
+                domain-name noise
                 lease 86400
                 start 10.20.1.0 {
                     stop 10.20.9.254
@@ -99,6 +101,17 @@ service {
                 static-mapping zeppelin.noise {
                     ip-address 10.20.0.46
                     mac-address 00:26:2d:29:fa:1e
+                }
+            }
+        }
+        shared-network-name uplink {
+            subnet 10.19.0.0/24 {
+                default-router 10.19.0.1
+                dns-server 10.19.0.1
+                domain-name noise
+                static-mapping roofswitch.noise {
+                    ip-address 10.19.0.5
+                    mac-address dc:9f:db:28:de:6d
                 }
             }
         }
@@ -236,6 +249,9 @@ system {
         }
         host-name pegasus.noisebridge.net {
             inet 10.20.0.22
+        }
+        host-name roofswitch.noise {
+            inet 10.19.0.5
         }
         host-name sparkle-ap.noise {
             inet 10.20.0.14
