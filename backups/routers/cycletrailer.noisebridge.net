@@ -117,6 +117,14 @@ service {
         }
         use-dnsmasq enable
     }
+    dns {
+        forwarding {
+            cache-size 9000
+            listen-on eth0
+            name-server 8.8.8.8
+            name-server 8.8.4.4
+        }
+    }
     nat {
         rule 1 {
             description "pegasus DNAT"
@@ -171,6 +179,9 @@ service {
 system {
     domain-name noise
     host-name cycletrailer
+    ip {
+        override-hostname-ip 10.20.0.1
+    }
     login {
         user rando {
             authentication {
@@ -207,8 +218,7 @@ system {
             level admin
         }
     }
-    name-server 8.8.8.8
-    name-server 8.8.4.4
+    name-server 127.0.0.1
     ntp {
         server 0.ubnt.pool.ntp.org {
         }
@@ -225,9 +235,6 @@ system {
         }
         host-name church-ap.noise {
             inet 10.20.0.12
-        }
-        host-name cycletrailer.noise {
-            inet 10.20.0.1
         }
         host-name earl.noise {
             inet 10.20.0.10
