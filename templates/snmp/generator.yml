@@ -1,0 +1,42 @@
+modules:
+  if_mib:
+    walk:
+    - system
+    - ifTable
+    - etherStatsTable
+    - ifXTable
+    auth:
+      community: public
+    lookups:
+    - old_index: ifIndex
+      new_index: ifAlias
+    - old_index: ifIndex
+      new_index: ifDescr
+    - old_index: ifIndex
+      # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
+      new_index: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+  if_mib_v1:
+    walk:
+    - system
+    - ifTable
+    - etherStatsTable
+    - ifXTable
+    version: 1
+    auth:
+      community: "{{ noisebridge_snmp_community }}"
+    lookups:
+    - old_index: ifIndex
+      new_index: ifAlias
+    - old_index: ifIndex
+      new_index: ifDescr
+    - old_index: ifIndex
+      # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
+      new_index: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+  ubiquiti_unifi:
+    walk:
+      - sysUpTime
+      - interfaces
+      - ifXTable
+      - 1.3.6.1.4.1.41112.1.6 # ubntUniFi
+    auth:
+      community: "{{ noisebridge_snmp_community }}"
