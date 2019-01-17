@@ -1,0 +1,4 @@
+---
+- name: Install powerpanel package.
+  apt:
+    deb: https://dl4jz3rbrsfum.cloudfront.net/software/powerpanel_132_amd64.deb
