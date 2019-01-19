@@ -1,5 +1,8 @@
 ---
 node_exporter_web_listen_address: ":9100"
+
+snmp_exporter_config_file: snmp/snmp.yml
+
 prometheus_web_listen_address: ":9090"
 prometheus_storage_retention: "90d"
 prometheus_global:
@@ -25,5 +28,51 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
         - "earl.noise:1212"
+  - job_name: "snmp_if_mib"
+    metrics_path: /snmp
+    params:
+      module: [if_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+    static_configs:
+      - targets:
+        - edgeswitch.noise
+  - job_name: "snmp_if_mib_v1"
+    metrics_path: /snmp
+    params:
+      module: [if_mib_v1]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+    static_configs:
+      - targets:
+        - roofswitch.noise
+  - job_name: "snmp_unifi_ap"
+    metrics_path: /snmp
+    params:
+      module: [ubiquiti_unifi]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+    static_configs:
+      - targets:
+        - center-ap.noise
+        - church-ap.noise
+        - flaschen-ap.noise
+        - sparkle-ap.noise
+        - west-ap.noise
 
 prometheus_targets: {}
