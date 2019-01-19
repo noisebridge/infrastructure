@@ -1,4 +1,4 @@
 ---
 - name: install percona repo
   apt:
-    deb: "https://repo.percona.com/apt/percona-release_0.1-4.{{ ansible_distribution_release }}_all.deb"
+    deb: "https://repo.percona.com/apt/percona-release_1.0-7.generic_all.deb"
