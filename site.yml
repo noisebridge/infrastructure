@@ -53,7 +53,7 @@
   tags: [space-noisebridge-net]
   roles:
     - cloudalchemy.node-exporter
-    - cloudalchemy.snmp-exporter
+    - { role: cloudalchemy.snmp-exporter, tags: [ 'snmp' ] }
     - cloudalchemy.prometheus
     - cloudalchemy.grafana
     - powerpanel
