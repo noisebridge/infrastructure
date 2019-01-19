@@ -56,6 +56,7 @@
     - cloudalchemy.snmp-exporter
     - cloudalchemy.prometheus
     - cloudalchemy.grafana
+    - powerpanel
     
 - name: Secondary DNS Server
   hosts: secondary-dns-server
