@@ -252,9 +252,8 @@ system {
             inet 10.20.0.42
         }
         host-name pegasus.noise {
-            inet 10.20.0.22
-        }
-        host-name pegasus.noisebridge.net {
+            alias pegasus.noisebridge.net
+            alias parts.noisebridge.net
             inet 10.20.0.22
         }
         host-name roofswitch.noise {
@@ -270,9 +269,7 @@ system {
             inet 10.20.0.11
         }
         host-name zeppelin.noise {
-            inet 10.20.0.46
-        }
-        host-name zeppelin.noisebridge.net {
+            alias zeppelin.noisebridge.net
             inet 10.20.0.46
         }
     }
