@@ -1,6 +1,76 @@
+firewall {
+    ipv6-name WAN_IN_v6 {
+        default-action drop
+        description "WAN to LAN (IPv6)"
+        rule 10 {
+            action accept
+            description ICMPv6
+            log disable
+            protocol icmpv6
+        }
+        rule 20 {
+            action accept
+            description "Allow established"
+            protocol all
+            log disable
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 21 {
+            action drop
+            description "Drop invalid"
+            protocol all
+            log disable
+            state {
+                invalid enable
+            }
+        }
+    }
+    ipv6-name WAN_LOCAL_v6 {
+        default-action drop
+        description "WAN to router (IPv6)"
+        rule 10 {
+            action accept
+            description ICMPv6
+            log disable
+            protocol icmpv6
+        }
+        rule 20 {
+            action accept
+            description "Allow established"
+            protocol all
+            log disable
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 21 {
+            action drop
+            description "Drop invalid"
+            protocol all
+            log disable
+            state {
+                invalid enable
+            }
+        }
+        rule 30 {
+            action accept
+            description DHCPv6
+            log disable
+            destination {
+                port 546,547
+            }
+            protocol udp
+        }
+    }
+}
 interfaces {
     ethernet eth0 {
         address 10.20.0.1/16
+        address fd95:0c38:25f0::1/64
         description "NB LAN"
         duplex auto
         speed auto
@@ -14,10 +84,34 @@ interfaces {
         address 192.195.83.134/29
         address 192.195.83.133/29
         address 10.19.0.1/24
+        address fd95:0c38:25f0:1::1/64
         description "MonkeyBrains WAN"
         duplex auto
         ip {
             enable-proxy-arp
+        }
+        dhcpv6-pd {
+            no-dns
+            pd 1 {
+                interface eth0 {
+                    host-address ::1
+                     no-dns
+                    prefix-id 1
+                    service dhcpv6-stateless
+                }
+                prefix-length 56
+            }
+            rapid-commit enable
+        }
+        firewall {
+            in {
+                ipv6-name WAN_IN_v6
+                name WAN_IN
+            }
+            local {
+                ipv6-name WAN_LOCAL_v6
+                name WAN_LOCAL
+            }
         }
         speed auto
     }
@@ -117,12 +211,23 @@ service {
         }
         use-dnsmasq enable
     }
+    dhcpv6-server {
+        shared-network-name lan {
+                name-server fd95:0c38:25f0::1
+                subnet fd95:0c38:25f0::/48 {
+                        domain-search noise
+                }
+        }
+    }
     dns {
         forwarding {
             cache-size 9000
             listen-on eth0
+            listen-on eth2
             name-server 8.8.8.8
             name-server 8.8.4.4
+            name-server 2001:4860:4860::8888
+            name-server 2001:4860:4860::8844
         }
     }
     nat {
