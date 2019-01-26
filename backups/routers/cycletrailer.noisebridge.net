@@ -95,7 +95,7 @@ interfaces {
             pd 1 {
                 interface eth0 {
                     host-address ::1
-                     no-dns
+                    no-dns
                     prefix-id 1
                     service dhcpv6-stateless
                 }
