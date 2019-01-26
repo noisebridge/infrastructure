@@ -1,0 +1,18 @@
+---
+- name: Create DHCP network
+  edgeos_config:
+    lines:
+    - "set system dhcp-server shared-network-name {{ item.name }} subnet {{ item.subnet }}"
+  connection: network_cli
+  with_items: "{{ edgerouter_dhcp_networks }}"
+
+- name: Add static hosts
+  edgeos_config:
+    lines:
+    - "set system static-host-mapping host-name {{ item.1.hostname }} inet {{ item.1.ipaddress }}"
+    - "set service dhcp-server shared-network-name {{ item.0.name }} subnet {{ item.0.subnet }} static-mapping {{ item.1.hostname }} ip-address {{ item.1.ipaddress }}"
+    - "set service dhcp-server shared-network-name {{ item.0.name }} subnet {{ item.0.subnet }} static-mapping {{ item.1.hostname }} mac-address '{{ item.1.mac-address }}'"
+  connection: network_cli
+  with_subelements:
+  - "{{ edgerouter_dhcp_networks }}"
+  - static-hosts

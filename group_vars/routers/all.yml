@@ -1,0 +1,11 @@
+---
+edgerouter_dhcp_networks:
+- name: cycledhcp
+  subnet: 10.20.0.0/16
+  static-hosts:
+  - hostname: earl.noise
+    ipaddress: 10.20.0.10
+    mac-address: b8:27:eb:0c:c6:e9
+  - hostname: enter-ap.noise
+    ipaddress: 10.20.0.13
+    mac-address: 80:2a:a8:c0:f7:44
