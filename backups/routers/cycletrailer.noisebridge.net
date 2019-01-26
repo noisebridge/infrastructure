@@ -201,6 +201,8 @@ service {
         shared-network-name uplink {
             subnet 10.19.0.0/24 {
                 default-router 10.19.0.1
+                dns-server 10.20.0.1
+                domain-name noise
                 static-mapping roofswitch.noise {
                     ip-address 10.19.0.5
                     mac-address dc:9f:db:28:de:6d
