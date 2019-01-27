@@ -11,8 +11,8 @@ firewall {
         rule 20 {
             action accept
             description "Allow established"
-            protocol all
             log disable
+            protocol all
             state {
                 established enable
                 related enable
@@ -21,10 +21,22 @@ firewall {
         rule 21 {
             action drop
             description "Drop invalid"
-            protocol all
             log disable
+            protocol all
             state {
                 invalid enable
+            }
+        }
+        rule 31 {
+            action accept
+            description "Pegasus TCP allowed"
+            destination {
+                address 2607:f598:b2c2:fc01:250:c2ff:fe28:3070
+                port 22,80,443
+            }
+            protocol tcp
+            state {
+                new enable
             }
         }
     }
@@ -40,8 +52,8 @@ firewall {
         rule 20 {
             action accept
             description "Allow established"
-            protocol all
             log disable
+            protocol all
             state {
                 established enable
                 related enable
@@ -50,8 +62,8 @@ firewall {
         rule 21 {
             action drop
             description "Drop invalid"
-            protocol all
             log disable
+            protocol all
             state {
                 invalid enable
             }
@@ -59,11 +71,22 @@ firewall {
         rule 30 {
             action accept
             description DHCPv6
-            log disable
             destination {
                 port 546,547
             }
+            log disable
             protocol udp
+        }
+        rule 31 {
+            action accept
+            description "Cycletrailer TCP allowed"
+            destination {
+                port 22
+            }
+            protocol tcp
+            state {
+                new enable
+            }
         }
     }
 }
@@ -86,31 +109,34 @@ interfaces {
         address 10.19.0.1/24
         address fd95:0c38:25f0:1::1/64
         description "MonkeyBrains WAN"
-        duplex auto
-        ip {
-            enable-proxy-arp
-        }
         dhcpv6-pd {
             no-dns
             pd 1 {
                 interface eth0 {
                     host-address ::1
                     no-dns
-                    prefix-id 1
+                    prefix-id :1
                     service dhcpv6-stateless
                 }
                 prefix-length 56
             }
             rapid-commit enable
         }
+        duplex auto
         firewall {
             in {
                 ipv6-name WAN_IN_v6
-                name WAN_IN
             }
             local {
                 ipv6-name WAN_LOCAL_v6
-                name WAN_LOCAL
+            }
+        }
+        ip {
+            enable-proxy-arp
+        }
+        ipv6 {
+            address {
+                autoconf
             }
         }
         speed auto
@@ -213,10 +239,10 @@ service {
     }
     dhcpv6-server {
         shared-network-name lan {
-                name-server fd95:0c38:25f0::1
-                subnet fd95:0c38:25f0::/48 {
-                        domain-search noise
-                }
+            name-server fd95:0c38:25f0::1
+            subnet fd95:0c38:25f0::/48 {
+                domain-search noise
+            }
         }
     }
     dns {
