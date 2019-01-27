@@ -39,6 +39,14 @@ firewall {
                 new enable
             }
         }
+        rule 32 {
+            action accept
+            description "Allow MOSH inbound"
+            destination {
+                port 60000-61000
+            }
+            protocol udp
+        }
     }
     ipv6-name WAN_LOCAL_v6 {
         default-action drop
