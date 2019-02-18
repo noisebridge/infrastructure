@@ -39,10 +39,10 @@
     - mailman
 
 - name: Primary DNS Server
-  hosts: primary-dns-server
+  hosts: dns
   become: yes
   become_method: sudo
-  tags: [primary-dns-server]
+  tags: [dns]
   roles:
     - coredns
 
@@ -58,14 +58,6 @@
     - cloudalchemy.grafana
     - powerpanel
     
-- name: Secondary DNS Server
-  hosts: secondary-dns-server
-  become: yes
-  become_method: sudo
-  tags: [secondary-dns-server]
-  roles:
-    - coredns
-
 - name: Mailman-3 List server
   hosts: lists
   become: yes
@@ -82,3 +74,12 @@
   tags: [cloud]
   roles:
     - nextcloud-docker
+
+- name: Parts service
+  hosts: parts-noisebridge-net
+  become: yes
+  become_method: sudo
+  tags: [parts-noisebridge-net]
+  roles:
+    - antoiner77.caddy
+    - { role: stuff-org, tags: [ 'stuff-org' ] }

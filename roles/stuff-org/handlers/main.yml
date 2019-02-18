@@ -1,0 +1,7 @@
+---
+- name: restart stuff-org
+  become: true
+  systemd:
+    daemon_reload: true
+    name: stuff-org
+    state: restarted

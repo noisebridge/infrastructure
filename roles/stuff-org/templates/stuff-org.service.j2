@@ -1,0 +1,25 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Stuff-Org
+After=network.target
+
+[Service]
+Type=simple
+User=stuff
+Group=stuff
+ExecStart=/usr/local/bin/stuff-org \
+  -port=3000 \
+  -site-name={{ stuff_site_name }} \
+  -edit-permission-nets={{ stuff_edit_permission_nets }} \
+  -dbfile={{ stuff_data_dir }}/stuff-database.db \
+  -imagedir={{ stuff_data_dir }}/small-image \
+  -staticdir={{ stuff_data_dir }}/static \
+  -templatedir={{ stuff_data_dir }}/template \
+  -logfile={{ stuff_log_dir }}/stufflog.log
+
+SyslogIdentifier=stuff-org
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

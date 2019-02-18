@@ -1,0 +1,99 @@
+---
+## TODO: Decide if this is needed.
+#- name: Create SSL cert
+#  openssl_certificate:
+#    path: /etc/ssl/certs/stuff.crt
+#    privatekey_path: /etc/ssl/private/stuff.pem
+#    csr_path: /etc/ssl/certs/stuff.csr
+#    provider: selfsigned
+
+- name: Create stuff system group
+  group:
+    name: stuff
+    system: true
+    state: present
+
+- name: create stuff system user
+  user:
+    name: stuff
+    system: true
+    shell: "/sbin/nologin"
+    group: stuff
+    createhome: false
+    home: "{{ stuff_data_dir }}"
+
+- name: Create directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: stuff
+    group: stuff
+    mode: 0755
+  with_items:
+  - "{{ stuff_log_dir }}"
+  - "{{ stuff_data_dir }}"
+  - "{{ stuff_data_dir }}/small-image"
+  - "{{ stuff_data_dir }}/static"
+  - "{{ stuff_data_dir }}/template"
+
+- name: Download stuff-org binary to local folder
+  become: false
+  get_url:
+    url: "https://github.com/hzeller/stuff-org/releases/download/v{{ stuff_version }}/stuff-org-v{{ stuff_version }}.{{ go_arch }}.tar.gz"
+    dest: "/tmp/stuff-org-v{{ stuff_version }}.{{ go_arch }}.tar.gz"
+  register: _download_binary
+  until: _download_binary is succeeded
+  retries: 5
+  delay: 2
+  delegate_to: localhost
+  check_mode: false
+
+- name: Unpack stuff-org binary
+  become: false
+  unarchive:
+    src: "/tmp/stuff-org-v{{ stuff_version }}.{{ go_arch }}.tar.gz"
+    dest: "/tmp"
+    creates: "/tmp/stuff-org-v{{ stuff_version }}"
+  delegate_to: localhost
+  check_mode: false
+
+- name: Propagate stuff-org binaries
+  copy:
+    src: "/tmp/stuff-org-v{{ stuff_version }}/stuff-org"
+    dest: "/usr/local/bin/stuff-org"
+    mode: 0755
+    owner: root
+    group: root
+  notify: restart stuff-org
+  when: not ansible_check_mode
+
+- name: Propagate static assets
+  copy:
+    src: "/tmp/stuff-org-v{{ stuff_version }}/{{ item }}/"
+    dest: "{{ stuff_data_dir }}/{{ item }}/"
+    mode: 0644
+    owner: stuff
+    group: stuff
+  with_items:
+    - static
+    - template
+  notify:
+    - restart stuff-org
+
+- name: Create service unit
+  template:
+    src: stuff-org.service.j2
+    dest: /etc/systemd/system/stuff-org.service
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - restart stuff-org
+
+- name: ensure stuff-org service is started and enabled
+  become: true
+  systemd:
+    daemon_reload: true
+    name: stuff-org
+    state: started
+    enabled: true

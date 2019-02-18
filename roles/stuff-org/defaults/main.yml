@@ -1,0 +1,8 @@
+---
+stuff_version: 1.0.1
+
+stuff_port: 3000
+stuff_site_name: https://stuff.noisebridge.net
+stuff_data_dir: /var/lib/stuff-org
+stuff_log_dir: /var/log/stuff-org
+stuff_edit_permission_nets: '10.20.0.0/23,192.195.83.129/29'
