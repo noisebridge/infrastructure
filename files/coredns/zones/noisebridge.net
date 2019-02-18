@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2019012700 ; Serial
+                                2019021800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -144,6 +144,9 @@ cycletrailer    IN      A       192.195.83.130
 pegasus         IN      AAAA    2607:f598:b2c2:fc01:250:c2ff:fe28:3070
 pegasus         IN      A       192.195.83.134
 grafana         IN      CNAME   pegasus
+
+; Services hosted on m4
+stuff           IN      CNAME   m4
 
 ; pegasus CNAMES
 ; added matrix 2016-12-23 @patrickod
