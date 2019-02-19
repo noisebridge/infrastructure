@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2019021800 ; Serial
+                                2019021900 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -147,10 +147,10 @@ grafana         IN      CNAME   pegasus
 
 ; Services hosted on m4
 stuff           IN      CNAME   m4
+parts           IN      CNAME   m4
 
 ; pegasus CNAMES
 ; added matrix 2016-12-23 @patrickod
-parts           IN      CNAME   pegasus
 matrix          IN      CNAME   pegasus
 
 ; zeppelin config

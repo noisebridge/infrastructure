@@ -391,7 +391,6 @@ system {
         }
         host-name pegasus.noise {
             alias pegasus.noisebridge.net
-            alias parts.noisebridge.net
             inet 10.20.0.22
         }
         host-name roofswitch.noise {
