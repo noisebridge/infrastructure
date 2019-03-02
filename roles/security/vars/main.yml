@@ -78,6 +78,11 @@ users:
     fullname: 'Robin Trent'
     email: ...
 
+  ruthgrace:
+    fullname: 'Ruth Grace Wong,,,'
+    email: ruthgracewong@gmail.com
+    github_username: ruthgrace
+
   steele:
     fullname: 'Lee Azzarello,,,'
     email: ...
@@ -94,8 +99,3 @@ users:
   teapot:
     fullname: 'Bill Williams,,,'
     email: ...
-
-  ruthgrace:
-    fullname: 'Ruth Grace Wong,,,'
-    email: ruthgracewong@gmail.com
-    github_username: ruthgrace
