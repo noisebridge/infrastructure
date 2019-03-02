@@ -94,3 +94,8 @@ users:
   teapot:
     fullname: 'Bill Williams,,,'
     email: ...
+
+  ruthgrace:
+    fullname: 'Ruth Grace Wong,,,'
+    email: ruthgracewong@gmail.com
+    github_username: ruthgrace
