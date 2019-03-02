@@ -22,6 +22,7 @@ We hold the sanctity of The Network above all else.  Rogue equipment will be sac
 Maintainers actively work on noisebridge infrastructure.  If you wish to join the team, simply create a PR and add your github account to the bottom.  We'll see it and say hi.
 
 
-[SuperQ](https://github.com/SuperQ)
-[marcidy](https://github.com/marcidy)
-[ruthgrace](https://github.com/ruthgrace)
+* [SuperQ](https://github.com/SuperQ)
+* [marcidy](https://github.com/marcidy)
+* [ruthgrace](https://github.com/ruthgrace)
+* [rizend](https://github.com/rizend)
