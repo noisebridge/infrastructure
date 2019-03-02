@@ -171,6 +171,7 @@ protocols {
 service {
     dhcp-server {
         disabled false
+        global-parameters "log-facility local2;"
         hostfile-update disable
         shared-network-name noise {
             authoritative disable
@@ -189,6 +190,10 @@ service {
                 static-mapping church-ap.noise {
                     ip-address 10.20.0.12
                     mac-address dc:9f:db:1a:70:90
+                }
+                static-mapping cyber.noise {
+                    ip-address 10.20.0.6
+                    mac-address 00:0c:15:02:0f:dc
                 }
                 static-mapping earl.noise {
                     ip-address 10.20.0.10
@@ -340,6 +345,10 @@ system {
                     key AAAAB3NzaC1yc2EAAAADAQABAAABAQCvHlZKV8yBsJOkeu2FkWZ1UDY/uTS8bBUbqh1W0pJ3BMec55uvRLNv1AT5Z7RHKbwdjiZTBm6sP0CRVjsOxeGRCVeddHx1SxsXeihZIRQLHX+Z7M1YwYdzmzRDIEhuZhp+RnGH71ESVEHlmUhNPYsNmlgE3nyNbbDatYRZQqC204pal6cz4CHRUWYIozAQvpO8BF+cNDbNgT1yR5DWflwHErlv8yltmxNjh+gQQgp7RzI+05uzpRgumLCIqdHIKUflDJGvZXnUNAr5nv8Xe3W77AZz348nK2SYoD7dOBw23LpEzmy0mENL+/d3ZCuricslc1eBqCpVxJiF7s/RCtix
                     type ssh-rsa
                 }
+                public-keys r@b {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAABAQDWvlc3+qDxhKE3jCCxKKU1h9QJyhCqLgHAwkiokvSPig6dXZW9f8uS/1CNMEmB5avrZhT6S3V00NExqZMldJechROhQoZb6YrUzakaeJCHrbThotQ/TlDuRWCCEh+y/qowk261X4Rbdx/KMwPuROP0p+pw2u3CVoLC7ejnsCwzTMZJ450QtZau0nvP7PY1vnehg2npA4HOqtwjOABJlMMpSZfaQdddwQJ7YE01GLpXF73Lwcnyue51fWFdjsQwIeQM2feO0yf1r1fjoLyMfWCVLK2GI0ONXVFWKQ52kfzr4QQ7Tq+Xi12qr7KGlHZ8yl7tw3MUoyU7k0HrUea1F8WF
+                    type ssh-rsa
+                }
             }
             full-name ""
             level admin
@@ -373,6 +382,9 @@ system {
         }
         host-name church-ap.noise {
             inet 10.20.0.12
+        }
+        host-name cyber.noise {
+            inet 10.20.0.6
         }
         host-name earl.noise {
             inet 10.20.0.10
@@ -411,6 +423,15 @@ system {
         }
     }
     syslog {
+        file dhcpd {
+            archive {
+                files 5
+                size 5000
+            }
+            facility local2 {
+                level debug
+            }
+        }
         global {
             facility all {
                 level notice
