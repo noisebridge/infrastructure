@@ -8,13 +8,19 @@ modules:
     auth:
       community: public
     lookups:
-    - old_index: ifIndex
-      new_index: ifAlias
-    - old_index: ifIndex
-      new_index: ifDescr
-    - old_index: ifIndex
+    - source_indexes:
+      - ifIndex
+      lookup: ifAlias
+    - source_indexes:
+      - ifIndex
+      lookup: ifDescr
+    - source_indexes:
+      - ifIndex
       # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
-      new_index: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+      lookup: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+    overrides:
+      ifType:
+        type: EnumAsInfo
   if_mib_v1:
     walk:
     - system
@@ -25,13 +31,48 @@ modules:
     auth:
       community: "{{ noisebridge_snmp_community }}"
     lookups:
-    - old_index: ifIndex
-      new_index: ifAlias
-    - old_index: ifIndex
-      new_index: ifDescr
-    - old_index: ifIndex
+    - source_indexes:
+      - ifIndex
+      lookup: ifAlias
+    - source_indexes:
+      - ifIndex
+      lookup: ifDescr
+    - source_indexes:
+      - ifIndex
       # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
-      new_index: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+      lookup: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+    overrides:
+      ifType:
+        type: EnumAsInfo
+  cyber:
+    walk:
+    - sysUpTime
+    - ifTable
+    - ifXTable
+    - 1.3.6.1.4.1.3808.1.1.1.1 # upsIdent
+    - 1.3.6.1.4.1.3808.1.1.1.2 # upsBattery
+    - 1.3.6.1.4.1.3808.1.1.1.3 # upsInput
+    - 1.3.6.1.4.1.3808.1.1.1.4 # upsOutput
+    - 1.3.6.1.4.1.3808.1.1.4.1 # envirIdent
+    - 1.3.6.1.4.1.3808.1.1.4.2 # envirTemp
+    - 1.3.6.1.4.1.3808.1.1.4.3 # envirHumid
+    version: 1
+    lookups:
+    - source_indexes:
+      - ifIndex
+      lookup: ifAlias
+    - source_indexes:
+      - ifIndex
+      lookup: ifDescr
+    - source_indexes:
+      - ifIndex
+      # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
+      lookup: 1.3.6.1.2.1.31.1.1.1.1 # ifName
+    overrides:
+      ifType:
+        type: EnumAsInfo
+      upsBaseOutputStatus:
+        type: EnumAsStateSet
   ubiquiti_unifi:
     walk:
       - sysUpTime

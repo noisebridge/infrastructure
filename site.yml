@@ -54,7 +54,7 @@
   roles:
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.snmp-exporter, tags: [ 'snmp' ] }
-    - cloudalchemy.prometheus
+    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - cloudalchemy.grafana
     - powerpanel
     
