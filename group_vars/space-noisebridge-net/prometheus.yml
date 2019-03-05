@@ -56,6 +56,20 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
         - roofswitch.noise
+  - job_name: "snmp_cyber"
+    metrics_path: /snmp
+    params:
+      module: [cyber]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+    static_configs:
+      - targets:
+        - cyber.noise
   - job_name: "snmp_unifi_ap"
     metrics_path: /snmp
     params:
