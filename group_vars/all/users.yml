@@ -36,6 +36,7 @@ users:
   hzeller:
     fullname: 'Henner Zeller,,,'
     email: ...
+    github_username: hzeller
 
   jams:
     fullname: 'Jeremy,,,'

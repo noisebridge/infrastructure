@@ -1,0 +1,9 @@
+---
+earl_version: 0.2.7
+earl_http_port: 1212
+earl_tcp_port: 1213
+earl_serial_devices:
+- /dev/ttyUSB0
+- /dev/ttyUSB1
+- /dev/ttyUSB2
+- /dev/ttyS0

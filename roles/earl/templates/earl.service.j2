@@ -1,0 +1,24 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Earl
+After=network.target
+
+
+[Service]
+Type=simple
+User=root
+Group=earl
+SyslogIdentifier=earl
+Restart=always
+DefaultEnvironment=TZ=:US/Pacific
+ExecStart=/usr/local/bin/earl \
+  -logfile /var/log/earl/earl.log \
+  -belldir /var/lib/earl/doorbell-sounds \
+  -users /etc/earl/users.csv \
+  -httpport {{ earl_http_port }} \
+  -tcpport {{ earl_tcp_port }} \
+  {{ earl_serial_devices | join(' ') }}
+
+[Install]
+WantedBy=multi-user.target

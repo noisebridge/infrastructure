@@ -1,0 +1,7 @@
+---
+- name: restart earl
+  become: true
+  systemd:
+    daemon_reload: true
+    name: earl
+    state: restarted
