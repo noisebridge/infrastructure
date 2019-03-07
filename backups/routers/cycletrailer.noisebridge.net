@@ -197,7 +197,7 @@ service {
                 }
                 static-mapping earl.noise {
                     ip-address 10.20.0.10
-                    mac-address b8:27:eb:0c:c6:e9
+                    mac-address b8:27:eb:fc:dd:94
                 }
                 static-mapping edgeswitch.noise {
                     ip-address 10.20.0.4
@@ -238,6 +238,7 @@ service {
             }
         }
         shared-network-name uplink {
+            authoritative disable
             subnet 10.19.0.0/24 {
                 default-router 10.19.0.1
                 dns-server 10.20.0.1
@@ -320,6 +321,11 @@ service {
     }
 }
 system {
+    config-management {
+        commit-revisions 20
+    }
+    conntrack {
+    }
     domain-name noise
     host-name cycletrailer
     ip {
@@ -374,6 +380,15 @@ system {
         server 2.ubnt.pool.ntp.org {
         }
         server 3.ubnt.pool.ntp.org {
+        }
+    }
+    offload {
+        ipsec enable
+        ipv4 {
+            forwarding enable
+        }
+        ipv6 {
+            forwarding disable
         }
     }
     static-host-mapping {
