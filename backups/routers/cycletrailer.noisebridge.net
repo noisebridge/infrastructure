@@ -31,7 +31,7 @@ firewall {
             action accept
             description "Pegasus TCP allowed"
             destination {
-                address 2607:f598:b2c2:fc01:250:c2ff:fe28:3070
+                address 2607:f598:b2c2:fd01:250:c2ff:fe28:3070
                 port 22,80,443
             }
             protocol tcp
@@ -263,6 +263,7 @@ service {
         forwarding {
             cache-size 9000
             listen-on eth0
+            listen-on eth2
             name-server 8.8.8.8
             name-server 8.8.4.4
             name-server 2001:4860:4860::8888
