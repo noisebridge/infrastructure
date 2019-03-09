@@ -74,6 +74,7 @@ users:
   rando:
     fullname: 'Matthew Arcidy,,,'
     email: ...
+    github_username: marcidy
 
   robbintt:
     fullname: 'Robin Trent'
