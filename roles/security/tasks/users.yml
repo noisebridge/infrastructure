@@ -25,3 +25,12 @@
   - "{{ noisebridge_admins | d([]) }}"
   - "{{ noisebridge_users | d([]) }}"
   when: users[item].github_username is defined
+
+- name: static SSH key
+  authorized_key:
+    user: "{{ item }}"
+    key: "{{ users[item].ssh_key }}"
+  with_flattened:
+  - "{{ noisebridge_admins | d([]) }}"
+  - "{{ noisebridge_users | d([]) }}"
+  when: users[item].ssh_key is defined
