@@ -19,7 +19,7 @@
     - antoiner77.caddy
     - mediawiki
     - cloudalchemy.node-exporter
-    - cloudalchemy.prometheus
+    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
   vars:
     mediawiki:

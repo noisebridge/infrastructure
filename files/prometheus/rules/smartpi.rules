@@ -1,0 +1,7 @@
+---
+groups:
+- name: SmartPi
+  interval: 1m
+  rules:
+  - record: instance:smartpi_active_watts:avg1m
+    expr: avg_over_time(smartpi_active_watts[1m])
