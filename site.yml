@@ -18,6 +18,7 @@
   roles:
     - antoiner77.caddy
     - mediawiki
+    - { role: website, tags: [ 'website' ] }
     - cloudalchemy.node-exporter
     - cloudalchemy.prometheus
     - { role: mydumper, tags: [ 'mydumper' ] }
