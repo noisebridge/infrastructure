@@ -7,8 +7,6 @@
     owner: root
     group: root
     mode: 0644
-  tags:
-  - website
 
 - name: make image directory
   file:
@@ -16,8 +14,6 @@
     state: directory
     owner: www-data
     group: www-data
-  tags:
-  - website
 
 - name: copy banner picture for home page
   copy:
@@ -26,8 +22,6 @@
     owner: root
     group: root
     mode: 0644
-  tags:
-  - website
 
 - name: install forever home page
   template:
@@ -36,5 +30,3 @@
     owner: root
     group: root
     mode: 0644
-  tags:
-  - website
