@@ -1,0 +1,32 @@
+---
+
+- name: install home page
+  template:
+    src: index.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/index.html"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: make image directory
+  file:
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img"
+    state: directory
+    owner: www-data
+    group: www-data
+
+- name: copy banner picture for home page
+  copy:
+    src: Patreon_1600x400banner.jpg
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/Patreon_1600x400banner.jpg"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: install forever home page
+  template:
+    src: forever_home.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/forever_home.html"
+    owner: root
+    group: root
+    mode: 0644
