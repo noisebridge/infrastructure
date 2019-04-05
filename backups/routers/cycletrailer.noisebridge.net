@@ -31,7 +31,7 @@ firewall {
             action accept
             description "Pegasus TCP allowed"
             destination {
-                address 2607:f598:b2c2:fd01:250:c2ff:fe28:3070
+                address 2607:f598:b2cf:100:250:c2ff:fe28:3070
                 port 22,80,443
             }
             protocol tcp
@@ -101,7 +101,7 @@ firewall {
 interfaces {
     ethernet eth0 {
         address 10.20.0.1/16
-        address fd95:0c38:25f0::1/64
+        address 2607:f598:b2cf:100::1/64
         description "NB LAN"
         duplex auto
         speed auto
@@ -115,7 +115,7 @@ interfaces {
         address 192.195.83.134/29
         address 192.195.83.133/29
         address 10.19.0.1/24
-        address fd95:0c38:25f0:1::1/64
+        address 2607:f598:b2c0:277::f001/64
         description "MonkeyBrains WAN"
         dhcpv6-pd {
             no-dns
@@ -164,6 +164,10 @@ protocols {
     static {
         route 0.0.0.0/0 {
             next-hop 192.195.83.129 {
+            }
+        }
+        route6 ::/0 {
+            next-hop 2607:f598:b2c0:277::1 {
             }
         }
     }

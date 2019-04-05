@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2019030700 ; Serial
+                                2019032800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -135,13 +135,12 @@ zine            IN      A       96.126.98.79
 ; updated superq@gmail.com 2014-03-13
 cabal           IN      A       216.252.162.58
 
-; requested by rubin 2014-11-21
-; updated by patrick 2015-05-24
-; new static IP from Monkeybrains
-cycletrailer    IN      A       2607:f598:b2c0:277::acf8
+; Services in the space
+cycletrailer    IN      A       2607:f598:b2c0:277::f001
 cycletrailer    IN      A       192.195.83.130
 2169            IN      CNAME   cycletrailer
-pegasus         IN      AAAA    2607:f598:b2c2:fd01:250:c2ff:fe28:3070
+earl            IN      AAAA    2607:f598:b2cf:100:f8ea:fa58:5dd2:6ff4
+pegasus         IN      AAAA    2607:f598:b2cf:100:250:c2ff:fe28:3070
 pegasus         IN      A       192.195.83.134
 grafana         IN      CNAME   pegasus
 
