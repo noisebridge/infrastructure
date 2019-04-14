@@ -20,7 +20,7 @@
     - mediawiki
     - { role: website, tags: [ 'website' ] }
     - cloudalchemy.node-exporter
-    - cloudalchemy.prometheus
+    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
   vars:
     mediawiki:
