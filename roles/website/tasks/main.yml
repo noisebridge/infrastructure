@@ -30,3 +30,27 @@
     owner: root
     group: root
     mode: 0644
+
+- name: install gala page
+  template:
+    src: gala.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/gala.html"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy gala banner for home page
+  copy:
+    src: 2019-Gala-Banner.jpg
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/2019-Gala-Banner.jpg"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy gala page background
+  copy:
+    src: gala-gear-bg.png
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/gala-gear-bg.png"
+    owner: root
+    group: root
+    mode: 0644
