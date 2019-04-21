@@ -1,6 +1,6 @@
 {{ ansible_managed | comment('xml') }}
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,8 +23,11 @@
   border-color: red;
   border-style: solid;
   border-width: 1px 1px 1px 1px;
-  background-color: #FFFFAA;
+  background-color: #df0000;
   text-align: center;
+}
+.notification,.content {
+  color: #222 !important;
 }
 </style>
   </head>
@@ -36,7 +39,7 @@
     <nav class="navbar has-shadow" role="navigation" aria-label="main navigation">
       <div class="navbar-brand">
         <a class="navbar-item" href="https://www.noisebridge.net">
-          <img src="images/d/d0/Nb-logo-131.png">
+          <img src="images/d/d0/Nb-logo-131.png" alt="Noisebridge Logo">
           &nbsp;&nbsp;Noisebridge
         </a>
 
@@ -173,32 +176,13 @@
       </div>
     </nav>
   </div>
-<noscript><!--
-  <div class="section">
-    <section class="hero">
-      <div class="hero-body">
-        <div class="container">
-          <h1 class="title" style="text-indent: 1em">
-            What is noisebridge?
-          </h1>
-          <p>
-            Noisebridge an anarchist hackerspace in San Francisco, and one of the oldest hackerspaces in the US. We grew out of conversations between attendees of Chaos Communication Congress 2007 (24c3), and were originally modeled on c-base in Berlin and Metalab in Vienna. We aim to provide a space for people to hack, create, learn, and explore in a safe, welcoming, and accessible environment.
-          </p>
-          <p>
-            You don't have to be a member or pay anything to participate in Noisebridge, we're free and open. You just have to follow the one rule: Be Excellent to Each Other!
-          </p>
-        </div>
-      </div>
-    </section>
---></noscript>
     <a href="gala.html">
-      <img src="img/2019-Gala-Banner.jpg">
+      <img src="img/2019-Gala-Banner.jpg" alt="Noisebridge is having a gala on april 27th from 7:00pm to 12:00am.  Help keep this Hacking Machine running!!">
     </a>
     <section class="section">
       <div class="container">
 
         <div class="tile is-ancestor is-vertical">
-          <!--div class="tile is-parent is-vertical"-->
 
 <div class="tile is-parent">
             <div class="tile is-child is-5" style="padding: 10px 20px">
@@ -213,7 +197,7 @@
                   You don't have to be a member or pay anything to participate in Noisebridge, we're free and open. You just have to follow the one rule: Be Excellent to Each Other!
                 </p>
                 <figure class="image is-square">
-                  <img src="https://www.noisebridge.net/images/0/0d/Noisebridge_logo_not_by_idiots_for_cnc.svg">
+                  <img src="https://www.noisebridge.net/images/0/0d/Noisebridge_logo_not_by_idiots_for_cnc.svg" alt="Noisebridge Hacker Space Logo">
                 </figure>
               </div>
             </div>
@@ -287,19 +271,8 @@
             </div>
 
             <div class="tile is-child is-2"></div>
-<!--
-            <div class="tile notification is-child is-4">
-              <div class="content notification is-success">
-                <h1 class="title">Picture here?</h1>
-                <figure class="image is-square">
-                  <img src="https://bulma.io/images/placeholders/128x128.png">
-                </figure>
-              </div>
-            </div>
--->
 </div>
 
-          <!--/div-->
         </div>
 
       </div>
@@ -309,57 +282,49 @@
     <div class="content has-text-centered has-text-black">
       <p>
         <a class="icon has-text-black" href="https://www.github.com/noisebridge">
-          <i class="fab fa-github"></i>
+          <i class="fab fa-github" title="github"></i>
         </a>
         <a class="icon has-text-black" href="https://twitter.com/noisebridge">
-          <i class="fab fa-twitter"></i>
+          <i class="fab fa-twitter" title="twitter"></i>
         </a>
         <a class="icon has-text-black" href="https://www.patreon.com/noisebridge">
-          <i class="fab fa-patreon"></i>
+          <i class="fab fa-patreon" title="patreon"></i>
         </a>
         <a class="icon has-text-black" href="https://www.facebook.com/noisebridge">
-          <i class="fab fa-facebook"></i>
+          <i class="fab fa-facebook" title="facebook"></i>
         </a>
         <a class="icon has-text-black" href="https://noisebridge.slack.com/">
-          <i class="fab fa-slack"></i>
+          <i class="fab fa-slack" title="slack"></i>
         </a>
         <a class="icon has-text-black" href="https://lists.noisebridge.net/listinfo">
-          <i class="fas fa-envelope"></i>
+          <i class="fas fa-envelope" title="mailing lists"></i>
         </a>
         <a class="icon has-text-black" href="https://www.flickr.com/groups/noisebridge">
-          <i class="fab fa-flickr"></i>
+          <i class="fab fa-flickr" title="flickr"></i>
         </a>
         <a class="icon has-text-black" href="https://foursquare.com/v/noisebridge/4a8b745ff964a5207e0c20e3">
-          <i class="fab fa-foursquare"></i>
+          <i class="fab fa-foursquare" title="foursquare"></i>
         </a>
         <a class="icon has-text-black" href="https://plus.google.com/+NoisebridgeSanFrancisco">
-          <i class="fab fa-google-plus"></i>
+          <i class="fab fa-google-plus" title="google plus"></i>
         </a>
         <a class="icon has-text-black" href="https://www.instagram.com/noisebridgehackerspace/">
-          <i class="fab fa-instagram"></i>
+          <i class="fab fa-instagram" title="instagram"></i>
         </a>
         <a class="icon has-text-black" href="https://www.meetup.com/noisebridge/">
-          <i class="fab fa-meetup"></i>
+          <i class="fab fa-meetup" title="meetup"></i>
         </a>
         <a class="icon has-text-black" href="http://blog.noisebridge.net/">
-          <i class="fab fa-tumblr"></i>
+          <i class="fab fa-tumblr" title="tumblr"></i>
         </a>
         <a class="icon has-text-black" href="https://www.youtube.com/channel/UC6oE60rGWqFynD34ielQzxA">
-          <i class="fab fa-youtube"></i>
+          <i class="fab fa-youtube" title="youtube"></i>
         </a>
         <a class="icon has-text-black" href="irc://chat.freenode.net/#noisebridge">
-          <i class="fas fa-hashtag"></i>
+          <i class="fas fa-hashtag" title="irc"></i>
         </a>
       </p>
-<!--
-      <p>
-        <a class="has-text-black" href="Press">Press</a>
-        &nbsp;&bull;&nbsp;
-        <a class="has-text-black" href="">Legal</a>
-        &nbsp;&bull;&nbsp;
-        <a class="has-text-black" href="mailto:noisebridge-discuss@lists.noisebridge.net">Contact</a>
-      </p>
--->
+
     </div>
   </footer>
     <script>
