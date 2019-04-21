@@ -4,8 +4,8 @@
 - name: fetch mediawiki LTS release
   get_url:
     dest: /tmp/
-    url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki.version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki.version }}.tar.gz"
-    checksum: "sha256:{{ mediawiki.version_sha256sum }}"
+    url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki_version }}.tar.gz"
+    checksum: "sha256:{{ mediawiki_version_checksum }}"
   tags:
   - mediawiki
 
@@ -20,7 +20,7 @@
 
 - name: extract mediawiki
   unarchive:
-    src: "/tmp/mediawiki-{{ mediawiki.version }}.tar.gz"
+    src: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     owner: root
     group: root
