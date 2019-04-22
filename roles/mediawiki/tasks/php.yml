@@ -12,10 +12,10 @@
     - php7.0-fpm
     - php7.0-mbstring
     - php7.0-xml
+    - composer
   tags:
   - apt
   - php
-  - mediawiki
 
 - name: Configure PHP FPM
   copy:
@@ -23,6 +23,5 @@
     dest: /etc/php/7.0/fpm/pool.d/www.conf
   tags:
     - php
-    - mediawiki
   notify:
     - restart php7.0-fpm

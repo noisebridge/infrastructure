@@ -1,49 +1,73 @@
 ---
 - include: php.yml
 
+- name: Create group
+  group:
+    name: "{{ mediawiki.system_group }}"
+    system: false
+    state: present
+
+- name: Create user
+  user:
+    name: "{{ mediawiki.system_user }}"
+    system: false
+    shell: "/sbin/nologin"
+    group: "{{ mediawiki.system_group }}"
+    createhome: false
+    home: "/srv/mediawiki/{{ mediawiki.domain }}"
+
 - name: fetch mediawiki LTS release
   get_url:
     dest: /tmp/
     url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki_version }}.tar.gz"
     checksum: "sha256:{{ mediawiki_version_checksum }}"
-  tags:
-  - mediawiki
 
 - name: make wiki directory
   file:
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     state: directory
-    owner: www-data
-    group: www-data
-  tags:
-  - mediawiki
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
 
 - name: extract mediawiki
   unarchive:
     src: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
-    owner: root
-    group: root
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
     remote_src: true
     extra_opts: ["--strip-components=1"]
-  tags:
-  - mediawiki
 
 - name: install mwGoogleSheets extension
   git:
     repo: 'https://github.com/marcidy/mwGoogleSheet.git'
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
     version: REL1_27
-  tags:
-  - mediawiki
 
 - name: install LocalSettings
   template:
     src: LocalSettings.php
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/LocalSettings.php"
-    owner: root
+    owner: "{{ mediawiki.system_user }}"
     group: www-data
     mode: 0640
   tags:
-  - mediawiki
   - mediawiki-localsettings
+
+- name: install Composer config
+  copy:
+    content: "{{ mediawiki_composer | to_json }}"
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/composer.local.json"
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: 0640
+
+- name: install composer items
+  composer:
+    command: update
+    arguments: "{{ item.key }}"
+    working_dir: "/srv/mediawiki/{{ mediawiki.domain }}"
+    no_dev: no
+  with_dict: "{{ mediawiki_composer.require }}"
+  become: true
+  become_user: "{{ mediawiki.system_user }}"

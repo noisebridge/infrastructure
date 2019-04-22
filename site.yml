@@ -17,16 +17,11 @@
   tags: [noisebridge-net]
   roles:
     - antoiner77.caddy
-    - mediawiki
+    - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
-  vars:
-    mediawiki:
-      database: noisebridge_mediawiki
-      database_username: wiki
-      domain: noisebridge.net
 
 - name: List server
   hosts: lists-noisebridge-net
