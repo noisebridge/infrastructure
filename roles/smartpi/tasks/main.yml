@@ -1,0 +1,8 @@
+---
+- name: "Install packages"
+  apt: pkg={{ item }} state=latest install_recommends=no
+  with_items:
+    - sqlite3
+    - git
+    - i2c-tools
+    - avahi-daemon

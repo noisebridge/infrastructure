@@ -85,3 +85,9 @@
   tags: [earl]
   roles:
     - earl
+
+- name: Power monitoring
+  hosts: smartpi
+  tags: [smartpi]
+  roles:
+    - smartpi
