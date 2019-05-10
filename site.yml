@@ -16,12 +16,13 @@
   become_method: sudo
   tags: [noisebridge-net]
   roles:
-    - antoiner77.caddy
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
+    - { role: safespace, tags: [ safespace' ] }
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
+    - { role: antoiner77.caddy, tags: [ 'caddy' ] }
 
 - name: List server
   hosts: lists-noisebridge-net

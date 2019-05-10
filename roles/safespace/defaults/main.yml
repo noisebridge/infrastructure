@@ -1,0 +1,4 @@
+---
+safespace_slack_token: 'T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+safespace_slack_channel: '#safespace'
+safespace_slack_username: 'safespacebot'

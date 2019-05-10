@@ -14,4 +14,4 @@ mysql_query_cache_size: "0"
 mysql_query_cache_limit: "0"
 
 # Control how much RAM is used for InnoDB buffer pool.
-mysql_innodb_buffer_pool_size: "256M"
+mysql_innodb_buffer_pool_size: "128M"
