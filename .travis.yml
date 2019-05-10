@@ -1,0 +1,16 @@
+---
+sudo: required
+language: python
+python: 2.7
+cache: pip
+services:
+- docker
+env:
+- ANSIBLE=2.7
+install:
+- pip install ansible-lint
+script:
+- ansible-lint site.yml
+branches:
+  only:
+    - master
