@@ -32,3 +32,6 @@ In your `~/.ssh/config` add the folowing.
       User         YOU
       ProxyCommand ssh pegasus.noisebridge.net -W %h:%p
 
+## Joining
+
+See https://discuss.noisebridge.info/c/guilds/rack for guidance, specifically the sticky.
