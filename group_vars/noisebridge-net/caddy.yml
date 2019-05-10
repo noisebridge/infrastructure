@@ -1,8 +1,5 @@
 ---
 caddy_features: http.cgi,http.prometheus
-caddy_setcap: yes
-caddy_systemd_capabilities_enabled: True
-caddy_systemd_capabilities: "CAP_NET_BIND_SERVICE"
 caddy_config: |
   noisebridge.com, www.noisebridge.com {
     prometheus
@@ -14,7 +11,6 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
   }
 
@@ -28,7 +24,6 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
   }
 
@@ -42,7 +37,6 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
 
     root /srv/mediawiki/noisebridge.net
 
@@ -100,7 +94,6 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
     root /srv/mailman/lists.noisebridge.net
 
     cgi /admin /var/lib/mailman/cgi-bin/admin
@@ -135,7 +128,6 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
     root /var/lib/mailman/archives/public
     index index.html
   }
@@ -150,8 +142,22 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
     root /var/lib/mailman/icons/
+  }
+
+  safespace.noisebridge.net {
+    prometheus
+    gzip
+    log "{{ caddy_log_dir }}/spafespace.noisebridge.net.log" {
+      rotate_size 50
+      rotate_age 7
+      rotate_keep 520
+      rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
+    }
+    index index.php
+    fastcgi / unix:/run/php/php7.0-fpm.sock php
+    root /var/www/safespace.noisebridge.net
   }
 
   noisebridge.org, www.noisebridge.org {
@@ -164,6 +170,5 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
-    tls ca@noisebridge.net
     redir https://www.noisebridge.net{uri}
   }

@@ -1,0 +1,16 @@
+---
+- name: Create web root
+  file:
+    path: /var/www/safespace.noisebridge.net
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Deploy safespace script
+  template:
+    src: index.php
+    dest: /var/www/safespace.noisebridge.net/index.php
+    owner: root
+    group: root
+    mode: 0644
