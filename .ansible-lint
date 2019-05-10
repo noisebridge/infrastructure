@@ -1,0 +1,12 @@
+---
+exclude_paths:
+- roles/antoiner77.caddy
+- roles/cloudalchemy.grafana
+- roles/cloudalchemy.node-exporter
+- roles/cloudalchemy.prometheus
+- roles/cloudalchemy.snmp-exporter
+- roles/geerlingguy.mysql
+- roles/jnv.unattended-upgrades
+- roles/nickjj.docker
+skip_list:
+- 701 # No 'galaxy_info' found, not needed.

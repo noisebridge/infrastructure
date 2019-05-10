@@ -1,6 +1,6 @@
 ---
 - name: Install packages
-  apt: 
+  apt:
     name: "{{ packages }}"
   vars:
     packages:
@@ -34,5 +34,5 @@
   lineinfile:
     dest: /etc/sudoers
     regexp: "^%sudo"
-    line: "%sudo	ALL=(ALL:ALL) NOPASSWD: ALL"
+    line: "%sudo	ALL=(ALL:ALL) NOPASSWD: ALL" # noqa 203
     state: present
