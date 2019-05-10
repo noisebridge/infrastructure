@@ -6,7 +6,7 @@
 
 - name: Install mydumper
   apt:
-    deb: "https://github.com/maxbube/mydumper/releases/download/v{{ mydumper_version }}/mydumper_{{ mydumper_version }}-{{ mydumper_package_rev }}.stretch_amd64.deb"
+    deb: "https://github.com/maxbube/mydumper/releases/download/v{{ mydumper_version }}/mydumper_{{ mydumper_version }}-{{ mydumper_package_rev }}.stretch_amd64.deb" # noqa 204
 
 - name: Create backup directory
   file:

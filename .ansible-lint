@@ -8,3 +8,5 @@ exclude_paths:
 - roles/geerlingguy.mysql
 - roles/jnv.unattended-upgrades
 - roles/nickjj.docker
+skip_list:
+- 701 # No 'galaxy_info' found, not needed.

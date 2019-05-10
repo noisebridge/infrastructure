@@ -51,7 +51,7 @@
     - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - cloudalchemy.grafana
     - powerpanel
-    
+
 - name: Mailman-3 List server
   hosts: lists
   become: yes

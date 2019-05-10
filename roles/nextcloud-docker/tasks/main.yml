@@ -18,7 +18,7 @@
     - "{{ nextcloud_docker_files_path }}"
 
 - name: make nextcloud backups directory
-  file: 
+  file:
     dest: "{{ item }}/backups"
     state: directory
   with_items:
