@@ -7,6 +7,8 @@
   with_flattened:
   - "{{ noisebridge_admins }}"
   - "{{ noisebridge_users }}"
+  tags:
+  - access
 
 - name: Grant sudo
   user:
@@ -16,6 +18,8 @@
     append: yes
   with_flattened:
   - "{{ noisebridge_admins | d([]) }}"
+  tags:
+  - access
 
 - name: github SSH key
   authorized_key:
@@ -25,6 +29,8 @@
   - "{{ noisebridge_admins | d([]) }}"
   - "{{ noisebridge_users | d([]) }}"
   when: users[item].github_username is defined
+  tags:
+  - access
 
 - name: static SSH key
   authorized_key:
@@ -34,3 +40,5 @@
   - "{{ noisebridge_admins | d([]) }}"
   - "{{ noisebridge_users | d([]) }}"
   when: users[item].ssh_key is defined
+  tags:
+  - access
