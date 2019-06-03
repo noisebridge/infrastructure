@@ -21,6 +21,10 @@ Deploying the entire thing should be possible with just one command:
 Usually, you will want to limit your deployment to specific host groups:
 
     ansible-playbook site.yml --limit noisebridge-net
+    
+You can be even more specific, for example, this deploys only to the noisebridge-net roles tagged `website`:
+
+    ansible-playbook site.yml --limit noisebridge-net -t website
 
 ### Remote access to .noise
 
