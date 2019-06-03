@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2019051007 ; Serial
+                                2019060300 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -164,9 +164,10 @@ zp                     IN CNAME zeppelin
 
 ; requested by patrick 2015-02-02
 ; updated w/ other CNAMES 2016-02-13
-ratchet         IN      CNAME   ratchet.patrickod.com.
-donate          IN      CNAME   ratchet
-library         IN      CNAME   ratchet
+donate          IN      CNAME   ratchet.patrickod.com.
+library         IN      CNAME   ratchet.patrickod.com.
+
+test-donate     IN      CNAME   m5.noisebridge.net.
 
 ; mailgun (patrickod 2015-07-24)
 mail            IN      TXT     ("v=spf1 include:mailgun.org ~all")
