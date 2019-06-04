@@ -10,16 +10,6 @@
     - security
     - jnv.unattended-upgrades
 
-- name: noisebridge-donate
-  remote_user: root
-  hosts: donate
-  become: yes
-  become_method: sudo
-  tags: [donate]
-  roles:
-    - antoiner77.caddy
-    - donate
-
 - name: noisebridge-net
   hosts: noisebridge-net
   become: yes
@@ -42,6 +32,7 @@
   tags: [donate]
   roles:
     - antoiner77.caddy
+    - donate
 
 - name: List server
   hosts: lists-noisebridge-net
