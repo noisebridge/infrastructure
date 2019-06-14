@@ -1,0 +1,17 @@
+---
+- name: install requirements.txt
+  become_user: pydonate
+  shell: "source venv/bin/activate; pip install -r requirements.txt -e ."
+  args:
+    executable: "/bin/bash"
+    chdir: "/srv/{{ pydonate_user }}/code"
+- name: reload pydonate service file
+  systemd:
+    name: pydonate
+    state: started
+    enabled: yes
+    daemon_reload: yes
+- name: restart pydonate
+  systemd:
+    name: pydonate
+    state: restarted

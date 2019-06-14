@@ -1,0 +1,81 @@
+---
+- name: Install apt dependencies
+  apt:
+    name: "{{ deps }}"
+  vars:
+    deps:
+      - python3
+      - virtualenv
+
+- name: Create group for pydonate
+  group:
+    name: "{{ pydonate_user }}"
+    state: present
+- name: Create user for pydonate
+  user:
+    name: "{{ pydonate_user }}"
+    group: "{{ pydonate_user }}"
+    home: "/srv/{{ pydonate_user }}"
+    createhome: yes
+    shell: /bin/bash
+
+- name: Checkout repository
+  become_user: "{{ pydonate_user }}"
+  git:
+    repo: https://github.com/noisebridge/python-nb-donate.git
+    dest: "/srv/{{ pydonate_user }}/code"
+    update: yes
+  notify:
+  - install requirements.txt
+  - restart pydonate
+
+- name: Setup venv
+  become_user: "{{ pydonate_user }}"
+  shell: "virtualenv --python=python3 venv"
+  args:
+    executable: "/bin/bash"
+    chdir: "/srv/{{ pydonate_user }}/code"
+    creates: "/srv/{{ pydonate_user }}/code/venv/bin/activate"
+  notify:
+  - install requirements.txt
+
+- name: Make necessary directories
+  file:
+    path: "/srv/{{ pydonate_user }}/code/{{ item }}"
+    state: directory
+    owner: "{{ pydonate_user }}"
+    group: "{{ pydonate_user }}"
+    mode: '0750'
+  with_items:
+  - migrations/versions
+  - logs
+
+- name: Copy script to run pydonate
+  copy:
+    src: run.sh
+    dest: "/srv/{{ pydonate_user }}"
+    owner: "{{ pydonate_user }}"
+    group: "{{ pydonate_user }}"
+    mode: '0755'
+  notify:
+  - restart pydonate
+
+- name: Template out systemd file
+  template:
+    src: pydonate.service
+    dest: /etc/systemd/system/pydonate.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+  - reload pydonate service file
+
+- name: Template out .env file
+  template:
+    src: dot_env
+    dest: "/srv/{{ pydonate_user }}/code/.env"
+    owner: root
+    group: "{{ pydonate_user }}"
+    mode: '0640'
+  notify:
+  - restart pydonate

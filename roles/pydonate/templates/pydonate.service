@@ -1,0 +1,10 @@
+[Unit]
+Description=Python donate.noisebridge.net implementation
+
+[Service]
+ExecStart="/srv/{{ pydonate_user }}/run.sh"
+User="{{ pydonate_user }}"
+Group="{{ pydonate_user }}"
+
+[Install]
+WantedBy=multi-user.target
