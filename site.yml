@@ -32,6 +32,7 @@
   tags: [donate]
   roles:
     - antoiner77.caddy
+    - donate
 
 - name: List server
   hosts: lists-noisebridge-net

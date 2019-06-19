@@ -1,0 +1,15 @@
+---
+- name: create web root
+  file:
+    dest: /var/www/donate.noisebridge.net
+    state: directory
+    owner: root
+    group: root
+
+- name: copy static page
+  template:
+    src: index.html
+    dest: /var/www/donate.noisebridge.net/index.html
+    owner: root
+    group: root
+    mode: 0644
