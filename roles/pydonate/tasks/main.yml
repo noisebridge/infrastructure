@@ -6,6 +6,7 @@
     deps:
       - python3
       - virtualenv
+      - git
 
 - name: Create group for pydonate
   group:
@@ -38,17 +39,6 @@
     creates: "/srv/{{ pydonate_user }}/code/venv/bin/activate"
   notify:
   - install requirements.txt
-
-- name: Make necessary directories
-  file:
-    path: "/srv/{{ pydonate_user }}/code/{{ item }}"
-    state: directory
-    owner: "{{ pydonate_user }}"
-    group: "{{ pydonate_user }}"
-    mode: '0750'
-  with_items:
-  - migrations/versions
-  - logs
 
 - name: Copy script to run pydonate
   copy:
