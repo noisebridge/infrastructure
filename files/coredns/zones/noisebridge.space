@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.space.      IN      SOA     ns.noisebridge.space. hostmaster.noisebridge.space.  (
-                                2018040400 ; Serial
+                                2019061900 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -141,12 +141,6 @@ pegasus         IN      A       192.195.83.134
 
 ; pegasus CNAMES
 parts           IN      CNAME   pegasus
-
-; requested by patrick 2015-02-02
-; updated w/ other CNAMES 2016-02-13
-ratchet         IN      CNAME   ratchet.patrickod.com.
-donate          IN      CNAME   ratchet
-library         IN      CNAME   ratchet
 
 ; mailgun (patrickod 2015-07-24)
 mail            IN      TXT     ("v=spf1 include:mailgun.org ~all")

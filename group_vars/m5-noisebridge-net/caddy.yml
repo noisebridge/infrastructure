@@ -1,6 +1,19 @@
 ---
 caddy_features: http.prometheus
 caddy_config: |
+  donate.noisebridge.net {
+    prometheus
+    gzip
+    log "{{ caddy_log_dir }}/donate.noisebridge.net.log" {
+      rotate_size 50
+      rotate_age 7
+      rotate_keep 520
+      rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
+    }
+    index index.html
+    root /var/www/donate.noisebridge.net
+  }
   test-donate.noisebridge.net {
     prometheus
     gzip
