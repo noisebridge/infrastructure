@@ -25,7 +25,6 @@
     - { role: antoiner77.caddy, tags: [ 'caddy' ] }
 
 - name: donate-noisebridge-net
-  remote_user: root
   hosts: donate-noisebridge-net
   become: yes
   become_method: sudo
