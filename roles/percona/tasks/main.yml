@@ -2,3 +2,9 @@
 - name: install percona repo
   apt:
     deb: "https://repo.percona.com/apt/percona-release_latest.{{ ansible_lsb.codename }}_all.deb"
+
+- name: enable percona 8.0
+  command: percona-release setup ps80
+  args:
+    creates: /etc/apt/sources.list.d/percona-ps-80-release.list
+  when: percona_enable_ps80

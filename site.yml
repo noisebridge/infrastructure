@@ -32,6 +32,8 @@
   tags: [donate]
   roles:
     - donate
+    - percona
+    - geerlingguy.mysql
     - antoiner77.caddy
 
 - name: List server
