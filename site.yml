@@ -31,8 +31,8 @@
   become_method: sudo
   tags: [donate]
   roles:
-    - antoiner77.caddy
     - donate
+    - antoiner77.caddy
 
 - name: List server
   hosts: lists-noisebridge-net
