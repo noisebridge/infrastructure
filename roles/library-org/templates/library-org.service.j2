@@ -1,0 +1,11 @@
+[Unit]
+Description=Library Books webservice
+
+[Service]
+WorkingDirectory=/srv/library-org
+ExecStart=/srv/library-org/venv/bin/python controller.py
+User=library-org
+Group=library-org
+
+[Install]
+WantedBy=multi-user.target

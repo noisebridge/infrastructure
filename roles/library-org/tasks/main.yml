@@ -1,0 +1,69 @@
+---
+- name: install packages
+  apt:
+    package:
+    - python-pip
+    - python-setuptools
+    - virtualenv
+
+- name: create group
+  group:
+    name: library-org
+    system: true
+    state: present
+
+- name: create user
+  user:
+    name: library-org
+    system: true
+    shell: /sbin/nologin
+    group: library-org
+    createhome: false
+    home: /srv/library-org
+
+- name: extract library code
+  git:
+    dest: /srv/library-org
+    # Using noisebridge fork due to https://github.com/robbintt/library-org/pull/19
+    repo: https://github.com/noisebridge/library-org.git
+    version: superq/update_reqs
+  notify:
+  - restart library-org
+
+- name: configure library-org
+  template:
+    src: library.cfg.j2
+    dest: /srv/library-org/library.cfg
+  notify:
+  - restart library-org
+
+- name: setup virtual env
+  pip:
+    requirements: /srv/library-org/requirements.txt
+    virtualenv: /srv/library-org/venv
+  notify:
+  - restart library-org
+
+- name: setup database file
+  file:
+    path: /srv/library-org/database/books.sqlite
+    owner: library-org
+    group: library-org
+    mode: '0644'
+
+- name: create systemd service unit
+  template:
+    src: library-org.service.j2
+    dest: /etc/systemd/system/library-org.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+  - restart library-org
+
+- name: ensure library-org service is started and enabled
+  systemd:
+    daemon_reload: true
+    name: library-org.service
+    state: started
+    enabled: true
