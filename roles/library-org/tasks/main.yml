@@ -24,9 +24,8 @@
 - name: extract library code
   git:
     dest: /srv/library-org
-    # Using noisebridge fork due to https://github.com/robbintt/library-org/pull/19
     repo: https://github.com/noisebridge/library-org.git
-    version: superq/update_reqs
+    version: "{{ library_org_version }}"
   notify:
   - restart library-org
 
