@@ -81,13 +81,14 @@
   roles:
     - nextcloud-docker
 
-- name: Parts service
-  hosts: parts-noisebridge-net
+- name: Misc web services
+  hosts: m4-noisebridge-net
   become: yes
   become_method: sudo
-  tags: [parts-noisebridge-net]
+  tags: [m4-noisebridge-net]
   roles:
-    - antoiner77.caddy
+    - { role: antoiner77.caddy, tags: [ 'caddy' ] }
+    - { role: library-org, tags: [ 'library-org' ] }
     - { role: stuff-org, tags: [ 'stuff-org' ] }
 
 - name: Earl RFID Access

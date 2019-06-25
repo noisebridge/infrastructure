@@ -1,0 +1,7 @@
+---
+- name: restart library-org
+  become: true
+  systemd:
+    daemon_reload: true
+    name: library-org.service
+    state: restarted

@@ -1,0 +1,9 @@
+---
+library_org_config:
+  secrets:
+    app_secret_key: nope
+    wtf_csrv_secret_key: nope
+    new_isbn_submit_seret: nope
+    new_location_submit_secret: nope
+    recaptcha_public_key: nope
+    recaptcha_private_key: nope
