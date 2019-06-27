@@ -1,0 +1,9 @@
+FLASK_APP=./autoapp.py
+FLASK_ENV=DEVELOPMENT
+FLASK_DEBUG=1  # do not use this in production.  security vulnerability.
+FLASK_RUN_PORT=5005
+
+STRIPE_KEY="not_a_stripe_key"
+STRIPE_SECRET="not_a_stripe_secret"
+
+DONATE_SECRET="d95425b1c51e8235175bkdJGYvMVdfXEZw"
