@@ -44,16 +44,6 @@
     virtualenv: "/srv/{{ pydonate_user }}/code/venv"
     virtualenv_python: python3.5
 
-- name: Copy script to run pydonate
-  copy:
-    src: run.sh
-    dest: "/srv/{{ pydonate_user }}"
-    owner: "{{ pydonate_user }}"
-    group: "{{ pydonate_user }}"
-    mode: '0755'
-  notify:
-  - restart pydonate
-
 - name: Template out systemd file
   template:
     src: pydonate.service
