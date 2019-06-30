@@ -10,6 +10,7 @@
       - git
       - build-essential
       - libpython3-dev
+      - libssl-dev
 
 - name: Create group for pydonate
   group:
