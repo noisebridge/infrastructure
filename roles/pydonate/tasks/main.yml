@@ -16,6 +16,7 @@
   group:
     name: "{{ pydonate_user }}"
     state: present
+    system: yes
 - name: Create user for pydonate
   user:
     name: "{{ pydonate_user }}"
