@@ -8,6 +8,8 @@
       - python3-setuptools
       - virtualenv
       - git
+      - build-essential
+      - libpython3-dev
 
 - name: Create group for pydonate
   group:
