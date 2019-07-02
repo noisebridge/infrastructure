@@ -22,7 +22,8 @@
     group: "{{ pydonate_user }}"
     home: "/srv/{{ pydonate_user }}"
     createhome: yes
-    shell: /bin/bash
+    shell: /sbin/nologin
+    system: yes
 
 - name: Checkout repository
   become_user: "{{ pydonate_user }}"
