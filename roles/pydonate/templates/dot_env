@@ -1,9 +1,20 @@
 FLASK_APP=./autoapp.py
 FLASK_ENV=DEVELOPMENT
-FLASK_DEBUG=1  # do not use this in production.  security vulnerability.
+FLASK_DEBUG=0
 FLASK_RUN_PORT=5005
 
-STRIPE_KEY="not_a_stripe_key"
-STRIPE_SECRET="not_a_stripe_secret"
+STRIPE_KEY="{{ pydonate_config.secrets.stripe_key }}"
+STRIPE_SECRET={{ pydonate_config.secrets.stripe_secret }}"
 
-DONATE_SECRET="d95425b1c51e8235175bkdJGYvMVdfXEZw"
+DONATE_SECRET="{{ pydonate_config.secrets.donate_secret }}"
+
+DB_USER="donate"
+DB_PASS="{{ pydonate_config.secrets.db_pass }}"
+DB_HOST="localhost"
+DB_SOCK="/var/run/mysqld/mysqld.sock"
+
+DB_PROD_NAME="noisebridge_donate"
+PROD_DATABASE_URI="mysql+mysqldb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_PROD_NAME}?unix_socket=${DB_SOCK}"
+
+DB_TEST_NAME="test_donate"
+TEST_DATABASE_URI="mysql+mysqldb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_TEST_NAME}?unix_socket=${DB_SOCK}"
