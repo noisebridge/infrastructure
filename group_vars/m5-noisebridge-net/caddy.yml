@@ -25,7 +25,7 @@ caddy_config: |
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
     
-    proxy / localhost:8888 {
+    proxy / localhost:{{ pydonate_port }} {
         transparent
     }
   }
