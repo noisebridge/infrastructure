@@ -6,6 +6,7 @@ FLASK_RUN_PORT=5005
 STRIPE_KEY="{{ pydonate_config.secrets.stripe_key }}"
 STRIPE_SECRET={{ pydonate_config.secrets.stripe_secret }}"
 
+DONATE_PRODUCT="{{ pydonate_config.secrets.donate_product }}"
 DONATE_SECRET="{{ pydonate_config.secrets.donate_secret }}"
 
 DB_USER="donate"

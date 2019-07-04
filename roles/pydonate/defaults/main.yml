@@ -4,6 +4,7 @@ pydonate_user: pydonate
 pydonate_config:
   secrets:
     db_pass: nope
+    donate_product: nope
     donate_secret: nope
     stripe_key: nope
     stripe_secret: nope
