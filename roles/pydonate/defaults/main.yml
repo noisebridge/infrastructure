@@ -1,4 +1,5 @@
 ---
+pydonate_version: HEAD
 pydonate_user: pydonate
 pydonate_config:
   secrets:

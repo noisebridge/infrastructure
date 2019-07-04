@@ -27,7 +27,6 @@
     shell: /sbin/nologin
     system: yes
 
-
 - name: Create dirs
   file:
     path: "{{ item }}"
@@ -39,15 +38,17 @@
   - "/srv/{{ pydonate_user }}"
 
 - name: Checkout repository
+  become: true
   become_user: "{{ pydonate_user }}"
   git:
     repo: https://github.com/noisebridge/python-nb-donate.git
     dest: "/srv/{{ pydonate_user }}/code"
-    update: yes
+    version: "{{ pydonate_version }}"
   notify:
   - restart pydonate
 
 - name: Setup venv
+  become: true
   become_user: "{{ pydonate_user }}"
   pip:
     requirements: "/srv/{{ pydonate_user }}/code/requirements.txt"
@@ -55,6 +56,7 @@
     virtualenv_python: python3.5
 
 - name: "-e ."
+  become: true
   become_user: "{{ pydonate_user }}"
   pip:
     name: "/srv/{{ pydonate_user }}/code"
