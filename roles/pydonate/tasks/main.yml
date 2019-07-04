@@ -17,14 +17,26 @@
     name: "{{ pydonate_user }}"
     state: present
     system: yes
+
 - name: Create user for pydonate
   user:
     name: "{{ pydonate_user }}"
     group: "{{ pydonate_user }}"
     home: "/srv/{{ pydonate_user }}"
-    createhome: yes
+    createhome: false
     shell: /sbin/nologin
     system: yes
+
+
+- name: Create dirs
+  file:
+    path: "{{ item }}"
+    owner: "{{ pydonate_user }}"
+    group: "{{ pydonate_user }}"
+    state: directory
+    mode: 0755
+  with_items:
+  - "/srv/{{ pydonate_user }}"
 
 - name: Checkout repository
   become_user: "{{ pydonate_user }}"

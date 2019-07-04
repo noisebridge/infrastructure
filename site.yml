@@ -34,6 +34,7 @@
     - percona
     - geerlingguy.mysql
     - antoiner77.caddy
+    - pydonate
 
 - name: List server
   hosts: lists-noisebridge-net
