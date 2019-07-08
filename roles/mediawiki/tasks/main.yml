@@ -61,13 +61,3 @@
     owner: "{{ mediawiki.system_user }}"
     group: "{{ mediawiki.system_group }}"
     mode: 0640
-
-- name: install composer items
-  composer:
-    command: update
-    arguments: "{{ item.key }}"
-    working_dir: "/srv/mediawiki/{{ mediawiki.domain }}"
-    no_dev: no
-  with_dict: "{{ mediawiki_composer.require }}"
-  become: true
-  become_user: "{{ mediawiki.system_user }}"
