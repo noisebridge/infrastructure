@@ -1,0 +1,10 @@
+---
+mediawiki:
+  database: noisebridge_mediawiki
+  database_username: wiki
+  domain: noisebridge.net
+  system_group: wiki
+  system_user: wiki
+mediawiki_composer:
+  require:
+    mediawiki/chameleon-skin: '~1.0'
