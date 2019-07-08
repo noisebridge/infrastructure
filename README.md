@@ -26,6 +26,10 @@ You can be even more specific, for example, this deploys only to the noisebridge
 
     ansible-playbook site.yml --limit noisebridge-net -t website
 
+and this deploys only to the email aliases mailing lists:
+
+    ansible-playbook site.yml --limit noisebridge-net -t lists-noisebridge-net
+
 ### Remote access to .noise
 
 In order to deploy to machines remotely, you will need to configure a bastion bouncer.
