@@ -1,4 +1,13 @@
 ---
+
+- name: install home page
+  template:
+    src: index.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/index.html"
+    owner: root
+    group: root
+    mode: 0644
+
 - name: make image directory
   file:
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/img"
@@ -6,27 +15,42 @@
     owner: www-data
     group: www-data
 
-- name: copy images
+- name: copy banner picture for home page
   copy:
-    src: "{{ item }}"
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/{{ item }}"
+    src: Patreon_1600x400banner.jpg
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/Patreon_1600x400banner.jpg"
     owner: root
     group: root
     mode: 0644
-  with_items:
-  - Patreon_1600x400banner.jpg
-  - 2019-Gala-Banner.jpg
-  - gala-gear-bg.png
-  - nb-logo-131.png
 
-- name: install static pages
+- name: install forever home page
   template:
-    src: "{{ item }}"
-    dest: "/srv/mediawiki/{{ mediawiki.domain }}/{{ item }}"
+    src: forever_home.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/forever_home.html"
     owner: root
     group: root
     mode: 0644
-  with_items:
-  - index.html
-  - forever_home.html
-  - gala.html
+
+- name: install gala page
+  template:
+    src: gala.html
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/gala.html"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy gala banner for home page
+  copy:
+    src: 2019-Gala-Banner.jpg
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/2019-Gala-Banner.jpg"
+    owner: root
+    group: root
+    mode: 0644
+
+- name: copy gala page background
+  copy:
+    src: gala-gear-bg.png
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/gala-gear-bg.png"
+    owner: root
+    group: root
+    mode: 0644
