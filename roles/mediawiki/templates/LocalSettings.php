@@ -38,7 +38,7 @@ $wgResourceBasePath = $wgScriptPath;
 
 ## The URL path to the logo.  Make sure you change this from the default,
 ## or else you'll overwrite your logo when you upgrade!
-$wgLogo = "$wgResourceBasePath/resources/assets/wiki.png";
+$wgLogo = "/img/nb-logo-131.png";
 
 ## UPO means: this is also a user preference option
 
@@ -127,7 +127,6 @@ $wgDefaultSkin = "vector";
 # Enabled skins.
 # The following skins were automatically enabled:
 wfLoadSkin( 'CologneBlue' );
-wfLoadSkin( 'Modern' );
 wfLoadSkin( 'MonoBook' );
 wfLoadSkin( 'Vector' );
 
