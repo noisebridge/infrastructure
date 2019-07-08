@@ -6,11 +6,6 @@ mysql_packages:
 mysql_bind_address: 127.0.0.1
 mysql_databases:
 - name: noisebridge_donate
-- name: test_donate
-mysql_users:
-- name: donate
-  password: "{{ pydonate_config.secrets.db_pass }}"
-  priv: 'noisebridge_donate.*:ALL PRIVILEGES/test_donate.*:ALL PRIVILEGES'
 
 percona_enable_ps80: true
 
