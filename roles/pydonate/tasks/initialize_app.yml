@@ -1,0 +1,3 @@
+---
+- name: initialize the donate database with critical data
+  shell: "/srv/{{ pydonate_user }}/code/venv/bin/python3.5 /srv/{{ pydonate_user }}/code/scripts/initialize_database.py"

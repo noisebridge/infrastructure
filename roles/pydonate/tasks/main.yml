@@ -82,3 +82,5 @@
     mode: '0640'
   notify:
   - restart pydonate
+
+- include: initialize_app.yml
