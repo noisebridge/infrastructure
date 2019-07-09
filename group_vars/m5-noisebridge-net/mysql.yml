@@ -5,12 +5,13 @@ mysql_packages:
 - libperconaserverclient21-dev
 mysql_bind_address: 127.0.0.1
 mysql_databases:
-- name: noisebridge_donate
-- name: test_donate
+- name: donate_prod
+- name: donate_test
 mysql_users:
 - name: donate
+  host: "%"
   password: "{{ pydonate_config.secrets.db_pass }}"
-  priv: 'noisebridge_donate.*:ALL PRIVILEGES/test_donate.*:ALL PRIVILEGES'
+  priv: "donate_prod.*:ALL/donate_test.*:ALL"
 
 percona_enable_ps80: true
 

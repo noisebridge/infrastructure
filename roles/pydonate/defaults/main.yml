@@ -1,7 +1,7 @@
 ---
 pydonate_version: HEAD
 pydonate_user: pydonate
-pydonate_port: 5005
+pydonate_port: 8888
 pydonate_config:
   secrets:
     db_pass: nope
