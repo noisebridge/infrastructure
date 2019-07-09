@@ -13,6 +13,11 @@ prometheus_global:
   scrape_timeout: 10s
   evaluation_interval: 30s
 prometheus_scrape_configs:
+  - job_name: "donate"
+    scheme: https
+    static_configs:
+      - targets:
+        - "test-donate.noisebridge.net:443"
   - job_name: "prometheus"
     static_configs:
       - targets:
