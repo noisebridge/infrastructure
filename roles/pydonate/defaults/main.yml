@@ -9,6 +9,7 @@ pydonate_config:
     donate_secret: nope
     stripe_key: nope
     stripe_secret: nope
+
 pydonate_base: /srv/{{ pydonate_user }}/code
 pydonate_venv: "{{ pydonate_base }}/venv"
 pydonate_python: "{{ pydonate_venv }}/bin/python3.5"

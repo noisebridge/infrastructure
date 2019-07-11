@@ -1,17 +1,18 @@
 ---
 - name: create init script
-  template: 
-    src: venv_exec.j2 
+  template:
+    src: venv_exec.j2
     dest: "{{ pydonate_venv }}/exec"
     owner: "{{ pydonate_user }}"
     group: "{{ pydonate_user }}"
     mode: 0755
 
 - name: create initial db migration
+  become: true
   become_user: "{{ pydonate_user }}"
   environment:
     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
-    DONATE_DOTENV: "{{pydonate_dotenv }}"
+    DONATE_DOTENV: "{{ pydonate_dotenv }}"
   args:
     chdir: "{{ pydonate_base }}"
   command:
@@ -22,7 +23,7 @@
   become_user: "{{ pydonate_user }}"
   environment:
     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
-    DONATE_DOTENV: "{{pydonate_dotenv }}"
+    DONATE_DOTENV: "{{ pydonate_dotenv }}"
   args:
     chdir: "{{ pydonate_base }}"
   command:
