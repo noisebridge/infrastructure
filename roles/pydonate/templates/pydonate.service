@@ -2,10 +2,12 @@
 Description=Python donate.noisebridge.net implementation
 
 [Service]
-WorkingDirectory=/srv/{{ pydonate_user }}/code
-ExecStart = "/srv/{{ pydonate_user }}/code/venv/bin/flask" "run"
+WorkingDirectory={{ pydonate_base }}
+ExecStart = "{{ pydonate_base }}/venv/exec" "flask" "run"
 User={{ pydonate_user }}
 Group={{ pydonate_user }}
+Environment="FLASK_APP={{ pydonate_base }}/autoapp.py"
+Environment="DONATE_DOTENV={{ pydonate_dotenv }}"
 
 [Install]
 WantedBy=multi-user.target
