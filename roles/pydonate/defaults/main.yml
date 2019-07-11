@@ -9,3 +9,18 @@ pydonate_config:
     donate_secret: nope
     stripe_key: nope
     stripe_secret: nope
+pydonate_base: /srv/{{ pydonate_user }}/code
+pydonate_venv: "{{ pydonate_base }}/venv"
+pydonate_python: "{{ pydonate_venv }}/bin/python3.5"
+pydonate_dotenv: "{{ pydonate_base }}/.env"
+
+pydonate_db:
+  connector: mysql
+  dialect: mysqldb
+  dbname: donate_test
+  dbuser: donate
+  host: localhost
+  sock: "/var/run/mysqld/mysqld.sock"
+
+pydonate_test_uri: "{{ pydonate_db.connector }}+{{ pydonate_db.dialect }}://{{ pydonate_db.dbuser }}:{{ pydonate_config.secrets.db_pass }}@{{ pydonate_db.host }}/{{ pydonate_db.dbname }}?unix_socket={{ pydonate_db.sock }}"
+
