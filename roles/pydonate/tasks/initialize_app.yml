@@ -1,40 +1,40 @@
----
-- name: create init script
-  template:
-    src: venv_exec.j2
-    dest: "{{ pydonate_venv }}/exec"
-    owner: "{{ pydonate_user }}"
-    group: "{{ pydonate_user }}"
-    mode: 0755
-
-- name: create initial db migration
-  become: true
-  become_user: "{{ pydonate_user }}"
-  environment:
-    FLASK_APP: "{{ pydonate_base }}/autoapp.py"
-    DONATE_DOTENV: "{{ pydonate_dotenv }}"
-  args:
-    chdir: "{{ pydonate_base }}"
-  command:
-    "{{ pydonate_venv }}/exec flask db migrate"
-
-- name: run initial db migration
-  become: true
-  become_user: "{{ pydonate_user }}"
-  environment:
-    FLASK_APP: "{{ pydonate_base }}/autoapp.py"
-    DONATE_DOTENV: "{{ pydonate_dotenv }}"
-  args:
-    chdir: "{{ pydonate_base }}"
-  command:
-    "{{ pydonate_venv }}/exec flask db upgrade"
-
-- name: run app init
-  become: true
-  become_user: "{{ pydonate_user }}"
-  command: "{{ pydonate_venv }}/exec python {{ pydonate_base }}/scripts/initialize_database.py"
-  args:
-    chdir: "{{ pydonate_base }}"
-  environment:
-    TEST_DATABASE_URI: "{{ pydonate_test_uri }}"
-    FLASK_APP: "{{ pydonate_base }}/autoapp.py"
+# ---
+# - name: create init script
+#   template:
+#     src: venv_exec.j2
+#     dest: "{{ pydonate_venv }}/exec"
+#     owner: "{{ pydonate_user }}"
+#     group: "{{ pydonate_user }}"
+#     mode: 0755
+# 
+# - name: create initial db migration
+#   become: true
+#   become_user: "{{ pydonate_user }}"
+#   environment:
+#     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
+#     DONATE_DOTENV: "{{ pydonate_dotenv }}"
+#   args:
+#     chdir: "{{ pydonate_base }}"
+#   command:
+#     "{{ pydonate_venv }}/exec flask db migrate"
+# 
+# - name: run initial db migration
+#   become: true
+#   become_user: "{{ pydonate_user }}"
+#   environment:
+#     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
+#     DONATE_DOTENV: "{{ pydonate_dotenv }}"
+#   args:
+#     chdir: "{{ pydonate_base }}"
+#   command:
+#     "{{ pydonate_venv }}/exec flask db upgrade"
+# 
+# - name: run app init
+#   become: true
+#   become_user: "{{ pydonate_user }}"
+#   command: "{{ pydonate_venv }}/exec python {{ pydonate_base }}/scripts/initialize_database.py"
+#   args:
+#     chdir: "{{ pydonate_base }}"
+#   environment:
+#     TEST_DATABASE_URI: "{{ pydonate_test_uri }}"
+#     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
