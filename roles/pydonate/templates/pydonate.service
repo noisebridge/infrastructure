@@ -3,7 +3,7 @@ Description=Python donate.noisebridge.net implementation
 
 [Service]
 WorkingDirectory={{ pydonate_base }}
-ExecStart = "{{ pydonate_base }}/venv/exec" "flask" "run"
+ExecStart="{{ pydonate_base }}/venv/exec" "flask" "run"
 User={{ pydonate_user }}
 Group={{ pydonate_user }}
 Environment="FLASK_APP={{ pydonate_base }}/autoapp.py"
