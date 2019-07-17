@@ -1,12 +1,12 @@
-# ---
-# - name: create init script
-#   template:
-#     src: venv_exec.j2
-#     dest: "{{ pydonate_venv }}/exec"
-#     owner: "{{ pydonate_user }}"
-#     group: "{{ pydonate_user }}"
-#     mode: 0755
-# 
+---
+- name: create init script
+  template:
+    src: venv_exec.j2
+    dest: "{{ pydonate_venv }}/exec"
+    owner: "{{ pydonate_user }}"
+    group: "{{ pydonate_user }}"
+    mode: 0755
+
 # - name: create initial db migration
 #   become: true
 #   become_user: "{{ pydonate_user }}"
