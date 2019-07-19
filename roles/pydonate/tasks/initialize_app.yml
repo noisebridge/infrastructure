@@ -1,0 +1,32 @@
+---
+# - name: create initial db migration
+#   become: true
+#   become_user: "{{ pydonate_user }}"
+#   environment:
+#     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
+#     DONATE_DOTENV: "{{ pydonate_dotenv }}"
+#   args:
+#     chdir: "{{ pydonate_base }}"
+#   command:
+#     "{{ pydonate_venv }}/bin/flask db migrate"
+# 
+# - name: run initial db migration
+#   become: true
+#   become_user: "{{ pydonate_user }}"
+#   environment:
+#     FLASK_APP: "{{ pydonate_base }}/autoapp.py"
+#     DONATE_DOTENV: "{{ pydonate_dotenv }}"
+#   args:
+#     chdir: "{{ pydonate_base }}"
+#   command:
+#     "{{ pydonate_venv }}/bin/flask db upgrade"
+# 
+# - name: run app init
+#   become: true
+#   become_user: "{{ pydonate_user }}"
+#   command: "{{ pydonate_python }} {{ pydonate_base }}/scripts/initialize_database.py"
+#   args:
+#     chdir: "{{ pydonate_base }}"
+#   environment:
+#     TEST_DATABASE_URI: "{{ pydonate_test_uri }}"
+#     FLASK_APP: "{{ pydonate_base }}/autoapp.py"

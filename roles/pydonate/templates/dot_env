@@ -1,10 +1,10 @@
 FLASK_APP=./autoapp.py
-FLASK_ENV=DEVELOPMENT
+FLASK_ENV="{{ pydonate_env | upper }}"
 FLASK_DEBUG=0
 FLASK_RUN_PORT={{ pydonate_port }}
 
 STRIPE_KEY="{{ pydonate_config.secrets.stripe_key }}"
-STRIPE_SECRET={{ pydonate_config.secrets.stripe_secret }}"
+STRIPE_SECRET="{{ pydonate_config.secrets.stripe_secret }}"
 
 DONATE_PRODUCT="{{ pydonate_config.secrets.donate_product }}"
 DONATE_SECRET="{{ pydonate_config.secrets.donate_secret }}"
@@ -14,8 +14,8 @@ DB_PASS="{{ pydonate_config.secrets.db_pass }}"
 DB_HOST="localhost"
 DB_SOCK="/var/run/mysqld/mysqld.sock"
 
-DB_PROD_NAME="noisebridge_donate"
+DB_PROD_NAME="donate_prod"
 PROD_DATABASE_URI="mysql+mysqldb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_PROD_NAME}?unix_socket=${DB_SOCK}"
 
-DB_TEST_NAME="test_donate"
+DB_TEST_NAME="donate_test"
 TEST_DATABASE_URI="mysql+mysqldb://${DB_USER}:${DB_PASS}@${DB_HOST}/${DB_TEST_NAME}?unix_socket=${DB_SOCK}"

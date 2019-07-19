@@ -36,13 +36,14 @@
     mode: 0755
   with_items:
   - "/srv/{{ pydonate_user }}"
+  - "{{ pydonate_base }}"
 
 - name: Checkout repository
   become: true
   become_user: "{{ pydonate_user }}"
   git:
     repo: https://github.com/noisebridge/python-nb-donate.git
-    dest: "/srv/{{ pydonate_user }}/code"
+    dest: "{{ pydonate_base }}"
     version: "{{ pydonate_version }}"
   notify:
   - restart pydonate
@@ -51,16 +52,17 @@
   become: true
   become_user: "{{ pydonate_user }}"
   pip:
-    requirements: "/srv/{{ pydonate_user }}/code/requirements.txt"
-    virtualenv: "/srv/{{ pydonate_user }}/code/venv"
+    requirements: "{{ pydonate_base }}/requirements.txt"
+    virtualenv: "{{ pydonate_base }}/venv"
     virtualenv_python: python3.5
 
 - name: "-e ."
   become: true
   become_user: "{{ pydonate_user }}"
   pip:
-    name: "/srv/{{ pydonate_user }}/code"
-    virtualenv: "/srv/{{ pydonate_user }}/code/venv"
+    editable: true
+    name: "{{ pydonate_base }}"
+    virtualenv: "{{ pydonate_base }}/venv"
     virtualenv_python: python3.5
 
 - name: Template out systemd file
@@ -76,9 +78,11 @@
 - name: Template out .env file
   template:
     src: dot_env
-    dest: "/srv/{{ pydonate_user }}/code/.env"
+    dest: "{{ pydonate_base }}/.env"
     owner: root
     group: "{{ pydonate_user }}"
     mode: '0640'
   notify:
   - restart pydonate
+
+  # - include: initialize_app.yml
