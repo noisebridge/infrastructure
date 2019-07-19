@@ -1,12 +1,4 @@
 ---
-- name: create init script
-  template:
-    src: venv_exec.j2
-    dest: "{{ pydonate_venv }}/exec"
-    owner: "{{ pydonate_user }}"
-    group: "{{ pydonate_user }}"
-    mode: 0755
-
 # - name: create initial db migration
 #   become: true
 #   become_user: "{{ pydonate_user }}"
@@ -16,7 +8,7 @@
 #   args:
 #     chdir: "{{ pydonate_base }}"
 #   command:
-#     "{{ pydonate_venv }}/exec flask db migrate"
+#     "{{ pydonate_venv }}/bin/flask db migrate"
 # 
 # - name: run initial db migration
 #   become: true
@@ -27,12 +19,12 @@
 #   args:
 #     chdir: "{{ pydonate_base }}"
 #   command:
-#     "{{ pydonate_venv }}/exec flask db upgrade"
+#     "{{ pydonate_venv }}/bin/flask db upgrade"
 # 
 # - name: run app init
 #   become: true
 #   become_user: "{{ pydonate_user }}"
-#   command: "{{ pydonate_venv }}/exec python {{ pydonate_base }}/scripts/initialize_database.py"
+#   command: "{{ pydonate_python }} {{ pydonate_base }}/scripts/initialize_database.py"
 #   args:
 #     chdir: "{{ pydonate_base }}"
 #   environment:

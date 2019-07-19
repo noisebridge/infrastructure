@@ -85,4 +85,4 @@
   notify:
   - restart pydonate
 
-- include: initialize_app.yml
+  # - include: initialize_app.yml
