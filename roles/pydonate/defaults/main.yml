@@ -11,7 +11,7 @@ pydonate_config:
     stripe_secret: nope
 
 pydonate_base: /srv/{{ pydonate_user }}/code
-pydonate_env: PRODUCTION
+pydonate_env: production
 pydonate_venv: "{{ pydonate_base }}/venv"
 pydonate_python: "{{ pydonate_venv }}/bin/python3.5"
 pydonate_dotenv: "{{ pydonate_base }}/.env"
