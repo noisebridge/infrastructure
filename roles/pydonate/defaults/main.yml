@@ -11,7 +11,7 @@ pydonate_config:
     stripe_secret: nope
 
 pydonate_base: /srv/{{ pydonate_user }}/code
-pydonate_env: development
+pydonate_env: production
 pydonate_venv: "{{ pydonate_base }}/venv"
 pydonate_python: "{{ pydonate_venv }}/bin/python3.5"
 pydonate_dotenv: "{{ pydonate_base }}/.env"
@@ -19,7 +19,7 @@ pydonate_dotenv: "{{ pydonate_base }}/.env"
 pydonate_db:
   connector: mysql
   dialect: mysqldb
-  dbname: donate_test
+  dbname: donate_prod
   dbuser: donate
   host: localhost
   sock: "/var/run/mysqld/mysqld.sock"
