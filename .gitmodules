@@ -22,3 +22,6 @@
 [submodule "roles/cloudalchemy.grafana"]
 	path = roles/cloudalchemy.grafana
 	url = https://github.com/cloudalchemy/ansible-grafana.git
+[submodule "roles/ansible-fail2ban"]
+	path = roles/ansible-fail2ban
+	url = git@github.com:nickjj/ansible-fail2ban.git
