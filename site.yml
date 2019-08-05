@@ -27,7 +27,6 @@
 
 - name: noisebridge-net
   hosts: noisebridge-net
-  gather_facts: yes
   become: yes
   become_method: sudo
   tags: [noisebridge-net]
@@ -44,10 +43,7 @@
   hosts: donate-noisebridge-net
   become: yes
   become_method: sudo
-  gather_facts: yes
   tags: [donate]
-  vars:
-    ansible_pkg_mgr: apt
   roles:
     - donate
     - percona
@@ -105,7 +101,6 @@
   hosts: m4-noisebridge-net
   become: yes
   become_method: sudo
-  gather_facts: yes
   tags: [m4-noisebridge-net]
   roles:
     - { role: antoiner77.caddy, tags: [ 'caddy' ] }
