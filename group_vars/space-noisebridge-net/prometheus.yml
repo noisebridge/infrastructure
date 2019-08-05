@@ -17,6 +17,7 @@ prometheus_scrape_configs:
     scheme: https
     static_configs:
       - targets:
+        - "donate.noisebridge.net:443"
         - "test-donate.noisebridge.net:443"
   - job_name: "prometheus"
     static_configs:
