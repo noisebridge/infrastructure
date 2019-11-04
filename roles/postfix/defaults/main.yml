@@ -2,3 +2,22 @@
 postfix_mailname: "{{ ansible_fqdn }}"
 postfix_destinations:
 - "{{ ansible_fqdn }}"
+postfix_aliases:
+  postmaster:
+    alias: root
+  webmaster:
+    alias: root
+  www-data:
+    alias: root
+  hostmaster:
+    alias: root
+  list:
+    alias: root
+  uplinks:
+    alias: root
+  ssladministrator:
+    alias: root
+  ssladmin:
+    alias: root
+  planet:
+    alias: root

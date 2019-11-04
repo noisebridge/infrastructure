@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+{% for k,v in postfix_aliases.items() %}
+
+{% if v.comment is defined %}
+{{ v.comment | comment }}
+{% endif %}
+{{ k }}: {{ v.alias | join(', ') }}
+{% endfor %}

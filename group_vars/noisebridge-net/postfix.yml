@@ -1,0 +1,80 @@
+postfix_aliases:
+  # Root aliases
+  blog-admin:
+    alias:
+    - root
+  clamav:
+    alias:
+    - root
+  hostmaster:
+    alias:
+    - root
+  list:
+    alias:
+    - root
+  monit:
+    alias:
+    - root
+  planet:
+    alias:
+    - root
+  postmaster:
+    alias:
+    - root
+  ssladmin:
+    alias:
+    - root
+  ssladministrator:
+    alias:
+    - root
+  uplinks:
+    alias:
+    - root
+  webmaster:
+    alias:
+    - root
+  www-data:
+    alias:
+    - root
+  root:
+    alias: "{{ noisebridge_alias_root }}"
+  # Noisebridge aliases
+  adafruit:
+    comment: "https://www.noisebridge.net/wiki/Meeting_Notes_2010_06_01"
+    alias: "{{ noisebridge_alias_adafruit }}"
+  av:
+    alias: "{{ noisebridge_alias_av }}"
+  community-outreach:
+    comment: Community outreach alias
+    alias: "{{ noisebridge_alias_community_outreach }}"
+  donations:
+    alias:
+    - treasurer
+  fundraising:
+    comment: Fundraising alias
+    alias: "{{ noisebridge_alias_fundraising }}"
+  lasercut:
+    alias: "{{ noisebridge_alias_lasercut }}"
+  legal-demands:
+    alias:
+    - root
+    - secretary
+  media:
+    alias:
+    - press
+  noiserat:
+    alias:
+    - signal2noise@lists.noisebridge.net
+  powerstation:
+    alias: "{{ noisebridge_alias_powerstation }}"
+  press:
+    alias: "{{ noisebridge_alias_press }}"
+  secretary:
+    comment: Noisebridge secretary alias
+    alias: "{{ noisebridge_alias_secretary }}"
+  treasurer:
+    comment: Treasurer alias
+    alias: "{{ noisebridge_alias_treasurer }}"
+  treasury:
+    alias:
+    - treasurer
