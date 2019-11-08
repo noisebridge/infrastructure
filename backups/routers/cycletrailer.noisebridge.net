@@ -1,4 +1,6 @@
 firewall {
+    all-ping enable
+    broadcast-ping disable
     ipv6-name WAN_IN_v6 {
         default-action drop
         description "WAN to LAN (IPv6)"
@@ -97,6 +99,68 @@ firewall {
             }
         }
     }
+    ipv6-receive-redirects disable
+    ipv6-src-route disable
+    ip-src-route disable
+    log-martians enable
+    name WAN_LOCAL {
+        default-action drop
+        description "WAN to router (IPv4)"
+        rule 10 {
+            action accept
+            description ICMP
+            log disable
+            protocol icmp
+        }
+        rule 20 {
+            action accept
+            description "Allow established"
+            log disable
+            protocol all
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 21 {
+            action drop
+            description "Drop invalid"
+            log disable
+            protocol all
+            state {
+                invalid enable
+            }
+        }
+        rule 31 {
+            action accept
+            description "Cycletrailer TCP allowed"
+            destination {
+                port 22
+            }
+            protocol tcp
+            state {
+                new enable
+            }
+        }
+        rule 32 {
+            action accept
+            description "Local DNS allowed"
+            destination {
+                port 53
+            }
+            protocol tcp_udp
+            source {
+                address 10.19.0.0/24
+            }
+            state {
+                new enable
+            }
+        }
+    }
+    receive-redirects disable
+    send-redirects enable
+    source-validation disable
+    syn-cookies enable
 }
 interfaces {
     ethernet eth0 {
@@ -146,6 +210,7 @@ interfaces {
             address {
                 autoconf
             }
+            dup-addr-detect-transmits 1
         }
         speed auto
     }
@@ -247,12 +312,14 @@ service {
                 default-router 10.19.0.1
                 dns-server 10.20.0.1
                 domain-name noise
+                lease 86400
                 static-mapping roofswitch.noise {
                     ip-address 10.19.0.5
                     mac-address dc:9f:db:28:de:6d
                 }
             }
         }
+        static-arp disable
         use-dnsmasq enable
     }
     dhcpv6-server {
@@ -330,6 +397,9 @@ system {
         commit-revisions 20
     }
     conntrack {
+        expect-table-size 2048
+        hash-size 32768
+        table-size 262144
     }
     domain-name noise
     host-name cycletrailer
@@ -388,6 +458,7 @@ system {
         }
     }
     offload {
+        hwnat disable
         ipsec enable
         ipv4 {
             forwarding enable
