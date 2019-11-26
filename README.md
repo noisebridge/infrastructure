@@ -26,6 +26,14 @@ You can be even more specific, for example, this deploys only to the noisebridge
 
     ansible-playbook site.yml --limit noisebridge-net -t website
 
+### Ansible Vault for email aliases
+
+The email alias file is encrypted so that people's email addresses aren't public. To edit it, first put the ansible vault password in a `.vault-password` file in the root directory of the git repo, then run:
+
+```ansible-vault edit roles/postfix/files/aliases```
+
+To get the vault password, check https://www.noisebridge.net/wiki/Accounts to see who has it.
+
 ### Remote access to .noise
 
 In order to deploy to machines remotely, you will need to configure a bastion bouncer.
