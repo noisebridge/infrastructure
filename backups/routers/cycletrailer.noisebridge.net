@@ -407,17 +407,6 @@ system {
         override-hostname-ip 10.20.0.1
     }
     login {
-        user rando {
-            authentication {
-                encrypted-password $6$TS3KJlxA$rs53wgIz0y0L7h3xFEoXoLTJYvzbP61DraKUaQlLciDeZ2xxF2p8UqVTcKjuBOaux44wJEznP8mTWCMt693k5.
-                plaintext-password ""
-                public-keys marcidy@gmail.com {
-                    key AAAAB3NzaC1yc2EAAAADAQABAAACAQDDRslOaMDqSWxU+Gx2AXAhoNc9nUnoZCQdjuvxFuuvpU5oM9d+U0oUTDxUvF/AtlP++uV0APyrxXYaRKZ1YS9877DZZhpuEME7w3XPaxkIa6vssHiq01wPcmX3CRDeFTVJyl6hY7Oy30ASDi8zYMz3mpHJzy+XtxrbJGGK7UtttTtMCtmgpQHcW73bwcsyE+iJZFsjx59T+1LLuuQ+lLS/P8iXlqTv6GHK+iTFYQaY6TGm1bdd9isVvjtNNXaegcP0oPxFvKFLHYqXyPKQzmQhIRTHdgtkWacN0p6WsLxph0Xp0HsBLAnMwQONSMVm2Echs+lljwtE5qEyti11ljpOEaNqKzE9nVHIAVrgBacs1r5TxKkTJszAa5W9gf9cy1ySTX9irCCa4PASPHfEKGU0SFEoTe+iyIMw4Je7wWlGzeEn6F6jaFui6OjIMJMTAb9SsWeVAVQHoFetr5U/BkIXxhSz1SiPI1iHZNCTV5SiEQXC+TSYyy7hypQRTEGliTvQQR5GPFZbZbRrJkzBdYohsjNIsniGfbzskfDaCJ9dHfcMM9Okhu1gsdDikuikQjun5/1+KTN1iW6oKsuU5/pRMZqTNFSuFhNZpB2pjwnG1nZHOw4JDBiO6VPrPdLEZ5HEEfR1viXIaU4inX0OrN4LKpLEJ+FLlnfC+xzc46C/7Q==
-                    type ssh-rsa
-                }
-            }
-            level admin
-        }
         user rr {
             authentication {
                 encrypted-password $6$0fV7Y6dMtzRi0q$Cc4DlO4Br/OjM0l3Rx9dCtr/Nf/VWfcgZhoP7U/k6tXwrZxGmsfx4dGbpF5dff1khFOY3iHLyPYYupJz1qU9Q0
