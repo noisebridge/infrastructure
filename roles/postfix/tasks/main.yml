@@ -66,8 +66,8 @@
     - mail
 
 - name: configure aliases
-  copy:
-    src: aliases
+  template:
+    src: aliases.j2
     dest: /etc/aliases
     owner: root
     group: root
