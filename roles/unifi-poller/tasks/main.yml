@@ -1,0 +1,14 @@
+---
+- name: install
+  apt:
+    deb: https://github.com/davidnewhall/unifi-poller/releases/download/v1.6.1/unifi-poller_1.6.1-576_amd64.deb
+
+- name: configure
+  template:
+    src: up.conf.j2
+    dest: /etc/unifi-poller/up.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+  - restart unifi-poller

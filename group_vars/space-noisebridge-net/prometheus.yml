@@ -97,5 +97,9 @@ prometheus_scrape_configs:
         - flaschen-ap.noise
         - sparkle-ap.noise
         - west-ap.noise
+  - job_name: "unifi"
+    static_configs:
+      - targets:
+        - pegasus.noise:9130
 
 prometheus_targets: {}

@@ -76,6 +76,7 @@
   roles:
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.snmp-exporter, tags: [ 'snmp' ] }
+    - { role: unifi-poller, tags: [ 'unifi-poller' ] }
     - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - cloudalchemy.grafana
     - powerpanel
