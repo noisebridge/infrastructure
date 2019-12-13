@@ -1,7 +1,7 @@
 ---
 - name: install
   apt:
-    deb: https://github.com/davidnewhall/unifi-poller/releases/download/v1.6.1/unifi-poller_1.6.1-576_amd64.deb
+    deb: https://github.com/davidnewhall/unifi-poller/releases/download/v1.6.3/unifi-poller_1.6.3-641_amd64.deb
 
 - name: configure
   template:
