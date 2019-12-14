@@ -2,3 +2,5 @@
 unifi_poller_user: monitoring
 unifi_poller_pass: secret
 unifi_poller_url: https://127.0.0.1:8443
+# main = release, unstable = master
+unifi_poller_apt_release: main
