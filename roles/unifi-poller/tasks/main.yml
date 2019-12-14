@@ -10,7 +10,7 @@
 
 - name: install
   apt:
-    name: unifi-poller
+    name: "unifi-poller={{ unifi_poller_version }}"
 
 - name: configure
   template:
