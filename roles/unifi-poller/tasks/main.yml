@@ -1,7 +1,16 @@
 ---
+- name: install key
+  apt_key:
+    url: https://golift.io/gpgkey
+
+- name: setup repo
+  apt_repository:
+    repo: "deb https://dl.bintray.com/golift/{{ ansible_distribution | lower }} {{ ansible_lsb.codename }} {{ unifi_poller_apt_release }}"
+    update_cache: true
+
 - name: install
   apt:
-    deb: https://github.com/davidnewhall/unifi-poller/releases/download/v1.6.3/unifi-poller_1.6.3-641_amd64.deb
+    name: "unifi-poller={{ unifi_poller_version }}"
 
 - name: configure
   template:
