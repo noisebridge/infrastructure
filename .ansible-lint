@@ -1,6 +1,6 @@
 ---
 exclude_paths:
-- roles/antoiner77.caddy
+- roles/caddy
 - roles/cloudalchemy.grafana
 - roles/cloudalchemy.node-exporter
 - roles/cloudalchemy.prometheus

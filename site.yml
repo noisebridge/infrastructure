@@ -37,7 +37,7 @@
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
-    - { role: antoiner77.caddy, tags: [ 'caddy' ] }
+    - { role: caddy, tags: [ 'caddy' ] }
 
 - name: donate-noisebridge-net
   hosts: donate-noisebridge-net
@@ -48,7 +48,7 @@
     - donate
     - percona
     - geerlingguy.mysql
-    - antoiner77.caddy
+    - caddy
     - pydonate
 
 - name: List server
@@ -104,7 +104,7 @@
   become_method: sudo
   tags: [m4-noisebridge-net]
   roles:
-    - { role: antoiner77.caddy, tags: [ 'caddy' ] }
+    - { role: caddy, tags: [ 'caddy' ] }
     - { role: library-org, tags: [ 'library-org' ] }
     - { role: stuff-org, tags: [ 'stuff-org' ] }
 
