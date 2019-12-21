@@ -30,5 +30,72 @@ prometheus_scrape_configs:
     scheme: https
     static_configs:
       - targets:
-        - "test-donate.noisebridge.net:443"
-  
+        - "donate.noisebridge.net:443"
+  - job_name: blackbox_http_v4
+    metrics_path: /probe
+    params:
+      module: [http_2xx_v4]
+    static_configs:
+      - targets:
+        - http://noisebridge.net
+        - https://noisebridge.net
+        - https://donate.noisebridge.net
+        - https://library.noisebridge.net
+        - https://lists.noisebridge.net
+        - https://parts.noisebridge.net
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9115
+  - job_name: blackbox_http_v6
+    metrics_path: /probe
+    params:
+      module: [http_2xx_v6]
+    static_configs:
+      - targets:
+        - http://noisebridge.net
+        - https://noisebridge.net
+        - https://donate.noisebridge.net
+        - https://library.noisebridge.net
+        - https://lists.noisebridge.net
+        - https://parts.noisebridge.net
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9115
+  - job_name: blackbox_smtp_v4
+    metrics_path: /probe
+    params:
+      module: [smtp_starttls_v4]
+    static_configs:
+      - targets:
+        - noisebridge.net:25
+        - noisebridge.net:587
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9115
+  - job_name: blackbox_smtp_v6
+    metrics_path: /probe
+    params:
+      module: [smtp_starttls_v6]
+    static_configs:
+      - targets:
+        - noisebridge.net:25
+        - noisebridge.net:587
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 127.0.0.1:9115
