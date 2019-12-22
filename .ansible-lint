@@ -1,6 +1,7 @@
 ---
 exclude_paths:
 - roles/caddy
+- roles/cloudalchemy.blackbox-exporter
 - roles/cloudalchemy.grafana
 - roles/cloudalchemy.node-exporter
 - roles/cloudalchemy.prometheus
