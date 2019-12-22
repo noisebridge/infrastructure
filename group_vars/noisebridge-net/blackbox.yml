@@ -1,5 +1,18 @@
 ---
 blackbox_exporter_web_listen_address: "127.0.0.1:9115"
+
+blackbox_smtp_query_response:
+- expect: "^220 ([^ ]+) ESMTP (.+)$"
+- send: "EHLO prober"
+- expect: "^250-STARTTLS"
+- send: "STARTTLS"
+- expect: "^220"
+- starttls: true
+- send: "EHLO prober"
+- expect: "^250-"
+- send: "QUIT"
+
+
 blackbox_exporter_configuration_modules:
   http_2xx_v4:
     prober: http
@@ -16,28 +29,10 @@ blackbox_exporter_configuration_modules:
     tcp:
       preferred_ip_protocol: "ip4"
       ip_protocol_fallback: false
-      query_response:
-        - expect: "^220 ([^ ]+) ESMTP (.+)$"
-        - send: "EHLO prober"
-        - expect: "^250-STARTTLS"
-        - send: "STARTTLS"
-        - expect: "^220"
-        - starttls: true
-        - send: "EHLO prober"
-        - expect: "^250-"
-        - send: "QUIT"
+      query_response: "{{ blackbox_smtp_query_response }}"
   smtp_starttls_v6:
     prober: tcp
     tcp:
       preferred_ip_protocol: "ip6"
       ip_protocol_fallback: false
-      query_response:
-        - expect: "^220 ([^ ]+) ESMTP (.+)$"
-        - send: "EHLO prober"
-        - expect: "^250-STARTTLS"
-        - send: "STARTTLS"
-        - expect: "^220"
-        - starttls: true
-        - send: "EHLO prober"
-        - expect: "^250-"
-        - send: "QUIT"
+      query_response: "{{ blackbox_smtp_query_response }}"

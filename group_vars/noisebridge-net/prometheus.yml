@@ -9,6 +9,15 @@ prometheus_global:
   scrape_interval: 15s
   scrape_timeout: 10s
   evaluation_interval: 30s
+
+prometheus_blackbox_relabel_configs:
+- source_labels: [__address__]
+  target_label: __param_target
+- source_labels: [__param_target]
+  target_label: instance
+- target_label: __address__
+  replacement: 127.0.0.1:9115
+
 prometheus_scrape_configs:
   - job_name: "prometheus"
     static_configs:
@@ -43,13 +52,7 @@ prometheus_scrape_configs:
         - https://library.noisebridge.net
         - https://lists.noisebridge.net
         - https://parts.noisebridge.net
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
+    relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_http_v6
     metrics_path: /probe
     params:
@@ -62,13 +65,7 @@ prometheus_scrape_configs:
         - https://library.noisebridge.net
         - https://lists.noisebridge.net
         - https://parts.noisebridge.net
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
+    relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_smtp_v4
     metrics_path: /probe
     params:
@@ -77,13 +74,7 @@ prometheus_scrape_configs:
       - targets:
         - noisebridge.net:25
         - noisebridge.net:587
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
+    relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_smtp_v6
     metrics_path: /probe
     params:
@@ -92,10 +83,4 @@ prometheus_scrape_configs:
       - targets:
         - noisebridge.net:25
         - noisebridge.net:587
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 127.0.0.1:9115
+    relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
