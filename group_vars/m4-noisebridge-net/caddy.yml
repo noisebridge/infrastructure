@@ -11,6 +11,11 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
+    header / {
+      Strict-Transport-Security "max-age=31536000;includeSubdomains"
+      X-XSS-Protection "1; mode=block"
+      X-Content-Type-Options "nosniff"
+    }
     proxy / localhost:5000 {
       transparent
     }
@@ -24,6 +29,11 @@ caddy_config: |
       rotate_keep 520
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
+    }
+    header / {
+      Strict-Transport-Security "max-age=31536000;includeSubdomains"
+      X-XSS-Protection "1; mode=block"
+      X-Content-Type-Options "nosniff"
     }
     proxy / localhost:3000 {
       transparent
