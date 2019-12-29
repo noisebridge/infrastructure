@@ -49,7 +49,7 @@
     - donate
     - percona
     - geerlingguy.mysql
-    - caddy
+    - { role: caddy, tags: [ 'caddy' ] }
     - pydonate
 
 - name: List server
