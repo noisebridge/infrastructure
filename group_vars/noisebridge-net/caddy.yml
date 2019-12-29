@@ -94,6 +94,11 @@ caddy_config: |
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
     }
+    header / {
+      Strict-Transport-Security "max-age=31536000;includeSubdomains"
+      X-XSS-Protection "1; mode=block"
+      X-Content-Type-Options "nosniff"
+    }
     root /srv/mailman/lists.noisebridge.net
 
     cgi /admin /var/lib/mailman/cgi-bin/admin
@@ -154,6 +159,11 @@ caddy_config: |
       rotate_keep 520
       rotate_compress
       ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
+    }
+    header / {
+      Strict-Transport-Security "max-age=31536000;includeSubdomains"
+      X-XSS-Protection "1; mode=block"
+      X-Content-Type-Options "nosniff"
     }
     index index.php
     fastcgi / unix:/run/php/php7.0-fpm.sock php
