@@ -1,3 +1,4 @@
+{{ ansible_managed | comment }}
 # See /usr/share/postfix/main.cf.dist for a commented, more complete version
 
 # Debian specific:  Specifying a file name will cause the first
@@ -88,3 +89,9 @@ message_size_limit = 100000000
 
 # SuperQ (2013-03-20): Reduce default process pools from default of 100
 default_process_limit = 50
+
+# DKIM setup
+milter_default_action = accept
+milter_protocol = 6
+smtpd_milters = local:opendkim/opendkim.sock
+non_smtpd_milters = local:opendkim/opendkim.sock
