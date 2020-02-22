@@ -20,16 +20,22 @@ readme_directory = no
 # TLS parameters
 # smtpd_tls_cert_file=/etc/postfix/noisebridge.net-cert.pem
 # smtpd_tls_key_file=/etc/postfix/noisebridge.net-key.pem
+smtpd_use_tls = yes
 smtpd_tls_cert_file=/etc/ssl/caddy/acme/acme-v02.api.letsencrypt.org/sites/noisebridge.net/noisebridge.net.crt
 smtpd_tls_key_file=/etc/ssl/caddy/acme/acme-v02.api.letsencrypt.org/sites/noisebridge.net/noisebridge.net.key
 smtpd_tls_ciphers = high
-smtpd_use_tls=yes
-smtpd_tls_exclude_ciphers = aNULL, MD5, DES, RC4-SHA, AES256-SHA, AES128-SHA
-smtp_tls_protocols = !SSLv2, !SSLv3
-smtpd_tls_mandatory_protocols = TLSv1
-smtp_tls_note_starttls_offer = yes
+smtpd_tls_exclude_ciphers = EXP, MEDIUM, LOW, DES, 3DES, SSLv2
+smtpd_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1
+smtpd_tls_protocols = !SSLv2, !SSLv3, !TLSv1
+smtpd_tls_security_level = may
 smtpd_tls_received_header = yes
 smtpd_tls_session_cache_database = btree:${data_directory}/smtpd_scache
+smtpd_tls_loglevel = 1
+smtp_tls_security_level = may
+smtp_tls_exclude_ciphers = EXP, MEDIUM, LOW, DES, 3DES, SSLv2
+smtp_tls_mandatory_protocols = !SSLv2, !SSLv3, !TLSv1
+smtp_tls_protocols = !SSLv2, !SSLv3, !TLSv1
+smtp_tls_note_starttls_offer = yes
 smtp_tls_session_cache_database = btree:${data_directory}/smtp_scache
 
 # See /usr/share/doc/postfix/TLS_README.gz in the postfix-doc package for
