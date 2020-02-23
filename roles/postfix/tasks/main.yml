@@ -8,6 +8,8 @@
     - postfix-pcre
     - postgrey
     - procmail
+    - opendkim
+    - opendkim-tools
   tags:
     - postfix
     - mail
@@ -90,6 +92,50 @@
   tags:
     - postfix
     - mail
+  notify:
+    - restart postfix
+
+- name: setup opendkim postfix socket dir
+  file:
+    path: /var/spool/postfix/opendkim
+    state: directory
+    owner: opendkim
+    group: postfix
+    mode: 0755
+
+- name: copy dkim key
+  copy:
+    src: postfix/dkim.key
+    dest: /etc/dkimkeys/dkim.key
+    owner: opendkim
+    group: opendkim
+    mode: 0400
+  notify:
+    - restart opendkim
+
+- name: install opendkim configuration
+  template:
+    src: opendkim.conf.j2
+    dest: /etc/opendkim.conf
+    owner: root
+    group: root
+  notify:
+    - restart opendkim
+
+- name: install opendkim defaults
+  template:
+    src: opendkim-default.j2
+    dest: /etc/default/opendkim
+    owner: root
+    group: root
+  notify:
+    - restart opendkim
+
+- name: add postfix user to opedkim group
+  user:
+    name: postfix
+    groups: opendkim
+    append: yes
   notify:
     - restart postfix
 
