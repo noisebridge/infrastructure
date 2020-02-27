@@ -3,24 +3,27 @@ coredns_port: 53
 coredns_config: |
   noisebridge.com {
     secondary {
-      transfer from 216.252.162.220 # m3.noisebridge.net
-      transfer to 74.207.242.164 # dns.hexapodia.org
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer from 216.252.162.220
+      transfer from 2602:ff06:725:5:dc::1337
     }
     prometheus
     errors
   }
   noisebridge.net {
     secondary {
-      transfer from 216.252.162.220 # m3.noisebridge.net
-      transfer to 74.207.242.164 # dns.hexapodia.org
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer from 216.252.162.220
+      transfer from 2602:ff06:725:5:dc::1337
     }
     prometheus
     errors
   }
   noisebridge.org {
     secondary {
-      transfer from 216.252.162.220 # m3.noisebridge.net
-      transfer to 74.207.242.164 # dns.hexapodia.org
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer from 216.252.162.220
+      transfer from 2602:ff06:725:5:dc::1337
     }
     prometheus
     errors
@@ -29,6 +32,15 @@ coredns_config: |
     secondary {
       transfer from 216.252.162.220 # m3.noisebridge.net
       transfer to 104.131.134.47 # nicias.patrickod.com
+    }
+    prometheus
+    errors
+  }
+  noisetor.net {
+    secondary {
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer from 216.252.162.220
+      transfer from 2602:ff06:725:5:dc::1337
     }
     prometheus
     errors

@@ -3,16 +3,24 @@ coredns_port: 53
 coredns_config: |
   noisebridge.com {
     file zones/noisebridge.com {
-      transfer to 74.207.242.164 # dns.hexapodia.org
-      transfer to 204.246.122.84 # m2.noisebridge.net
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer to 216.252.162.220
+      transfer to 2602:ff06:725:5:dc::1337
+      # ns2.noisebridge.net (m4.noisebridge.net)
+      transfer to 204.246.122.84
+      transfer to 2602:ff06:677:4:54::1337
     }
     prometheus
     errors
   }
   noisebridge.net {
     file zones/noisebridge.net {
-      transfer to 74.207.242.164 # dns.hexapodia.org
-      transfer to 204.246.122.84 # m2.noisebridge.net
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer to 216.252.162.220
+      transfer to 2602:ff06:725:5:dc::1337
+      # ns2.noisebridge.net (m4.noisebridge.net)
+      transfer to 204.246.122.84
+      transfer to 2602:ff06:677:4:54::1337
     }
     dnssec noisebridge.net {
       key file keys/Knoisebridge.net.+013+33211
@@ -22,8 +30,12 @@ coredns_config: |
   }
   noisebridge.org {
     file zones/noisebridge.org {
-      transfer to 74.207.242.164 # dns.hexapodia.org
-      transfer to 204.246.122.84 # m2.noisebridge.net
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer to 216.252.162.220
+      transfer to 2602:ff06:725:5:dc::1337
+      # ns2.noisebridge.net (m4.noisebridge.net)
+      transfer to 204.246.122.84
+      transfer to 2602:ff06:677:4:54::1337
     }
     prometheus
     errors
@@ -36,6 +48,18 @@ coredns_config: |
     }
     dnssec noisebridge.space {
       key file keys/Knoisebridge.space.+013+22628
+    }
+    prometheus
+    errors
+  }
+  noisetor.net {
+    file zones/noisetor.net {
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer to 216.252.162.220
+      transfer to 2602:ff06:725:5:dc::1337
+      # ns2.noisebridge.net (m4.noisebridge.net)
+      transfer to 204.246.122.84
+      transfer to 2602:ff06:677:4:54::1337
     }
     prometheus
     errors
