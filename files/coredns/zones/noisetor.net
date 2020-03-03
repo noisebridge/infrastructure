@@ -14,8 +14,8 @@ noisetor.net.           IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 @               IN      NS      ns1.noisebridge.net.
 @               IN      NS      ns2.noisebridge.net.
 
-; Point top-level to m3.noisebridge.net.
-@       300     IN      A       216.252.162.220
+; Point top-level to noisebridge.info.
+@       300     IN      A       172.93.55.252
 @       300     IN      AAAA    2602:ff06:725:5:dc::1337
 
 ; SPF
