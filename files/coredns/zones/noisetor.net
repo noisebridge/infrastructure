@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisetor.net.           IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                        2020022200 ; Serial
+                        2020030300 ; Serial
                         3600 ; Refresh
                         300 ; Retry
                         604800 ; Expire
@@ -14,9 +14,8 @@ noisetor.net.           IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 @               IN      NS      ns1.noisebridge.net.
 @               IN      NS      ns2.noisebridge.net.
 
-; Point top-level to m3.noisebridge.net.
-@       300     IN      A       216.252.162.220
-@       300     IN      AAAA    2602:ff06:725:5:dc::1337
+; Point top-level to noisebridge.info.
+@       300     IN      A       172.93.55.252
 
 ; SPF
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
