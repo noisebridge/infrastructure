@@ -29,6 +29,10 @@ users:
     fullname: ''
     email: ...
 
+  elimisteve:
+    fullname: 'Steve Phillips'
+    github_username: elimisteve
+
   gareth:
     fullname: ',,,'
     email: ...
