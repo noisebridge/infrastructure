@@ -1,9 +1,18 @@
 ---
+- name: restart opendkim
+  systemd:
+    name: opendkim
+    state: restarted
+
 - name: restart postfix
-  service: name=postfix state=restarted
+  systemd:
+    name: postfix
+    state: restarted
 
 - name: restart postgrey
-  service: name=postgrey state=restarted
+  systemd:
+    name: postgrey
+    state: restarted
 
 - name: reload-aliases
   command: /usr/bin/newaliases

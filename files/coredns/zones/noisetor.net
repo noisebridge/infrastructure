@@ -1,0 +1,21 @@
+; vim: ts=8 et
+;zone for noisetor.net
+
+$TTL 3600
+
+noisetor.net.           IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
+                        2020030300 ; Serial
+                        3600 ; Refresh
+                        300 ; Retry
+                        604800 ; Expire
+                        300 ) ; Minimum
+
+; name server records
+@               IN      NS      ns1.noisebridge.net.
+@               IN      NS      ns2.noisebridge.net.
+
+; Point top-level to noisebridge.info.
+@       300     IN      A       172.93.55.252
+
+; SPF
+@       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
