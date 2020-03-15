@@ -25,11 +25,11 @@
     - security
     - jnv.unattended-upgrades
 
-- name: noisebridge-net
-  hosts: noisebridge-net
+- name: noisebridge_net
+  hosts: noisebridge_net
   become: yes
   become_method: sudo
-  tags: [noisebridge-net]
+  tags: [noisebridge_net]
   roles:
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
@@ -40,8 +40,8 @@
     - { role: mydumper, tags: [ 'mydumper' ] }
     - { role: caddy, tags: [ 'caddy' ] }
 
-- name: donate-noisebridge-net
-  hosts: donate-noisebridge-net
+- name: donate_noisebridge_net
+  hosts: donate_noisebridge_net
   become: yes
   become_method: sudo
   tags: [donate]
@@ -53,10 +53,10 @@
     - pydonate
 
 - name: List server
-  hosts: lists-noisebridge-net
+  hosts: lists_noisebridge_net
   become: yes
   become_method: sudo
-  tags: [lists-noisebridge-net]
+  tags: [lists_noisebridge_net]
   roles:
     - postfix
     - mailman
@@ -70,10 +70,10 @@
     - coredns
 
 - name: Space
-  hosts: space-noisebridge-net
+  hosts: space_noisebridge_net
   become: yes
   become_method: sudo
-  tags: [space-noisebridge-net]
+  tags: [space_noisebridge_net]
   roles:
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.snmp-exporter, tags: [ 'snmp' ] }
@@ -100,10 +100,10 @@
     - nextcloud-docker
 
 - name: Misc web services
-  hosts: m4-noisebridge-net
+  hosts: m4_noisebridge_net
   become: yes
   become_method: sudo
-  tags: [m4-noisebridge-net]
+  tags: [m4_noisebridge_net]
   roles:
     - { role: caddy, tags: [ 'caddy' ] }
     - { role: library-org, tags: [ 'library-org' ] }
