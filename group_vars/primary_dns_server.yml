@@ -13,6 +13,18 @@ coredns_config: |
     prometheus
     errors
   }
+  noisebridge.io {
+    file zones/noisebridge.io {
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer to 216.252.162.220
+      transfer to 2602:ff06:725:5:dc::1337
+      # ns2.noisebridge.net (m4.noisebridge.net)
+      transfer to 204.246.122.84
+      transfer to 2602:ff06:677:4:54::1337
+    }
+    prometheus
+    errors
+  }
   noisebridge.net {
     file zones/noisebridge.net {
       # ns1.noisebridge.net (m3.noisebridge.net)
