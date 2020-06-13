@@ -54,10 +54,8 @@ caddy_config: |
 
     rewrite / {
         r /(.*)
-        if {path} not /
         to {path} {path}/ /index.php?title={1}
     }
-    rewrite / /index.html
   }
 
   www.noisebridge.net/pipermail/ {
