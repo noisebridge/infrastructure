@@ -1,3 +1,7 @@
+---
+# This file plus a MIBs archive are used to generate the snmp.yml file.
+# MIBs: https://gitlab.com/superq/mibs
+# Generator: https://github.com/prometheus/snmp_exporter/tree/master/generator
 modules:
   if_mib:
     walk:
@@ -13,7 +17,7 @@ modules:
       lookup: ifAlias
     - source_indexes:
       - ifIndex
-      lookup: ifDescr
+      lookup: 1.3.6.1.2.1.2.2.1.2
     - source_indexes:
       - ifIndex
       # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
@@ -42,7 +46,7 @@ modules:
       lookup: ifAlias
     - source_indexes:
       - ifIndex
-      lookup: ifDescr
+      lookup: 1.3.6.1.2.1.2.2.1.2
     - source_indexes:
       - ifIndex
       # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
@@ -75,7 +79,7 @@ modules:
       lookup: ifAlias
     - source_indexes:
       - ifIndex
-      lookup: ifDescr
+      lookup: 1.3.6.1.2.1.2.2.1.2
     - source_indexes:
       - ifIndex
       # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
@@ -108,7 +112,7 @@ modules:
       lookup: ifAlias
     - source_indexes:
       - ifIndex
-      lookup: ifDescr
+      lookup: 1.3.6.1.2.1.2.2.1.2
     - source_indexes:
       - ifIndex
       # Use OID to avoid conflict with Netscaler NS-ROOT-MIB.
