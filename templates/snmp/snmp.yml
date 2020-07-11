@@ -1248,6 +1248,10 @@ cyber:
     oid: 1.3.6.1.4.1.3808.1.1.1.1.2.8
     type: gauge
     help: The output current rating of the UPS - 1.3.6.1.4.1.3808.1.1.1.1.2.8
+  - name: upsAdvanceIdentAgentSerialNumber
+    oid: 1.3.6.1.4.1.3808.1.1.1.1.2.9
+    type: DisplayString
+    help: A string identifying the serial number of the Agent. - 1.3.6.1.4.1.3808.1.1.1.1.2.9
   - name: upsBaseBatteryStatus
     oid: 1.3.6.1.4.1.3808.1.1.1.2.1.1
     type: gauge
@@ -1256,6 +1260,7 @@ cyber:
       1: unknown
       2: batteryNormal
       3: batteryLow
+      4: batteryNotPresent
   - name: upsBaseBatteryTimeOnBattery
     oid: 1.3.6.1.4.1.3808.1.1.1.2.1.2
     type: gauge
@@ -1264,7 +1269,11 @@ cyber:
   - name: upsBaseBatteryLastReplaceDate
     oid: 1.3.6.1.4.1.3808.1.1.1.2.1.3
     type: DisplayString
-    help: The UPS batteries last replaced date in mm/dd/yy format - 1.3.6.1.4.1.3808.1.1.1.2.1.3
+    help: The UPS batteries last replaced date in mm/dd/yyyy format - 1.3.6.1.4.1.3808.1.1.1.2.1.3
+  - name: upsBaseBatteryAgeRecommand
+    oid: 1.3.6.1.4.1.3808.1.1.1.2.1.4
+    type: gauge
+    help: Recommended battery life in month - 1.3.6.1.4.1.3808.1.1.1.2.1.4
   - name: upsAdvanceBatteryCapacity
     oid: 1.3.6.1.4.1.3808.1.1.1.2.2.1
     type: gauge
@@ -1300,6 +1309,10 @@ cyber:
     oid: 1.3.6.1.4.1.3808.1.1.1.2.2.8
     type: gauge
     help: The DC voltage rating of the battery set. - 1.3.6.1.4.1.3808.1.1.1.2.2.8
+  - name: upsAdvanceBatteryLife
+    oid: 1.3.6.1.4.1.3808.1.1.1.2.2.9
+    type: gauge
+    help: The battery life expressed in 1/100 percentage. - 1.3.6.1.4.1.3808.1.1.1.2.2.9
   - name: upsBaseInputPhase
     oid: 1.3.6.1.4.1.3808.1.1.1.3.1.1
     type: gauge
@@ -1353,6 +1366,10 @@ cyber:
       5: onSleep
       6: "off"
       7: rebooting
+      8: onECO
+      9: onBypass
+      10: onBuck
+      11: onOverload
   - name: upsBaseOutputPhase
     oid: 1.3.6.1.4.1.3808.1.1.1.4.1.2
     type: gauge
@@ -1376,7 +1393,7 @@ cyber:
   - name: upsAdvanceOutputCurrent
     oid: 1.3.6.1.4.1.3808.1.1.1.4.2.4
     type: gauge
-    help: The UPS output current in Amps. - 1.3.6.1.4.1.3808.1.1.1.4.2.4
+    help: The UPS output current in 1/10 Amps. - 1.3.6.1.4.1.3808.1.1.1.4.2.4
   - name: upsAdvanceOutputPower
     oid: 1.3.6.1.4.1.3808.1.1.1.4.2.5
     type: gauge
@@ -1410,6 +1427,27 @@ cyber:
     type: gauge
     help: The number of degrees beyond the temperature thresholds at which an active
       temperature alarm will be cleared - 1.3.6.1.4.1.3808.1.1.4.2.5
+  - name: envirTemperatureCelsius
+    oid: 1.3.6.1.4.1.3808.1.1.4.2.6
+    type: gauge
+    help: The environment temperature expressed in 1/10 Celsius - 1.3.6.1.4.1.3808.1.1.4.2.6
+  - name: envirTempCelsiusHighThreshold
+    oid: 1.3.6.1.4.1.3808.1.1.4.2.7
+    type: gauge
+    help: The high temperature threshold of the environment sensor - 1.3.6.1.4.1.3808.1.1.4.2.7
+  - name: envirTempCelsiusLowThreshold
+    oid: 1.3.6.1.4.1.3808.1.1.4.2.8
+    type: gauge
+    help: The low temperature threshold of the environment sensor - 1.3.6.1.4.1.3808.1.1.4.2.8
+  - name: envirTempCelsiusRateOfChange
+    oid: 1.3.6.1.4.1.3808.1.1.4.2.9
+    type: gauge
+    help: The rate of change of the temperature - 1.3.6.1.4.1.3808.1.1.4.2.9
+  - name: envirTempCelsiusHysteresis
+    oid: 1.3.6.1.4.1.3808.1.1.4.2.10
+    type: gauge
+    help: The number of degrees beyond the temperature thresholds at which an active
+      temperature alarm will be cleared - 1.3.6.1.4.1.3808.1.1.4.2.10
   - name: envirHumidity
     oid: 1.3.6.1.4.1.3808.1.1.4.3.1
     type: gauge
