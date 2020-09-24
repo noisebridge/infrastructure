@@ -11,3 +11,5 @@ exclude_paths:
 - roles/nickjj.docker
 skip_list:
 - 701 # No 'galaxy_info' found, not needed.
+- 106 # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'
+- 208 # File permissions not mentioned'
