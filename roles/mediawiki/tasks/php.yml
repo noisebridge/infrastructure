@@ -20,6 +20,7 @@
   copy:
     src: php/www.conf
     dest: /etc/php/7.0/fpm/pool.d/www.conf
+    mode: 0644
   tags:
     - php
   notify:

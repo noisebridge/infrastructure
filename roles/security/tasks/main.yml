@@ -24,4 +24,5 @@
     regexp: "^PasswordAuthentication"
     line: "PasswordAuthentication no"
     state: present
+    mode: 0644
   notify: restart sshd

@@ -28,9 +28,10 @@
     state: directory
     owner: "{{ mediawiki.system_user }}"
     group: "{{ mediawiki.system_group }}"
+    mode: 0755
 
 - name: extract mediawiki
-  unarchive:
+  unarchive: # noqa 208
     src: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     owner: "{{ mediawiki.system_user }}"

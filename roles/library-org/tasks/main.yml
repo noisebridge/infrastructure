@@ -33,6 +33,7 @@
   template:
     src: library.cfg.j2
     dest: /srv/library-org/library.cfg
+    mode: 0644
   notify:
   - restart library-org
 

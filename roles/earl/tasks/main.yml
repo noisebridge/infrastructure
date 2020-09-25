@@ -17,6 +17,7 @@
     src: "/tmp/earl-v{{ earl_version }}.{{ go_arch }}.tar.gz"
     dest: "/tmp"
     creates: "/tmp/earl-{{ go_arch }}"
+    mode: 0755
   delegate_to: localhost
   check_mode: false
 

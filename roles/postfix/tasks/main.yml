@@ -20,6 +20,7 @@
     dest: /etc/procmailrc
     owner: root
     group: root
+    mode: 0644
   tags:
     - postfix
 
@@ -28,6 +29,7 @@
     dest: /etc/default/postgrey
     regexp: "POSTGREY_OPTS=.*"
     replace: "POSTGREY_OPTS=\"--inet=10023 --delay=60\""
+    mode: 0644
   tags:
     - postgrey
     - postfix
@@ -61,6 +63,7 @@
     dest: /etc/postfix/main.cf
     owner: root
     group: root
+    mode: 0644
   notify:
     - restart postfix
   tags:
@@ -73,6 +76,7 @@
     dest: /etc/aliases
     owner: root
     group: root
+    mode: 0644
   notify:
     - reload-aliases
   tags:
@@ -119,6 +123,7 @@
     dest: /etc/opendkim.conf
     owner: root
     group: root
+    mode: 0644
   notify:
     - restart opendkim
 
@@ -128,6 +133,7 @@
     dest: /etc/default/opendkim
     owner: root
     group: root
+    mode: 0644
   notify:
     - restart opendkim
 
@@ -144,6 +150,7 @@
     regexp: "^#submission .*"
     replace: "submission inet n       -       -       -       -       smtpd"
     dest: /etc/postfix/master.cf
+    mode: 0644
   tags:
     - postfix
     - mail
@@ -156,6 +163,7 @@
     dest: "/etc/postfix/{{ item }}"
     owner: root
     group: root
+    mode: 0644
   register: postfix_hash_maps
   with_items:
     - client_access

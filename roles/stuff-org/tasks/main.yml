@@ -54,6 +54,7 @@
     src: "/tmp/stuff-org-v{{ stuff_version }}.{{ go_arch }}.tar.gz"
     dest: "/tmp"
     creates: "/tmp/stuff-org-v{{ stuff_version }}"
+    mode: 0755
   delegate_to: localhost
   check_mode: false
 
