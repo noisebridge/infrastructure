@@ -50,7 +50,7 @@
     - percona
     - geerlingguy.mysql
     - { role: caddy, tags: [ 'caddy' ] }
-    - pydonate
+    - { role: pydonate, tags: ['pydonate'] }
 
 - name: List server
   hosts: lists_noisebridge_net

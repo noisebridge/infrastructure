@@ -54,7 +54,7 @@
   pip:
     requirements: "{{ pydonate_base }}/requirements.txt"
     virtualenv: "{{ pydonate_base }}/venv"
-    virtualenv_python: python3.5
+    virtualenv_python: python3.7
 
 - name: "-e ."
   become: true
@@ -63,7 +63,7 @@
     editable: true
     name: "{{ pydonate_base }}"
     virtualenv: "{{ pydonate_base }}/venv"
-    virtualenv_python: python3.5
+    virtualenv_python: python3.7
 
 - name: Template out systemd file
   template:
