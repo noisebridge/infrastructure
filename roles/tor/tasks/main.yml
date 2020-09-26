@@ -22,7 +22,6 @@
      - tor
      - deb.torproject.org-keyring
    apt:
-     state: latest
      update_cache: yes
      cache_valid_time: 3600
      force: yes
@@ -31,7 +30,10 @@
      - tor
 
  - name: install tor apt transport
-   apt: package=apt-transport-tor state=latest update_cache=yes cache_valid_time=3600
+   apt:
+     package: apt-transport-tor
+     update_cache: yes
+     cache_valid_time: 3600
    tags:
     - tor
     - apt
@@ -41,6 +43,7 @@
      dest: /etc/apt/sources.list
      regexp: 'deb http'
      replace: 'deb tor+http'
-   tags: 
+     mode: 0644
+   tags:
      - tor
      - apt

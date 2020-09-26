@@ -36,3 +36,4 @@
     regexp: "^%sudo"
     line: "%sudo	ALL=(ALL:ALL) NOPASSWD: ALL" # noqa 203
     state: present
+    mode: 0440

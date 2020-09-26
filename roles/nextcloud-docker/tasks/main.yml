@@ -9,11 +9,13 @@
   file:
     dest: "{{ nextcloud_docker_files_path }}"
     state: directory
+    mode: 0755
 
 - name: make scripts dir
   file:
     dest: "{{ item }}/scripts"
     state: directory
+    mode: 0755
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -21,6 +23,7 @@
   file:
     dest: "{{ item }}/backups"
     state: directory
+    mode: 0755
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -28,6 +31,7 @@
   file:
     dest: "{{ item }}/mariadb"
     state: directory
+    mode: 0755
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -35,6 +39,7 @@
   template:
     src: files/nextcloud/docker-compose.yml
     dest: "{{ item }}/docker-compose.yml"
+    mode: 0755
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -50,6 +55,7 @@
   template:
     src: files/nextcloud/Makefile
     dest: "{{ item }}/Makefile"
+    mode: 0644
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -57,6 +63,7 @@
   template:
     src: files/nextcloud/README.md
     dest: "{{ item }}/README.md"
+    mode: 0644
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 

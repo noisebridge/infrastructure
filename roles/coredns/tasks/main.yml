@@ -60,6 +60,7 @@
     content: "{{ coredns_config }}"
     dest: "{{ coredns_path }}/Corefile"
     owner: "{{ coredns_user }}"
+    mode: 0644
   notify:
   - reload coredns
 
@@ -67,6 +68,7 @@
   template:
     src: coredns.service.j2
     dest: /etc/systemd/system/coredns.service
+    mode: 0644
   notify:
   - restart coredns
 
