@@ -8,6 +8,7 @@ User={{ pydonate_user }}
 Group={{ pydonate_user }}
 Environment="FLASK_APP={{ pydonate_base }}/autoapp.py"
 Environment="DONATE_DOTENV={{ pydonate_dotenv }}"
+Environment="RECAPTCHA_SECRET_KEY={{ pydonate_config.secrets.recaptcha_secret_key }}"
 
 [Install]
 WantedBy=multi-user.target
