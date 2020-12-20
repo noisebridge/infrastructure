@@ -14,6 +14,19 @@ caddy_config: |
     redir https://www.noisebridge.net{uri}
   }
 
+  noisebridge.io, www.noisebridge.io {
+    prometheus
+    gzip
+    log "{{ caddy_log_dir }}/noisebridge.io.log" {
+      rotate_size 50
+      rotate_age 7
+      rotate_keep 520
+      rotate_compress
+      ipmask 255.255.0.0 ffff:ffff:ffff:ff00::
+    }
+    redir https://www.noisebridge.net{uri}
+  }
+
   noisebridge.net {
     prometheus
     gzip

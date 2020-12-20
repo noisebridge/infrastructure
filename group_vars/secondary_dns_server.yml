@@ -10,6 +10,15 @@ coredns_config: |
     prometheus
     errors
   }
+  noisebridge.io {
+    secondary {
+      # ns1.noisebridge.net (m3.noisebridge.net)
+      transfer from 216.252.162.220
+      transfer from 2602:ff06:725:5:dc::1337
+    }
+    prometheus
+    errors
+  }
   noisebridge.net {
     secondary {
       # ns1.noisebridge.net (m3.noisebridge.net)
