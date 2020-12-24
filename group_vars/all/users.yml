@@ -4,6 +4,11 @@ users:
     fullname: ''
     email: ...
 
+  bfb:
+    fullname: 'bfb,,,'
+    email: bfb@riseup.net
+    github_username: kevinjos
+
   chaz:
     fullname: 'chaz'
     github_username: chazchaz101
