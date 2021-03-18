@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+library.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/library.noisebridge.net.log" {
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+    {{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+  reverse_proxy localhost:5000
+}
+parts.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/parts.noisebridge.net.log" {
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+    {{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+  reverse_proxy localhost:3000
+}

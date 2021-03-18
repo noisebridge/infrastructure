@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+test-donate.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/test-donate.noisebridge.net.log" {
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+    {{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+  root * /var/www/donate.noisebridge.net
+  file_server
+}
+donate.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/donate.noisebridge.net.log" {
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+    {{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+  reverse_proxy localhost:{{ pydonate_port }}
+}

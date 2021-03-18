@@ -1,14 +1,14 @@
 ---
 sudo: required
 language: python
-python: 3.7
+python: 3.9
 cache: pip
 services:
 - docker
 env:
 - ANSIBLE=2.9
 install:
-- pip install ansible-lint
+- pip install ansible ansible-lint
 script:
 - ansible-lint site.yml
 branches:
