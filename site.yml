@@ -82,15 +82,6 @@
     - cloudalchemy.grafana
     - powerpanel
 
-- name: Mailman-3 List server
-  hosts: lists
-  become: yes
-  become_method: sudo
-  tags: [lists]
-  roles:
-    - postfix
-    - mailman3
-
 - name: Nextcloud on debian box in space
   hosts: cloud
   become: yes
@@ -122,3 +113,11 @@
   tags: [smartpi]
   roles:
     - smartpi
+
+- name: Misc server SCL
+  hosts: m6_noisebridge_net
+  become: yes
+  become_method: sudo
+  tags: [m6_noisebridge_net]
+  roles:
+    - {role: podman, tags: ['podman'] }
