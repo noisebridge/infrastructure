@@ -1,0 +1,119 @@
+{{ ansible_managed | comment }}
+# Global settings
+{
+  order cgi last
+}
+
+# Redirects to www.noisebride.net
+noisebridge.com, www.noisebridge.com {
+  log {
+    output file "{{ caddy_log_dir }}/noisebridge.com.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  redir https://www.noisebridge.net{uri}
+}
+
+noisebridge.io, www.noisebridge.io {
+  log {
+    output file "{{ caddy_log_dir }}/noisebridge.io.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  redir https://www.noisebridge.net{uri}
+}
+
+noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/noisebridge.net.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  redir https://www.noisebridge.net{uri}
+}
+
+noisebridge.org, www.noisebridge.org {
+  log {
+    output file "{{ caddy_log_dir }}/noisebridge.org.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  redir https://www.noisebridge.net{uri}
+}
+
+# Mediawiki
+www.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/www.noisebridge.net.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+{{ noisebridge_caddy_secure_header | indent(width=2) }}
+
+  route /images* {
+    uri strip_prefix /images
+    file_server {
+      root /srv/mediawiki/noisebridge.net/images
+    }
+  }
+  root * /srv/mediawiki/noisebridge.net
+  php_fastcgi unix//run/php/php7.0-fpm.sock
+
+  # Legacy mailman redirects
+  redir /pipermail https://lists.noisebridge.net{uri}
+  redir /mailman https://lists.noisebridge.net{uri}
+
+  rewrite / /index.php?title={path}
+  redir / /wiki
+}
+
+# Mailman
+lists.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/lists.noisebridge.net.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+{{ noisebridge_caddy_secure_header | indent(width=2) }}
+
+{% for cgi in noisebridge_mailman_cgi_scripts %}
+  cgi /{{ cgi }}* /var/lib/mailman/cgi-bin/{{ cgi }} {
+    script_name /{{ cgi }}
+  }
+{% endfor %}
+
+  route /images/mailman* {
+    uri strip_prefix /images/mailman
+    file_server {
+      root /usr/share/images/mailman
+    }
+  }
+  route /pipermail* {
+    uri strip_prefix /pipermail
+    file_server {
+      root /var/lib/mailman/archives/public
+    }
+  }
+
+  redir / /listinfo
+  rewrite /mailman /{uri}
+}
+
+# Safespace
+safespace.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/spafespace.noisebridge.net.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+{{ noisebridge_caddy_secure_header | indent(width=2) }}
+  root * /var/www/safespace.noisebridge.net
+  php_fastcgi unix//run/php/php7.0-fpm.sock
+}
