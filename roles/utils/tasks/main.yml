@@ -15,6 +15,7 @@
       - dnsutils
       - file
       - git
+      - gpg
       - htop
       - iftop
       - inotify-tools
