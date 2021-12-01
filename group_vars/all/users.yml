@@ -26,6 +26,11 @@ users:
     email: ...
     github_username: danhimalplanet
 
+  elan:
+    fullname: Elan Hourticolon-Retzler
+    email: mail@elanhr.org
+    github_username: ElanHR
+
   eenblam:
     fullname: ''
     email: ...
