@@ -30,6 +30,7 @@ users:
     fullname: Elan Hourticolon-Retzler
     email: mail@elanhr.org
     github_username: ElanHR
+    ssh_key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGv/xMztDjx7SVxfePPWAkIdu9rr+xAddZf+8CK/R7xp elan@noisebridge'
 
   eenblam:
     fullname: ''
