@@ -1,4 +1,11 @@
+# .ansible-lint
+# Configuration file for Ansible-lint. Used to promote Ansible best practices. 
+# File format described at: https://ansible-lint.readthedocs.io/en/latest/configuring.html
+
 ---
+# exclude_paths included in this file are parsed relative to this file's location
+# and not relative to the CWD of execution. CLI arguments passed to the --exclude
+# option will be parsed relative to the CWD of execution.
 exclude_paths:
 - roles/caddy
 - roles/cloudalchemy.blackbox-exporter
@@ -9,6 +16,8 @@ exclude_paths:
 - roles/geerlingguy.mysql
 - roles/jnv.unattended-upgrades
 - roles/nickjj.docker
+
+# This makes linter to fully ignore rules/tags listed below
 skip_list:
 - 701 # No 'galaxy_info' found, not needed.
 - 106 # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'
