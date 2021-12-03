@@ -1,30 +1,53 @@
-[submodule "roles/geerlingguy.mysql"]
-	path = roles/geerlingguy.mysql
-	url = https://github.com/geerlingguy/ansible-role-mysql.git
-[submodule "roles/cloudalchemy.prometheus"]
-	path = roles/cloudalchemy.prometheus
-	url = https://github.com/cloudalchemy/ansible-prometheus.git
-[submodule "roles/cloudalchemy.node-exporter"]
-	path = roles/cloudalchemy.node-exporter
-	url = https://github.com/cloudalchemy/ansible-node-exporter.git
-[submodule "roles/nickjj.docker"]
-	path = roles/nickjj.docker
-	url = https://github.com/nickjj/ansible-docker
-[submodule "roles/jnv.unattended-upgrades"]
-	path = roles/jnv.unattended-upgrades
-	url = https://github.com/jnv/ansible-role-unattended-upgrades.git
-[submodule "roles/cloudalchemy.snmp-exporter"]
-	path = roles/cloudalchemy.snmp-exporter
-	url = https://github.com/cloudalchemy/ansible-snmp-exporter.git
-[submodule "roles/cloudalchemy.grafana"]
-	path = roles/cloudalchemy.grafana
-	url = https://github.com/cloudalchemy/ansible-grafana.git
+# .gitmodules
+# Configures submodules to be loaded.
+# File format described at: https://git-scm.com/docs/gitmodules
+
+# Sets up Caddy web server.
 [submodule "roles/caddy"]
 	path = roles/caddy
 	url = https://github.com/caddy-ansible/caddy-ansible.git
-[submodule "roles/cloudalchemy.blackbox-exporter"]
-	path = roles/cloudalchemy.blackbox-exporter
-	url = https://github.com/cloudalchemy/ansible-blackbox-exporter.git
+
+# Installs and configures MySQL or MariaDB
+[submodule "roles/geerlingguy.mysql"]
+	path = roles/geerlingguy.mysql
+	url = https://github.com/geerlingguy/ansible-role-mysql.git
+
+# Docker: container managagement tool (similar to Podman).
+[submodule "roles/nickjj.docker"]
+	path = roles/nickjj.docker
+	url = https://github.com/nickjj/ansible-docker
+
+# Podman: container managagement tool (similar to Docker).
 [submodule "roles/podman"]
 	path = roles/podman
 	url = https://github.com/alvistack/ansible-role-podman.git
+
+# unattended-upgrades: will download and install security upgrades automatically and unattended.
+[submodule "roles/jnv.unattended-upgrades"]
+	path = roles/jnv.unattended-upgrades
+	url = https://github.com/jnv/ansible-role-unattended-upgrades.git
+
+# Prometheus: systems and service monitoring system generating time series data.
+[submodule "roles/cloudalchemy.prometheus"]
+	path = roles/cloudalchemy.prometheus
+	url = https://github.com/cloudalchemy/ansible-prometheus.git
+
+# Prometheus SNMP Exporter: exportser for SNMP data (Simple Network Management Protocol)
+[submodule "roles/cloudalchemy.snmp-exporter"]
+	path = roles/cloudalchemy.snmp-exporter
+	url = https://github.com/cloudalchemy/ansible-snmp-exporter.git
+
+# Prometheus Node exporter: exporter for hardware and OS metrics exposed by *NIX kernels
+[submodule "roles/cloudalchemy.node-exporter"]
+	path = roles/cloudalchemy.node-exporter
+	url = https://github.com/cloudalchemy/ansible-node-exporter.git
+
+# Grafana: an analytics/monitoring tool.
+[submodule "roles/cloudalchemy.grafana"]
+	path = roles/cloudalchemy.grafana
+	url = https://github.com/cloudalchemy/ansible-grafana.git
+
+# Blackbox Exporter: allows blackbox probing of endpoints.
+[submodule "roles/cloudalchemy.blackbox-exporter"]
+	path = roles/cloudalchemy.blackbox-exporter
+	url = https://github.com/cloudalchemy/ansible-blackbox-exporter.git

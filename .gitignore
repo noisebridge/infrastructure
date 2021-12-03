@@ -1,3 +1,12 @@
+# .gitignore
+# Configuration file to exclude files/directories from being accidently checked into git repo. 
+# File format described at: https://git-scm.com/docs/gitignore
+
+# Created when Ansible fails to run a playbook. Default pattern is "<hostname>.retry"
 site.retry
+
+# Used by ansible-vault and unlocks sensitive/personal information stored in the gitrepo. This file should only be stored locally and NEVER be commited to the repo.
 .vault-password
+
+# OSX-specific index file
 .DS_Store
