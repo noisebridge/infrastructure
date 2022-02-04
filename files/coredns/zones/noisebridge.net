@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2020022200 ; Serial
+                                2022020600 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -187,6 +187,9 @@ mail            IN      MX      10 mxb.mailgun.org.
 ; arion host @patrickod 2016-12-17
 arion           IN      A       107.170.198.46
 arion           IN      AAAA    2604:a880:1:20::197e:b001
+
+; general subdomains
+barnyard        IN      NS      brony.noisebridge.io
 
 ; m4 testing subdomains
 *.m4            IN      CNAME   m4

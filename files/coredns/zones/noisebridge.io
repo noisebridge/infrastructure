@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridge.io.  (
-        2020122000 ; Serial
+        2022020600 ; Serial
         3600 ; Refresh
         300 ; Retry
         604800 ; Expire
@@ -21,8 +21,12 @@ noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridg
 ; SPF
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 
+; subdomains
+barnyard        86400   IN      NS      brony.noisebridge.io
+
 ; aliases
 blog            10800   IN      CNAME   blogs.vip.gandi.net.
+brony           1800    IN      A       199.241.139.224
 cia             1800    IN      A       199.188.195.8
 cycletrailer    1800    IN      CNAME   cycletrailer.noisebridge.net.
 jitsi           1800    IN      A       199.188.195.96
