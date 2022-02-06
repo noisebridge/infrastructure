@@ -28,3 +28,6 @@
 [submodule "roles/podman"]
 	path = roles/podman
 	url = https://github.com/alvistack/ansible-role-podman.git
+[submodule "roles/cloudalchemy.coredns"]
+	path = roles/cloudalchemy.coredns
+	url = https://github.com/cloudalchemy/ansible-coredns.git
