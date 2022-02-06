@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridge.io.  (
-        2022020600 ; Serial
+        2022020601 ; Serial
         3600 ; Refresh
         300 ; Retry
         604800 ; Expire
@@ -22,7 +22,7 @@ noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridg
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 
 ; subdomains
-barnyard        86400   IN      NS      brony.noisebridge.io
+barnyard        86400   IN      NS      brony.noisebridge.io.
 
 ; aliases
 blog            10800   IN      CNAME   blogs.vip.gandi.net.
