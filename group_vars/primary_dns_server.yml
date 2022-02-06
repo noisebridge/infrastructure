@@ -2,65 +2,70 @@
 coredns_port: 53
 coredns_config: |
   noisebridge.com {
-    file zones/noisebridge.com {
+    file zones/noisebridge.com
+    transfer {
       # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
+      to 216.252.162.220
+      to 2602:ff06:725:5:dc::1337
       # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
+      to 204.246.122.84
+      to 2602:ff06:677:4:54::1337
     }
-    prometheus
+    prometheus 0.0.0.0:9153
     errors
   }
   noisebridge.io {
-    file zones/noisebridge.io {
+    file zones/noisebridge.io
+    transfer {
       # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
+      to 216.252.162.220
+      to 2602:ff06:725:5:dc::1337
       # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
+      to 204.246.122.84
+      to 2602:ff06:677:4:54::1337
     }
-    prometheus
+    prometheus 0.0.0.0:9153
     errors
   }
   noisebridge.net {
-    file zones/noisebridge.net {
+    file zones/noisebridge.net
+    transfer {
       # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
+      to 216.252.162.220
+      to 2602:ff06:725:5:dc::1337
       # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
+      to 204.246.122.84
+      to 2602:ff06:677:4:54::1337
     }
     dnssec noisebridge.net {
       key file keys/Knoisebridge.net.+013+33211
     }
-    prometheus
+    prometheus 0.0.0.0:9153
     errors
   }
   noisebridge.org {
-    file zones/noisebridge.org {
+    file zones/noisebridge.org
+    transfer {
       # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
+      to 216.252.162.220
+      to 2602:ff06:725:5:dc::1337
       # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
+      to 204.246.122.84
+      to 2602:ff06:677:4:54::1337
     }
-    prometheus
+    prometheus 0.0.0.0:9153
     errors
   }
   noisetor.net {
-    file zones/noisetor.net {
+    file zones/noisetor.net
+    transfer {
       # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
+      to 216.252.162.220
+      to 2602:ff06:725:5:dc::1337
       # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
+      to 204.246.122.84
+      to 2602:ff06:677:4:54::1337
     }
-    prometheus
+    prometheus 0.0.0.0:9153
     errors
   }
