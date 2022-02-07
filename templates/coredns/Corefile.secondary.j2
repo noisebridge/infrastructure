@@ -1,0 +1,18 @@
+{{ ansible_managed | comment }}
+{% for zone in noisebridge_dns_seconary_zones %}
+# Zone: {{ zone.name }}
+{{ zone.name }} {
+  prometheus 0.0.0.0:9153
+  errors
+  secondary {
+    transfer from {{ zone.transfer_from | join(' ') }}
+  }
+{% if zone.transfer_to is defined %}
+  transfer {
+{% for server in zone.transfer_to %}
+    to {{ server }}
+{% endfor %}
+  }
+{% endif %}
+}
+{% endfor %}
