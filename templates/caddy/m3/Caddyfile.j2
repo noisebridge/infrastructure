@@ -25,7 +25,7 @@ noisebridge.io, www.noisebridge.io {
   redir https://www.noisebridge.net{uri}
 }
 
-noisebridge.net {
+noisebridge.net m3.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/noisebridge.net.log" {
 {{ noisebridge_caddy_log_roll | indent(width=6) }}
