@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2022031402 ; Serial
+                                2022032000 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -37,7 +37,8 @@ ns2     86400   IN      A       204.246.122.84 ; m4 in iocoop MSP
 ns2     86400   IN      AAAA    2602:ff06:677:4:54::1337 ; m4 in iocoop MSP
 
 ; mx records
-noisebridge.net.        300     IN      MX      10 m3.noisebridge.net.
+@       300     IN      MX      10 m3.noisebridge.net.
+m3      300     IN      MX      10 m3.noisebridge.net.
 
 ; aliases
 www     300     IN      CNAME   m3.noisebridge.net.
@@ -91,9 +92,6 @@ chat            IN      CNAME   unicorn.noisebridge.net.
 
 ; SIP
 _sip._udp       IN      SRV     5 0 5060 pony.noisebridge.net.
-
-; Our list serve uses the same smtp server as everyone else
-lists.noisebridge.net.  300     IN MX   10 m3.noisebridge.net.
 
 ; Our blog hosted on wordpress
 ; blog          IN      CNAME   noisebridge.wordpress.com.
