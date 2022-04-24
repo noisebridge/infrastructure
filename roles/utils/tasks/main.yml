@@ -5,6 +5,7 @@
   vars:
     packages:
       - ack-grep
+      - acl
       - apt-transport-https
       - bash-completion
       - bind9-host
