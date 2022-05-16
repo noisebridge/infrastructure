@@ -58,6 +58,7 @@ users:
   jof:
     fullname: 'Jonathan Lassoff,,,'
     email: ...
+    github_username: jof
 
   lizzie:
     fullname: ',,,'
