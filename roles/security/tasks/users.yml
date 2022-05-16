@@ -17,7 +17,7 @@
     - "sudo"
     append: yes
   with_flattened:
-  - "{{ noisebridge_admins | d([]) }}"
+  - "{{ noisebridge_admins | default([]) }}"
   tags:
   - access
 
@@ -26,8 +26,8 @@
     user: "{{ item }}"
     key: "https://github.com/{{ users[item].github_username }}.keys"
   with_flattened:
-  - "{{ noisebridge_admins | d([]) }}"
-  - "{{ noisebridge_users | d([]) }}"
+  - "{{ noisebridge_admins | default([]) }}"
+  - "{{ noisebridge_users | default([]) }}"
   when: users[item].github_username is defined
   tags:
   - access
@@ -37,8 +37,8 @@
     user: "{{ item }}"
     key: "{{ users[item].ssh_key }}"
   with_flattened:
-  - "{{ noisebridge_admins | d([]) }}"
-  - "{{ noisebridge_users | d([]) }}"
+  - "{{ noisebridge_admins | default([]) }}"
+  - "{{ noisebridge_users | default([]) }}"
   when: users[item].ssh_key is defined
   tags:
   - access
