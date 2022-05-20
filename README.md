@@ -32,9 +32,9 @@ that is reproducibile for others.
 * Changes should be made with Pull Requests so that they can be reviewed.
 * Think about making sure your changes are reasonably future-proof.
 
-By documenting how systems are built in this repo, hopefully we can all be a
-bit less bothered if a disk falis, a computer walks off, or a future systems
-spelunker would like to know how a thing works.
+By documenting how systems are built in this repo, easily recover and reproduce services
+if a disk falis, a computer walks off, or a future systems spelunker would like to know how
+a thing works.
 
 ## Ansible
 
