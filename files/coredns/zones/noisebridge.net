@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2022052401 ; Serial
+                                2022052402 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -48,6 +48,7 @@ lists   300     IN      A       216.252.162.220 ; m3.noisebridge.net
 lists   300     IN      AAAA    2602:ff06:725:5:dc::1337 ; m3.noisebridge.net
 lists   86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 lists   300     IN      TXT     "google-site-verification=WZsrRMmL-XJC-kDfPgvxPZRTaTA3HbHz0BnFcve8Qo8"
+@       300     IN      TXT     "google-site-verification=5qf7YxZyA1foWyizrX61SQzW3fCWhBrws4QMnQc6F8k"
 
 ; Primary hosting servers.
 m2              IN      A       204.246.122.84 ; Old iocoop MSP VPS
