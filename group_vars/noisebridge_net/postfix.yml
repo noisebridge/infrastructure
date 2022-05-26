@@ -78,3 +78,7 @@ postfix_aliases:
   treasury:
     alias:
     - treasurer
+  mediation-request:
+    alias:
+    - mediation-request@lists.noisebridge.net
+    - mediation-request-mai-aaaagpdjplmjkpwofzaa4pu7dy@noisebridge.slack.com
