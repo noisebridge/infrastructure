@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2022052401 ; Serial
+                                2022052701 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -22,11 +22,12 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m4.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
 
-; DKIM key mail for noisebridge.net
+; DKIM keys
 mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; t=y; "
           "p=MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwQ/A9wWjtaZlyqJOkmFLZd/eFzqWotOJ7AScqa9IAyUk1SH9TYZWPXfR0IHGMhswXfT0VZhopTKusPu09V385k6DMYmBys4QJaOgHCKZ5/13EUYR2M3WArAZbudzXzy6uZBh+FFuv5BuPVRd7elVeqDK0ZBHX90kpV8f1mAQANRBRSYJ0RctwcJzq88iRvGi2Csxemuk1VTXRC"
           "UEWzpJOZL1oG80KhOfHRkFUdsgY+SYmQMKjaDMThCDLvh6718tbssSfUI8YPKbsGlNNleXpoIZZ4MCJ0TfbRTXmSqOyHh6XTLGPIVI2qajqiLEcBj0biwO0TF0bV7pLodlRfWZRiaRp3ATMBiDY/Zo68RlmuxqOrxrweN/JMS0kALoVAs3vVFhrH2CTu9zwZf5blVUfvs80+CxWorQOdV7Vjp1K+6JukH0vuMCK72L4W7AGbK76QQFKcG1"
           "CS+EEgiBMBr98i64wKPeqPpGT6Bj5AKR14oPYRFwW0JbZGMpwX+FOmqT9X8BfnhH7b2Y7q25y/r94OdvmBxyabZBu4S+BaYRFN04B6+LpzPgD5YfVn3BMVoBlctjL6NIHhacRnnGsQRkrqTB43slGpM40gDUe1+3R3NpkHl3p59q/6RPafX9fwi9Vcvp+oxjFNXqaAdXdOr04zUbmJcgzzbOF9u2rtqcBI8CAwEAAQ==" )
+mail._domainkey.lists IN      CNAME mail._domainkey
 
 ; name servers
 ns      86400   IN      A       216.252.162.220 ; m3 in iocoop SCL
