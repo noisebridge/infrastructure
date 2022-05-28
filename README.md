@@ -57,6 +57,8 @@ consistently target the same ansible versions (which has knock-on effects, like
 what jinja2 templating filters are available), we also constrain the ansible
 version at the top of playbook documents with an assertion task.
 
+[Upstream instructions on installing Ansible](https://docs.ansible.com/ansible/latest/installation_guide/intro_installation.html)
+
 ### Deployment
 
 Deploying the entire thing should be possible with just one command:
