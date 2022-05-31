@@ -29,7 +29,15 @@ firewall {
                 invalid enable
             }
         }
-        rule 30 {
+        rule 32 {
+            action accept
+            description "Allow MOSH inbound"
+            destination {
+                port 60000-61000
+            }
+            protocol udp
+        }
+        rule 100 {
             action accept
             description "Colt TCP allowed"
             destination {
@@ -41,13 +49,17 @@ firewall {
                 new enable
             }
         }
-        rule 32 {
+        rule 101 {
             action accept
-            description "Allow MOSH inbound"
+            description "Pegasus TCP allowed"
             destination {
-                port 60000-61000
+                address 2607:f598:b0cf:200:250:c2ff:fe28:3070
+                port 22,80,443
             }
-            protocol udp
+            protocol tcp
+            state {
+                new enable
+            }
         }
     }
     ipv6-name WANv6_LOCAL {
