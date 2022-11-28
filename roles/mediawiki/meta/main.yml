@@ -1,5 +1,7 @@
 ---
 dependencies:
-  - { "role": "percona" }
-  - { "role": "geerlingguy.mysql" }
-  - { "role": "memcached" }
+  - role: percona
+    tags: mysql
+  - role: geerlingguy.mysql
+    tags: mysql
+  - role: memcached
