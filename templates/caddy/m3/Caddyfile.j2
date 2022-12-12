@@ -62,7 +62,7 @@ www.noisebridge.net {
     }
   }
   root * /srv/mediawiki/noisebridge.net
-  php_fastcgi unix//run/php/php7.3-fpm.sock
+  php_fastcgi unix//run/php/php7.4-fpm.sock
 
   # Legacy mailman redirects
   redir /pipermail https://lists.noisebridge.net{uri}
@@ -115,5 +115,5 @@ safespace.noisebridge.net {
   }
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
   root * /var/www/safespace.noisebridge.net
-  php_fastcgi unix//run/php/php7.3-fpm.sock
+  php_fastcgi unix//run/php/php7.4-fpm.sock
 }
