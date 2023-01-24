@@ -63,6 +63,9 @@ www.noisebridge.net {
   }
   root * /srv/mediawiki/noisebridge.net
   php_fastcgi unix//run/php/php7.4-fpm.sock
+  file_server {
+    hide *.php
+  }
 
   # Legacy mailman redirects
   redir /pipermail https://lists.noisebridge.net{uri}

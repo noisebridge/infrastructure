@@ -1,2 +1,4 @@
 User-agent: *
 Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
