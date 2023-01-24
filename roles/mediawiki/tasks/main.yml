@@ -62,3 +62,11 @@
     owner: "{{ mediawiki.system_user }}"
     group: "{{ mediawiki.system_group }}"
     mode: 0640
+
+- name: Place robots.txt
+  copy:
+    src: robots.txt
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/robots.txt"
+    mode: 0444
+  tags:
+    - robots_txt
