@@ -2,11 +2,12 @@
 - name: Install utils
   apt:
     package:
+    - libzstd1
     - moreutils
 
 - name: Install mydumper
   apt:
-    deb: "https://github.com/maxbube/mydumper/releases/download/v{{ mydumper_version }}/mydumper_{{ mydumper_version }}-{{ mydumper_package_rev }}.stretch_amd64.deb" # noqa 204
+    deb: "https://github.com/maxbube/mydumper/releases/download/v{{ mydumper_version }}/mydumper_{{ mydumper_version }}-zstd.{{ ansible_lsb.codename}}_amd64.deb" # noqa 204
 
 - name: Create backup directory
   file:
