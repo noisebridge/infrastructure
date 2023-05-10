@@ -64,6 +64,11 @@ users:
     fullname: ',,,'
     email: ...
 
+  mcint:
+    fullname: Loren McIntyre
+    email: nb@mcint.io
+    github_username: mcint
+
   miloh:
     fullname: 'Ronald Miloh Alexander,,,'
     email: ...
