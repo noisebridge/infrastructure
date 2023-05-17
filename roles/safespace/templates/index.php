@@ -56,12 +56,13 @@ function stringExists($s) {
 	return isset($verification) && is_string($verification);
 }
 
-$prepend = "";
+$isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
 
+$prepend = "";
 $verification_expected = "be excellent";
 $verification = $_POST["verification"];
-if (!stringExists($verification) || strcmp($verification_expected, $verification) != 0) {
-	$prepend = "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
+if ($isPost && (!stringExists($verification) || strcmp($verification_expected, $verification) != 0)) {
+	$prepend .= "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
 } elseif (stringExists($_POST["message"])) {
 	if(print_r(send_msg(p("name") . p("contact") . $_POST["message"]))) {
 		$prepend = "Message Sent.";
@@ -70,6 +71,11 @@ if (!stringExists($verification) || strcmp($verification_expected, $verification
 	}
 }
 
+if ($isPost) {
+	$prepend = "<div class=resp>" . $prepend;
+	$prepend .= "<style> .resp { background-color: rgba(196, 64, 64, .1) ; } </style>";
+	$prepend .= "</div><br>";
+}
 
 ?>
 -->
