@@ -64,10 +64,16 @@ users:
   jof:
     fullname: 'Jonathan Lassoff,,,'
     email: ...
+    github_username: jof
 
   lizzie:
     fullname: ',,,'
     email: ...
+
+  mcint:
+    fullname: Loren McIntyre
+    email: nb@mcint.io
+    github_username: mcint
 
   miloh:
     fullname: 'Ronald Miloh Alexander,,,'
@@ -113,3 +119,8 @@ users:
   teapot:
     fullname: 'Bill Williams,,,'
     email: ...
+
+  yar:
+    fullname: Yardena Cohen
+    email: yardenack@gmail.com
+    github_username: yardenac

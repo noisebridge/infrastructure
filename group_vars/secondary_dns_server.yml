@@ -1,48 +1,19 @@
 ---
-coredns_port: 53
-coredns_config: |
-  noisebridge.com {
-    secondary {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer from 216.252.162.220
-      transfer from 2602:ff06:725:5:dc::1337
-    }
-    prometheus
-    errors
-  }
-  noisebridge.io {
-    secondary {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer from 216.252.162.220
-      transfer from 2602:ff06:725:5:dc::1337
-    }
-    prometheus
-    errors
-  }
-  noisebridge.net {
-    secondary {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer from 216.252.162.220
-      transfer from 2602:ff06:725:5:dc::1337
-    }
-    prometheus
-    errors
-  }
-  noisebridge.org {
-    secondary {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer from 216.252.162.220
-      transfer from 2602:ff06:725:5:dc::1337
-    }
-    prometheus
-    errors
-  }
-  noisetor.net {
-    secondary {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer from 216.252.162.220
-      transfer from 2602:ff06:725:5:dc::1337
-    }
-    prometheus
-    errors
-  }
+coredns_config_file: coredns/Corefile.secondary.j2
+
+noisebridge_dns_primary_servers:
+  # ns1.noisebridge.net (m3.noisebridge.net)
+  - '2602:ff06:725:5:dc::1337'
+  - '216.252.162.220'
+
+noisebridge_dns_seconary_zones:
+  - name: noisebridge.com
+    transfer_from: "{{ noisebridge_dns_primary_servers }}"
+  - name: noisebridge.io
+    transfer_from: "{{ noisebridge_dns_primary_servers }}"
+  - name: noisebridge.net
+    transfer_from: "{{ noisebridge_dns_primary_servers }}"
+  - name: noisebridge.org
+    transfer_from: "{{ noisebridge_dns_primary_servers }}"
+  - name: noisetor.net
+    transfer_from: "{{ noisebridge_dns_primary_servers }}"

@@ -6,7 +6,7 @@
 # Override them in /etc/default/mysql_backup
 BACKUP_DIR=/var/backups/mysql
 MAXAGE=7 #days
-METRICS_FILE=/opt/node_exporer/textfile/mysql_backup.prom
+METRICS_DIR=/var/lib/node_exporer
 
 set -o pipefail
 
@@ -42,7 +42,7 @@ METRICS
 
 exit_handler() {
   metric_backup_completed="$(date -u '+%s')"
-  print_status_metrics | sponge "${METRICS_FILE}"
+  print_status_metrics | sponge "${METRICS_FILE}/mysql_backup.prom"
 }
 
 trap exit_handler EXIT
@@ -74,6 +74,7 @@ timeout --signal=TERM --kill-after=1h 4h \
     --outputdir "${output_dir}" \
     --regex '^(?!(information_schema|performance_schema|sys)\.)' \
     --less-locking \
+    --pmm-path="${METRICS_DIR}/" \
     --use-savepoints \
     --trx-consistency-only \
     --rows 100000

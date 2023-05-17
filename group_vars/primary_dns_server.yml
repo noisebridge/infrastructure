@@ -1,66 +1,27 @@
 ---
-coredns_port: 53
-coredns_config: |
-  noisebridge.com {
-    file zones/noisebridge.com {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
-      # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
-    }
-    prometheus
-    errors
-  }
-  noisebridge.io {
-    file zones/noisebridge.io {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
-      # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
-    }
-    prometheus
-    errors
-  }
-  noisebridge.net {
-    file zones/noisebridge.net {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
-      # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
-    }
-    dnssec noisebridge.net {
-      key file keys/Knoisebridge.net.+013+33211
-    }
-    prometheus
-    errors
-  }
-  noisebridge.org {
-    file zones/noisebridge.org {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
-      # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
-    }
-    prometheus
-    errors
-  }
-  noisetor.net {
-    file zones/noisetor.net {
-      # ns1.noisebridge.net (m3.noisebridge.net)
-      transfer to 216.252.162.220
-      transfer to 2602:ff06:725:5:dc::1337
-      # ns2.noisebridge.net (m4.noisebridge.net)
-      transfer to 204.246.122.84
-      transfer to 2602:ff06:677:4:54::1337
-    }
-    prometheus
-    errors
-  }
+coredns_zone_files_paths:
+- 'coredns/zones/*'
+coredns_config_file: coredns/Corefile.primary.j2
+
+noisebridge_dns_secondary_servers:
+  # ns2.noisebridge.net (m4.noisebridge.net)
+  - '2602:ff06:677:4:54::1337'
+  - '204.246.122.84'
+
+noisebridge_dns_primary_zones:
+  - name: noisebridge.com
+    file: noisebridge.com
+    transfer_to: "{{ noisebridge_dns_secondary_servers }}"
+  - name: noisebridge.io
+    file: noisebridge.io
+    transfer_to: "{{ noisebridge_dns_secondary_servers }}"
+  - name: noisebridge.net
+    file: noisebridge.net
+    transfer_to: "{{ noisebridge_dns_secondary_servers }}"
+    dnssec_key_file: 'Knoisebridge.net.+013+33211'
+  - name: noisebridge.org
+    file: noisebridge.org
+    transfer_to: "{{ noisebridge_dns_secondary_servers }}"
+  - name: noisetor.net
+    file: noisetor.net
+    transfer_to: "{{ noisebridge_dns_secondary_servers }}"

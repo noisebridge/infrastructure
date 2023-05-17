@@ -1,0 +1,529 @@
+firewall {
+    all-ping enable
+    broadcast-ping disable
+    ipv6-name WANv6_IN {
+        default-action drop
+        description "WAN inbound traffic forwarded to LAN"
+        enable-default-log
+        rule 10 {
+            action accept
+            description ICMPv6
+            log disable
+            protocol icmpv6
+        }
+        rule 20 {
+            action accept
+            description "Allow established"
+            log disable
+            protocol all
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 21 {
+            action drop
+            description "Drop invalid state"
+            protocol all
+            state {
+                invalid enable
+            }
+        }
+        rule 32 {
+            action accept
+            description "Allow MOSH inbound"
+            destination {
+                port 60000-61000
+            }
+            protocol udp
+        }
+        rule 100 {
+            action accept
+            description "Colt TCP allowed"
+            destination {
+                address 2607:f598:b0cf:200::5
+                port 22,80,443
+            }
+            protocol tcp
+            state {
+                new enable
+            }
+        }
+        rule 101 {
+            action accept
+            description "Pegasus TCP allowed"
+            destination {
+                address 2607:f598:b0cf:200:250:c2ff:fe28:3070
+                port 22,80,443
+            }
+            protocol tcp
+            state {
+                new enable
+            }
+        }
+    }
+    ipv6-name WANv6_LOCAL {
+        default-action drop
+        description "WAN inbound traffic to the router"
+        enable-default-log
+        rule 10 {
+            action accept
+            description ICMPv6
+            log disable
+            protocol icmpv6
+        }
+        rule 20 {
+            action accept
+            description "Allow established"
+            log disable
+            protocol all
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 21 {
+            action drop
+            description "Drop invalid state"
+            state {
+                invalid enable
+            }
+        }
+        rule 30 {
+            action accept
+            description DHCPv6
+            destination {
+                port 546,547
+            }
+            log disable
+            protocol udp
+        }
+        rule 31 {
+            action accept
+            description "Allow SSH"
+            destination {
+                port 22
+            }
+            protocol tcp
+            state {
+                new enable
+            }
+        }
+    }
+    ipv6-receive-redirects disable
+    ipv6-src-route disable
+    ip-src-route disable
+    log-martians enable
+    name WAN_LOCAL {
+        default-action drop
+        description "WAN to router"
+        rule 10 {
+            action accept
+            description ICMP
+            log disable
+            protocol icmp
+        }
+        rule 20 {
+            action accept
+            description "Allow established"
+            log disable
+            protocol all
+            state {
+                established enable
+                related enable
+            }
+        }
+        rule 21 {
+            action drop
+            description "Drop invalid"
+            log disable
+            protocol all
+            state {
+                invalid enable
+            }
+        }
+        rule 30 {
+            action accept
+            description "Allow SSH"
+            destination {
+                port 22
+            }
+            log disable
+            protocol tcp
+            state {
+                new enable
+            }
+        }
+        rule 40 {
+            action accept
+            description "Respond to ping"
+            log disable
+            protocol 1
+        }
+    }
+    receive-redirects disable
+    send-redirects enable
+    source-validation disable
+    syn-cookies enable
+}
+interfaces {
+    ethernet eth0 {
+        address 192.195.83.130/29
+        address 2607:f598:b0c0:207::f002/64
+        description Internet
+        dhcpv6-pd {
+            no-dns
+            pd 1 {
+                interface eth1 {
+                    host-address ::1
+                    no-dns
+                    prefix-id :1
+                    service dhcpv6-stateless
+                }
+                prefix-length 56
+            }
+            rapid-commit enable
+        }
+        duplex auto
+        firewall {
+            in {
+                ipv6-name WANv6_IN
+            }
+            local {
+                ipv6-name WANv6_LOCAL
+                name WAN_LOCAL
+            }
+        }
+        ip {
+            enable-proxy-arp
+        }
+        ipv6 {
+            address {
+                autoconf
+            }
+            dup-addr-detect-transmits 1
+        }
+        speed auto
+    }
+    ethernet eth1 {
+        address 10.21.0.1/16
+        address 2607:F598:B0CF:0200::1/64
+        description Local
+        duplex auto
+        speed auto
+    }
+    ethernet eth2 {
+        address 192.168.2.1/24
+        description "Local 2"
+        duplex auto
+        speed auto
+    }
+    ethernet eth3 {
+        duplex auto
+        speed auto
+    }
+    loopback lo {
+    }
+}
+port-forward {
+    auto-firewall enable
+    hairpin-nat enable
+    lan-interface eth1
+    wan-interface eth0
+}
+protocols {
+    static {
+        route 0.0.0.0/0 {
+            next-hop 192.195.83.129 {
+            }
+        }
+        route6 ::/0 {
+            next-hop 2607:f598:b0c0:207::1 {
+            }
+        }
+    }
+}
+service {
+    dhcp-server {
+        disabled false
+        hostfile-update enable
+        shared-network-name LAN1 {
+            authoritative enable
+            subnet 10.21.0.0/16 {
+                default-router 10.21.0.1
+                dns-server 10.21.0.1
+                dns-server 1.1.1.1
+                lease 43200
+                start 10.21.1.10 {
+                    stop 10.21.1.254
+                }
+                static-mapping LAIN3 {
+                    ip-address 10.21.1.43
+                    mac-address 74:d8:3e:64:05:dc
+                }
+                static-mapping N0153-Cam {
+                    ip-address 10.21.0.88
+                    mac-address 00:62:6e:56:43:09
+                }
+                static-mapping android-e8d2952da8bd83bd {
+                    ip-address 10.21.1.10
+                    mac-address dc:bf:e9:e1:c6:67
+                }
+                static-mapping colt {
+                    ip-address 10.21.0.5
+                    mac-address a4:1f:72:65:d8:dc
+                }
+                static-mapping devil {
+                    ip-address 10.21.1.64
+                    mac-address 4c:cc:6a:f8:92:7b
+                }
+                static-mapping jitsi {
+                    ip-address 10.21.0.2
+                    mac-address 08:00:27:ba:c6:d0
+                }
+                static-mapping mousetrap {
+                    ip-address 10.21.1.218
+                    mac-address 00:21:6a:6e:0e:36
+                }
+                static-mapping ongakuiemwsyqy2 {
+                    ip-address 10.21.1.68
+                    mac-address 10:9a:dd:9e:b1:a0
+                }
+                static-mapping pegasus {
+                    ip-address 10.21.0.4
+                    mac-address 00:50:c2:28:30:70
+                }
+                static-mapping x1c4 {
+                    ip-address 10.21.1.154
+                    mac-address 44:85:00:99:10:6f
+                }
+            }
+        }
+        shared-network-name LAN2 {
+            authoritative enable
+            disable
+            subnet 192.168.2.0/24 {
+                default-router 192.168.2.1
+                dns-server 192.168.2.1
+                lease 86400
+                start 192.168.2.38 {
+                    stop 192.168.2.243
+                }
+            }
+        }
+        static-arp disable
+        use-dnsmasq enable
+    }
+    dhcpv6-server {
+        shared-network-name lan {
+            name-server fd95:0c38:25f0::1
+            subnet fd95:0c38:25f0::/48 {
+                domain-search noise
+            }
+        }
+    }
+    dns {
+        forwarding {
+            cache-size 150
+            listen-on eth1
+            listen-on eth2
+            name-server 8.8.8.8
+            name-server 8.8.4.4
+            name-server 2001:4860:4860::8888
+            name-server 2001:4860:4860::8844
+        }
+    }
+    gui {
+        http-port 80
+        https-port 443
+        listen-address 127.0.0.1
+        older-ciphers disable
+    }
+    nat {
+        rule 1 {
+            description Jitsi
+            destination {
+                address 192.195.83.132
+            }
+            inbound-interface eth0
+            inside-address {
+                address 10.21.0.2
+            }
+            log disable
+            protocol all
+            type destination
+        }
+        rule 5000 {
+            description "masquerade for WAN"
+            outbound-interface eth0
+            type masquerade
+        }
+    }
+    ssh {
+        disable-password-authentication
+        port 22
+        protocol-version v2
+    }
+    unms {
+        disable
+    }
+}
+system {
+    domain-name noise
+    host-name biketrailer
+    ip {
+        override-hostname-ip 10.21.0.1
+    }
+    login {
+        user chaz {
+            authentication {
+                encrypted-password $6$zs2GJR/2$nBkc95aYnroyq1pnss6WcKexLGgSqsKQgLiPfgKnfm4wq/h6IzeO3XVG8K4q8Z/nRySaSRXgFC3q8pG.wu7oK1
+                plaintext-password ""
+                public-keys chazchaz101_github_1 {
+                    key AAAAB3NzaC1yc2EAAAABJQAAAgEAoOFl0PU0LPdt9R58IbLOlwQGDt9UrP6V3FRV9Ww/lmxWad6UUUDTGxrFCMZx2nJTuv+yxIbVOxDJ4XUIJz8Bz4nnibZOeO587dR1Efam6GUDWqOEbE/MeApLv8EnNDYDgDzXoSYPpwc2g7UnGABCzTIzddoLx5qIv3FWPdMpT77cyyty1QidHfHWQi8uEDw24Tr+8NKbK1ZN6df7G9YwjBpSPlzOnoeIodwWtgL+H8YU6xoRxE6wc1Roswtu6rICIS1D/PnDiLKxUuoBkVSvM6An6H6Faq0TCI5/CN9S7nhM3/vhMEerzMKQamwhSjp+shx7kTYJ51WY9PwKUtGya8goCmYowgYylQ7Yoh5Ul4k7KNn7ahc2yh51raz27e/WQ42QMVsRQy6ytdJO1cCqJzC128TklhEf57BelnagJICo309GCIldJ0SB8l6bTh9gfW8EbI1IIGQSunSscb9KaXebNanpnC994H7UAx1sIwFxffMFe6mwPkdbZYzezgKV5kCWRG4hcPVKZTeu/WUGAkPCds1yD56bmpw4cwYKsVGJraGHzk5ate86Y0JLsFNRirS4gRZMWV8Y+Sf4QRHNoGjmnl0IEg9mMRBb2TFPhXJHVdrzdZZKXBq/v+0Yu6rurrIPDN9xlbAy84l/S7uH+QnG9uLAbkidZB6UaZRlrqE=
+                    type ssh-rsa
+                }
+            }
+            level admin
+        }
+        user jof {
+            authentication {
+                encrypted-password $6$qWZWDtAiOxdDp$osgdgYBBq.xYKIN1U8McDCVdZCA0mKOeStR7zjBpkkPBJv6YjI309ep5ut5Q.Dzn72NPR4vU6znYvBzkDJhGn0
+                plaintext-password ""
+                public-keys jof {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAABAQDKiN5i2O2aBJBp3+xZqRyWgEGgOY3hpXVjY+iBMBdC0gQdTCSuAR+Rcj7/MWNqnFgdpUdvi0K7ONoZ8cAsOoMWcG7I9WjHe4P60rq92CLWWsH77HaL7davPb4y41F1pnLn7MNE+aaUKh34NyD+IcOtkAwWM/fhbdxCFCuiZ7g8OFRhymK66w4nP99PvBglaVZL5jrIwhM2TyFYAjiCCmNvdQF3xkIdmfaeb1PIn+PkFzkjhJYHAHR6od1s555aEGidmJYh+LLG4QMCKJNY1d046cOp1Qo882DzaAQzrq8EpvEDOVEaI5nL5MSBKK3H5/NvOfWPsX1xG6Y11CbYvpXH
+                    type ssh-rsa
+                }
+            }
+            level admin
+        }
+        user superq {
+            authentication {
+                encrypted-password $6$CETaHmLmm$ZPMzZstXYR6yTkDDiWzjB3B7dADgWh9sdTLPo5X6Bia7dNTxiCAF6My/Im9AQGGzhixPxWoLjjSSInK2JxVdq0
+                plaintext-password ""
+                public-keys superq-2022 {
+                    key AAAAC3NzaC1lZDI1NTE5AAAAIIzGIE6cjT06R3W19JqG5wFiUYCQmMDZ6WjKnrX7/lYb
+                    type ssh-ed25519
+                }
+            }
+            level admin
+        }
+        user ubnt {
+            authentication {
+                encrypted-password $6$GydTTqI0x9qdaM$xgMRxWOH4VB4N2WXPXuvF1xJuHQVOAoSyIP3pvZRqPD1SOgkazAHqRAuI.TP5lIvv.nNJvMfnx8XEE04Aj/UG/
+            }
+            level admin
+        }
+        user woz {
+            authentication {
+                encrypted-password $6$wgE9J0qAxnBKoN$wXiFD.qOtCLaZ7tOCEH/qxZ08qnJ.kTSsxBoaU.g8CnrFx7Y9MEKWxIeaZI18Q6wQmcLiCFLD2y/8CNRCT0e11
+                plaintext-password ""
+                public-keys 1 {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAABAQCtm2bsq3PSfhyalI2kgDeyUvKiZswVbnyz1+/vOOWlIhaHUQSBUB8KSQxkb9cJOERVQa6rVPsaW2aW++OkTSg+3epet7FXTcWMaP42tNmJq/FuNUIgLBE1bemR6Yqz09mHmWNIbB97QV2jox5J4KQFWJagXQS0tcUE4+D6XI695SxeNL6QIioCLA1Tv4hz6yEeXCn46rZKvndVAImQn2+CKlOfBVhP+Ta8ydl51xAhPK/P3F61E4XNaY9GztiYHgwCZAjUQ/ZNXBc9ijrEPZjw+yOqxsSCJKB6aSChTS50nIP/w93OyzrhHWCJtKof0MK6n5N3T01IwxvLASM3yJPV
+                    type ssh-rsa
+                }
+                public-keys 2 {
+                    key AAAAB3NzaC1yc2EAAAADAQABAAABgQChslV9mtJJ++Fi1Jks1qSkdTgA5RNx/q9ZkTnUbKjqGfpL3Sp5rYhRwqeZXB2ut/EXwmOsqB+DrHErkqMfm0aMpzjpmTCFgpNJ+P2JQGhwtDJmV2167ZMV7BpE9CMqiLnA4XOsBqiU/GWB/Va/uDFTnsutEKZaR9+c6Itacj5T6Oe8lh6X+Y0jZepeMubGrM5Vt9ENDb7O5fkh+5jMtCsSV/plOdjqwqaOlkU3GGHgUeqLonp51UmBNqa8zi0+pxNpnt0/dVWRYbwb0oUiYW1xZlD9i1+JWgixyjs0uI57zZ42fXDiMVEDfx2TmLt/sRH3PE40HIaKHrT7lTvEbqAx82N6pU62Kv63E2sFpSkMEQYnqsTdGeBmHpx6rdB8+iPop5U1U1wjD+HJ3gwGtFgIm6fLvH8ACTdKmk+ivDdqzTwYgRJTfTIewfPnep1F6u1Amc5lbqUVYx/BpkPABwJ7T33z7heAnDOuirVpPZ/iHBAWT57ZxLMoYf2A7hNHQ3M=
+                    type ssh-rsa
+                }
+                public-keys 3 {
+                    key AAAAC3NzaC1lZDI1NTE5AAAAIGUM4hI57q1TwLsHmxN4K7hVE9WNMuraciEANF1axEv7
+                    type ssh-ed25519
+                }
+            }
+            level admin
+        }
+    }
+    name-server 1.1.1.1
+    name-server 127.0.0.1
+    ntp {
+        server 0.ubnt.pool.ntp.org {
+        }
+        server 1.ubnt.pool.ntp.org {
+        }
+        server 2.ubnt.pool.ntp.org {
+        }
+        server 3.ubnt.pool.ntp.org {
+        }
+    }
+    syslog {
+        global {
+            facility all {
+                level notice
+            }
+            facility protocols {
+                level debug
+            }
+        }
+    }
+    time-zone UTC
+    traffic-analysis {
+        custom-category jitsi {
+            name STUN
+        }
+        custom-category torrent {
+            name "BitTorrent Series"
+        }
+        dpi enable
+        export enable
+    }
+}
+traffic-control {
+    advanced-queue {
+        filters {
+            match 1 {
+                application {
+                    custom-category torrent
+                }
+                attach-to 1023
+                ip {
+                    destination {
+                        address 10.21.1.218/32
+                    }
+                    source {
+                        address 10.21.1.218/32
+                    }
+                }
+                target 1
+            }
+            match 2 {
+                application {
+                    custom-category torrent
+                }
+                attach-to 1023
+                ip {
+                    destination {
+                        address 10.21.1.218/32
+                    }
+                    source {
+                        address 10.21.1.218/32
+                    }
+                }
+                target 2
+            }
+        }
+        leaf {
+            queue 1 {
+                bandwidth 56kbit
+                parent 1023
+                queue-type UBNT_BQ_FQ_CODEL
+            }
+            queue 2 {
+                bandwidth 56kbit
+                parent 1023
+                queue-type UBNT_BQ_FQ_CODEL
+            }
+        }
+        queue-type {
+            fq-codel UBNT_BQ_FQ_CODEL {
+            }
+        }
+        root {
+            queue 1023 {
+                attach-to global
+                bandwidth 1000mbit
+                description UBNT-BQ
+            }
+        }
+    }
+}

@@ -61,13 +61,13 @@
     - postfix
     - mailman
 
-- name: Primary DNS Server
+- name: DNS Servers
   hosts: dns
   become: yes
   become_method: sudo
   tags: [dns]
   roles:
-    - coredns
+    - cloudalchemy.coredns
 
 - name: Space
   hosts: space_noisebridge_net

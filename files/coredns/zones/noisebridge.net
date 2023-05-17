@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2020022200 ; Serial
+                                2022052701 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -22,11 +22,12 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m4.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
 
-; DKIM key mail for noisebridge.net
+; DKIM keys
 mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; t=y; "
           "p=MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAwQ/A9wWjtaZlyqJOkmFLZd/eFzqWotOJ7AScqa9IAyUk1SH9TYZWPXfR0IHGMhswXfT0VZhopTKusPu09V385k6DMYmBys4QJaOgHCKZ5/13EUYR2M3WArAZbudzXzy6uZBh+FFuv5BuPVRd7elVeqDK0ZBHX90kpV8f1mAQANRBRSYJ0RctwcJzq88iRvGi2Csxemuk1VTXRC"
           "UEWzpJOZL1oG80KhOfHRkFUdsgY+SYmQMKjaDMThCDLvh6718tbssSfUI8YPKbsGlNNleXpoIZZ4MCJ0TfbRTXmSqOyHh6XTLGPIVI2qajqiLEcBj0biwO0TF0bV7pLodlRfWZRiaRp3ATMBiDY/Zo68RlmuxqOrxrweN/JMS0kALoVAs3vVFhrH2CTu9zwZf5blVUfvs80+CxWorQOdV7Vjp1K+6JukH0vuMCK72L4W7AGbK76QQFKcG1"
           "CS+EEgiBMBr98i64wKPeqPpGT6Bj5AKR14oPYRFwW0JbZGMpwX+FOmqT9X8BfnhH7b2Y7q25y/r94OdvmBxyabZBu4S+BaYRFN04B6+LpzPgD5YfVn3BMVoBlctjL6NIHhacRnnGsQRkrqTB43slGpM40gDUe1+3R3NpkHl3p59q/6RPafX9fwi9Vcvp+oxjFNXqaAdXdOr04zUbmJcgzzbOF9u2rtqcBI8CAwEAAQ==" )
+mail._domainkey.lists IN      CNAME mail._domainkey
 
 ; name servers
 ns      86400   IN      A       216.252.162.220 ; m3 in iocoop SCL
@@ -37,12 +38,17 @@ ns2     86400   IN      A       204.246.122.84 ; m4 in iocoop MSP
 ns2     86400   IN      AAAA    2602:ff06:677:4:54::1337 ; m4 in iocoop MSP
 
 ; mx records
-noisebridge.net.        300     IN      MX      10 m3.noisebridge.net.
+@       300     IN      MX      10 m3.noisebridge.net.
+m3      300     IN      MX      10 m3.noisebridge.net.
 
 ; aliases
 www     300     IN      CNAME   m3.noisebridge.net.
-lists   300     IN      CNAME   m3.noisebridge.net.
+
+; Email list server
+lists   300     IN      A       216.252.162.220 ; m3.noisebridge.net
+lists   300     IN      AAAA    2602:ff06:725:5:dc::1337 ; m3.noisebridge.net
 lists   86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
+lists   300     IN      TXT     "google-site-verification=WZsrRMmL-XJC-kDfPgvxPZRTaTA3HbHz0BnFcve8Qo8"
 
 ; Primary hosting servers.
 m2              IN      A       204.246.122.84 ; Old iocoop MSP VPS
@@ -91,9 +97,6 @@ chat            IN      CNAME   unicorn.noisebridge.net.
 
 ; SIP
 _sip._udp       IN      SRV     5 0 5060 pony.noisebridge.net.
-
-; Our list serve uses the same smtp server as everyone else
-lists.noisebridge.net.  300     IN MX   10 m3.noisebridge.net.
 
 ; Our blog hosted on wordpress
 ; blog          IN      CNAME   noisebridge.wordpress.com.
@@ -147,11 +150,13 @@ zine            IN      A       96.126.98.79
 cabal           IN      A       216.252.162.58
 
 ; Services in the space
-cycletrailer    IN      AAAA    2607:f598:b2c0:277::f001
-cycletrailer    IN      A       192.195.83.130
-2169            IN      CNAME   cycletrailer
+biketrailer     IN      AAAA    2607:f598:b0c0:207::f002
+biketrailer     IN      A       192.195.83.130
+cycletrailer    IN      CNAME   biketrailer
+2169            IN      CNAME   biketrailer
+272             IN      CNAME   biketrailer
 earl            IN      AAAA    2607:f598:b2cf:100:f8ea:fa58:5dd2:6ff4
-pegasus         IN      AAAA    2607:f598:b2cf:100:250:c2ff:fe28:3070
+pegasus         IN      AAAA    2607:f598:b0cf:200:250:c2ff:fe28:3070
 pegasus         IN      A       192.195.83.134
 grafana         IN      CNAME   pegasus
 
@@ -187,6 +192,9 @@ mail            IN      MX      10 mxb.mailgun.org.
 ; arion host @patrickod 2016-12-17
 arion           IN      A       107.170.198.46
 arion           IN      AAAA    2604:a880:1:20::197e:b001
+
+; general subdomains
+barnyard        IN      NS      brony.noisebridge.io.
 
 ; m4 testing subdomains
 *.m4            IN      CNAME   m4

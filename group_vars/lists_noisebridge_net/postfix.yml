@@ -1,5 +1,5 @@
 ---
-postfix_mailname: noisebridge.net
+postfix_mailname: m3.noisebridge.net
 postfix_destinations:
 - noisebridge.net
 - "{{ ansible_fqdn }}"

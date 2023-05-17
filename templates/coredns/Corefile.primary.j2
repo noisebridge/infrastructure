@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+{% for zone in noisebridge_dns_primary_zones %}
+# Zone: {{ zone.name }}
+{{ zone.name }} {
+  prometheus 0.0.0.0:9153
+  errors
+  file zones/{{ zone.file }}
+{% if zone.dnssec_key_file is defined %}
+  dnssec {{ zone.name }} {
+    key file keys/{{ zone.dnssec_key_file }}
+  }
+{% endif %}
+{% if zone.transfer_to is defined %}
+  transfer {
+{% for server in zone.transfer_to %}
+    to {{ server }}
+{% endfor %}
+{% endif %}
+  }
+}
+{% endfor %}
