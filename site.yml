@@ -33,7 +33,7 @@
   roles:
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
-    - { role: safespace, tags: [ safespace' ] }
+    - { role: safespace, tags: [ 'safespace' ] }
     - cloudalchemy.node-exporter
     - { role: cloudalchemy.blackbox-exporter, tags: [ 'blackbox' ] }
     - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
