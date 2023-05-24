@@ -105,8 +105,8 @@ textarea { width: 75%; }
 		Contact Info (optional):<br/>
 			<input type="text" name="contact" placeholder="ac1d.burn@protonmail.ch"></input><br/><br/>
 		<textarea name="message" placeholder="I'm having trouble leaving a conversation in front of the noise-square table.  Could someone intervene so I can leave?"></textarea><br/><br/>
-		<a href="https://www.noisebridge.net/wiki/Excellence">Guiding principle of noisebridge</a> (spam bot verification):<br>
-		<input type="text" name="verification" value="be automated"></input><br><br>
+		<a href="https://www.noisebridge.net/wiki/Excellence">Guiding principle of noisebridge</a> (spam bot verification):<br/>
+		<input type="text" name="verification" value="be automated"></input><br/><br/>
 		<input type="submit" value="Send Message"></input>
 	</form>
 FORM
