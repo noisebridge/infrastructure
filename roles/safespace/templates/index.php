@@ -63,7 +63,7 @@ $result;
 $prepend = "";
 $verification_expected = "be excellent";
 $verification = $_POST["verification"];
-$verification = strToLower($verification);
+$verification = strtolower($verification);
 if ($isPost) {
 	if (strcmp($verification_expected, $verification) !== 0) {
 		$prepend .= "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
