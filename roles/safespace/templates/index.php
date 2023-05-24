@@ -89,19 +89,13 @@ if ($isPost) {
 <head>
 	<title>Safespace Reporting Tool</title>
 	<style>
-input[type=text] {
-	margin-left: 3em;
-}
-textarea {
-	width: 75%;
-}
+input[type=text] { margin-left: 3em; }
+textarea { width: 75%; }
 	</style>
 </head>
 <body>
 	<h2>Noisebridge safe space reporting tool</h2>
-	<p>
-		Please be aware that this form sends a message to the #space-guardians channel on the noisebridge slack which is viewable by anyone on our slack.
-	</p>
+	<p>Please be aware that this form sends a message to the #space-guardians channel on the noisebridge slack which is viewable by anyone on our slack.</p>
 	<hr/>
 	<i><?php echo($prepend); ?></i>
 	<?php $form = <<<FORM
@@ -111,8 +105,8 @@ textarea {
 		Contact Info (optional):<br/>
 			<input type="text" name="contact" placeholder="ac1d.burn@protonmail.ch"></input><br/><br/>
 		<textarea name="message" placeholder="I'm having trouble leaving a conversation in front of the noise-square table.  Could someone intervene so I can leave?"></textarea><br/><br/>
-		<a href="https://www.noisebridge.net/wiki/Excellence">Guiding principle of noisebridge</a> (spam bot verification):
-			<input type="text" name="verification" value="be automated"></input><br/><br/>
+		<a href="https://www.noisebridge.net/wiki/Excellence">Guiding principle of noisebridge</a> (spam bot verification):<br>
+		<input type="text" name="verification" value="be automated"></input><br><br>
 		<input type="submit" value="Send Message"></input>
 	</form>
 FORM
