@@ -58,6 +58,8 @@ function stringExists($s) {
 
 $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
 
+$version = 2;
+$result;
 $prepend = "";
 $verification_expected = "be excellent";
 $verification = $_POST["verification"];
@@ -75,13 +77,11 @@ if ($isPost) {
 	} else {
 		$result = "Error in POST, message not present";
 	}
-}
-
-if ($isPost) {
 	$prepend = "<div class=resp>" . $prepend;
 	$prepend .= "<style> .resp { background-color: rgba(196, 64, 64, .1) ; } </style>";
 	$prepend .= "</div><br>";
 }
+
 
 ?>
 -->
@@ -112,5 +112,10 @@ textarea { width: 75%; }
 FORM
 ?>
 	<?php echo( isset($result) ? $result : $form); ?>
+	<!--
+	<i>Version <?php echo($version); ?></i>
+	<p>Posted:<tt><?php foreach($_POST as $key=>$value) { echo "$key=$value"; echo "<br>\n"; }
+	?></tt></p>
+	-->
 </body>
 </html>
