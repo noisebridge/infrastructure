@@ -112,10 +112,12 @@ textarea { width: 75%; }
 FORM
 ?>
 	<?php echo( isset($result) ? $result : $form); ?>
+         <noscript>
 	<!--
 	<i>Version <?php echo($version); ?></i>
 	<p>Posted:<tt><?php foreach($_POST as $key=>$value) { echo "$key=$value"; echo "<br>\n"; }
 	?></tt></p>
 	-->
+	</noscript>
 </body>
 </html>
