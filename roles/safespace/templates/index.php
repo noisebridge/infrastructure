@@ -61,13 +61,19 @@ $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
 $prepend = "";
 $verification_expected = "be excellent";
 $verification = $_POST["verification"];
-if ($isPost && (!stringExists($verification) || strcmp($verification_expected, $verification) != 0)) {
-	$prepend .= "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
-} elseif (stringExists($_POST["message"])) {
-	if(print_r(send_msg(p("name") . p("contact") . $_POST["message"]))) {
-		$prepend = "Message Sent.";
+$verification = strToLower($verification);
+if ($isPost) {
+	if (strcmp($verification_expected, $verification) !== 0) {
+		$prepend .= "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
+	} elseif (isset($_POST["message"])) {
+		$result = "message present";
+		if(print_r(send_msg(p("name") . p("contact") . $_POST["message"]))) {
+			$result = "Message Sent.";
+		} else {
+			$result = "We encountered an error while trying to send your message.  If you see this, it would be appreciated if you contacted Roy (@rizend on slack or horsy4nbs.7.pcao@spamgourmet.com) so they can try and fix the issue.";
+		}
 	} else {
-		$prepend = "We encountered an error while trying to send your message.  If you see this, it would be appreciated if you contacted Roy (@rizend on slack or horsy4nbs.7.pcao@spamgourmet.com) so they can try and fix the issue.";
+		$result = "Error in POST, message not present";
 	}
 }
 
@@ -98,6 +104,7 @@ textarea {
 	</p>
 	<hr/>
 	<i><?php echo($prepend); ?></i>
+	<?php $form = <<<FORM
 	<form method="post">
 		Name (optional):<br/>
 			<input type="text" name="name" placeholder="Kate Libby"></input><br/>
@@ -108,5 +115,8 @@ textarea {
 			<input type="text" name="verification" value="be automated"></input><br/><br/>
 		<input type="submit" value="Send Message"></input>
 	</form>
+FORM
+?>
+	<?php echo( isset($result) ? $result : $form); ?>
 </body>
 </html>
