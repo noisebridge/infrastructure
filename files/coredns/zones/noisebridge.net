@@ -44,6 +44,9 @@ m3      300     IN      MX      10 m3.noisebridge.net.
 ; aliases
 www     300     IN      CNAME   m3.noisebridge.net.
 
+; Hosted services
+@       86400   IN      TXT     "google-site-verification=oAGwafoLsiW_TSw8gtYuncSuHxRV1KDIvCNeBwY2t2g"
+
 ; Email list server
 lists   300     IN      A       216.252.162.220 ; m3.noisebridge.net
 lists   300     IN      AAAA    2602:ff06:725:5:dc::1337 ; m3.noisebridge.net
