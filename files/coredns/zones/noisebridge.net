@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2022052701 ; Serial
+                                2023060501 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
