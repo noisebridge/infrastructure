@@ -52,14 +52,36 @@ function p($n) {
 	return (isset($_POST[$n]) && is_string($_POST[$n])) ? "$n: " . $_POST[$n] . "\n" : "";
 }
 
-$prepend = "";
-if (isset($_POST["message"]) && is_string($_POST["message"])) {
-	if(print_r(send_msg(p("name") . p("contact") . $_POST["message"]))) {
-		$prepend = "Message Sent.";
-	} else {
-		$prepend = "We encountered an error while trying to send your message.  If you see this, it would be appreciated if you contacted Roy (@rizend on slack or horsy4nbs.7.pcao@spamgourmet.com) so they can try and fix the issue.";
-	}
+function stringExists($s) {
+	return isset($verification) && is_string($verification);
 }
+
+$isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
+
+$version = 2;
+$result;
+$prepend = "";
+$verification_expected = "be excellent";
+$verification = $_POST["verification"];
+$verification = strtolower($verification);
+if ($isPost) {
+	if (strcmp($verification_expected, $verification) !== 0) {
+		$prepend .= "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
+	} elseif (isset($_POST["message"])) {
+		$result = "message present";
+		if(print_r(send_msg(p("name") . p("contact") . $_POST["message"]))) {
+			$result = "Message Sent.";
+		} else {
+			$result = "We encountered an error while trying to send your message.  If you see this, it would be appreciated if you contacted Roy (@rizend on slack or horsy4nbs.7.pcao@spamgourmet.com) so they can try and fix the issue.";
+		}
+	} else {
+		$result = "Error in POST, message not present";
+	}
+	$prepend = "<div class=resp>" . $prepend;
+	$prepend .= "<style> .resp { background-color: rgba(196, 64, 64, .1) ; } </style>";
+	$prepend .= "</div><br>";
+}
+
 
 ?>
 -->
@@ -67,28 +89,35 @@ if (isset($_POST["message"]) && is_string($_POST["message"])) {
 <head>
 	<title>Safespace Reporting Tool</title>
 	<style>
-input[type=text] {
-	margin-left: 3em;
-}
-textarea {
-	width: 75%;
-}
+input[type=text] { margin-left: 3em; }
+textarea { width: 75%; }
 	</style>
 </head>
 <body>
 	<h2>Noisebridge safe space reporting tool</h2>
-	<p>
-		Please be aware that this form sends a message to the #space-guardians channel on the noisebridge slack which is viewable by anyone on our slack.
-	</p>
+	<p>Please be aware that this form sends a message to the #space-guardians channel on the noisebridge slack which is viewable by anyone on our slack.</p>
 	<hr/>
 	<i><?php echo($prepend); ?></i>
+	<?php $form = <<<FORM
 	<form method="post">
 		Name (optional):<br/>
 			<input type="text" name="name" placeholder="Kate Libby"></input><br/>
 		Contact Info (optional):<br/>
 			<input type="text" name="contact" placeholder="ac1d.burn@protonmail.ch"></input><br/><br/>
 		<textarea name="message" placeholder="I'm having trouble leaving a conversation in front of the noise-square table.  Could someone intervene so I can leave?"></textarea><br/><br/>
+		<a href="https://www.noisebridge.net/wiki/Excellence">Guiding principle of noisebridge</a> (spam bot verification):<br/>
+		<input type="text" name="verification" value="be automated"></input><br/><br/>
 		<input type="submit" value="Send Message"></input>
 	</form>
+FORM
+?>
+	<?php echo( isset($result) ? $result : $form); ?>
+         <noscript>
+	<!--
+	<i>Version <?php echo($version); ?></i>
+	<p>Posted:<tt><?php foreach($_POST as $key=>$value) { echo "$key=$value"; echo "<br>\n"; }
+	?></tt></p>
+	-->
+	</noscript>
 </body>
 </html>
