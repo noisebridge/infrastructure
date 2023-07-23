@@ -30,6 +30,11 @@ users:
     fullname: ''
     email: ...
 
+  elan:
+    fullname: Elan Hourticolon-Retzler
+    email: ...
+    github_username: ElanHR
+
   elf:
     fullname: ''
     email: ...
