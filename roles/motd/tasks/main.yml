@@ -1,0 +1,39 @@
+---
+- name: Create motd fragments directory
+  ansible.builtin.file:
+    state: directory
+    path: "{{ motd_fragments_directory }}"
+
+- name: Empty the MOTD fragments directory (1/2)
+  ansible.builtin.find:
+    paths: "{{ motd_fragments_directory }}"
+    file_type: file
+  register: old_motd_fragment_files
+
+- name: Empty the MOTD fragments directory (2/2)
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ old_motd_fragment_files.files }}"
+
+- name: Place Noisebridge Banner MOTD Fragment
+  ansible.builtin.copy:
+    src: noisebridge_banner.ansi.txt
+    dest: "{{ motd_fragments_directory }}/00-noisebridge_banner.ansi.txt"
+
+- name: Check for a hostname Banner
+  delegate_to: localhost
+  ansible.builtin.stat:
+    path: "{{ role_path }}/files/hostname_banners/{{ inventory_hostname }}.txt"
+  register: hostname_banner_stat
+
+- name: Place a hostname Banner
+  ansible.builtin.copy:
+    src:  "{{ role_path }}/files/hostname_banners/{{ inventory_hostname }}.txt"
+    dest: "{{ motd_fragments_directory }}/99-hostname_banner.txt"
+  when: hostname_banner_stat.stat.exists
+
+- name: Assemble MOTD fragments
+  ansible.builtin.assemble:
+    src: "{{ motd_fragments_directory }}"
+    dest: /etc/motd
