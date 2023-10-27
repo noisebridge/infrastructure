@@ -28,6 +28,7 @@
       - lsof
       - mosh
       - mtr-tiny
+      - net-tools
       - screen
       - strace
       - sudo
