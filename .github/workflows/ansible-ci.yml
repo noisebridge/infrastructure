@@ -1,0 +1,33 @@
+---
+name: Ansible CI
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+    paths:
+      - ansible/**
+      - .github/workflows/ansible-ci.yml
+  workflow_dispatch:
+
+env:
+  ANSIBLE_FORCE_COLOR: true
+  ANSIBLE_GALAXY_SERVER_GALAXY_URL: "https://galaxy.ansible.com"
+  ANSIBLE_GALAXY_SERVER_GALAXY_TIMEOUT: 120
+  ANSIBLE_GALAXY_SERVER_LIST: "galaxy"
+
+jobs:
+  ansible-lint:
+    runs-on: ubuntu-latest
+    env:
+      ANSIBLE_VAULT_PASSWORD: ${{ secrets.ANSIBLE_VAULT_PASSWORD }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          submodules: true
+      - run: ./set_vault_password.sh
+      - run: ls -l .vault-password
+      - name: Lint collection
+        uses: ansible/ansible-lint@5fac056c45595896c973fbde871f01f6cb14d74c # v26.4.0

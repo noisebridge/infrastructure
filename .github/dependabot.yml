@@ -3,7 +3,13 @@ version: 2
 updates:
   - directory: "/collections"
     package-ecosystem: "pip"
-    ignore: "*"
+    schedule:
+      interval: "monthly"
   - directory: "/roles"
     package-ecosystem: "pip"
-    ignore: "*"
+    schedule:
+      interval: "monthly"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
