@@ -35,9 +35,9 @@
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
     - { role: safespace, tags: [ 'safespace' ] }
-    - cloudalchemy.node-exporter
-    - { role: cloudalchemy.blackbox-exporter, tags: [ 'blackbox' ] }
-    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
+    - prometheus.prometheus.node_exporter
+    - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
+    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
     - { role: caddy, tags: [ 'caddy' ] }
 
@@ -76,10 +76,10 @@
   become_method: sudo
   tags: [space_noisebridge_net]
   roles:
-    - cloudalchemy.node-exporter
-    - { role: cloudalchemy.snmp-exporter, tags: [ 'snmp' ] }
+    - prometheus.prometheus.node_exporter
+    - { role: prometheus.prometheus.snmp_exporter, tags: [ 'snmp' ] }
     - { role: unifi-poller, tags: [ 'unifi-poller' ] }
-    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
+    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - cloudalchemy.grafana
     - powerpanel
 

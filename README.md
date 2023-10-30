@@ -91,6 +91,14 @@ In your `~/.ssh/config` add the folowing.
       User         YOU
       ProxyCommand ssh pegasus.noisebridge.net -W %h:%p
 
+## Updating Ansible collections
+
+Ansible uses [collections](https://docs.ansible.com/ansible/latest/collections_guide/index.html) to provide groups of roles. These are included inline in the `/collections` directory in this repo. The list of collections and versions are maintained in `/requirements.yml`.
+
+To update the inline collection vendoring:
+
+    ansible-galaxy collection install -r requirements.yml --upgrade
+
 ## Joining
 
 See https://discuss.noisebridge.info/c/guilds/rack for guidance, specifically the sticky.
