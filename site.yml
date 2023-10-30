@@ -24,7 +24,7 @@
     - utils
     - security
     - jnv.unattended-upgrades
-    - motd
+    - { role: motd, tags: [ 'motd' ] }
 
 - name: noisebridge_net
   hosts: noisebridge_net
