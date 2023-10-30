@@ -1,2 +1,2 @@
 ---
-motd_fragments_directory: /etc/motd.parts.d
+motd_host_template_file: "templates/motd/{{inventory_hostname}}.j2"
