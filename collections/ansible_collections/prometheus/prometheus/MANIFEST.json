@@ -1,0 +1,41 @@
+{
+ "collection_info": {
+  "namespace": "prometheus",
+  "name": "prometheus",
+  "version": "0.6.0",
+  "authors": [
+   "Ben Kochie (https://github.com/SuperQ)",
+   "Gar\u00f0ar Arnarsson (https://github.com/gardar)",
+   "Pawe\u0142 Krupa (https://github.com/paulfantom)"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "observability",
+   "o11y",
+   "monitoring",
+   "prometheus",
+   "metrics",
+   "alerts",
+   "alerting",
+   "cloud"
+  ],
+  "description": "Ansible Collection for Prometheus",
+  "license": [],
+  "license_file": "LICENSE",
+  "dependencies": {
+   "community.general": ">=1.0.0"
+  },
+  "repository": "https://github.com/prometheus-community/ansible",
+  "documentation": "https://prometheus-community.github.io/ansible",
+  "homepage": "https://prometheus.io",
+  "issues": "https://github.com/prometheus-community/ansible/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "bb7f6289c3f34efb8b726d5ed13e7cb0890a1b654ef9f4d6655c38f80263cd55",
+  "format": 1
+ },
+ "format": 1
+}
