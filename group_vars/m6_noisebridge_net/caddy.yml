@@ -1,2 +1,2 @@
 ---
-caddy_config: "{{ lookup('template', 'templates/caddy/m4/Caddyfile.j2') }}"
+caddy_config: "{{ lookup('template', 'templates/caddy/m6/Caddyfile.j2') }}"

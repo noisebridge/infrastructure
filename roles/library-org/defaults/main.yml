@@ -1,5 +1,5 @@
 ---
-library_org_version: v1.0.0
+library_org_version: v2.0.0
 library_org_config:
   secrets:
     app_secret_key: nope
