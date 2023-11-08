@@ -7,6 +7,9 @@ noisebridge_dns_secondary_servers:
   # ns2.noisebridge.net (m4.noisebridge.net)
   - '2602:ff06:677:4:54::1337'
   - '204.246.122.84'
+  # New ns2.noisebridge.net (m7.noisebridge.net)
+  - '2600:3c0a::f03c:93ff:fe37:3d2f'
+  - '172.232.171.61'
 
 noisebridge_dns_primary_zones:
   - name: noisebridge.com
