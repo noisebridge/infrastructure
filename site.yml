@@ -91,16 +91,6 @@
   roles:
     - nextcloud-docker
 
-- name: Misc web services
-  hosts: m4_noisebridge_net
-  become: yes
-  become_method: sudo
-  tags: [m4_noisebridge_net]
-  roles:
-    - { role: caddy, tags: [ 'caddy' ] }
-    - { role: library-org, tags: [ 'library-org' ] }
-    - { role: stuff-org, tags: [ 'stuff-org' ] }
-
 - name: Earl RFID Access
   hosts: earl
   become: yes
@@ -121,4 +111,7 @@
   become_method: sudo
   tags: [m6_noisebridge_net]
   roles:
-    - {role: podman, tags: ['podman'] }
+    - { role: podman, tags: ['podman'] }
+    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: library-org, tags: [ 'library-org' ] }
+    - { role: stuff-org, tags: [ 'stuff-org' ] }
