@@ -26,7 +26,7 @@ notes:
       C(subscription-manager) itself gets credentials only as arguments of command line
       parameters, which is I(not) secure, as they can be easily stolen by checking the
       process listing on the system. Due to limitations of the D-Bus interface of C(rhsm),
-      the module will I(not) use D-Bus for registation when trying either to register
+      the module will I(not) use D-Bus for registration when trying either to register
       using O(token), or when specifying O(environment), or when the system is old
       (typically RHEL 6 and older).
     - In order to register a system, subscription-manager requires either a username and password, or an activationkey and an Organization ID.
@@ -572,7 +572,34 @@ class Rhsm(object):
 
         register_opts = {}
         if consumer_type:
-            register_opts['consumer_type'] = consumer_type
+            # The option for the consumer type used to be 'type' in versions
+            # of RHEL before 9 & in RHEL 9 before 9.2, and then it changed to
+            # 'consumer_type'; since the Register*() D-Bus functions reject
+            # unknown options, we have to pass the right option depending on
+            # the version -- funky.
+            def supports_option_consumer_type():
+                # subscription-manager in any supported Fedora version
+                # has the new option.
+                if distro_id == 'fedora':
+                    return True
+                # Check for RHEL 9 >= 9.2, or RHEL >= 10.
+                if distro_id == 'rhel' and \
+                   ((distro_version[0] == 9 and distro_version[1] >= 2) or
+                       distro_version[0] >= 10):
+                    return True
+                # CentOS: since the change was only done in EL 9, then there is
+                # only CentOS Stream for 9, and thus we can assume it has the
+                # latest version of subscription-manager.
+                if distro_id == 'centos' and distro_version[0] >= 9:
+                    return True
+                # Unknown or old distro: assume it does not support
+                # the new option.
+                return False
+
+            consumer_type_key = 'type'
+            if supports_option_consumer_type():
+                consumer_type_key = 'consumer_type'
+            register_opts[consumer_type_key] = consumer_type
         if consumer_name:
             register_opts['name'] = consumer_name
         if consumer_id:

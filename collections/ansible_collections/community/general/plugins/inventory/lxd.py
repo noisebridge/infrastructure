@@ -41,6 +41,20 @@ DOCUMENTATION = r'''
             aliases: [ cert_file ]
             default: $HOME/.config/lxc/client.crt
             type: path
+        server_cert:
+            description:
+            - The server certificate file path.
+            type: path
+            version_added: 8.0.0
+        server_check_hostname:
+            description:
+            - This option controls if the server's hostname is checked as part of the HTTPS connection verification.
+              This can be useful to disable, if for example, the server certificate provided (see O(server_cert) option)
+              does not cover a name matching the one used to communicate with the server. Such mismatch is common as LXD
+              generates self-signed server certificates by default.
+            type: bool
+            default: true
+            version_added: 8.0.0
         trust_password:
             description:
             - The client trusted password.
@@ -70,7 +84,7 @@ DOCUMENTATION = r'''
             version_added: 4.2.0
         prefered_instance_network_interface:
             description:
-            - If an instance has multiple network interfaces, select which one is the prefered as pattern.
+            - If an instance has multiple network interfaces, select which one is the preferred as pattern.
             - Combined with the first number that can be found e.g. 'eth' + 0.
             - The option has been renamed from O(prefered_container_network_interface) to O(prefered_instance_network_interface)
               in community.general 3.8.0. The old name still works as an alias.
@@ -80,7 +94,7 @@ DOCUMENTATION = r'''
               - prefered_container_network_interface
         prefered_instance_network_family:
             description:
-            - If an instance has multiple network interfaces, which one is the prefered by family.
+            - If an instance has multiple network interfaces, which one is the preferred by family.
             - Specify V(inet) for IPv4 and V(inet6) for IPv6.
             type: str
             default: inet
@@ -286,7 +300,7 @@ class InventoryModule(BaseInventoryPlugin):
         urls = (url for url in url_list if self.validate_url(url))
         for url in urls:
             try:
-                socket_connection = LXDClient(url, self.client_key, self.client_cert, self.debug)
+                socket_connection = LXDClient(url, self.client_key, self.client_cert, self.debug, self.server_cert, self.server_check_hostname)
                 return socket_connection
             except LXDClientException as err:
                 error_storage[url] = err
@@ -376,7 +390,7 @@ class InventoryModule(BaseInventoryPlugin):
     def get_instance_data(self, names):
         """Create Inventory of the instance
 
-        Iterate through the different branches of the instances and collect Informations.
+        Iterate through the different branches of the instances and collect Information.
 
         Args:
             list(names): List of instance names
@@ -398,7 +412,7 @@ class InventoryModule(BaseInventoryPlugin):
     def get_network_data(self, names):
         """Create Inventory of the instance
 
-        Iterate through the different branches of the instances and collect Informations.
+        Iterate through the different branches of the instances and collect Information.
 
         Args:
             list(names): List of instance names
@@ -451,9 +465,9 @@ class InventoryModule(BaseInventoryPlugin):
         return network_configuration
 
     def get_prefered_instance_network_interface(self, instance_name):
-        """Helper to get the prefered interface of thr instance
+        """Helper to get the preferred interface of thr instance
 
-        Helper to get the prefered interface provide by neme pattern from 'prefered_instance_network_interface'.
+        Helper to get the preferred interface provide by neme pattern from 'prefered_instance_network_interface'.
 
         Args:
             str(containe_name): name of instance
@@ -563,7 +577,7 @@ class InventoryModule(BaseInventoryPlugin):
             else:
                 path[instance_name][key] = value
         except KeyError as err:
-            raise AnsibleParserError("Unable to store Informations: {0}".format(to_native(err)))
+            raise AnsibleParserError("Unable to store Information: {0}".format(to_native(err)))
 
     def extract_information_from_instance_configs(self):
         """Process configuration information
@@ -683,7 +697,7 @@ class InventoryModule(BaseInventoryPlugin):
                     continue
             # add instance
             self.inventory.add_host(instance_name)
-            # add network informations
+            # add network information
             self.build_inventory_network(instance_name)
             # add os
             v = self._get_data_entry('inventory/{0}/os'.format(instance_name))
@@ -1078,6 +1092,8 @@ class InventoryModule(BaseInventoryPlugin):
         try:
             self.client_key = self.get_option('client_key')
             self.client_cert = self.get_option('client_cert')
+            self.server_cert = self.get_option('server_cert')
+            self.server_check_hostname = self.get_option('server_check_hostname')
             self.project = self.get_option('project')
             self.debug = self.DEBUG
             self.data = {}  # store for inventory-data
