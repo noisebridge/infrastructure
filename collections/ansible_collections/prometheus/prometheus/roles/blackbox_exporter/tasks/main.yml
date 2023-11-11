@@ -1,0 +1,43 @@
+---
+- name: Preflight
+  ansible.builtin.include_tasks:
+    file: preflight.yml
+    apply:
+      tags:
+        - blackbox_exporter_install
+        - blackbox_exporter_configure
+        - blackbox_exporter_run
+  tags:
+    - blackbox_exporter_install
+    - blackbox_exporter_configure
+    - blackbox_exporter_run
+
+- name: Install
+  ansible.builtin.include_tasks:
+    file: install.yml
+    apply:
+      become: true
+      tags:
+        - blackbox_exporter_install
+  tags:
+    - blackbox_exporter_install
+
+- name: Configure
+  ansible.builtin.include_tasks:
+    file: configure.yml
+    apply:
+      become: true
+      tags:
+        - blackbox_exporter_configure
+  tags:
+    - blackbox_exporter_configure
+
+- name: Ensure blackbox_exporter service is started and enabled
+  become: true
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: blackbox_exporter
+    state: started
+    enabled: true
+  tags:
+    - blackbox_exporter_run
