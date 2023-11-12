@@ -80,7 +80,7 @@
     - { role: prometheus.prometheus.snmp_exporter, tags: [ 'snmp' ] }
     - { role: unifi-poller, tags: [ 'unifi-poller' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
-    - cloudalchemy.grafana
+    - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
     - powerpanel
 
 - name: Nextcloud on debian box in space
