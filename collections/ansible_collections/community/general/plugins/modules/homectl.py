@@ -393,7 +393,7 @@ class Homectl(object):
             user_metadata.pop('status', None)
             # Let last change Usec be updated by homed when command runs.
             user_metadata.pop('lastChangeUSec', None)
-            # Now only change fields that are called on leaving whats currently in the record intact.
+            # Now only change fields that are called on leaving what's currently in the record intact.
             record = user_metadata
 
         record['userName'] = self.name
@@ -439,7 +439,7 @@ class Homectl(object):
             self.result['changed'] = True
 
         if self.disksize:
-            # convert humand readble to bytes
+            # convert human readable to bytes
             if self.disksize != record.get('diskSize'):
                 record['diskSize'] = human_to_bytes(self.disksize)
                 self.result['changed'] = True

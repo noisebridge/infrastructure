@@ -44,7 +44,7 @@ options:
     choices: [ attach, comment, create, edit, fetch, link, search, transition, update, worklog ]
     description:
       - The operation to perform.
-      - V(worklog) was added in community.genereal 6.5.0.
+      - V(worklog) was added in community.general 6.5.0.
 
   username:
     type: str
@@ -799,7 +799,7 @@ class JIRA(StateModuleHelper):
                 if msg:
                     self.module.fail_json(msg=', '.join(msg))
                 self.module.fail_json(msg=to_native(error))
-            # Fallback print body, if it cant be decoded
+            # Fallback print body, if it can't be decoded
             self.module.fail_json(msg=to_native(info['body']))
 
         body = response.read()

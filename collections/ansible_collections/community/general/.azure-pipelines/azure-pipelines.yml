@@ -29,14 +29,14 @@ schedules:
     always: true
     branches:
       include:
+        - stable-8
         - stable-7
-        - stable-6
   - cron: 0 11 * * 0
     displayName: Weekly (old stable branches)
     always: true
     branches:
       include:
-        - stable-5
+        - stable-6
 
 variables:
   - name: checkoutPath
@@ -137,6 +137,7 @@ stages:
           nameFormat: Python {0}
           testFormat: 2.16/units/{0}/1
           targets:
+            - test: 2.7
             - test: 3.6
             - test: "3.11"
   - stage: Units_2_15
@@ -244,10 +245,10 @@ stages:
         parameters:
           testFormat: 2.14/{0}
           targets:
+            #- name: macOS 12.0
+            #  test: macos/12.0
             - name: RHEL 9.0
               test: rhel/9.0
-            - name: macOS 12.0
-              test: macos/12.0
             #- name: FreeBSD 12.4
             #  test: freebsd/12.4
           groups:

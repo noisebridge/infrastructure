@@ -244,12 +244,12 @@ class GitLabUser(object):
         self._gitlab = gitlab_instance
         self.user_object = None
         self.ACCESS_LEVEL = {
-            'guest': gitlab.GUEST_ACCESS,
-            'reporter': gitlab.REPORTER_ACCESS,
-            'developer': gitlab.DEVELOPER_ACCESS,
-            'master': gitlab.MAINTAINER_ACCESS,
-            'maintainer': gitlab.MAINTAINER_ACCESS,
-            'owner': gitlab.OWNER_ACCESS,
+            'guest': gitlab.const.GUEST_ACCESS,
+            'reporter': gitlab.const.REPORTER_ACCESS,
+            'developer': gitlab.const.DEVELOPER_ACCESS,
+            'master': gitlab.const.MAINTAINER_ACCESS,
+            'maintainer': gitlab.const.MAINTAINER_ACCESS,
+            'owner': gitlab.const.OWNER_ACCESS,
         }
 
     '''
@@ -485,7 +485,7 @@ class GitLabUser(object):
 
     '''
     @param user User object
-    @param identites List of identities to be added/updated
+    @param identities List of identities to be added/updated
     @param overwrite_identities Overwrite user identities with identities passed to this module
     '''
     def add_identities(self, user, identities, overwrite_identities=False):
@@ -504,7 +504,7 @@ class GitLabUser(object):
 
     '''
     @param user User object
-    @param identites List of identities to be added/updated
+    @param identities List of identities to be added/updated
     '''
     def delete_identities(self, user, identities):
         changed = False
