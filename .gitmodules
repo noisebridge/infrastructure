@@ -7,9 +7,6 @@
 [submodule "roles/jnv.unattended-upgrades"]
 	path = roles/jnv.unattended-upgrades
 	url = https://github.com/jnv/ansible-role-unattended-upgrades.git
-[submodule "roles/cloudalchemy.grafana"]
-	path = roles/cloudalchemy.grafana
-	url = https://github.com/cloudalchemy/ansible-grafana.git
 [submodule "roles/caddy"]
 	path = roles/caddy
 	url = https://github.com/caddy-ansible/caddy-ansible.git
