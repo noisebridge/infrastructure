@@ -1,0 +1,4 @@
+---
+caddy_certs_src_path: "/home/caddy/.local/share/caddy/certificates/acme-v02.api.letsencrypt.org-directory/{{ ansible_fqdn }}"
+caddy_certs_modified_path: "{{ caddy_certs_src_path }}/{{ ansible_fqdn }}.crt"
+caddy_certs_dest_path: "/etc/ssl/{{ ansible_fqdn }}"
