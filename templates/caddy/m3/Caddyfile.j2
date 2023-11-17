@@ -2,6 +2,19 @@
 # Global settings
 {
   order cgi last
+  servers {
+      metrics
+  }
+}
+# Metrics server
+{{ ansible_fqdn }} {
+  route /metrics {
+    basicauth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    metrics
+  }
+  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
 # Redirects to www.noisebride.net
@@ -25,7 +38,7 @@ noisebridge.io, www.noisebridge.io {
   redir https://www.noisebridge.net{uri}
 }
 
-noisebridge.net m3.noisebridge.net {
+noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/noisebridge.net.log" {
 {{ noisebridge_caddy_log_roll | indent(width=6) }}

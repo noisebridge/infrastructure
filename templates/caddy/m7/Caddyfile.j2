@@ -1,0 +1,17 @@
+{{ ansible_managed | comment }}
+# Global config
+{
+  servers {
+      metrics
+  }
+}
+# Metrics server
+{{ ansible_fqdn }} {
+  route /metrics {
+    basicauth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    metrics
+  }
+  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+}

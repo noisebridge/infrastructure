@@ -52,6 +52,7 @@
     - percona
     - geerlingguy.mysql
     - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: pydonate, tags: ['pydonate'] }
 
 - name: List server
@@ -114,5 +115,15 @@
   roles:
     - { role: podman, tags: ['podman'] }
     - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: library-org, tags: [ 'library-org' ] }
     - { role: stuff-org, tags: [ 'stuff-org' ] }
+
+- name: Seattle Linode
+  hosts: m7_noisebridge_net
+  become: yes
+  become_method: sudo
+  tags: [m7_noisebridge_net]
+  roles:
+    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }
