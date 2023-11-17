@@ -24,6 +24,7 @@
     - utils
     - security
     - jnv.unattended-upgrades
+    - { role: prometheus.prometheus.node_exporter, tags: [ 'node_exporter' ] }
     - { role: motd, tags: [ 'motd' ] }
 
 - name: noisebridge_net
@@ -35,7 +36,6 @@
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
     - { role: safespace, tags: [ 'safespace' ] }
-    - prometheus.prometheus.node_exporter
     - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
@@ -78,7 +78,6 @@
   become_method: sudo
   tags: [space_noisebridge_net]
   roles:
-    - prometheus.prometheus.node_exporter
     - { role: prometheus.prometheus.snmp_exporter, tags: [ 'snmp' ] }
     - { role: unifi-poller, tags: [ 'unifi-poller' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
