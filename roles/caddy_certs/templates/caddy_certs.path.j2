@@ -1,0 +1,9 @@
+[Unit]
+Description=Caddy watch for new certs
+After=network-online.target
+StartLimitInterval=0
+StartLimitIntervalSec=0
+
+[Path]
+PathModified={{ caddy_certs_modified_path }}
+Unit=caddy_certs.service
