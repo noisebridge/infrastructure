@@ -45,9 +45,15 @@ prometheus_scrape_configs:
         - "m6.noisebridge.net:443"
         - "m7.noisebridge.net:443"
   - job_name: "coredns"
+    scheme: https
+    metrics_path: /coredns/metrics
+    basic_auth:
+      username: prometheus
+      password: "{{ noisebridge_prometheus_password }}"
     static_configs:
       - targets:
-        - "localhost:9153"
+        - "m3.noisebridge.net:443"
+        - "m7.noisebridge.net:443"
   - job_name: "donate"
     scheme: https
     static_configs:

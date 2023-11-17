@@ -13,5 +13,11 @@
     }
     metrics
   }
+  handle_path /coredns/* {
+    basicauth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    reverse_proxy localhost:9153
+  }
   respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
