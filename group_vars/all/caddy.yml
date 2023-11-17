@@ -1,6 +1,9 @@
 ---
 caddy_systemd_capabilities_enabled: true
 
+noisebridge_prometheus_password: "{{ vault_noisebridge_prometheus_password }}"
+noisebridge_prometheus_password_hash: "{{ vault_noisebridge_prometheus_password_hash }}"
+
 noisebridge_caddy_log_filter: |
   format filter {
     wrap json
