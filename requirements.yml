@@ -12,3 +12,7 @@ collections:
 - name: prometheus.prometheus
   type: galaxy
   version: ">=0.5.0"
+roles:
+- name: hifis.unattended_upgrades
+  type: galaxy
+  version: "v3.2.0"

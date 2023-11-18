@@ -23,7 +23,7 @@
   roles:
     - utils
     - security
-    - jnv.unattended-upgrades
+    - hifis.unattended_upgrades
     - { role: prometheus.prometheus.node_exporter, tags: [ 'node_exporter' ] }
     - { role: motd, tags: [ 'motd' ] }
 
