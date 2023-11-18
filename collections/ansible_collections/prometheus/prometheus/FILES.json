@@ -116,7 +116,7 @@
    "name": "roles/prometheus/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8692386cf8740a29e75af55da38d5a31f149f20e8ace78cbec55626e906b77b3",
+   "chksum_sha256": "0e450d8d4c4077951d67527b9de98abed43d556d89905f8bf4faaa2190032871",
    "format": 1
   },
   {
@@ -179,7 +179,7 @@
    "name": "roles/prometheus/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9cec7b754b75b668d77c691cd0bc121a425751ee54286ee1e8c9f823899bbc30",
+   "chksum_sha256": "b769da5d512bdbeea06eed7eb1b0556c520aa1fea42236bd014cb8bc7d4128ea",
    "format": 1
   },
   {
@@ -403,7 +403,7 @@
    "name": "roles/systemd_exporter/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2936d1b256575e31951c1c395e699e4796dfd19a5b20454edd4a1d72d88ccec1",
+   "chksum_sha256": "3286ca4eaf0df261197a1c89106a6aaf137f093bef82ee6f9413d4727dbc8261",
    "format": 1
   },
   {
@@ -459,7 +459,7 @@
    "name": "roles/systemd_exporter/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9d3c7137951160e4a3b8423c44faeeb5f9220b27663536e1316480465416dda7",
+   "chksum_sha256": "e8f8fefeb0a45fbd64137ad73a53100dd7a0fd17350d00b1429ae39f7de26268",
    "format": 1
   },
   {
@@ -1124,7 +1124,7 @@
    "name": "roles/node_exporter/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "20ca390def10a1bca054b4d7953c7b46add23dadb86931ee2e81378081f2e3a5",
+   "chksum_sha256": "d79b0c9024f5d4ab968eeae6f97e85931287c17414fb22a9a3a0e5d2b2a88abb",
    "format": 1
   },
   {
@@ -1180,7 +1180,7 @@
    "name": "roles/node_exporter/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "94a8ea168a49c8e86ba5f972363d973da366e377966675a67e67350a163c7fc5",
+   "chksum_sha256": "1dfff619d8af5a6f8a9e03cd9ef7cf61d6bd471bbdb9670acfd93e80667c60fa",
    "format": 1
   },
   {
@@ -1663,7 +1663,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b099f5bd50e0766bc07a8ababe04a4c138aa060d0db76eba8a389b8fcddd5e00",
+   "chksum_sha256": "3c6f747d2b9b7e3d889a4cd1b85c02a75168418f3cca61165c9efa35c086c5b9",
    "format": 1
   },
   {
