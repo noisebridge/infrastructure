@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "prometheus",
   "name": "prometheus",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "authors": [
    "Ben Kochie (https://github.com/SuperQ)",
    "Gar\u00f0ar Arnarsson (https://github.com/gardar)",
@@ -34,7 +34,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "fd79cf2e9d27ef8265eba03a8b0fcc652055be39629323c7533a442bf63447ce",
+  "chksum_sha256": "c9e0b5ab7b542ab80f932284cf463b55eddb2cf80cc01ed7bf79d70503e5bcc5",
   "format": 1
  },
  "format": 1
