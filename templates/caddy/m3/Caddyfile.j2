@@ -86,6 +86,14 @@ www.noisebridge.net {
     hide *.php
   }
 
+  route /adminer* {
+    basicauth {
+      noisebridge $2a$14$nQ/rTVh9ortEYNOPCD3de.BIGcPZyKYn8wCF44yUr2Gm8TZ59HojS
+    }
+    root * /srv/adminer
+    try_files {path} adminer.php
+  }
+
   # Legacy mailman redirects
   redir /pipermail https://lists.noisebridge.net{uri}
   redir /mailman https://lists.noisebridge.net{uri}
