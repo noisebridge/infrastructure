@@ -3,6 +3,11 @@ caddy_systemd_capabilities_enabled: true
 
 noisebridge_prometheus_password: "{{ vault_noisebridge_prometheus_password }}"
 noisebridge_prometheus_password_hash: "{{ vault_noisebridge_prometheus_password_hash }}"
+#
+# Authentication portal
+noisebridge_github_client_id: "{{ vault_noisebridge_github_client_id }}"
+noisebridge_github_client_secret: "{{ vault_noisebridge_github_client_secret }}"
+noisebridge_jwt_token_secret: "{{ vault_noisebridge_jwt_token_secret }}"
 
 noisebridge_caddy_log_filter: |
   format filter {
