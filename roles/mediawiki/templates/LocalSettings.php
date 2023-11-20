@@ -60,7 +60,7 @@ $wgDBuser = "{{ mediawiki.database_username }}";
 $wgDBpassword = "{{ mysql_users|selectattr('name', 'equalto', 'wiki')|map(attribute='password')|join('')}}";
 
 # MySQL specific settings
-$wgDBprefix = "noisebridge_mediawiki";
+$wgDBprefix = "wiki_";
 
 # MySQL table options to use during installation or update
 $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
@@ -148,7 +148,18 @@ $wgUseGzip = true;
 $wgUseFileCache = false;
 $wgFileCacheDirectory = '/var/cache/mediawiki/';
 
-#
+wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha' ]);
+#wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/QuestyCaptcha', 'QuestyCaptchaEditor' ]);
+#wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/QuestyCaptcha' ]);
+#wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha', 'ConfirmEdit/QuestyCaptcha', 'QuestyCaptchaEditor' ]);
+
+## ConfirmEdit/QuestyCaptcha questions
+$wgCaptchaQuestions = [
+	'What is the guiding principle of Noisebridge?' => [ 'be excellent' ],
+];
+## https://www.mediawiki.org/wiki/Extension:ConfirmEdit#URL_and_IP_whitelists
+$wgCaptchaWhitelistIP = [ '192.195.83.130' ]; ## Noisebridge space IP, from MonkeyBrains
+
 # Configure ReCaptcha
 $wgCaptchaClass = 'ReCaptchaNoCaptcha';
 $wgReCaptchaSiteKey = '{{ mediawiki_recaptcha_site_key }}';
@@ -199,3 +210,60 @@ $wgAutopromote = array(
 
 $wgFileExtensions[] = 'pdf';
 $wgFileExtensions[] = 'svg';
+
+
+# https://www.mediawiki.org/wiki/Extension:CheckUser
+wfLoadExtension( 'CheckUser' ); # requires 1.41.0 > 1.35.8 current version
+# give sysops all the rights this extension provides
+$wgGroupPermissions['sysop']['checkuser'] = true;
+$wgGroupPermissions['sysop']['checkuser-log'] = true;
+$wgGroupPermissions['sysop']['investigate'] = true;
+$wgGroupPermissions['sysop']['checkuser-temporary-account'] = true;
+
+# comes installed, but not enabled.
+wfLoadExtension( 'Gadgets' );
+# https://www.mediawiki.org/wiki/Extension:Gadgets#User_rights
+$wgGroupPermissions['interface-admin']['gadgets-edit'] = true;
+$wgGroupPermissions['interface-admin']['gadgets-definition-edit'] = true;
+
+# https://www.mediawiki.org/wiki/Extension:Popups
+wfLoadExtensions( [ 'TextExtracts', 'PageImages', 'Popups' ] );
+$wgPopupsVirtualPageViews = true;
+$wgPopupsReferencePreviewsBetaFeature = false;
+$wgPopupsOptInDefaultState = 1; # 0
+
+# https://www.mediawiki.org/wiki/Manual:$wgContentNamespaces - to enable Popups on more namespaces
+# $wgContentNamespaces = ... + Meeting: ?
+
+# https://www.mediawiki.org/wiki/Extension:ConfirmAccount
+wfLoadExtension( 'ConfirmAccount' );
+$wgGroupPermissions['*']['createaccount'] = false; # not sure I want to block this
+$wgGroupPermissions['bureaucrat']['createaccount'] = true;
+
+# https://www.mediawiki.org/wiki/Manual:Interface/JavaScript
+$wgAllowUserJs = true;
+$wgAllowUserCss = true;
+
+# https://www.mediawiki.org/wiki/Extension:Interwiki
+wfLoadExtension( 'Interwiki' );
+$wgGroupPermissions['sysop']['interwiki'] = true;
+
+# https://www.mediawiki.org/wiki/Extension:InviteSignup
+wfLoadExtension( 'InviteSignup' );
+$wgGroupPermissions['bureaucrat']['invitesignup'] = true;
+$wgGroupPermissions['invitesignup']['invitesignup'] = true; # :D - hacker takeoff
+$wgISGroupsRequired = [ 'invitedIS' ];
+
+# https://www.mediawiki.org/wiki/Extension:EmbedVideo#Installation
+wfLoadExtension( 'EmbedVideo' ); # mainly allowed embeded links for services. ignore ffmpeg options
+
+# https://www.mediawiki.org/wiki/Extension:Admin_Links
+wfLoadExtension( 'AdminLinks' );
+#$wgGroupPermissions['...']['.adminlinks'] = true;
+
+#wfLoadExtension( 'ROT13' ); # not valid for extension
+#require_once "$IP/extensions/ROT13/ROT13.php"; # seems to fail. 1.23 too old?
+
+wfLoadExtension( 'QRLite' );
+
+#$wgReadOnly = '[issue] [timeframe] -User:[admin]';
