@@ -1,6 +1,35 @@
 {{ ansible_managed | comment }}
 # Global config
 {
+  order authenticate before respond
+  order authorize before basicauth
+  security {
+    oauth identity provider github {
+      realm github
+      driver github
+      client_id {{ noisebridge_github_client_id }}
+      client_secret {{ noisebridge_github_client_secret }}
+      scopes openid email profile
+    }
+
+    authentication portal noisebridge-github {
+      crypto default token lifetime 86400
+      crypto key sign-verify {{ noisebridge_jwt_token_secret }}
+      crypto key token name access_token
+      enable identity provider github
+      cookie domain noisebridge.net
+
+      # Rack users
+{% for user, user_value in users.items() if user_value.github_username is defined  %}
+      transform user {
+        match realm github
+        match sub github.com/{{ user_value.github_username }}
+        action add role rack
+      }
+{% endfor %}
+    }
+  }
+
   servers {
       metrics
   }
@@ -20,4 +49,9 @@
     reverse_proxy localhost:9153
   }
   respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+}
+
+# Authentication portal
+auth.noisebridge.net {
+  authenticate with noisebridge-github
 }

@@ -2,6 +2,16 @@
 # Global settings
 {
   order cgi last
+  order authenticate before respond
+  order authorize before basicauth
+  security {
+    authorization policy noisebridge-github {
+      set auth url https://auth.noisebridge.net/auth
+      crypto key verify {{ noisebridge_jwt_token_secret }}
+      crypto key token name access_token
+      allow roles members rack
+    }
+  }
   servers {
       metrics
   }
@@ -146,4 +156,12 @@ safespace.noisebridge.net {
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
   root * /var/www/safespace.noisebridge.net
   php_fastcgi unix//run/php/php7.4-fpm.sock
+}
+
+# Monitoring
+prometheus.noisebridge.net {
+  route {
+    authorize with noisebridge-github
+    reverse_proxy localhost:9090
+  }
 }
