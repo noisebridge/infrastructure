@@ -1,0 +1,6 @@
+---
+version: 2
+updates:
+  - directory: "/collections"
+    package-ecosystem: "pip"
+    ignore: "*"
