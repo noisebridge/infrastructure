@@ -101,9 +101,9 @@ textarea { width: 75%; }
 	<i><?php echo($prepend); ?></i>
 	<?php $form = <<<FORM
 	<form method="post">
-		Name (optional):<br/>
+		Name (optional):
 			<input type="text" name="name" placeholder="Kate Libby"></input><br/>
-		Contact Info (optional):<br/>
+		Contact Info (optional):
 			<input type="text" name="contact" placeholder="ac1d.burn@protonmail.ch"></input><br/><br/>
 		<textarea name="message" placeholder="I'm having trouble leaving a conversation in front of the noise-square table.  Could someone intervene so I can leave?"></textarea><br/><br/>
 		<a href="https://www.noisebridge.net/wiki/Excellence">Guiding principle of noisebridge</a> (spam bot verification):<br/>
