@@ -64,14 +64,11 @@ options:
 
     provider_id:
         description:
-            - Provider for this user federation.
+            - Provider for this user federation. Built-in providers are V(ldap), V(kerberos), and V(sssd).
+              Custom user storage providers can also be used.
         aliases:
             - providerId
         type: str
-        choices:
-            - ldap
-            - kerberos
-            - sssd
 
     provider_type:
         description:
@@ -341,6 +338,16 @@ options:
                 description:
                     - Name of kerberos realm.
                 type: str
+
+            krbPrincipalAttribute:
+                description:
+                    - Name of the LDAP attribute, which refers to Kerberos principal.
+                      This is used to lookup appropriate LDAP user after successful Kerberos/SPNEGO authentication in Keycloak.
+                      When this is empty, the LDAP user will be looked based on LDAP username corresponding
+                      to the first part of his Kerberos principal. For instance, for principal C(john@KEYCLOAK.ORG),
+                      it will assume that LDAP username is V(john).
+                type: str
+                version_added: 8.1.0
 
             serverPrincipal:
                 description:
@@ -764,6 +771,7 @@ def main():
         readTimeout=dict(type='int'),
         searchScope=dict(type='str', choices=['1', '2'], default='1'),
         serverPrincipal=dict(type='str'),
+        krbPrincipalAttribute=dict(type='str'),
         startTls=dict(type='bool', default=False),
         syncRegistrations=dict(type='bool', default=False),
         trustEmail=dict(type='bool', default=False),
@@ -794,7 +802,7 @@ def main():
         realm=dict(type='str', default='master'),
         id=dict(type='str'),
         name=dict(type='str'),
-        provider_id=dict(type='str', aliases=['providerId'], choices=['ldap', 'kerberos', 'sssd']),
+        provider_id=dict(type='str', aliases=['providerId']),
         provider_type=dict(type='str', aliases=['providerType'], default='org.keycloak.storage.UserStorageProvider'),
         parent_id=dict(type='str', aliases=['parentId']),
         mappers=dict(type='list', elements='dict', options=mapper_spec),

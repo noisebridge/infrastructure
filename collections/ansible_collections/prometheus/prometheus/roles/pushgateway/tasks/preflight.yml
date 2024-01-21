@@ -20,10 +20,26 @@
   ansible.builtin.package_facts:
   when: "not 'packages' in ansible_facts"
 
+- name: Assert that used version supports listen address type
+  ansible.builtin.assert:
+    that:
+      - >-
+        pushgateway_web_listen_address is string
+        or
+        (
+          pushgateway_version is version('1.5.0', '>=') and
+          pushgateway_web_listen_address | type_debug == "list"
+        )
+
 - name: Naive assertion of proper listen address
   ansible.builtin.assert:
     that:
-      - "':' in pushgateway_web_listen_address"
+      - >-
+        [pushgateway_web_listen_address] |
+          flatten |
+          reject('match', '.+:\\d+$') |
+          list |
+          length == 0
 
 - name: Assert that TLS config is correct
   when: pushgateway_tls_server_config | length > 0
@@ -47,8 +63,8 @@
     - name: Assert that TLS key and cert are present
       ansible.builtin.assert:
         that:
-          - "{{ __pushgateway_cert_file.stat.exists }}"
-          - "{{ __pushgateway_key_file.stat.exists }}"
+          - "__pushgateway_cert_file.stat.exists"
+          - "__pushgateway_key_file.stat.exists"
 
 - name: Check if pushgateway is installed
   ansible.builtin.stat:
@@ -69,7 +85,7 @@
 
 - name: Discover latest version
   ansible.builtin.set_fact:
-    pushgateway_version: "{{ (lookup('url', 'https://api.github.com/repos/prometheus/pushgateway/releases/latest', headers=_github_api_headers,
+    pushgateway_version: "{{ (lookup('url', 'https://api.github.com/repos/{{ _pushgateway_repo }}/releases/latest', headers=_github_api_headers,
                             split_lines=False) | from_json).get('tag_name') | replace('v', '') }}"
   run_once: true
   until: pushgateway_version is version('0.0.0', '>=')

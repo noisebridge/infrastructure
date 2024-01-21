@@ -15,7 +15,6 @@ module: jenkins_job_info
 short_description: Get information about Jenkins jobs
 description:
   - This module can be used to query information about which Jenkins jobs which already exists.
-  - This module was called C(jenkins_job_facts) before Ansible 2.9. The usage did not change.
 requirements:
   - "python-jenkins >= 0.4.12"
 extends_documentation_fragment:
@@ -122,7 +121,6 @@ EXAMPLES = '''
     user: admin
     token: 126df5c60d66c66e3b75b11104a16a8a
     url: https://jenkins.example.com
-    validate_certs: false
   register: my_jenkins_job_info
 '''
 

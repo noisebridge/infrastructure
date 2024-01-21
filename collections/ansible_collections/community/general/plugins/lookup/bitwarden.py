@@ -25,7 +25,10 @@ DOCUMENTATION = """
         type: list
         elements: str
       search:
-        description: Field to retrieve, for example V(name) or V(id).
+        description:
+          - Field to retrieve, for example V(name) or V(id).
+          - If set to V(id), only zero or one element can be returned.
+            Use the Jinja C(first) filter to get the only list element.
         type: str
         default: name
         version_added: 5.7.0
@@ -39,27 +42,27 @@ DOCUMENTATION = """
 """
 
 EXAMPLES = """
-- name: "Get 'password' from Bitwarden record named 'a_test'"
+- name: "Get 'password' from all Bitwarden records named 'a_test'"
   ansible.builtin.debug:
     msg: >-
       {{ lookup('community.general.bitwarden', 'a_test', field='password') }}
 
-- name: "Get 'password' from Bitwarden record with id 'bafba515-af11-47e6-abe3-af1200cd18b2'"
+- name: "Get 'password' from Bitwarden record with ID 'bafba515-af11-47e6-abe3-af1200cd18b2'"
   ansible.builtin.debug:
     msg: >-
-      {{ lookup('community.general.bitwarden', 'bafba515-af11-47e6-abe3-af1200cd18b2', search='id', field='password') }}
+      {{ lookup('community.general.bitwarden', 'bafba515-af11-47e6-abe3-af1200cd18b2', search='id', field='password') | first }}
 
-- name: "Get 'password' from Bitwarden record named 'a_test' from collection"
+- name: "Get 'password' from all Bitwarden records named 'a_test' from collection"
   ansible.builtin.debug:
     msg: >-
       {{ lookup('community.general.bitwarden', 'a_test', field='password', collection_id='bafba515-af11-47e6-abe3-af1200cd18b2') }}
 
-- name: "Get full Bitwarden record named 'a_test'"
+- name: "Get list of all full Bitwarden records named 'a_test'"
   ansible.builtin.debug:
     msg: >-
       {{ lookup('community.general.bitwarden', 'a_test') }}
 
-- name: "Get custom field 'api_key' from Bitwarden record named 'a_test'"
+- name: "Get custom field 'api_key' from all Bitwarden records named 'a_test'"
   ansible.builtin.debug:
     msg: >-
       {{ lookup('community.general.bitwarden', 'a_test', field='api_key') }}
@@ -67,9 +70,12 @@ EXAMPLES = """
 
 RETURN = """
   _raw:
-    description: List of requested field or JSON object of list of matches.
+    description:
+      - A one-element list that contains a list of requested fields or JSON objects of matches.
+      - If you use C(query), you get a list of lists. If you use C(lookup) without C(wantlist=true),
+        this always gets reduced to a list of field values or JSON objects.
     type: list
-    elements: raw
+    elements: list
 """
 
 from subprocess import Popen, PIPE
@@ -104,6 +110,8 @@ class Bitwarden(object):
         out, err = p.communicate(to_bytes(stdin))
         rc = p.wait()
         if rc != expected_rc:
+            if len(args) > 2 and args[0] == 'get' and args[1] == 'item' and b'Not found.' in err:
+                return 'null', ''
             raise BitwardenException(err)
         return to_text(out, errors='surrogate_or_strict'), to_text(err, errors='surrogate_or_strict')
 
@@ -112,7 +120,10 @@ class Bitwarden(object):
         """
 
         # Prepare set of params for Bitwarden CLI
-        params = ['list', 'items', '--search', search_value]
+        if search_field == 'id':
+            params = ['get', 'item', search_value]
+        else:
+            params = ['list', 'items', '--search', search_value]
 
         if collection_id:
             params.extend(['--collectionid', collection_id])
@@ -121,7 +132,11 @@ class Bitwarden(object):
 
         # This includes things that matched in different fields.
         initial_matches = AnsibleJSONDecoder().raw_decode(out)[0]
-
+        if search_field == 'id':
+            if initial_matches is None:
+                initial_matches = []
+            else:
+                initial_matches = [initial_matches]
         # Filter to only include results from the right field.
         return [item for item in initial_matches if item[search_field] == search_value]
 

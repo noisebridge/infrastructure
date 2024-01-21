@@ -173,8 +173,8 @@ stages:
           targets:
             - name: Alpine 3.18
               test: alpine/3.18
-            # - name: Fedora 38
-            #   test: fedora/38
+            # - name: Fedora 39
+            #   test: fedora/39
             - name: Ubuntu 22.04
               test: ubuntu/22.04
           groups:
@@ -189,8 +189,8 @@ stages:
           targets:
             - name: macOS 13.2
               test: macos/13.2
-            - name: RHEL 9.2
-              test: rhel/9.2
+            - name: RHEL 9.3
+              test: rhel/9.3
             - name: FreeBSD 13.2
               test: freebsd/13.2
           groups:
@@ -207,6 +207,8 @@ stages:
           targets:
             #- name: macOS 13.2
             #  test: macos/13.2
+            - name: RHEL 9.2
+              test: rhel/9.2
             - name: RHEL 8.8
               test: rhel/8.8
             #- name: FreeBSD 13.2
@@ -229,10 +231,10 @@ stages:
               test: rhel/8.7
             - name: RHEL 7.9
               test: rhel/7.9
-            - name: FreeBSD 13.1
-              test: freebsd/13.1
-            - name: FreeBSD 12.4
-              test: freebsd/12.4
+            # - name: FreeBSD 13.1
+            #   test: freebsd/13.1
+            # - name: FreeBSD 12.4
+            #   test: freebsd/12.4
           groups:
             - 1
             - 2
@@ -265,8 +267,8 @@ stages:
         parameters:
           testFormat: devel/linux/{0}
           targets:
-            - name: Fedora 38
-              test: fedora38
+            - name: Fedora 39
+              test: fedora39
             - name: Ubuntu 20.04
               test: ubuntu2004
             - name: Ubuntu 22.04
@@ -285,6 +287,8 @@ stages:
         parameters:
           testFormat: 2.16/linux/{0}
           targets:
+            - name: Fedora 38
+              test: fedora38
             - name: openSUSE 15
               test: opensuse15
           groups:
@@ -315,8 +319,8 @@ stages:
         parameters:
           testFormat: 2.14/linux/{0}
           targets:
-            - name: Fedora 36
-              test: fedora36
+            - name: Alpine 3
+              test: alpine3
           groups:
             - 1
             - 2

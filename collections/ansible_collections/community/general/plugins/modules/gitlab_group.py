@@ -20,7 +20,6 @@ author:
   - Werner Dijkerman (@dj-wasabi)
   - Guillaume Martinez (@Lunik)
 requirements:
-  - python >= 2.7
   - python-gitlab python module
 extends_documentation_fragment:
   - community.general.auth_basic
@@ -108,7 +107,6 @@ EXAMPLES = '''
   community.general.gitlab_group:
     api_url: https://gitlab.example.com/
     api_token: "{{ access_token }}"
-    validate_certs: false
     name: my_first_group
     state: absent
 
@@ -178,7 +176,7 @@ from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_native
 
 from ansible_collections.community.general.plugins.module_utils.gitlab import (
-    auth_argument_spec, find_group, gitlab_authentication, gitlab, ensure_gitlab_package
+    auth_argument_spec, find_group, gitlab_authentication, gitlab
 )
 
 
@@ -355,7 +353,9 @@ def main():
         ],
         supports_check_mode=True,
     )
-    ensure_gitlab_package(module)
+
+    # check prerequisites and connect to gitlab server
+    gitlab_instance = gitlab_authentication(module)
 
     group_name = module.params['name']
     group_path = module.params['path']
@@ -369,8 +369,6 @@ def main():
     require_two_factor_authentication = module.params['require_two_factor_authentication']
     avatar_path = module.params['avatar_path']
     force_delete = module.params['force_delete']
-
-    gitlab_instance = gitlab_authentication(module)
 
     # Define default group_path based on group_name
     if group_path is None:

@@ -21,7 +21,6 @@ author:
   - Marcus Watkins (@marwatk)
   - Guillaume Martinez (@Lunik)
 requirements:
-  - python >= 2.7
   - python-gitlab python module
 extends_documentation_fragment:
   - community.general.auth_basic
@@ -123,7 +122,6 @@ EXAMPLES = '''
     state: present
     push_events: true
     tag_push_events: true
-    hook_validate_certs: false
     token: "my-super-secret-token-that-my-ci-server-will-check"
 
 - name: "Delete the previous hook"
@@ -171,7 +169,7 @@ from ansible.module_utils.api import basic_auth_argument_spec
 from ansible.module_utils.basic import AnsibleModule
 
 from ansible_collections.community.general.plugins.module_utils.gitlab import (
-    auth_argument_spec, find_project, gitlab_authentication, ensure_gitlab_package
+    auth_argument_spec, find_project, gitlab_authentication
 )
 
 
@@ -325,7 +323,9 @@ def main():
         ],
         supports_check_mode=True,
     )
-    ensure_gitlab_package(module)
+
+    # check prerequisites and connect to gitlab server
+    gitlab_instance = gitlab_authentication(module)
 
     state = module.params['state']
     project_identifier = module.params['project']
@@ -341,8 +341,6 @@ def main():
     wiki_page_events = module.params['wiki_page_events']
     enable_ssl_verification = module.params['hook_validate_certs']
     hook_token = module.params['token']
-
-    gitlab_instance = gitlab_authentication(module)
 
     gitlab_hook = GitLabHook(module, gitlab_instance)
 
