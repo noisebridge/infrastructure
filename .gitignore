@@ -2,3 +2,4 @@ site.retry
 .vault-password
 .DS_Store
 *.swp
+/roles/*/.github
