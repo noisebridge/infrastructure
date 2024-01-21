@@ -536,7 +536,7 @@
    "name": "roles/grafana_agent/tasks/install/download-install.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "974b1e7efaa8d171e2f02903bc7df95919e44ed1ad3be4f3c967a5fbf7545f44",
+   "chksum_sha256": "e92015288a223bc2b083be71382803e140e5a5be89644cdbb6acf8d96c1b4455",
    "format": 1
   },
   {
@@ -550,7 +550,7 @@
    "name": "roles/grafana_agent/tasks/ga-started.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "37921e0fcf9fdd084289b50fb92030bd14bcf62fcc106225d6062d73366ec389",
+   "chksum_sha256": "03c283e74fef8eac9f628c37cb795d87bdbdb4c804acb2f2924813fb31ce6b82",
    "format": 1
   },
   {
@@ -592,7 +592,7 @@
    "name": "roles/grafana_agent/tasks/preflight/download.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ae762bc9bfe3938bfb215de82975f260590d7ff09f496bcc0eb1d4b57cbca0e0",
+   "chksum_sha256": "5e90c5e06f97a8d2fa8398c6ab4f18857ad73553249558dfacc28f382a53502e",
    "format": 1
   },
   {
@@ -634,7 +634,7 @@
    "name": "roles/grafana_agent/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a5292e5715c41ca354e7fba121fc820c0e69b7888ef87b3573bf44befeaf52f",
+   "chksum_sha256": "f39efa315d0c1af1d87514936636e71ad15156effd4b14a4ed78bf37d2e514b8",
    "format": 1
   },
   {
@@ -760,7 +760,7 @@
    "name": "roles/grafana/tasks/dashboards.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6ff53e3526b77b460c69a55071137cd472820c4f0f0e82983399332911e93c9c",
+   "chksum_sha256": "9ed4293bc3bb37072a64a333c3bc8ded3f2fd1d72b993581d3a4a6b3334eff74",
    "format": 1
   },
   {
@@ -991,21 +991,21 @@
    "name": "changelogs/.plugin-cache.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "8af1ab63af36ceedcf8559170ad779278ec25cfde82cffc95ade6001aa727a5b",
+   "chksum_sha256": "95a309f5d04c38969ee7d45992eb8ca1d153ae5ebb7ace678483a6773840f7a4",
    "format": 1
   },
   {
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "956d1061589a2a0ef0366f0974fa1ff4a6d6369ac467596a95d1c2e72b3295ba",
+   "chksum_sha256": "c6878777ddb5ccc9eae83cb43715814827c16aa99eee33f9a6c325b0fb2ea012",
    "format": 1
   },
   {
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "334d86d2648a04631dd184f8653ca5f53cc6c55b208992e0e17224cedcb58747",
+   "chksum_sha256": "58ab38c25312c0f6e89abd7ea7e99341806c0d7b9629a6b50fba7f31dfa1dd19",
    "format": 1
   },
   {
@@ -1152,14 +1152,14 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "21bd1576e076094289a8704896086ba6444073d6401a4ddf5f64f404789a0ee8",
+   "chksum_sha256": "2c586a5acfe8b4be7f786bb493398b469be0d09d4db4c7ea8dbae9db9d638acd",
    "format": 1
   },
   {
    "name": "Pipfile.lock",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d702072c08c90d7a38db507d595197816cef129777b78022513a345e18372b68",
+   "chksum_sha256": "f5b86cdda35c278fd6ba3f8b15e60ffcc0b5da3b793c1b71eacb39af1e9e262c",
    "format": 1
   }
  ],

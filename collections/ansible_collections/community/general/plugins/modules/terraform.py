@@ -83,7 +83,6 @@ options:
     description:
       - The path to a variables file for Terraform to fill into the TF
         configurations. This can accept a list of paths to multiple variables files.
-      - Up until Ansible 2.9, this option was usable as O(variables_file).
     type: list
     elements: path
     aliases: [ 'variables_file' ]
@@ -514,7 +513,7 @@ def main():
 
     def format_args(vars):
         if isinstance(vars, str):
-            return '"{string}"'.format(string=vars.replace('\\', '\\\\').replace('"', '\\"'))
+            return '"{string}"'.format(string=vars.replace('\\', '\\\\').replace('"', '\\"')).replace('\n', '\\n')
         elif isinstance(vars, bool):
             if vars:
                 return 'true'

@@ -97,6 +97,9 @@ files:
   $connections/funcd.py:
     maintainers: mscherer
   $connections/iocage.py: {}
+  $connections/incus.py:
+    labels: incus
+    maintainers: stgraber
   $connections/jail.py:
     maintainers: $team_ansible_core
   $connections/lxc.py: {}
@@ -119,7 +122,7 @@ files:
     labels: hwc
     maintainers: $team_huawei
   $doc_fragments/nomad.py:
-    maintainers: chris93111
+    maintainers: chris93111 apecnascimento
   $doc_fragments/xenserver.py:
     labels: xenserver
     maintainers: bvitnik
@@ -133,6 +136,8 @@ files:
     maintainers: giner
   $filters/from_csv.py:
     maintainers: Ajpantuso
+  $filters/from_ini.py:
+    maintainers: sscheib
   $filters/groupby_as_dict.py:
     maintainers: felixfontein
   $filters/hashids.py:
@@ -153,6 +158,8 @@ files:
     maintainers: resmo
   $filters/to_hours.yml:
     maintainers: resmo
+  $filters/to_ini.py:
+    maintainers: sscheib
   $filters/to_milliseconds.yml:
     maintainers: resmo
   $filters/to_minutes.yml:
@@ -234,6 +241,8 @@ files:
   $lookups/filetree.py:
     maintainers: dagwieers
   $lookups/flattened.py: {}
+  $lookups/github_app_access_token.py:
+    maintainers: weisheng-p
   $lookups/hiera.py:
     maintainers: jparrill
   $lookups/keyring.py: {}
@@ -475,6 +484,8 @@ files:
     maintainers: russoz
   $modules/dnf_versionlock.py:
     maintainers: moreda
+  $modules/dnf_config_manager.py:
+    maintainers: ahyattdev
   $modules/dnsimple.py:
     maintainers: drcapulet
   $modules/dnsimple_info.py:
@@ -526,6 +537,8 @@ files:
     maintainers: russoz
   $modules/git_config.py:
     maintainers: djmattyg007 mgedmin
+  $modules/git_config_info.py:
+    maintainers: guenhter
   $modules/github_:
     maintainers: stpierre
   $modules/github_deploy_key.py:
@@ -547,6 +560,8 @@ files:
     ignore: dj-wasabi
   $modules/gitlab_branch.py:
     maintainers: paytroff
+  $modules/gitlab_issue.py:
+    maintainers: zvaraondrej
   $modules/gitlab_merge_request.py:
     maintainers: zvaraondrej
   $modules/gitlab_project_variable.py:
@@ -645,6 +660,9 @@ files:
     maintainers: bregman-arie
   $modules/ipa_:
     maintainers: $team_ipa
+    ignore: fxfitz
+  $modules/ipa_dnsrecord.py:
+    maintainers: $team_ipa jwbernin
   $modules/ipbase_info.py:
     maintainers: dominikkukacka
   $modules/ipa_pwpolicy.py:
@@ -740,8 +758,12 @@ files:
     maintainers: elfelip
   $modules/keycloak_user_federation.py:
     maintainers: laurpaum
+  $modules/keycloak_component_info.py:
+    maintainers: desand01
   $modules/keycloak_user_rolemapping.py:
     maintainers: bratwurzt
+  $modules/keycloak_realm_rolemapping.py:
+    maintainers: agross mhuysamen Gaetan2907
   $modules/keyring.py:
     maintainers: ahussey-redhat
   $modules/keyring_info.py:
@@ -870,7 +892,7 @@ files:
   $modules/nmcli.py:
     maintainers: alcamie101
   $modules/nomad_:
-    maintainers: chris93111
+    maintainers: chris93111 apecnascimento
   $modules/nosh.py:
     maintainers: tacatac
   $modules/npm.py:
@@ -1029,6 +1051,10 @@ files:
     maintainers: helldorado
   $modules/proxmox_nic.py:
     maintainers: Kogelvis
+  $modules/proxmox_node_info.py:
+    maintainers: jwbernin
+  $modules/proxmox_storage_contents_info.py:
+    maintainers: l00ptr
   $modules/proxmox_tasks_info:
     maintainers: paginabianca
   $modules/proxmox_template.py:
@@ -1399,6 +1425,41 @@ files:
     maintainers: $team_suse
   $tests/a_module.py:
     maintainers: felixfontein
+  $tests/fqdn_valid.py:
+    maintainers: vbotka
+#########################
+  docs/docsite/rst/filter_guide.rst: {}
+  docs/docsite/rst/filter_guide_abstract_informations.rst: {}
+  docs/docsite/rst/filter_guide_abstract_informations_counting_elements_in_sequence.rst:
+    maintainers: keilr
+  docs/docsite/rst/filter_guide_abstract_informations_dictionaries.rst:
+    maintainers: felixfontein giner
+  docs/docsite/rst/filter_guide_abstract_informations_grouping.rst:
+    maintainers: felixfontein
+  docs/docsite/rst/filter_guide_abstract_informations_merging_lists_of_dictionaries.rst:
+    maintainers: vbotka
+  docs/docsite/rst/filter_guide_conversions.rst:
+    maintainers: Ajpantuso kellyjonbrazil
+  docs/docsite/rst/filter_guide_creating_identifiers.rst:
+    maintainers: Ajpantuso
+  docs/docsite/rst/filter_guide_paths.rst: {}
+  docs/docsite/rst/filter_guide_selecting_json_data.rst: {}
+  docs/docsite/rst/filter_guide_working_with_times.rst:
+    maintainers: resmo
+  docs/docsite/rst/filter_guide_working_with_unicode.rst:
+    maintainers: Ajpantuso
+  docs/docsite/rst/filter_guide_working_with_versions.rst:
+    maintainers: ericzolf
+  docs/docsite/rst/guide_alicloud.rst:
+    maintainers: xiaozhu36
+  docs/docsite/rst/guide_online.rst:
+    maintainers: remyleone
+  docs/docsite/rst/guide_packet.rst:
+    maintainers: baldwinSPC nurfet-becirevic t0mk teebes
+  docs/docsite/rst/guide_scaleway.rst:
+    maintainers: $team_scaleway
+  docs/docsite/rst/test_guide.rst:
+    maintainers: felixfontein
 #########################
   tests/:
     labels: tests
@@ -1436,7 +1497,7 @@ macros:
   team_gitlab: Lunik Shaps marwatk waheedi zanssa scodeman metanovii sh0shin nejch lgatellier suukit
   team_hpux: bcoca davx8342
   team_huawei: QijunPan TommyLike edisonxiang freesky-edward hwDCN niuzhenguo xuxiaowei0512 yanzhangi zengchen1024 zhongjun2
-  team_ipa: Akasurde Nosmoht fxfitz justchris1
+  team_ipa: Akasurde Nosmoht justchris1
   team_jboss: Wolfant jairojunior wbrefvem
   team_keycloak: eikef ndclt mattock
   team_linode: InTheCloudDan decentral1se displague rmcintosh Charliekenney23 LBGarber

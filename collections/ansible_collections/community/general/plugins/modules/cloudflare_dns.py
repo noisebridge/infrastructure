@@ -13,8 +13,6 @@ DOCUMENTATION = r'''
 module: cloudflare_dns
 author:
 - Michael Gruener (@mgruener)
-requirements:
-   - python >= 2.6
 short_description: Manage Cloudflare DNS records
 description:
    - "Manages dns records via the Cloudflare API, see the docs: U(https://api.cloudflare.com/)."
@@ -99,7 +97,6 @@ options:
     description:
     - Service protocol. Required for O(type=SRV) and O(type=TLSA).
     - Common values are TCP and UDP.
-    - Before Ansible 2.6 only TCP and UDP were available.
     type: str
   proxied:
     description:
@@ -151,7 +148,7 @@ options:
   type:
     description:
       - The type of DNS record to create. Required if O(state=present).
-      - O(type=DS), O(type=SSHFP), and O(type=TLSA) were added in Ansible 2.7.
+      - Note that V(SPF) is no longer supported by CloudFlare. Support for it will be removed from community.general 9.0.0.
     type: str
     choices: [ A, AAAA, CNAME, DS, MX, NS, SPF, SRV, SSHFP, TLSA, CAA, TXT ]
   value:
@@ -638,7 +635,7 @@ class CloudflareAPI(object):
                 content = str(params['key_tag']) + '\t' + str(params['algorithm']) + '\t' + str(params['hash_type']) + '\t' + params['value']
         elif params['type'] == 'SSHFP':
             if not (params['value'] is None or params['value'] == ''):
-                content = str(params['algorithm']) + '\t' + str(params['hash_type']) + '\t' + params['value']
+                content = str(params['algorithm']) + ' ' + str(params['hash_type']) + ' ' + params['value'].upper()
         elif params['type'] == 'TLSA':
             if not (params['value'] is None or params['value'] == ''):
                 content = str(params['cert_usage']) + '\t' + str(params['selector']) + '\t' + str(params['hash_type']) + '\t' + params['value']
@@ -751,7 +748,7 @@ class CloudflareAPI(object):
                 if (attr is None) or (attr == ''):
                     self.module.fail_json(msg="You must provide algorithm, hash_type and a value to create this record type")
             sshfp_data = {
-                "fingerprint": params['value'],
+                "fingerprint": params['value'].upper(),
                 "type": params['hash_type'],
                 "algorithm": params['algorithm'],
             }
@@ -761,7 +758,7 @@ class CloudflareAPI(object):
                 'data': sshfp_data,
                 "ttl": params['ttl'],
             }
-            search_value = str(params['algorithm']) + '\t' + str(params['hash_type']) + '\t' + params['value']
+            search_value = str(params['algorithm']) + ' ' + str(params['hash_type']) + ' ' + params['value']
 
         if params['type'] == 'TLSA':
             for attr in [params['port'], params['proto'], params['cert_usage'], params['selector'], params['hash_type'], params['value']]:

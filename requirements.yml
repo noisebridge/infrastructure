@@ -15,4 +15,4 @@ collections:
 roles:
 - name: hifis.unattended_upgrades
   type: galaxy
-  version: "v3.2.0"
+  version: "v3.2.1"

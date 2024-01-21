@@ -10,20 +10,20 @@ import itertools
 import json
 import pytest
 
-from .onepassword_conftest import (  # noqa: F401, pylint: disable=unused-import
-    OP_VERSION_FIXTURES,
-    fake_op,
-    opv1,
-    opv2,
-)
 from .onepassword_common import MOCK_ENTRIES
 
-from ansible.errors import AnsibleLookupError
+from ansible.errors import AnsibleLookupError, AnsibleOptionsError
 from ansible.plugins.loader import lookup_loader
 from ansible_collections.community.general.plugins.lookup.onepassword import (
     OnePassCLIv1,
     OnePassCLIv2,
 )
+
+
+OP_VERSION_FIXTURES = [
+    "opv1",
+    "opv2"
+]
 
 
 @pytest.mark.parametrize(
@@ -80,6 +80,12 @@ def test_assert_logged_in_v2(mocker, args, out, expected_call_args, expected_cal
 
     op_cli._run.assert_called_with(expected_call_args, **expected_call_kwargs)
     assert result == expected
+
+
+def test_assert_logged_in_v2_connect():
+    op_cli = OnePassCLIv2(connect_host="http://localhost:8080", connect_token="foobar")
+    result = op_cli.assert_logged_in()
+    assert result
 
 
 def test_full_signin_v2(mocker):
@@ -264,5 +270,50 @@ def test_signin(op_fixture, request):
     op = request.getfixturevalue(op_fixture)
     op._cli.master_password = "master_pass"
     op._cli.signin()
-    print(op._cli.version)
     op._cli._run.assert_called_once_with(['signin', '--raw'], command_input=b"master_pass")
+
+
+def test_op_doc(mocker):
+    document_contents = "Document Contents\n"
+
+    mocker.patch("ansible_collections.community.general.plugins.lookup.onepassword.OnePass.assert_logged_in", return_value=True)
+    mocker.patch("ansible_collections.community.general.plugins.lookup.onepassword.OnePassCLIBase._run", return_value=(0, document_contents, ""))
+
+    op_lookup = lookup_loader.get("community.general.onepassword_doc")
+    result = op_lookup.run(["Private key doc"])
+
+    assert result == [document_contents]
+
+
+@pytest.mark.parametrize(
+    ("plugin", "connect_host", "connect_token"),
+    [
+        (plugin, connect_host, connect_token)
+        for plugin in ("community.general.onepassword", "community.general.onepassword_raw")
+        for (connect_host, connect_token) in
+        (
+            ("http://localhost", None),
+            (None, "foobar"),
+        )
+    ]
+)
+def test_op_connect_partial_args(plugin, connect_host, connect_token, mocker):
+    op_lookup = lookup_loader.get(plugin)
+
+    mocker.patch("ansible_collections.community.general.plugins.lookup.onepassword.OnePass._get_cli_class", OnePassCLIv2)
+
+    with pytest.raises(AnsibleOptionsError):
+        op_lookup.run("login", vault_name="test vault", connect_host=connect_host, connect_token=connect_token)
+
+
+@pytest.mark.parametrize(
+    ("kwargs"),
+    (
+        {"connect_host": "http://localhost", "connect_token": "foobar"},
+        {"service_account_token": "foobar"},
+    )
+)
+def test_opv1_unsupported_features(kwargs):
+    op_cli = OnePassCLIv1(**kwargs)
+    with pytest.raises(AnsibleLookupError):
+        op_cli.full_signin()

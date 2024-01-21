@@ -72,6 +72,15 @@ options:
         when connecting to this host.
       - File need to exist and have mode V(0600) to be valid.
     type: path
+  identities_only:
+    description:
+      - Specifies that SSH should only use the configured authentication
+        identity and certificate files (either the default files, or
+        those explicitly configured in the C(ssh_config) files or passed on
+        the ssh command-line), even if ssh-agent or a PKCS11Provider or
+        SecurityKeyProvider offers more identities.
+    type: bool
+    version_added: 8.2.0
   user_known_hosts_file:
     description:
       - Sets the user known hosts file option.
@@ -97,6 +106,11 @@ options:
       - Sets the C(ForwardAgent) option.
     type: bool
     version_added: 4.0.0
+  add_keys_to_agent:
+    description:
+      - Sets the C(AddKeysToAgent) option.
+    type: bool
+    version_added: 8.2.0
   ssh_config_file:
     description:
       - SSH config file.
@@ -108,6 +122,22 @@ options:
       - Sets the C(HostKeyAlgorithms) option.
     type: str
     version_added: 6.1.0
+  controlmaster:
+    description:
+      - Sets the C(ControlMaster) option.
+    choices: [ 'yes', 'no', 'ask', 'auto', 'autoask' ]
+    type: str
+    version_added: 8.1.0
+  controlpath:
+    description:
+      - Sets the C(ControlPath) option.
+    type: str
+    version_added: 8.1.0
+  controlpersist:
+    description:
+      - Sets the C(ControlPersist) option.
+    type: str
+    version_added: 8.1.0
 requirements:
 - paramiko
 '''
@@ -177,6 +207,22 @@ from ansible_collections.community.general.plugins.module_utils._stormssh import
 from ansible_collections.community.general.plugins.module_utils.ssh import determine_config_file
 
 
+def convert_bool(value):
+    if value is True:
+        return 'yes'
+    if value is False:
+        return 'no'
+    return None
+
+
+def fix_bool_str(value):
+    if value == 'True':
+        return 'yes'
+    if value == 'False':
+        return 'no'
+    return value
+
+
 class SSHConfig(object):
     def __init__(self, module):
         self.module = module
@@ -213,19 +259,19 @@ class SSHConfig(object):
             hostname=self.params.get('hostname'),
             port=self.params.get('port'),
             identity_file=self.params.get('identity_file'),
+            identities_only=convert_bool(self.params.get('identities_only')),
             user=self.params.get('remote_user'),
             strict_host_key_checking=self.params.get('strict_host_key_checking'),
             user_known_hosts_file=self.params.get('user_known_hosts_file'),
             proxycommand=self.params.get('proxycommand'),
             proxyjump=self.params.get('proxyjump'),
             host_key_algorithms=self.params.get('host_key_algorithms'),
+            forward_agent=convert_bool(self.params.get('forward_agent')),
+            add_keys_to_agent=convert_bool(self.params.get('add_keys_to_agent')),
+            controlmaster=self.params.get('controlmaster'),
+            controlpath=self.params.get('controlpath'),
+            controlpersist=fix_bool_str(self.params.get('controlpersist')),
         )
-
-        # Convert True / False to 'yes' / 'no' for usage in ssh_config
-        if self.params['forward_agent'] is True:
-            args['forward_agent'] = 'yes'
-        if self.params['forward_agent'] is False:
-            args['forward_agent'] = 'no'
 
         config_changed = False
         hosts_changed = []
@@ -312,17 +358,23 @@ def main():
             hostname=dict(type='str'),
             host_key_algorithms=dict(type='str', no_log=False),
             identity_file=dict(type='path'),
+            identities_only=dict(type='bool'),
             port=dict(type='str'),
             proxycommand=dict(type='str', default=None),
             proxyjump=dict(type='str', default=None),
             forward_agent=dict(type='bool'),
+            add_keys_to_agent=dict(type='bool'),
             remote_user=dict(type='str'),
             ssh_config_file=dict(default=None, type='path'),
             state=dict(type='str', default='present', choices=['present', 'absent']),
             strict_host_key_checking=dict(
+                type='str',
                 default=None,
                 choices=['yes', 'no', 'ask']
             ),
+            controlmaster=dict(type='str', default=None, choices=['yes', 'no', 'ask', 'auto', 'autoask']),
+            controlpath=dict(type='str', default=None),
+            controlpersist=dict(type='str', default=None),
             user=dict(default=None, type='str'),
             user_known_hosts_file=dict(type='str', default=None),
         ),
