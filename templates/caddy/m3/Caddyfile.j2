@@ -97,9 +97,7 @@ www.noisebridge.net {
   }
 
   route /adminer* {
-    basicauth {
-      noisebridge $2a$14$nQ/rTVh9ortEYNOPCD3de.BIGcPZyKYn8wCF44yUr2Gm8TZ59HojS
-    }
+    authorize with noisebridge-github
     root * /srv/adminer
     try_files {path} adminer.php
   }
