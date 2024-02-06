@@ -4,6 +4,6 @@ updates:
   - directory: "/collections"
     package-ecosystem: "pip"
     ignore: "*"
-  - directory: "/roles/hifis.unattended_upgrades"
+  - directory: "/roles"
     package-ecosystem: "pip"
     ignore: "*"
