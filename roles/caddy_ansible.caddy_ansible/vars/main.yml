@@ -1,0 +1,27 @@
+---
+# vars file for caddy-ansible
+caddy_github_headers: {}
+
+go_arch_map:
+  i386: '386'
+  x86_64: 'amd64'
+  aarch64: 'arm64'
+  armv7l: 'armv7'
+  armv6l: 'armv6'
+
+go_arch: "{{ go_arch_map[ansible_architecture] | default(ansible_architecture) }}"
+
+caddy_bin: "{{ caddy_bin_dir }}/caddy"
+
+caddy_arch_param_map:
+  armv7l: 'arch=arm&arm=7'
+  armv6l: 'arch=arm&arm=6'
+
+caddy_arch_param: "{{ caddy_arch_param_map[ansible_architecture] | default('arch=' + go_arch) }}"
+
+caddy_url: "{{ caddy_url_base }}?os={{ caddy_os }}&{{ caddy_arch_param }}\
+           {% for pkg in caddy_packages %}\
+           &p={{ pkg | urlencode() }}\
+           {% endfor %}"
+
+caddy_use_github: "{{ caddy_packages == [] }}"

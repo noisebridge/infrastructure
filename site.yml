@@ -39,7 +39,7 @@
     - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
 - name: donate_noisebridge_net
@@ -51,7 +51,7 @@
     - donate
     - percona
     - geerlingguy.mysql
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: pydonate, tags: ['pydonate'] }
 
@@ -113,7 +113,7 @@
   tags: [m6_noisebridge_net]
   roles:
     - { role: podman, tags: ['podman'] }
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: library-org, tags: [ 'library-org' ] }
     - { role: stuff-org, tags: [ 'stuff-org' ] }
@@ -124,5 +124,5 @@
   become_method: sudo
   tags: [m7_noisebridge_net]
   roles:
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
