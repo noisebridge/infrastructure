@@ -2,3 +2,12 @@ User-agent: *
 Disallow: /wiki/86
 Disallow: /86
 Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: ClaudeBot
+Disallow: /
+
+User-agent: Amazonbot
+Disallow: /
