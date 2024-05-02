@@ -107,6 +107,13 @@ www.noisebridge.net {
     hide *.php
   }
 
+  @favicon path /favicon.ico
+  handle @favicon {
+    file_server {
+      root /srv/mediawiki/noisebridge.net-upgrade-2023/img
+    }
+  }
+  
   route /adminer* {
     authorize with noisebridge-github
     root * /srv/adminer
