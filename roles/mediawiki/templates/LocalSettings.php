@@ -267,6 +267,24 @@ wfLoadExtension( 'AdminLinks' );
 #wfLoadExtension( 'ROT13' ); # not valid for extension
 #require_once "$IP/extensions/ROT13/ROT13.php"; # seems to fail. 1.23 too old?
 
-wfLoadExtension( 'QRLite' );
+wfLoadExtension( 'QRLite' ); # https://www.mediawiki.org/wiki/Extension:QRLite
+wfLoadExtension( 'Scribunto' ); # https://www.mediawiki.org/wiki/Extension:Scribunto
+$wgScribuntoDefaultEngine = 'luasandbox'; #'luastandalone';
+wfLoadExtension( 'CharInsert' ); # https://www.mediawiki.org/wiki/Extension:CharInsert
+$wgUseInstantCommons = true;
+$wgForeignFileRepos[] = [
+        'class' => ForeignAPIRepo::class,
+        'name' => 'commonswiki', // Must be a distinct name
+        'apibase' => 'https://commons.wikimedia.org/w/api.php',
+        'hashLevels' => 2,
+        'fetchDescription' => true, // Optional
+        'descriptionCacheExpiry' => 43200, // 12 hours, optional (values are seconds)
+        'apiThumbCacheExpiry' => 86400, // 24 hours, optional, but required for local thumb caching
+];
+
+wfLoadExtension( 'VisualEditor' ); # https://www.mediawiki.org/wiki/Extension:VisualEditor
+$wgGroupPermissions['user']['writeapi'] = true;
+
+
 
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
