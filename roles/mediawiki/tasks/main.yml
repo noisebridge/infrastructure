@@ -31,7 +31,7 @@
     mode: 0755
 
 - name: extract mediawiki
-  unarchive: # noqa 208
+  unarchive: # noqa risky-file-permissions
     src: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     owner: "{{ mediawiki.system_user }}"
