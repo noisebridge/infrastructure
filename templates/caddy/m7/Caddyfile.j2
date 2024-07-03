@@ -2,7 +2,7 @@
 # Global config
 {
   order authenticate before respond
-  order authorize before basicauth
+  order authorize before basic_auth
   security {
     oauth identity provider github {
       realm github
@@ -37,13 +37,13 @@
 # Metrics server
 {{ ansible_fqdn }} {
   route /metrics {
-    basicauth {
+    basic_auth {
       prometheus {{ noisebridge_prometheus_password_hash }}
     }
     metrics
   }
   handle_path /coredns/* {
-    basicauth {
+    basic_auth {
       prometheus {{ noisebridge_prometheus_password_hash }}
     }
     reverse_proxy localhost:9153

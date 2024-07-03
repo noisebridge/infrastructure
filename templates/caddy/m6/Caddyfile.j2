@@ -8,7 +8,7 @@
 # Metrics server
 {{ ansible_fqdn }} {
   route /metrics {
-    basicauth {
+    basic_auth {
       prometheus {{ noisebridge_prometheus_password_hash }}
     }
     metrics
