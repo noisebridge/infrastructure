@@ -3,7 +3,7 @@
 {
   order cgi last
   order authenticate before respond
-  order authorize before basicauth
+  order authorize before basic_auth
   security {
     authorization policy noisebridge-github {
       set auth url https://auth.noisebridge.net/auth
@@ -19,13 +19,13 @@
 # Metrics server
 {{ ansible_fqdn }} {
   route /metrics {
-    basicauth {
+    basic_auth {
       prometheus {{ noisebridge_prometheus_password_hash }}
     }
     metrics
   }
   handle_path /coredns/* {
-    basicauth {
+    basic_auth {
       prometheus {{ noisebridge_prometheus_password_hash }}
     }
     reverse_proxy localhost:9153
@@ -118,13 +118,6 @@ www.noisebridge.net {
     authorize with noisebridge-github
     root * /srv/adminer
     try_files {path} adminer.php
-  }
-
-  @favicon path /favicon.ico
-  handle @favicon {
-    file_server {
-      root /srv/mediawiki/noisebridge.net-upgrade-2023/img
-    }
   }
 
   # Legacy mailman redirects
