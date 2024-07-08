@@ -306,4 +306,9 @@ $wgGroupPermissions['user']['writeapi'] = true;
 #$wgDefaultUserOptions['visualeditor-newwikitext'] = 1;
 
 # https://www.mediawiki.org/wiki/Extension:BetaFeatures  # needed run of $ php8.2 maintenance/update.php
+wfLoadExtension( 'BetaFeatures' );
+#$wgBetaFeaturesWhitelist = [  # READ BEFORE MODIFYING https://www.mediawiki.org/wiki/Extension:BetaFeatures#Configuration
+#        'myextension-awesome-feature'
+#];
+
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
