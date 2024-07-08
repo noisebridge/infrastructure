@@ -311,4 +311,11 @@ wfLoadExtension( 'BetaFeatures' );
 #        'myextension-awesome-feature'
 #];
 
+# https://www.mediawiki.org/wiki/Extension:MultimediaViewer
+wfLoadExtension( 'MultimediaViewer' );
+#$wgMediaViewerIsInBeta = true;
+#$wgMediaViewerEnableByDefault = false;  # default =true
+#$wgMediaViewerEnableByDefaultForAnonymous = false; # default =true
+#$wgMediaViewerUseThumbnailGuessing = false;  # improves perf, fragile dep on wiki set up: 404 handler
+
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
