@@ -265,9 +265,11 @@ wfLoadExtension( 'EmbedVideo' ); # mainly allowed embeded links for services. ig
 wfLoadExtension( 'AdminLinks' );
 #$wgGroupPermissions['...']['.adminlinks'] = true;
 
-#wfLoadExtension( 'ROT13' ); # not valid for extension
-#require_once "$IP/extensions/ROT13/ROT13.php"; # seems to fail. 1.23 too old?
-
+# https://www.mediawiki.org/wiki/Extension:QRLite
 wfLoadExtension( 'QRLite' );
+
+#Set Default Timezone
+$wgLocaltimezone = "US/Pacific";
+date_default_timezone_set( $wgLocaltimezone );
 
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
