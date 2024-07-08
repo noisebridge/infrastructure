@@ -318,4 +318,7 @@ wfLoadExtension( 'MultimediaViewer' );
 #$wgMediaViewerEnableByDefaultForAnonymous = false; # default =true
 #$wgMediaViewerUseThumbnailGuessing = false;  # improves perf, fragile dep on wiki set up: 404 handler
 
+# https://www.mediawiki.org/wiki/Extension:CategoryTree
+wfLoadExtension( 'CategoryTree' );
+
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
