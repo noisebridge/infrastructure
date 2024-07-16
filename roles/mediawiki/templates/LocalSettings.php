@@ -321,4 +321,8 @@ wfLoadExtension( 'MultimediaViewer' );
 # https://www.mediawiki.org/wiki/Extension:CategoryTree
 wfLoadExtension( 'CategoryTree' );
 
+# https://www.mediawiki.org/wiki/Extension:ImageMap
+wfLoadExtension( 'ImageMap' );
+
+
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
