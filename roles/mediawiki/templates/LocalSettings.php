@@ -265,9 +265,64 @@ wfLoadExtension( 'EmbedVideo' ); # mainly allowed embeded links for services. ig
 wfLoadExtension( 'AdminLinks' );
 #$wgGroupPermissions['...']['.adminlinks'] = true;
 
-#wfLoadExtension( 'ROT13' ); # not valid for extension
-#require_once "$IP/extensions/ROT13/ROT13.php"; # seems to fail. 1.23 too old?
-
+# https://www.mediawiki.org/wiki/Extension:QRLite
 wfLoadExtension( 'QRLite' );
+
+#Set Default Timezone
+$wgLocaltimezone = "US/Pacific";
+date_default_timezone_set( $wgLocaltimezone );
+
+# https://www.mediawiki.org/wiki/Extension:Scribunto
+wfLoadExtension( 'Scribunto' );
+$wgScribuntoDefaultEngine = 'luasandbox'; #'luastandalone';
+
+# https://www.mediawiki.org/wiki/Extension:CharInsert
+wfLoadExtension( 'CharInsert' );
+$wgUseInstantCommons = true;
+$wgForeignFileRepos[] = [
+        'class' => ForeignAPIRepo::class,
+        'name' => 'commonswiki', // Must be a distinct name
+        'apibase' => 'https://commons.wikimedia.org/w/api.php',
+        'hashLevels' => 2,
+        'fetchDescription' => true, // Optional
+        'descriptionCacheExpiry' => 43200, // 12 hours, optional (values are seconds)
+        'apiThumbCacheExpiry' => 86400, // 24 hours, optional, but required for local thumb caching
+];
+
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
+wfLoadExtension( 'VisualEditor' );
+$wgGroupPermissions['user']['writeapi'] = true;
+# concern about pages containing slashes in their names (at least on apache, 2+ mentions. Caddy might be fine)
+# https://www.mediawiki.org/wiki/Extension:VisualEditor
+# Optional: Set VisualEditor as the default editor for anonymous users
+# otherwise they will have to switch to VE
+##$wgDefaultUserOptions['visualeditor-editor'] = "visualeditor";
+# Optional: Don't allow users to disable it
+#$wgHiddenPrefs[] = 'visualeditor-enable';
+# Optional: Enable VisualEditor's experimental code features
+#$wgDefaultUserOptions['visualeditor-enable-experimental'] = 1;
+# Activate ONLY the 2017 wikitext editor by default
+#$wgDefaultUserOptions['visualeditor-autodisable'] = true;
+#$wgDefaultUserOptions['visualeditor-newwikitext'] = 1;
+
+# https://www.mediawiki.org/wiki/Extension:BetaFeatures  # needed run of $ php8.2 maintenance/update.php
+wfLoadExtension( 'BetaFeatures' );
+#$wgBetaFeaturesWhitelist = [  # READ BEFORE MODIFYING https://www.mediawiki.org/wiki/Extension:BetaFeatures#Configuration
+#        'myextension-awesome-feature'
+#];
+
+# https://www.mediawiki.org/wiki/Extension:MultimediaViewer
+wfLoadExtension( 'MultimediaViewer' );
+#$wgMediaViewerIsInBeta = true;
+#$wgMediaViewerEnableByDefault = false;  # default =true
+#$wgMediaViewerEnableByDefaultForAnonymous = false; # default =true
+#$wgMediaViewerUseThumbnailGuessing = false;  # improves perf, fragile dep on wiki set up: 404 handler
+
+# https://www.mediawiki.org/wiki/Extension:CategoryTree
+wfLoadExtension( 'CategoryTree' );
+
+# https://www.mediawiki.org/wiki/Extension:ImageMap
+wfLoadExtension( 'ImageMap' );
+
 
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
