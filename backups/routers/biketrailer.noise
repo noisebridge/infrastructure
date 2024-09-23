@@ -41,7 +41,7 @@ firewall {
             action accept
             description "Colt TCP allowed"
             destination {
-                address 2607:f598:b0cf:200::5
+                address 2607:f598:b0cf:200:be24:11ff:feb4:a6dd
                 port 22,80,443
             }
             protocol tcp
@@ -252,7 +252,6 @@ service {
             subnet 10.21.0.0/16 {
                 default-router 10.21.0.1
                 dns-server 10.21.0.1
-                dns-server 1.1.1.1
                 lease 43200
                 start 10.21.1.10 {
                     stop 10.21.1.254
@@ -271,11 +270,15 @@ service {
                 }
                 static-mapping colt {
                     ip-address 10.21.0.5
-                    mac-address a4:1f:72:65:d8:dc
+                    mac-address bc:24:11:b4:a6:dd
                 }
                 static-mapping devil {
                     ip-address 10.21.1.64
                     mac-address 4c:cc:6a:f8:92:7b
+                }
+                static-mapping einhorn {
+                    ip-address 10.21.0.6
+                    mac-address ac:1f:6b:17:2a:98
                 }
                 static-mapping jitsi {
                     ip-address 10.21.0.2
@@ -434,7 +437,6 @@ system {
             level admin
         }
     }
-    name-server 1.1.1.1
     name-server 127.0.0.1
     ntp {
         server 0.ubnt.pool.ntp.org {
@@ -444,6 +446,11 @@ system {
         server 2.ubnt.pool.ntp.org {
         }
         server 3.ubnt.pool.ntp.org {
+        }
+    }
+    static-host-mapping {
+        host-name unifi {
+            inet 10.21.0.5
         }
     }
     syslog {
