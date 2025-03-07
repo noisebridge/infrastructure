@@ -3,7 +3,7 @@
 <!--
 <?php
 
-function file_post_contents($url, $data, $username = null, $password = null) // from https://stackoverflow.com/questions/11319520/php-posting-json-via-file-get-contents
+function file_post_contents($url, $data, $username = null, $password = null): bool|string // from https://stackoverflow.com/questions/11319520/php-posting-json-via-file-get-contents
 {
     $postdata = http_build_query($data);
     $opts = array('http' =>
@@ -15,24 +15,24 @@ function file_post_contents($url, $data, $username = null, $password = null) // 
     );
     if($username && $password)
     {
-        $opts['http']['header'] = ("Authorization: Basic " . base64_encode("$username:$password"));
+        $opts['http']['header'] = "Authorization: Basic " . base64_encode(string: "$username:$password");
     }
-    $context = stream_context_create($opts);
-    return file_get_contents($url, false, $context);
+    $context = stream_context_create(options: $opts);
+    return file_get_contents(filename: $url, use_include_path: false, context: $context);
 }
 
 
 // payload={\"channel\": \"#hook-testing\", \"username\": \"webhookbot\", \"text\": \"This is posted to #hook-testing and comes from a bot named webhookbot.\", \"icon_emoji\": \":ghost:\"}"
-define('WEBHOOK_URL', 'https:/' . '/hooks.slack.com/services/{{ safespace_slack_token }}');
-define('SLACK_CHANNEL', '{{ safespace_slack_channel }}');
-define('SLACK_USERNAME', '{{ safespace_slack_username }}');
-define('SLACK_ICON', ':heart:');
-function send_msg($msg) {
+define(constant_name: 'WEBHOOK_URL', value: 'https:/' . '/hooks.slack.com/services/{{ safespace_slack_token }}');
+define(constant_name: 'SLACK_CHANNEL', value: '{{ safespace_slack_channel }}');
+define(constant_name: 'SLACK_USERNAME', value: '{{ safespace_slack_username }}');
+define(constant_name: 'SLACK_ICON', value: ':heart:');
+function send_msg($msg): bool {
 	$replaces = 1;
 	while ($replaces) {
-		$msg = str_replace(["@channel", "@everyone"], "-AT-", $msg, $replaces);
+		$msg = str_replace(search: ["@channel", "@everyone"], replace: "-AT-", subject: $msg, count: $replaces);
 	}
-	$payload = json_encode(array(
+	$payload = json_encode(value: array(
 		'channel' => SLACK_CHANNEL,
 		'username' => SLACK_USERNAME,
 		'text' => $msg . "_(This message was filled out on safespace.noisebridge.net by someone who may not have slack access and who may wish to remain anonymous)._",
@@ -40,7 +40,7 @@ function send_msg($msg) {
 	));
 	$ret="";
 	try {
-		$ret = file_post_contents(WEBHOOK_URL, array('payload' => $payload));
+		$ret = file_post_contents(url: WEBHOOK_URL, data: array('payload' => $payload));
 	} catch(Exception $e) {
 		echo($e . "\n");
 		return false;
@@ -48,12 +48,12 @@ function send_msg($msg) {
 	return $ret === "ok";
 }
 
-function p($n) {
-	return (isset($_POST[$n]) && is_string($_POST[$n])) ? "$n: " . $_POST[$n] . "\n" : "";
+function p($n): string {
+	return (isset($_POST[$n]) && is_string(value: $_POST[$n])) ? "$n: " . $_POST[$n] . "\n" : "";
 }
 
-function stringExists($s) {
-	return isset($verification) && is_string($verification);
+function stringExists($s): bool {
+	return isset($verification) && is_string(value: $verification);
 }
 
 $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
@@ -63,13 +63,13 @@ $result;
 $prepend = "";
 $verification_expected = "be excellent";
 $verification = $_POST["verification"];
-$verification = strtolower($verification);
+$verification = strtolower(string: $verification);
 if ($isPost) {
-	if (strcmp($verification_expected, $verification) !== 0) {
+	if (strcmp(string1: $verification_expected, string2: $verification) !== 0) {
 		$prepend .= "Sorry, that's not the guiding principle of noisebridge. Please check the wiki for a short phrase.<br><br><strong>Offers of professional services should be sent to devnull@noisebridge.net, they are not welcome here.</strong>";
 	} elseif (isset($_POST["message"])) {
 		$result = "message present";
-		if(print_r(send_msg(p("name") . p("contact") . $_POST["message"]))) {
+		if(print_r(value: send_msg(msg: p(n: "name") . p(n: "contact") . $_POST["message"]))) {
 			$result = "Message Sent.";
 		} else {
 			$result = "We encountered an error while trying to send your message.  If you see this, it would be appreciated if you contacted Roy (@rizend on slack or horsy4nbs.7.pcao@spamgourmet.com) so they can try and fix the issue.";
