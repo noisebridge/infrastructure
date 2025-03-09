@@ -46,11 +46,11 @@ function post_to_discord(
 	$location_or_empty = $location_or_empty ?: "no-location-provided";
 
 	$username = "SafeSpaceBot({$name_or_empty})";
-	$thead_name = "[{$report_time}] {$location_or_empty}";
+	$thead_name = "{$report_time}: {$location_or_empty}";
 	$msg .="\n\nThis message was posted using the [Safespace Reporting Tool](https://nb.wtf/report).";
 	$msg .="\n**Reporter:** {$name_or_empty}({$contact_or_empty})";
 	$msg .="\n**Time:** {$report_time}";
-	$msg .="\n**Location:** {$report_time}";
+	$msg .="\n**Location:** {$location_or_empty}";
 	if ($wants_to_be_private) {
 		$msg .="\n\n**IMPORTANT:** This reporter has indicated their wish for this to be handled **with minimal publicity**.";
 	}
