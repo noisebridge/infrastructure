@@ -65,6 +65,8 @@ function post_to_discord(
 	$msg .= "<@&720517641890037772>";
 	// @member
 	$msg .= "<@&720517758726438996>";
+	// @space-guardians
+	$msg .= "<@&1348361508467376138>";
 
 
 	echo "msg:". $msg ."\nusername:". $name_or_empty.
