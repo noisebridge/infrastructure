@@ -9,17 +9,15 @@ date_default_timezone_set("America/Los_Angeles");
 echo "Server Debug Messages Start Here:";
 
 
-define(constant_name: 'DISCORD_WEBHOOK_BASE_URL', value: 'https://discord.com/api/webhooks/');
-define(constant_name: 'DISCORD_WEBHOOK_URL_PUBLIC', value: DISCORD_WEBHOOK_BASE_URL.'{{ safespace_public_discord_channel_webhook_token }}');
-define(constant_name: 'DISCORD_WEBHOOK_URL_PRIVATE', value: DISCORD_WEBHOOK_BASE_URL.'{{ safespace_private_discord_channel_webhook_token }}');
-
+define(
+	constant_name: 'DISCORD_WEBHOOK_BASE_URL',
+	value: 'https://discord.com/api/webhooks/');
 define(
 	constant_name: 'DISCORD_WEBHOOK_URL_PUBLIC',
-	value: 'https://discord.com/api/webhooks/');
+	value: DISCORD_WEBHOOK_BASE_URL.'{{ safespace_public_discord_channel_webhook_token }}');
 define(
 	constant_name: 'DISCORD_WEBHOOK_URL_PRIVATE',
-	value: 'https://discord.com/api/webhooks/');
-
+	value: DISCORD_WEBHOOK_BASE_URL.'{{ safespace_private_discord_channel_webhook_token }}');
 
 function post_to_discord(
 	string $msg,
