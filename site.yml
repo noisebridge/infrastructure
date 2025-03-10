@@ -23,7 +23,9 @@
   roles:
     - utils
     - security
-    - jnv.unattended-upgrades
+    - { role: hifis.unattended_upgrades, tags: [ 'unattended_upgrades' ] }
+    - { role: prometheus.prometheus.node_exporter, tags: [ 'node_exporter' ] }
+    - { role: motd, tags: [ 'motd' ] }
 
 - name: noisebridge_net
   hosts: noisebridge_net
@@ -34,11 +36,11 @@
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
     - { role: safespace, tags: [ 'safespace' ] }
-    - cloudalchemy.node-exporter
-    - { role: cloudalchemy.blackbox-exporter, tags: [ 'blackbox' ] }
-    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
+    - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
+    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
 - name: donate_noisebridge_net
   hosts: donate_noisebridge_net
@@ -49,7 +51,8 @@
     - donate
     - percona
     - geerlingguy.mysql
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: pydonate, tags: ['pydonate'] }
 
 - name: List server
@@ -75,11 +78,10 @@
   become_method: sudo
   tags: [space_noisebridge_net]
   roles:
-    - cloudalchemy.node-exporter
-    - { role: cloudalchemy.snmp-exporter, tags: [ 'snmp' ] }
+    - { role: prometheus.prometheus.snmp_exporter, tags: [ 'snmp' ] }
     - { role: unifi-poller, tags: [ 'unifi-poller' ] }
-    - { role: cloudalchemy.prometheus, tags: [ 'prometheus' ] }
-    - cloudalchemy.grafana
+    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
+    - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
     - powerpanel
 
 - name: Nextcloud on debian box in space
@@ -89,16 +91,6 @@
   tags: [cloud]
   roles:
     - nextcloud-docker
-
-- name: Misc web services
-  hosts: m4_noisebridge_net
-  become: yes
-  become_method: sudo
-  tags: [m4_noisebridge_net]
-  roles:
-    - { role: caddy, tags: [ 'caddy' ] }
-    - { role: library-org, tags: [ 'library-org' ] }
-    - { role: stuff-org, tags: [ 'stuff-org' ] }
 
 - name: Earl RFID Access
   hosts: earl
@@ -120,4 +112,17 @@
   become_method: sudo
   tags: [m6_noisebridge_net]
   roles:
-    - {role: podman, tags: ['podman'] }
+    - { role: podman, tags: ['podman'] }
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }
+    - { role: library-org, tags: [ 'library-org' ] }
+    - { role: stuff-org, tags: [ 'stuff-org' ] }
+
+- name: Seattle Linode
+  hosts: m7_noisebridge_net
+  become: yes
+  become_method: sudo
+  tags: [m7_noisebridge_net]
+  roles:
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }

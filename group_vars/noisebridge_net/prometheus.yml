@@ -1,7 +1,7 @@
 ---
-node_exporter_web_listen_address: "127.0.0.1:9100"
 prometheus_web_listen_address: "127.0.0.1:9090"
 prometheus_storage_retention: "90d"
+prometheus_storage_retention_size: "5GB"
 prometheus_config_flags_extra:
   query.max-samples: 10000000
 
@@ -24,17 +24,37 @@ prometheus_scrape_configs:
       - targets:
         - "localhost:9090"
   - job_name: "node"
+    scheme: https
+    basic_auth:
+      username: prometheus
+      password: "{{ noisebridge_prometheus_password }}"
     static_configs:
       - targets:
-        - "localhost:9100"
+        - "m3.noisebridge.net:9100"
+        - "m5.noisebridge.net:9100"
+        - "m6.noisebridge.net:9100"
+        - "m7.noisebridge.net:9100"
   - job_name: "caddy"
+    scheme: https
+    basic_auth:
+      username: prometheus
+      password: "{{ noisebridge_prometheus_password }}"
     static_configs:
       - targets:
-        - "localhost:9180"
+        - "m3.noisebridge.net:443"
+        - "m5.noisebridge.net:443"
+        - "m6.noisebridge.net:443"
+        - "m7.noisebridge.net:443"
   - job_name: "coredns"
+    scheme: https
+    metrics_path: /coredns/metrics
+    basic_auth:
+      username: prometheus
+      password: "{{ noisebridge_prometheus_password }}"
     static_configs:
       - targets:
-        - "localhost:9153"
+        - "m3.noisebridge.net:443"
+        - "m7.noisebridge.net:443"
   - job_name: "donate"
     scheme: https
     static_configs:

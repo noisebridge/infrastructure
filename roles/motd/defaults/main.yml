@@ -1,0 +1,2 @@
+---
+motd_host_template_file: "templates/motd/{{inventory_hostname}}.j2"

@@ -5,7 +5,7 @@ users:
     email: ...
 
   bfb:
-    fullname: 'bfb,,,'
+    fullname: 'bfb'
     email: bfb@riseup.net
     github_username: kevinjos
 
@@ -18,7 +18,7 @@ users:
     email: ...
 
   cowlicks:
-    fullname: 'blake,,,'
+    fullname: 'blake'
     email: ...
 
   danh:
@@ -44,29 +44,29 @@ users:
     github_username: elimisteve
 
   gareth:
-    fullname: ',,,'
+    fullname: ''
     email: ...
 
   hzeller:
-    fullname: 'Henner Zeller,,,'
+    fullname: 'Henner Zeller'
     email: ...
     github_username: hzeller
 
   jams:
-    fullname: 'Jeremy,,,'
+    fullname: 'Jeremy'
     email: ...
 
   jerm:
-    fullname: ',,,'
+    fullname: ''
     email: ...
 
   jof:
-    fullname: 'Jonathan Lassoff,,,'
+    fullname: 'Jonathan Lassoff'
     email: ...
     github_username: jof
 
   lizzie:
-    fullname: ',,,'
+    fullname: ''
     email: ...
 
   mcint:
@@ -75,11 +75,11 @@ users:
     github_username: mcint
 
   miloh:
-    fullname: 'Ronald Miloh Alexander,,,'
+    fullname: 'Ronald Miloh Alexander'
     email: ...
 
   nthmost:
-    fullname: 'Naomi Most,,,'
+    fullname: 'Naomi Most'
     email: ...
 
   patrickod:
@@ -88,7 +88,7 @@ users:
     github_username: patrickod
 
   rizend:
-    fullname: ',,,'
+    fullname: ''
     email: ...
     ssh_key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWvlc3+qDxhKE3jCCxKKU1h9QJyhCqLgHAwkiokvSPig6dXZW9f8uS/1CNMEmB5avrZhT6S3V00NExqZMldJechROhQoZb6YrUzakaeJCHrbThotQ/TlDuRWCCEh+y/qowk261X4Rbdx/KMwPuROP0p+pw2u3CVoLC7ejnsCwzTMZJ450QtZau0nvP7PY1vnehg2npA4HOqtwjOABJlMMpSZfaQdddwQJ7YE01GLpXF73Lwcnyue51fWFdjsQwIeQM2feO0yf1r1fjoLyMfWCVLK2GI0ONXVFWKQ52kfzr4QQ7Tq+Xi12qr7KGlHZ8yl7tw3MUoyU7k0HrUea1F8WF ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCvHlZKV8yBsJOkeu2FkWZ1UDY/uTS8bBUbqh1W0pJ3BMec55uvRLNv1AT5Z7RHKbwdjiZTBm6sP0CRVjsOxeGRCVeddHx1SxsXeihZIRQLHX+Z7M1YwYdzmzRDIEhuZhp+RnGH71ESVEHlmUhNPYsNmlgE3nyNbbDatYRZQqC204pal6cz4CHRUWYIozAQvpO8BF+cNDbNgT1yR5DWflwHErlv8yltmxNjh+gQQgp7RzI+05uzpRgumLCIqdHIKUflDJGvZXnUNAr5nv8Xe3W77AZz348nK2SYoD7dOBw23LpEzmy0mENL+/d3ZCuricslc1eBqCpVxJiF7s/RCtix'
 
@@ -97,26 +97,26 @@ users:
     email: ...
 
   ruthgrace:
-    fullname: 'Ruth Grace Wong,,,'
+    fullname: 'Ruth Grace Wong'
     email: ruthgracewong@gmail.com
     github_username: ruthgrace
 
   steele:
-    fullname: 'Lee Azzarello,,,'
+    fullname: 'Lee Azzarello'
     email: ...
 
   superq:
     fullname: Ben Kochie
     email: superq@gmail.com
-    github_username: superq
+    github_username: SuperQ
 
   tdfischer:
-    fullname: 'Torrie Fischer,,,'
+    fullname: 'Torrie Fischer'
     email: ...
     github_username: tdfischer
 
   teapot:
-    fullname: 'Bill Williams,,,'
+    fullname: 'Bill Williams'
     email: ...
 
   yar:

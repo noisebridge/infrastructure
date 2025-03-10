@@ -1,0 +1,14 @@
+[Unit]
+Description=Caddy watch for new certs
+After=network-online.target
+StartLimitInterval=0
+StartLimitIntervalSec=0
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/sbin/copy_certs.sh {{ caddy_certs_src_path }} {{ caddy_certs_dest_path }}
+TimeoutStartSec=30s
+
+
+[Install]
+WantedBy=multi-user.target

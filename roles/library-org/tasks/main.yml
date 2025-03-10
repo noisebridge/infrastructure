@@ -2,9 +2,9 @@
 - name: install packages
   apt:
     package:
-    - python-pip
-    - python-setuptools
-    - virtualenv
+    - python3-pip
+    - python3-setuptools
+    - python3-virtualenv
 
 - name: create group
   group:

@@ -1,0 +1,21 @@
+---
+collections:
+- name: community.general
+  type: galaxy
+  version: ">=7.0.0"
+- name: ansible.posix
+  type: galaxy
+  version: ">=1.5.0"
+- name: grafana.grafana
+  type: galaxy
+  version: ">=2.2.0"
+- name: prometheus.prometheus
+  type: galaxy
+  version: ">=0.5.0"
+roles:
+- name: caddy_ansible.caddy_ansible
+  type: galaxy
+  version: "v3.2.0"
+- name: hifis.unattended_upgrades
+  type: galaxy
+  version: "v3.2.1"

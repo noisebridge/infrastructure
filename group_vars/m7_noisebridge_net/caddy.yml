@@ -1,0 +1,4 @@
+---
+caddy_packages:
+- 'github.com/greenpau/caddy-security@v1.1.20'
+caddy_config: "{{ lookup('template', 'templates/caddy/m7/Caddyfile.j2') }}"

@@ -1,4 +1,21 @@
 {{ ansible_managed | comment }}
+# Global config
+{
+  servers {
+      metrics
+  }
+}
+# Metrics server
+{{ ansible_fqdn }} {
+  route /metrics {
+    basic_auth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    metrics
+  }
+  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+}
+
 test-donate.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/test-donate.noisebridge.net.log" {

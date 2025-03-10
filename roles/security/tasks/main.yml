@@ -2,6 +2,12 @@
 
 - import_tasks: users.yml
 
+- name: Create cert group
+  ansible.builtin.group:
+    name: ssl-cert
+    state: present
+    system: true
+
 #- name: install logwatch & sendmail
 #  items:
 #    - logwatch

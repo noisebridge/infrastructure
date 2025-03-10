@@ -1,0 +1,8 @@
+download_url: https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/prometheus-prometheus-0.11.2.tar.gz
+format_version: 1.0.0
+name: prometheus
+namespace: prometheus
+server: https://galaxy.ansible.com/api/
+signatures: []
+version: 0.11.2
+version_url: /api/v3/plugin/ansible/content/published/collections/index/prometheus/prometheus/versions/0.11.2/

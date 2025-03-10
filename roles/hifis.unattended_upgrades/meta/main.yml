@@ -1,0 +1,23 @@
+---
+galaxy_info:
+  standalone: true
+  role_name: "unattended_upgrades"
+  author: "hifis"
+  description: "Setup unattended-upgrades on Debian-based systems"
+  license: "GPLv2"
+  min_ansible_version: "2.13"
+  platforms:
+  - name: "Ubuntu"
+    versions:
+    - "jammy"
+    - "focal"
+  - name: "Debian"
+    versions:
+     - "buster"
+     - "bullseye"
+     - "bookworm"
+
+  galaxy_tags:
+  - "system"
+
+dependencies: []

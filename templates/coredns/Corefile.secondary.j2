@@ -2,7 +2,7 @@
 {% for zone in noisebridge_dns_seconary_zones %}
 # Zone: {{ zone.name }}
 {{ zone.name }} {
-  prometheus 0.0.0.0:9153
+  prometheus localhost:9153
   errors
   secondary {
     transfer from {{ zone.transfer_from | join(' ') }}

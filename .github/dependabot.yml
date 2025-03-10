@@ -1,0 +1,9 @@
+---
+version: 2
+updates:
+  - directory: "/collections"
+    package-ecosystem: "pip"
+    ignore: "*"
+  - directory: "/roles"
+    package-ecosystem: "pip"
+    ignore: "*"

@@ -1,0 +1,28 @@
+---
+- name: Create systemd service unit
+  ansible.builtin.template:
+    src: blackbox_exporter.service.j2
+    dest: /etc/systemd/system/blackbox_exporter.service
+    owner: root
+    group: root
+    mode: '0644'
+  notify:
+    - restart blackbox_exporter
+
+- name: Create blackbox_exporter config directory
+  ansible.builtin.file:
+    path: "{{ blackbox_exporter_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: u+rwX,g+rwX,o=rX
+
+- name: Configure blackbox exporter
+  ansible.builtin.template:
+    src: blackbox_exporter.yml.j2
+    dest: "{{ blackbox_exporter_config_dir }}/blackbox_exporter.yml"
+    owner: root
+    group: "{{ blackbox_exporter_group }}"
+    mode: '0644'
+  notify:
+    - reload blackbox_exporter

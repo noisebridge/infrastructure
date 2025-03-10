@@ -2,7 +2,7 @@
 {% for zone in noisebridge_dns_primary_zones %}
 # Zone: {{ zone.name }}
 {{ zone.name }} {
-  prometheus 0.0.0.0:9153
+  prometheus localhost:9153
   errors
   file zones/{{ zone.file }}
 {% if zone.dnssec_key_file is defined %}

@@ -1,0 +1,77 @@
+---
+blackbox_exporter_version: 0.24.0
+blackbox_exporter_binary_local_dir: ""
+blackbox_exporter_binary_url: "https://github.com/{{ _blackbox_exporter_repo }}/releases/download/v{{ blackbox_exporter_version }}/\
+                               blackbox_exporter-{{ blackbox_exporter_version }}.linux-{{ go_arch_map[ansible_architecture] |
+                               default(ansible_architecture) }}.tar.gz"
+blackbox_exporter_checksums_url: "https://github.com/{{ _blackbox_exporter_repo }}/releases/download/v{{ blackbox_exporter_version }}/sha256sums.txt"
+blackbox_exporter_skip_install: false
+
+blackbox_exporter_web_listen_address: "0.0.0.0:9115"
+
+blackbox_exporter_user: blackbox-exp
+blackbox_exporter_group: "{{ blackbox_exporter_user }}"
+
+blackbox_exporter_cli_flags: {}
+# blackbox_exporter_cli_flags:
+#   log.level: "warn"
+
+blackbox_exporter_configuration_modules:
+  http_2xx:
+    prober: http
+    timeout: 5s
+    http:
+      method: GET
+      valid_status_codes: []
+#  http_post_2xx:
+#    prober: http
+#    timeout: 5s
+#    http:
+#      method: POST
+#      basic_auth:
+#        username: "username"
+#        password: "mysecret"
+#  tcp_connect:
+#    prober: tcp
+#    timeout: 5s
+#  pop3s_banner:
+#    prober: tcp
+#    tcp:
+#      query_response:
+#      - expect: "^+OK"
+#      tls: true
+#      tls_config:
+#        insecure_skip_verify: false
+#  ssh_banner:
+#    prober: tcp
+#    timeout: 5s
+#    tcp:
+#      query_response:
+#      - expect: "^SSH-2.0-"
+#  irc_banner:
+#    prober: tcp
+#    timeout: 5s
+#    tcp:
+#      query_response:
+#      - send: "NICK prober"
+#      - send: "USER prober prober prober :prober"
+#      - expect: "PING :([^ ]+)"
+#        send: "PONG ${1}"
+#      - expect: "^:[^ ]+ 001"
+#  icmp_test:
+#    prober: icmp
+#    timeout: 5s
+#    icmp:
+#      preferred_ip_protocol: ip4
+#  dns_test:
+#    prober: dns
+#    timeout: 5s
+#    dns:
+#      preferred_ip_protocol: ip6
+#      validate_answer_rrs:
+#        fail_if_matches_regexp: [test]
+
+# Where to put the blackbox_exporter.yml main configuration file
+blackbox_exporter_config_dir: /etc/blackbox_exporter
+
+blackbox_exporter_binary_install_dir: "/usr/local/bin"

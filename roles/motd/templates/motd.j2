@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+# See: https://github.com/noisebridge/infrastructure
+{% include "noisebridge_banner.ansi.txt" %}
+
+Roles:
+{% for group in group_names %}
+  - {{ group }}
+{% endfor %}
+
+{% include motd_host_template_file ignore missing %}

@@ -1,0 +1,56 @@
+---
+- name: Add a plugin
+  grafana.grafana.cloud_plugin:
+    name: grafana-github-datasource
+    version: 1.0.14
+    stack_slug: "{{ test_stack_name }}"
+    cloud_api_key: "{{ grafana_cloud_api_key }}"
+    state: present
+  register: add_result
+
+- name: Add Check
+  ansible.builtin.assert:
+    that:
+      - add_result.pluginName == "GitHub"
+
+- name: Idempotency Check
+  grafana.grafana.cloud_plugin:
+    name: grafana-github-datasource
+    version: 1.0.14
+    stack_slug: "{{ test_stack_name }}"
+    cloud_api_key: "{{ grafana_cloud_api_key }}"
+    state: present
+  register: idempotency_result
+
+- name: Idempotency Check
+  ansible.builtin.assert:
+    that:
+      - idempotency_result.pluginName == "GitHub"
+
+- name: Update a plugin
+  grafana.grafana.cloud_plugin:
+    name: grafana-github-datasource
+    version: 1.0.15
+    stack_slug: "{{ test_stack_name }}"
+    cloud_api_key: "{{ grafana_cloud_api_key }}"
+    state: present
+  register: update_result
+
+- name: Update Check
+  ansible.builtin.assert:
+    that:
+      - update_result.pluginName == "GitHub"
+
+- name: Delete a plugin
+  grafana.grafana.cloud_plugin:
+    name: grafana-github-datasource
+    version: 1.0.15
+    stack_slug: "{{ test_stack_name }}"
+    cloud_api_key: "{{ grafana_cloud_api_key }}"
+    state: absent
+  register: delete_result
+
+- name: Delete Check
+  ansible.builtin.assert:
+    that:
+      - delete_result.pluginName == "GitHub"

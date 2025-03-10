@@ -1,0 +1,82 @@
+{{ ansible_managed | comment(decoration="; ") }}
+; source: https://github.com/mholt/caddy/blob/master/dist/init/linux-systemd/caddy.service
+; version: 6be0386
+; changes: Set variables via Ansible
+
+[Unit]
+Description=Caddy HTTP/2 web server
+Documentation=https://caddyserver.com/docs
+After=network-online.target
+{% if caddy_systemd_network_dependency == true %}
+Wants=network-online.target systemd-networkd-wait-online.service
+{% endif %}
+{% if caddy_systemd_version | int >= 230 %}
+StartLimitIntervalSec={{ caddy_systemd_restart_startlimitinterval }}
+StartLimitBurst={{ caddy_systemd_restart_startlimitburst }}
+{% endif %}
+
+[Service]
+Restart={{ caddy_systemd_restart }}
+{% if caddy_systemd_version | int < 230 %}
+StartLimitInterval={{ caddy_systemd_restart_startlimitinterval }}
+StartLimitBurst={{ caddy_systemd_restart_startlimitburst }}
+{% endif %}
+
+; User and group the process will run as.
+User={{ caddy_user }}
+Group={{ caddy_user }}
+
+; Letsencrypt-issued certificates will be written to this directory.
+Environment=CADDYPATH={{ caddy_certs_dir }}
+
+ExecStart="{{ caddy_bin_dir }}/caddy" run --environ --config "{{ caddy_conf_dir }}/{{ caddy_conf_filename }}" {{ caddy_additional_args }}
+ExecReload="{{ caddy_bin_dir }}/caddy" reload --config "{{ caddy_conf_dir }}/{{ caddy_conf_filename }}"
+
+; Limit the number of file descriptors; see `man systemd.exec` for more limit settings.
+LimitNOFILE=1048576
+{% if caddy_systemd_nproc_limit > 0 %}
+; Limit the number of caddy threads.
+LimitNPROC={{ caddy_systemd_nproc_limit }}
+{% endif %}
+
+; Use private /tmp and /var/tmp, which are discarded after caddy stops.
+PrivateTmp={{ caddy_systemd_private_tmp }}
+; Use a minimal /dev
+PrivateDevices={{ caddy_systemd_private_devices }}
+; Hide /home, /root, and /run/user. Nobody will steal your SSH-keys.
+ProtectHome={{ caddy_systemd_protect_home }}
+; Make /usr, /boot, /etc and possibly some more folders read-only.
+ProtectSystem={{ caddy_systemd_protect_system }}
+; ... except {{ caddy_certs_dir }}, because we want Letsencrypt-certificates there.
+;   This merely retains r/w access rights, it does not add any new. Must still be writable on the host!
+ReadWriteDirectories={{ caddy_certs_dir }} {{ caddy_log_dir }}
+
+{% if caddy_systemd_capabilities_enabled %}
+; The following additional security directives only work with systemd v229 or later.
+; They further retrict privileges that can be gained by caddy.
+; Note that you may have to add capabilities required by any plugins in use.
+CapabilityBoundingSet={{ caddy_systemd_capabilities }}
+AmbientCapabilities={{ caddy_systemd_capabilities }}
+NoNewPrivileges=true
+
+{% endif %}
+{% if caddy_environment_variables|length %}
+
+; Additional environment variables:
+
+{% for key, value in caddy_environment_variables.items() %}
+Environment={{ key }}={{ value }}
+{% endfor %}
+
+{% endif %}
+{% if caddy_environment_files|length %}
+
+; Additional environment files:
+
+{% for path in caddy_environment_files %}
+EnvironmentFile={{ path }}
+{% endfor %}
+
+{% endif %}
+[Install]
+WantedBy=multi-user.target

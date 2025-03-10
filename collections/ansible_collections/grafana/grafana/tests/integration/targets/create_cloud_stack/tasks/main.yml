@@ -1,0 +1,18 @@
+---
+- name: Create a Grafana Cloud stack
+  grafana.grafana.cloud_stack:
+    name: "{{ test_stack_name }}"
+    stack_slug: "{{ test_stack_name }}"
+    cloud_api_key: "{{ grafana_cloud_api_key }}"
+    org_slug: "{{ org_name }}"
+    state: present
+  register: create_result
+
+- name: Create Check
+  ansible.builtin.assert:
+    that:
+      - create_result.url == "https://" + "{{ test_stack_name }}" + ".grafana.net"
+
+- name: Sleep for 45 seconds
+  ansible.builtin.wait_for:
+    timeout: 45

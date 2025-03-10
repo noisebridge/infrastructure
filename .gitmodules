@@ -1,30 +1,9 @@
 [submodule "roles/geerlingguy.mysql"]
 	path = roles/geerlingguy.mysql
 	url = https://github.com/geerlingguy/ansible-role-mysql.git
-[submodule "roles/cloudalchemy.prometheus"]
-	path = roles/cloudalchemy.prometheus
-	url = https://github.com/cloudalchemy/ansible-prometheus.git
-[submodule "roles/cloudalchemy.node-exporter"]
-	path = roles/cloudalchemy.node-exporter
-	url = https://github.com/cloudalchemy/ansible-node-exporter.git
 [submodule "roles/nickjj.docker"]
 	path = roles/nickjj.docker
 	url = https://github.com/nickjj/ansible-docker
-[submodule "roles/jnv.unattended-upgrades"]
-	path = roles/jnv.unattended-upgrades
-	url = https://github.com/jnv/ansible-role-unattended-upgrades.git
-[submodule "roles/cloudalchemy.snmp-exporter"]
-	path = roles/cloudalchemy.snmp-exporter
-	url = https://github.com/cloudalchemy/ansible-snmp-exporter.git
-[submodule "roles/cloudalchemy.grafana"]
-	path = roles/cloudalchemy.grafana
-	url = https://github.com/cloudalchemy/ansible-grafana.git
-[submodule "roles/caddy"]
-	path = roles/caddy
-	url = https://github.com/caddy-ansible/caddy-ansible.git
-[submodule "roles/cloudalchemy.blackbox-exporter"]
-	path = roles/cloudalchemy.blackbox-exporter
-	url = https://github.com/cloudalchemy/ansible-blackbox-exporter.git
 [submodule "roles/podman"]
 	path = roles/podman
 	url = https://github.com/alvistack/ansible-role-podman.git

@@ -2,6 +2,35 @@
 # Global settings
 {
   order cgi last
+  order authenticate before respond
+  order authorize before basic_auth
+  security {
+    authorization policy noisebridge-github {
+      set auth url https://auth.noisebridge.net/auth
+      crypto key verify {{ noisebridge_jwt_token_secret }}
+      crypto key token name access_token
+      allow roles members rack
+    }
+  }
+  servers {
+      metrics
+  }
+}
+# Metrics server
+{{ ansible_fqdn }} {
+  route /metrics {
+    basic_auth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    metrics
+  }
+  handle_path /coredns/* {
+    basic_auth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    reverse_proxy localhost:9153
+  }
+  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
 # Redirects to www.noisebride.net
@@ -25,7 +54,7 @@ noisebridge.io, www.noisebridge.io {
   redir https://www.noisebridge.net{uri}
 }
 
-noisebridge.net m3.noisebridge.net {
+noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/noisebridge.net.log" {
 {{ noisebridge_caddy_log_roll | indent(width=6) }}
@@ -55,16 +84,40 @@ www.noisebridge.net {
   }
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
 
+  @claudebot {
+    header User-Agent *ClaudeBot*
+  }
+  respond @claudebot 403
+
   route /images* {
     uri strip_prefix /images
     file_server {
       root /srv/mediawiki/noisebridge.net/images
     }
   }
-  root * /srv/mediawiki/noisebridge.net
-  php_fastcgi unix//run/php/php7.4-fpm.sock
+  route /img* {
+    uri strip_prefix /images
+    file_server {
+      root /srv/mediawiki/noisebridge.net-upgrade-2023/img
+    }
+  }
+  root * /srv/mediawiki/noisebridge.net-upgrade-2023
+  php_fastcgi unix//run/php/php8.2-fpm.sock
   file_server {
     hide *.php
+  }
+
+  @favicon path /favicon.ico
+  handle @favicon {
+    file_server {
+      root /srv/mediawiki/noisebridge.net-upgrade-2023/img
+    }
+  }
+  
+  route /adminer* {
+    authorize with noisebridge-github
+    root * /srv/adminer
+    try_files {path} adminer.php
   }
 
   # Legacy mailman redirects
@@ -119,4 +172,12 @@ safespace.noisebridge.net {
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
   root * /var/www/safespace.noisebridge.net
   php_fastcgi unix//run/php/php7.4-fpm.sock
+}
+
+# Monitoring
+prometheus.noisebridge.net {
+  route {
+    authorize with noisebridge-github
+    reverse_proxy localhost:9090
+  }
 }

@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2023060502 ; Serial
+                                2023111800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -20,7 +20,7 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 
 ; SPF
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
-spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m4.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
+spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
 ; Google Domain Verification
 @       86400   IN      TXT     "google-site-verification=oAGwafoLsiW_TSw8gtYuncSuHxRV1KDIvCNeBwY2t2g"
 
@@ -36,8 +36,8 @@ ns      86400   IN      A       216.252.162.220 ; m3 in iocoop SCL
 ns      86400   IN      AAAA    2602:ff06:725:5:dc::1337 ; m3 in iocoop SCL
 ns1     86400   IN      A       216.252.162.220 ; m3 in iocoop SCL
 ns1     86400   IN      AAAA    2602:ff06:725:5:dc::1337 ; m3 in iocoop SCL
-ns2     86400   IN      A       204.246.122.84 ; m4 in iocoop MSP
-ns2     86400   IN      AAAA    2602:ff06:677:4:54::1337 ; m4 in iocoop MSP
+ns2     86400   IN      A       172.232.171.61 ; m7 in linode Seattle VM
+ns2     86400   IN      AAAA    2600:3c0a::f03c:93ff:fe37:3d2f ; m7 in linode Seattle VM
 
 ; mx records
 @       300     IN      MX      10 m3.noisebridge.net.
@@ -52,16 +52,19 @@ lists   300     IN      AAAA    2602:ff06:725:5:dc::1337 ; m3.noisebridge.net
 lists   86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 lists   300     IN      TXT     "google-site-verification=WZsrRMmL-XJC-kDfPgvxPZRTaTA3HbHz0BnFcve8Qo8"
 
-; Primary hosting servers.
-m2              IN      A       204.246.122.84 ; Old iocoop MSP VPS
-m3              IN      A       216.252.162.220 ; iocoop SCL VPS
-m3              IN      AAAA    2602:ff06:725:5:dc::1337 ; iocoop SCL VPS
-m4              IN      A       204.246.122.84 ; iocoop MSP VPS
-m4              IN      AAAA    2602:ff06:677:4:54::1337 ; iocoop MSP VPS
-m5              IN      A       216.252.162.195 ; iocoop SCL VPS
-m5              IN      AAAA    2602:ff06:725:5:dc::195 ; iocoop SCL VPS
-m6              IN      A       216.252.162.196 ; iocoop SCL VPS
-m6              IN      AAAA    2602:ff06:725:5:dc::196 ; iocoop SCL VPS
+;; Primary hosting servers.
+; iocoop SCL VPS
+m3              IN      A       216.252.162.220
+m3              IN      AAAA    2602:ff06:725:5:dc::1337
+; iocoop SCL VPS
+m5              IN      A       216.252.162.195
+m5              IN      AAAA    2602:ff06:725:5:dc::195
+; iocoop SCL VPS
+m6              IN      A       216.252.162.196
+m6              IN      AAAA    2602:ff06:725:5:dc::196
+; linode Seattle VM
+m7              IN      A       172.232.171.61
+m7              IN      AAAA    2600:3c0a::f03c:93ff:fe37:3d2f
 
 status          IN      A       157.22.245.21
 
@@ -164,15 +167,19 @@ grafana         IN      CNAME   pegasus
 
 ; Services hosted on m3
 safespace       IN      CNAME   m3
-
-; Services hosted on m4
-stuff           IN      CNAME   m4
-parts           IN      CNAME   m4
-library         IN      CNAME   m4
+prometheus      IN      CNAME   m3
 
 ; Services hosted on m5
 donate          IN      CNAME   m5
 test-donate     IN      CNAME   m5
+
+; Services hosted on m6
+stuff           IN      CNAME   m6
+parts           IN      CNAME   m6
+library         IN      CNAME   m6
+
+; Services hosted on m7
+auth            IN      CNAME   m7
 
 ; pegasus CNAMES
 ; added matrix 2016-12-23 @patrickod
@@ -197,9 +204,6 @@ arion           IN      AAAA    2604:a880:1:20::197e:b001
 
 ; general subdomains
 barnyard        IN      NS      brony.noisebridge.io.
-
-; m4 testing subdomains
-*.m4            IN      CNAME   m4
 
 upotagma        IN      A       107.170.233.49
 upotagma        IN      AAAA    2604:a880:1:20:0:0:c3:a001
