@@ -4,7 +4,7 @@ declare(strict_types=1);
 {{ ansible_managed | comment('xml') }}
 <!--
 <?php
-date_default_timezone_set("America/Los_Angeles");
+date_default_timezone_set(timezoneId: "America/Los_Angeles");
 
 echo "Server Debug Messages Start Here:";
 
@@ -53,7 +53,7 @@ function post_to_discord(
 		$msg .="\n\n**IMPORTANT:** This reporter has indicated their wish for this to be handled **with minimal publicity**.";
 	}
 
-	// Ping relevant roles
+	// Pings relevant roles.
 	$msg .= "\n\nPinging: ";
 	// @brave
 	$msg .= "<@&1095925058771374131>";
