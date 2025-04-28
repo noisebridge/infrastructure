@@ -44,6 +44,7 @@
     repo: 'https://github.com/marcidy/mwGoogleSheet.git'
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
     version: REL1_27
+#- include: extensions.yml
 
 - name: install LocalSettings
   template:

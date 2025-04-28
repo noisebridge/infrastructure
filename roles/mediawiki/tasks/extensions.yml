@@ -1,0 +1,13 @@
+---
+# {{ mediawiki.version_tag }}  # REL1_39
+- name: install mwGoogleSheets extension
+  git:
+    repo: 'https://github.com/marcidy/mwGoogleSheet.git'
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
+    version: REL1_27
+
+- name: https://www.mediawiki.org/wiki/Extension:CategoryTree
+  git:
+    #repo:  # wikimedia gerrit, or github  # 'https://github.com/marcidy/mwGoogleSheet.git'
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/CategoryTree"
+    version: REL1_39
