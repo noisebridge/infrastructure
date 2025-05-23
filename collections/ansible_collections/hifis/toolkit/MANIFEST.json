@@ -1,0 +1,38 @@
+{
+ "collection_info": {
+  "namespace": "hifis",
+  "name": "toolkit",
+  "version": "5.3.0",
+  "authors": [
+   "HIFIS Software Services <support@hifis.net>"
+  ],
+  "readme": "README.md",
+  "tags": [
+   "hifis",
+   "ubuntu",
+   "debian",
+   "linux",
+   "system"
+  ],
+  "description": "This collection provides production-ready Ansible roles used for providing services used in research and by research software engineers, but not exclusively.",
+  "license": [
+   "Apache-2.0",
+   "GPL-2.0-or-later",
+   "MIT"
+  ],
+  "license_file": null,
+  "dependencies": {},
+  "repository": "https://github.com/hifis-net/ansible-collection-toolkit",
+  "documentation": null,
+  "homepage": "https://hifis.net/services/software-overview.html",
+  "issues": "https://github.com/hifis-net/ansible-collection-toolkit/issues"
+ },
+ "file_manifest_file": {
+  "name": "FILES.json",
+  "ftype": "file",
+  "chksum_type": "sha256",
+  "chksum_sha256": "3f463094e348bbe29c80279a71b107e3996ba41b1f1ba3ac9787a24c5e1054d4",
+  "format": 1
+ },
+ "format": 1
+}

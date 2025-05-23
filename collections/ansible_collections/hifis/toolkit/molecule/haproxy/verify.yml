@@ -1,0 +1,31 @@
+# SPDX-FileCopyrightText: Helmholtz Centre for Environmental Research (UFZ)
+# SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf (HZDR)
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+- name: "Verify HAProxy"
+  hosts: "all"
+  tasks:
+    - name: "Stop play for unsupported HAProxy / Debian combinations"
+      ansible.builtin.meta: "end_host"
+      when: >-
+        ansible_facts.distribution_release | lower == 'bookworm' and haproxy_version | regex_search('\\d+\\.\\d+') is version('2.4', '==') or
+        ansible_facts.distribution_release | lower == 'buster' and haproxy_version | regex_search('\\d+\\.\\d+') is version('2.8', '>=')
+
+    - name: "Stop play for unsupported HAProxy / Ubuntu combinations"
+      ansible.builtin.meta: "end_host"
+      when: "ansible_facts.distribution_release | lower == 'noble' and haproxy_version | regex_search('\\d+\\.\\d+') is version('2.9', '<')"
+
+    - name: "Populate service facts."
+      ansible.builtin.service_facts:
+      register: "services_state"
+
+    - name: "Check that HAProxy is running on instance."
+      ansible.builtin.assert:
+        that:
+          - "services_state.ansible_facts.services['haproxy.service'].state is search('running')"
+        fail_msg: "HAProxy need to be running on instance."
+        success_msg: "HAProxy is running on instance."
+
+...
