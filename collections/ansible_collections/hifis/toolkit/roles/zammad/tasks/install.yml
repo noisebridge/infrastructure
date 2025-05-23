@@ -1,0 +1,87 @@
+# SPDX-FileCopyrightText: Helmholtz Centre for Environmental Research (UFZ)
+# SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf (HZDR)
+#
+# SPDX-License-Identifier: MIT
+
+---
+
+- name: "Variable elasticsearch_url is deprecated"
+  ansible.builtin.debug:
+    msg:
+      - "The variable elasticsearch_url is deprecated and will be removed in the next major release."
+      - "Please use zammad_elasticsearch_url instead"
+  when: "elasticsearch_url is defined and elasticsearch_url | length > 0"
+
+- name: "Set variable zammad_elasticsearch_url for backwards compatibility"
+  ansible.builtin.set_fact:
+    zammad_elasticsearch_url: "{{ elasticsearch_url }}"
+  when: "elasticsearch_url is defined and elasticsearch_url | length > 0"
+
+- name: "Configure Zammad repository for Centos-like"
+  when: "ansible_distribution | lower == 'centos'"
+  block:
+
+    - name: "Install | Install EPEL repo"
+      ansible.builtin.dnf:
+        name: "epel-release"
+        state: "present"
+
+    - name: "Install | Add Zammad yum repository"
+      ansible.builtin.yum_repository:
+        name: "zammad"
+        state: "present"
+        description: "Repository for zammad/zammad ({{ zammad_release_channel }}) packages."
+        baseurl: "https://dl.packager.io/srv/rpm/zammad/zammad/{{ zammad_release_channel }}/el/7/$basearch"
+        enabled: true
+        gpgcheck: false
+        repo_gpgcheck: true
+        gpgkey: "https://dl.packager.io/srv/zammad/zammad/key"
+        mode: "0644"
+
+- name: "Configure Zammad repository for Ubuntu"
+  when: "ansible_distribution | lower == 'ubuntu'"
+  block:
+
+    - name: "Install | Add Zammad apt key"
+      ansible.builtin.apt_key:
+        url: "https://dl.packager.io/srv/zammad/zammad/key"
+        state: "present"
+
+    - name: "Install | Add Zammad DEB repository"
+      ansible.builtin.apt_repository:
+        repo: "deb https://dl.packager.io/srv/deb/zammad/zammad/{{ zammad_release_channel }}/ubuntu {{ ansible_distribution_version }} main"
+        state: "present"
+        filename: "zammad"
+        update_cache: true
+        mode: "0644"
+
+- name: "Gather the package facts to check wether Zammad has already been installed"
+  ansible.builtin.package_facts:
+    manager: "auto"
+
+- name: "Check if Zammad is already installed"
+  ansible.builtin.set_fact:
+    __zammad_is_installed: "{{ 'zammad' in ansible_facts.packages }}"
+
+- name: "Install | Install Zammad package"
+  ansible.builtin.package:
+    name: "zammad={{ zammad_version }}*"
+    state: "present"
+    force: true
+  notify:
+    - "Set Elasticsearch server address"
+    - "Build search index"
+
+- name: "Install | Start and enable services"
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: "started"
+    enabled: true
+  loop:
+    - "zammad"
+    - "zammad-web"
+    - "zammad-worker"
+    - "zammad-websocket"
+  notify: "Build search index"
+
+...

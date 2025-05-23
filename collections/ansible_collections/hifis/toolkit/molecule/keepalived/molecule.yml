@@ -1,0 +1,60 @@
+# SPDX-FileCopyrightText: Helmholtz Centre for Environmental Research (UFZ)
+# SPDX-FileCopyrightText: Helmholtz-Zentrum Dresden-Rossendorf (HZDR)
+#
+# SPDX-License-Identifier: Apache-2.0
+
+---
+
+dependency:
+  name: "galaxy"
+driver:
+  name: "podman"
+platforms:
+  - name: "instancekeepalived"
+    image: "${MOLECULE_IMAGE:-ghcr.io/hifis-net/ubuntu-systemd:24.04}"
+    pre_build_image: true
+    privileged: true
+    systemd: "always"
+    tty: true
+    override_command: false
+provisioner:
+  name: "ansible"
+  config_options:
+    defaults:
+      result_format: "yaml"
+  playbooks:
+    prepare: "prepare.yml"
+    check: "converge.yml"
+    converge: "converge.yml"
+    verify: "verify.yml"
+  inventory:
+    hosts:
+      all:
+        vars:
+          keepalived_unicast_peers:
+            - "172.17.0.3"
+            - "172.17.0.4"
+          keepalived_virtual_ip_address: "172.17.0.20"
+          keepalived_notification_email: "sysadmin@firewall.loc"
+          # keepalived_notification_emails:
+          #   - "root@localhost"
+          #   - "sysadmin@firewall.loc"
+verifier:
+  name: "ansible"
+scenario:
+  name: "keepalived"
+  test_sequence:
+    - "destroy"
+    - "dependency"
+    - "syntax"
+    - "create"
+    - "prepare"
+    - "check"
+    - "converge"
+    - "idempotence"
+    - "check"
+    - "side_effect"
+    - "verify"
+    - "destroy"
+
+...
