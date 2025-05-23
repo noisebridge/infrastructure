@@ -19,7 +19,7 @@ version_added: "1.0.0"
 options:
     name:
         description:
-            - The dot-separated path (also known as I(key)) specifying the sysctl variable.
+            - The dot-separated path (also known as O(key)) specifying the sysctl variable.
         required: true
         aliases: [ 'key' ]
         type: str
@@ -41,9 +41,9 @@ options:
         default: false
     reload:
         description:
-            - If C(true), performs a I(/sbin/sysctl -p) if the C(sysctl_file) is
-              updated. If C(false), does not reload I(sysctl) even if the
-              C(sysctl_file) is updated.
+            - If V(true), performs a C(/sbin/sysctl -p) if the O(sysctl_file) is
+              updated. If V(false), does not reload C(sysctl) even if the
+              O(sysctl_file) is updated.
         type: bool
         default: true
     sysctl_file:
@@ -53,7 +53,7 @@ options:
         type: path
     sysctl_set:
         description:
-            - Verify token value with the sysctl command and set with -w if necessary.
+            - Verify token value with the sysctl command and set with C(-w) if necessary.
         type: bool
         default: false
 author:
@@ -366,7 +366,7 @@ class SysctlModule(object):
     # Completely rewrite the sysctl file
     def write_sysctl(self):
         # open a tmp file
-        fd, tmp_path = tempfile.mkstemp('.conf', '.ansible_m_sysctl_', os.path.dirname(self.sysctl_file))
+        fd, tmp_path = tempfile.mkstemp('.conf', '.ansible_m_sysctl_', os.path.dirname(os.path.realpath(self.sysctl_file)))
         f = open(tmp_path, "w")
         try:
             for l in self.fixed_lines:
@@ -377,7 +377,7 @@ class SysctlModule(object):
         f.close()
 
         # replace the real one
-        self.module.atomic_move(tmp_path, self.sysctl_file)
+        self.module.atomic_move(tmp_path, os.path.realpath(self.sysctl_file))
 
 
 # ==============================================================

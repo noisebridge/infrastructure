@@ -4,62 +4,62 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
-DOCUMENTATION = '''
-    name: stackpath_compute
-    short_description: StackPath Edge Computing inventory source
-    version_added: 1.2.0
-    author:
-        - UNKNOWN (@shayrybak)
-    extends_documentation_fragment:
-        - inventory_cache
-        - constructed
+DOCUMENTATION = r"""
+name: stackpath_compute
+short_description: StackPath Edge Computing inventory source
+version_added: 1.2.0
+author:
+  - UNKNOWN (@shayrybak)
+deprecated:
+  removed_in: 11.0.0
+  why: Stackpath (the company) ceased its operations in June 2024. The API URL this plugin relies on is not found in DNS.
+  alternative: There is none.
+extends_documentation_fragment:
+  - inventory_cache
+  - constructed
+description:
+  - Get inventory hosts from StackPath Edge Computing.
+  - Uses a YAML configuration file that ends with stackpath_compute.(yml|yaml).
+options:
+  plugin:
     description:
-        - Get inventory hosts from StackPath Edge Computing.
-        - Uses a YAML configuration file that ends with stackpath_compute.(yml|yaml).
-    options:
-        plugin:
-            description:
-                - A token that ensures this is a source file for the plugin.
-            required: true
-            choices: ['community.general.stackpath_compute']
-        client_id:
-            description:
-                - An OAuth client ID generated from the API Management section of the StackPath customer portal
-                  U(https://control.stackpath.net/api-management).
-            required: true
-            type: str
-        client_secret:
-            description:
-                - An OAuth client secret generated from the API Management section of the StackPath customer portal
-                  U(https://control.stackpath.net/api-management).
-            required: true
-            type: str
-        stack_slugs:
-            description:
-                - A list of Stack slugs to query instances in. If no entry then get instances in all stacks on the account.
-            type: list
-            elements: str
-        use_internal_ip:
-            description:
-                - Whether or not to use internal IP addresses, If false, uses external IP addresses, internal otherwise.
-                - If an instance doesn't have an external IP it will not be returned when this option is set to false.
-            type: bool
-'''
+      - A token that ensures this is a source file for the plugin.
+    required: true
+    type: string
+    choices: ['community.general.stackpath_compute']
+  client_id:
+    description:
+      - An OAuth client ID generated from the API Management section of the StackPath customer portal U(https://control.stackpath.net/api-management).
+    required: true
+    type: str
+  client_secret:
+    description:
+      - An OAuth client secret generated from the API Management section of the StackPath customer portal U(https://control.stackpath.net/api-management).
+    required: true
+    type: str
+  stack_slugs:
+    description:
+      - A list of Stack slugs to query instances in. If no entry then get instances in all stacks on the account.
+    type: list
+    elements: str
+  use_internal_ip:
+    description:
+      - Whether or not to use internal IP addresses, If false, uses external IP addresses, internal otherwise.
+      - If an instance doesn't have an external IP it will not be returned when this option is set to false.
+    type: bool
+"""
 
-EXAMPLES = '''
-# Example using credentials to fetch all workload instances in a stack.
----
+EXAMPLES = r"""
 plugin: community.general.stackpath_compute
 client_id: my_client_id
 client_secret: my_client_secret
 stack_slugs:
-- my_first_stack_slug
-- my_other_stack_slug
+  - my_first_stack_slug
+  - my_other_stack_slug
 use_internal_ip: false
-'''
+"""
 
 import traceback
 import json
@@ -72,6 +72,8 @@ from ansible.plugins.inventory import (
     Cacheable
 )
 from ansible.utils.display import Display
+
+from ansible_collections.community.general.plugins.plugin_utils.unsafe import make_unsafe
 
 
 display = Display()
@@ -136,7 +138,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             "Content-Type": "application/json",
         }
         resp = open_url(
-            self.api_host + '/identity/v1/oauth2/token',
+            f"{self.api_host}/identity/v1/oauth2/token",
             headers=headers,
             data=payload,
             method="POST"
@@ -152,16 +154,16 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         self._authenticate()
         for stack_slug in self.stack_slugs:
             try:
-                workloads = self._stackpath_query_get_list(self.api_host + '/workload/v1/stacks/' + stack_slug + '/workloads')
+                workloads = self._stackpath_query_get_list(f"{self.api_host}/workload/v1/stacks/{stack_slug}/workloads")
             except Exception:
-                raise AnsibleError("Failed to get workloads from the StackPath API: %s" % traceback.format_exc())
+                raise AnsibleError(f"Failed to get workloads from the StackPath API: {traceback.format_exc()}")
             for workload in workloads:
                 try:
                     workload_instances = self._stackpath_query_get_list(
-                        self.api_host + '/workload/v1/stacks/' + stack_slug + '/workloads/' + workload["id"] + '/instances'
+                        f"{self.api_host}/workload/v1/stacks/{stack_slug}/workloads/{workload['id']}/instances"
                     )
                 except Exception:
-                    raise AnsibleError("Failed to get workload instances from the StackPath API: %s" % traceback.format_exc())
+                    raise AnsibleError(f"Failed to get workload instances from the StackPath API: {traceback.format_exc()}")
                 for instance in workload_instances:
                     if instance["phase"] == "RUNNING":
                         instance["stackSlug"] = stack_slug
@@ -181,7 +183,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
     def _populate(self, instances):
         for instance in instances:
             for group_key in self.group_keys:
-                group = group_key + "_" + instance[group_key]
+                group = f"{group_key}_{instance[group_key]}"
                 group = group.lower().replace(" ", "_").replace("-", "_")
                 self.inventory.add_group(group)
                 self.inventory.add_host(instance[self.hostname_key],
@@ -191,14 +193,14 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         self._authenticate()
         headers = {
             "Content-Type": "application/json",
-            "Authorization": "Bearer " + self.auth_token,
+            "Authorization": f"Bearer {self.auth_token}",
         }
         next_page = True
         result = []
         cursor = '-1'
         while next_page:
             resp = open_url(
-                url + '?page_request.first=10&page_request.after=%s' % cursor,
+                f"{url}?page_request.first=10&page_request.after={cursor}",
                 headers=headers,
                 method="GET"
             )
@@ -248,10 +250,10 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         self.stack_slugs = self.get_option('stack_slugs')
         if not self.stack_slugs:
             try:
-                stacks = self._stackpath_query_get_list(self.api_host + '/stack/v1/stacks')
+                stacks = self._stackpath_query_get_list(f"{self.api_host}/stack/v1/stacks")
                 self._get_stack_slugs(stacks)
             except Exception:
-                raise AnsibleError("Failed to get stack IDs from the Stackpath API: %s" % traceback.format_exc())
+                raise AnsibleError(f"Failed to get stack IDs from the Stackpath API: {traceback.format_exc()}")
 
         cache_key = self.get_cache_key(path)
         # false when refresh_cache or --flush-cache is used
@@ -271,7 +273,7 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
         if not cache or cache_needs_update:
             results = self._query()
 
-        self._populate(results)
+        self._populate(make_unsafe(results))
 
         # If the cache has expired/doesn't exist or
         # if refresh_inventory/flush cache is used
@@ -280,4 +282,4 @@ class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):
             if cache_needs_update or (not cache and self.get_option('cache')):
                 self._cache[cache_key] = results
         except Exception:
-            raise AnsibleError("Failed to populate data: %s" % traceback.format_exc())
+            raise AnsibleError(f"Failed to populate data: {traceback.format_exc()}")

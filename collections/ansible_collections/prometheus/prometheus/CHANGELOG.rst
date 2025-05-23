@@ -4,6 +4,261 @@ Prometheus.Prometheus Release Notes
 
 .. contents:: Topics
 
+v0.26.2
+=======
+
+v0.26.1
+=======
+
+v0.26.0
+=======
+
+Minor Changes
+-------------
+
+- minor: bump support for ansible from v2.17.* to v2.18.* (https://github.com/prometheus-community/ansible/pull/535)
+
+v0.25.0
+=======
+
+Minor Changes
+-------------
+
+- feat: Add consul_exporter role (https://github.com/prometheus-community/ansible/pull/514)
+- feature: Add apache exporter (https://github.com/prometheus-community/ansible/pull/527)
+
+Bugfixes
+--------
+
+- fix: add `enabled: true` to alertmanager (https://github.com/prometheus-community/ansible/pull/530)
+- fix: identation in service file (https://github.com/prometheus-community/ansible/pull/528)
+
+v0.24.2
+=======
+
+v0.24.1
+=======
+
+v0.24.0
+=======
+
+v0.23.2
+=======
+
+v0.23.1
+=======
+
+v0.23.0
+=======
+
+Minor Changes
+-------------
+
+- feat: Support Prometheus 3.0 (https://github.com/prometheus-community/ansible/pull/462)
+
+v0.22.1
+=======
+
+Bugfixes
+--------
+
+- fix(prometheus): remove old internal variable remnants (https://github.com/prometheus-community/ansible/pull/456)
+
+v0.22.0
+=======
+
+Minor Changes
+-------------
+
+- enhancement(prometheus): support prometheus2 .yml rule file format (https://github.com/prometheus-community/ansible/pull/333)
+- feat: Add nvidia_gpu_exporter (https://github.com/prometheus-community/ansible/pull/441)
+
+Bugfixes
+--------
+
+- bugfix: update default home directory (https://github.com/prometheus-community/ansible/pull/442)
+
+v0.21.0
+=======
+
+Bugfixes
+--------
+
+- fix: remove unused variable (https://github.com/prometheus-community/ansible/pull/437)
+
+v0.20.3
+=======
+
+v0.20.1
+=======
+
+Bugfixes
+--------
+
+- fix: alertmanager deprecated PIDFile= path warning (https://github.com/prometheus-community/ansible/pull/155)
+
+v0.20.0
+=======
+
+Minor Changes
+-------------
+
+- minor(ci): detect unused ansible variables (https://github.com/prometheus-community/ansible/pull/422)
+
+v0.19.0
+=======
+
+Minor Changes
+-------------
+
+- minor: bump support for ansible from v2.16.* to v2.17.* (https://github.com/prometheus-community/ansible/pull/414)
+
+Bugfixes
+--------
+
+- fix: remove EOL platforms for current ones (https://github.com/prometheus-community/ansible/pull/395)
+
+v0.18.1
+=======
+
+Bugfixes
+--------
+
+- fix: remove EOL platforms for current ones (https://github.com/prometheus-community/ansible/pull/395)
+
+v0.18.0
+=======
+
+Minor Changes
+-------------
+
+- enhancement: adding env/container labels options (https://github.com/prometheus-community/ansible/pull/407)
+
+Bugfixes
+--------
+
+- fix: ansible-community/eol-ansible for 2.9/2.10/2.11 tests (https://github.com/prometheus-community/ansible/pull/416)
+
+v0.17.2
+=======
+
+Bugfixes
+--------
+
+- fix: ansible-community/eol-ansible for 2.9/2.10/2.11 tests (https://github.com/prometheus-community/ansible/pull/416)
+
+v0.17.1
+=======
+
+Bugfixes
+--------
+
+- fix(ci): limit number of parallel tests to avoid github api limits (https://github.com/prometheus-community/ansible/pull/397)
+
+v0.17.0
+=======
+
+v0.16.4
+=======
+
+v0.16.3
+=======
+
+v0.16.2
+=======
+
+v0.16.1
+=======
+
+v0.16.0
+=======
+
+v0.15.2
+=======
+
+v0.15.1
+=======
+
+v0.15.0
+=======
+
+Minor Changes
+-------------
+
+- feat: add process_exporter role (https://github.com/prometheus-community/ansible/pull/302)
+- feat: cadvisor - options to enable\disable metrics and docker-only mode (https://github.com/prometheus-community/ansible/pull/312)
+
+Bugfixes
+--------
+
+- fix(ipmi_exporter): add option to impi_exporter service to allow tmp file creation (https://github.com/prometheus-community/ansible/pull/311)
+- fix: change monogdb exporter collector check in service (https://github.com/prometheus-community/ansible/pull/310)
+
+v0.14.3
+=======
+
+Bugfixes
+--------
+
+- fix(ipmi_exporter): add option to impi_exporter service to allow tmp file creation (https://github.com/prometheus-community/ansible/pull/311)
+- fix: change monogdb exporter collector check in service (https://github.com/prometheus-community/ansible/pull/310)
+
+v0.14.2
+=======
+
+Bugfixes
+--------
+
+- bugfix: use temporary directory to make compatible with multi-user controllers (https://github.com/prometheus-community/ansible/pull/301)
+
+v0.14.1
+=======
+
+v0.14.0
+=======
+
+Minor Changes
+-------------
+
+- feat: Add bind_exporter role (https://github.com/prometheus-community/ansible/pull/305)
+
+v0.13.1
+=======
+
+v0.13.0
+=======
+
+Minor Changes
+-------------
+
+- feat: Add fail2ban_exporter role (https://github.com/prometheus-community/ansible/pull/294)
+- feat: Add mongodb_exporter role (https://github.com/prometheus-community/ansible/pull/293)
+- feat: Add postgres_exporter role (https://github.com/prometheus-community/ansible/pull/291)
+- feat: Add redis_exporter role (https://github.com/prometheus-community/ansible/pull/299)
+
+Bugfixes
+--------
+
+- fix: changelog format screwup (https://github.com/prometheus-community/ansible/pull/303)
+
+v0.12.1
+=======
+
+v0.12.0
+=======
+
+Minor Changes
+-------------
+
+- feat: Add nginx_exporter role (https://github.com/prometheus-community/ansible/pull/287)
+
+v0.11.3
+=======
+
+Bugfixes
+--------
+
+- fix: Don't reload services when restarting (https://github.com/prometheus-community/ansible/pull/283)
 
 v0.11.2
 =======

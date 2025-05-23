@@ -5,45 +5,74 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
-DOCUMENTATION = """
-    author: Stéphane Graber (@stgraber)
-    name: incus
-    short_description: Run tasks in Incus instances via the Incus CLI.
+DOCUMENTATION = r"""
+author: Stéphane Graber (@stgraber)
+name: incus
+short_description: Run tasks in Incus instances using the Incus CLI
+description:
+  - Run commands or put/fetch files to an existing Incus instance using Incus CLI.
+version_added: "8.2.0"
+options:
+  remote_addr:
     description:
-        - Run commands or put/fetch files to an existing Incus instance using Incus CLI.
-    version_added: "8.2.0"
-    options:
-      remote_addr:
-        description:
-            - The instance identifier.
-        default: inventory_hostname
-        vars:
-            - name: ansible_host
-            - name: ansible_incus_host
-      executable:
-        description:
-            - The shell to use for execution inside the instance.
-        default: /bin/sh
-        vars:
-            - name: ansible_executable
-            - name: ansible_incus_executable
-      remote:
-        description:
-            - The name of the Incus remote to use (per C(incus remote list)).
-            - Remotes are used to access multiple servers from a single client.
-        default: local
-        vars:
-            - name: ansible_incus_remote
-      project:
-        description:
-            - The name of the Incus project to use (per C(incus project list)).
-            - Projects are used to divide the instances running on a server.
-        default: default
-        vars:
-            - name: ansible_incus_project
+      - The instance identifier.
+    type: string
+    default: inventory_hostname
+    vars:
+      - name: inventory_hostname
+      - name: ansible_host
+      - name: ansible_incus_host
+  executable:
+    description:
+      - The shell to use for execution inside the instance.
+    type: string
+    default: /bin/sh
+    vars:
+      - name: ansible_executable
+      - name: ansible_incus_executable
+  incus_become_method:
+    description:
+      - Become command used to switch to a non-root user.
+      - Is only used when O(remote_user) is not V(root).
+    type: str
+    default: /bin/su
+    vars:
+      - name: incus_become_method
+    version_added: 10.4.0
+  remote:
+    description:
+      - The name of the Incus remote to use (per C(incus remote list)).
+      - Remotes are used to access multiple servers from a single client.
+    type: string
+    default: local
+    vars:
+      - name: ansible_incus_remote
+  remote_user:
+    description:
+      - User to login/authenticate as.
+      - Can be set from the CLI via the C(--user) or C(-u) options.
+    type: string
+    default: root
+    vars:
+      - name: ansible_user
+    env:
+      - name: ANSIBLE_REMOTE_USER
+    ini:
+      - section: defaults
+        key: remote_user
+    keyword:
+      - name: remote_user
+    version_added: 10.4.0
+  project:
+    description:
+      - The name of the Incus project to use (per C(incus project list)).
+      - Projects are used to divide the instances running on a server.
+    type: string
+    default: default
+    vars:
+      - name: ansible_incus_project
 """
 
 import os
@@ -60,7 +89,6 @@ class Connection(ConnectionBase):
 
     transport = "incus"
     has_pipelining = True
-    default_user = 'root'
 
     def __init__(self, play_context, new_stdin, *args, **kwargs):
         super(Connection, self).__init__(play_context, new_stdin, *args, **kwargs)
@@ -75,9 +103,33 @@ class Connection(ConnectionBase):
         super(Connection, self)._connect()
 
         if not self._connected:
-            self._display.vvv(u"ESTABLISH Incus CONNECTION FOR USER: root",
+            self._display.vvv(f"ESTABLISH Incus CONNECTION FOR USER: {self.get_option('remote_user')}",
                               host=self._instance())
             self._connected = True
+
+    def _build_command(self, cmd) -> str:
+        """build the command to execute on the incus host"""
+
+        exec_cmd = [
+            self._incus_cmd,
+            "--project", self.get_option("project"),
+            "exec",
+            f"{self.get_option('remote')}:{self._instance()}",
+            "--"]
+
+        if self.get_option("remote_user") != "root":
+            self._display.vvv(
+                f"INFO: Running as non-root user: {self.get_option('remote_user')}, \
+                trying to run 'incus exec' with become method: {self.get_option('incus_become_method')}",
+                host=self._instance(),
+            )
+            exec_cmd.extend(
+                [self.get_option("incus_become_method"), self.get_option("remote_user"), "-c"]
+            )
+
+        exec_cmd.extend([self.get_option("executable"), "-c", cmd])
+
+        return exec_cmd
 
     def _instance(self):
         # Return only the leading part of the FQDN as the instance name
@@ -88,16 +140,11 @@ class Connection(ConnectionBase):
         """ execute a command on the Incus host """
         super(Connection, self).exec_command(cmd, in_data=in_data, sudoable=sudoable)
 
-        self._display.vvv(u"EXEC {0}".format(cmd),
+        self._display.vvv(f"EXEC {cmd}",
                           host=self._instance())
 
-        local_cmd = [
-            self._incus_cmd,
-            "--project", self.get_option("project"),
-            "exec",
-            "%s:%s" % (self.get_option("remote"), self._instance()),
-            "--",
-            self._play_context.executable, "-c", cmd]
+        local_cmd = self._build_command(cmd)
+        self._display.vvvvv(f"EXEC {local_cmd}", host=self._instance())
 
         local_cmd = [to_bytes(i, errors='surrogate_or_strict') for i in local_cmd]
         in_data = to_bytes(in_data, errors='surrogate_or_strict', nonstring='passthru')
@@ -109,33 +156,71 @@ class Connection(ConnectionBase):
         stderr = to_text(stderr)
 
         if stderr == "Error: Instance is not running.\n":
-            raise AnsibleConnectionFailure("instance not running: %s" %
-                                           self._instance())
+            raise AnsibleConnectionFailure(f"instance not running: {self._instance()}")
 
         if stderr == "Error: Instance not found\n":
-            raise AnsibleConnectionFailure("instance not found: %s" %
-                                           self._instance())
+            raise AnsibleConnectionFailure(f"instance not found: {self._instance()}")
 
         return process.returncode, stdout, stderr
+
+    def _get_remote_uid_gid(self) -> tuple[int, int]:
+        """Get the user and group ID of 'remote_user' from the instance."""
+
+        rc, uid_out, err = self.exec_command("/bin/id -u")
+        if rc != 0:
+            raise AnsibleError(
+                f"Failed to get remote uid for user {self.get_option('remote_user')}: {err}"
+            )
+        uid = uid_out.strip()
+
+        rc, gid_out, err = self.exec_command("/bin/id -g")
+        if rc != 0:
+            raise AnsibleError(
+                f"Failed to get remote gid for user {self.get_option('remote_user')}: {err}"
+            )
+        gid = gid_out.strip()
+
+        return int(uid), int(gid)
 
     def put_file(self, in_path, out_path):
         """ put a file from local to Incus """
         super(Connection, self).put_file(in_path, out_path)
 
-        self._display.vvv(u"PUT {0} TO {1}".format(in_path, out_path),
+        self._display.vvv(f"PUT {in_path} TO {out_path}",
                           host=self._instance())
 
         if not os.path.isfile(to_bytes(in_path, errors='surrogate_or_strict')):
-            raise AnsibleFileNotFound("input path is not a file: %s" % in_path)
+            raise AnsibleFileNotFound(f"input path is not a file: {in_path}")
 
-        local_cmd = [
-            self._incus_cmd,
-            "--project", self.get_option("project"),
-            "file", "push", "--quiet",
-            in_path,
-            "%s:%s/%s" % (self.get_option("remote"),
-                          self._instance(),
-                          out_path)]
+        if self.get_option("remote_user") != "root":
+            uid, gid = self._get_remote_uid_gid()
+            local_cmd = [
+                self._incus_cmd,
+                "--project",
+                self.get_option("project"),
+                "file",
+                "push",
+                "--uid",
+                str(uid),
+                "--gid",
+                str(gid),
+                "--quiet",
+                in_path,
+                f"{self.get_option('remote')}:{self._instance()}/{out_path}",
+            ]
+        else:
+            local_cmd = [
+                self._incus_cmd,
+                "--project",
+                self.get_option("project"),
+                "file",
+                "push",
+                "--quiet",
+                in_path,
+                f"{self.get_option('remote')}:{self._instance()}/{out_path}",
+            ]
+
+        self._display.vvvvv(f"PUT {local_cmd}", host=self._instance())
 
         local_cmd = [to_bytes(i, errors='surrogate_or_strict') for i in local_cmd]
 
@@ -145,16 +230,14 @@ class Connection(ConnectionBase):
         """ fetch a file from Incus to local """
         super(Connection, self).fetch_file(in_path, out_path)
 
-        self._display.vvv(u"FETCH {0} TO {1}".format(in_path, out_path),
+        self._display.vvv(f"FETCH {in_path} TO {out_path}",
                           host=self._instance())
 
         local_cmd = [
             self._incus_cmd,
             "--project", self.get_option("project"),
             "file", "pull", "--quiet",
-            "%s:%s/%s" % (self.get_option("remote"),
-                          self._instance(),
-                          in_path),
+            f"{self.get_option('remote')}:{self._instance()}/{in_path}",
             out_path]
 
         local_cmd = [to_bytes(i, errors='surrogate_or_strict') for i in local_cmd]
