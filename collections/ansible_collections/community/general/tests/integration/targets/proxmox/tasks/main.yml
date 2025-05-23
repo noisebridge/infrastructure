@@ -165,6 +165,8 @@
         name: test-instance
         clone: 'yes'
         state: present
+        tags:
+          - TagWithUppercaseChars
         timeout: 500
       register: results_kvm
 
@@ -585,7 +587,6 @@
         api_token_id: "{{ api_token_id | default(omit) }}"
         api_token_secret: "{{ api_token_secret | default(omit) }}"
         validate_certs: "{{ validate_certs }}"
-        proxmox_default_behavior: "no_defaults"
         node: "{{ node }}"
         vmid: "{{ vmid }}"
         state: absent

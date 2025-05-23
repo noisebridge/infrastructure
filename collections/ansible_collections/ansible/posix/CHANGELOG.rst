@@ -4,6 +4,116 @@ ansible.posix Release Notes
 
 .. contents:: Topics
 
+v2.0.0
+======
+
+Release Summary
+---------------
+
+This is the major release of the ``ansible.posix`` collection.
+This changelog contains all changes to the modules and plugins
+in this collection that have been added after the release of
+``ansible.posix`` 1.6.2
+
+Minor Changes
+-------------
+
+- authorized_keys - allow using absolute path to a file as a SSH key(s) source (https://github.com/ansible-collections/ansible.posix/pull/568)
+- callback plugins - Add recap information to timer, profile_roles and profile_tasks callback outputs (https://github.com/ansible-collections/ansible.posix/pull/387).
+
+Breaking Changes / Porting Guide
+--------------------------------
+
+- firewalld - Changed the type of forward and masquerade options from str to bool (https://github.com/ansible-collections/ansible.posix/issues/582).
+- firewalld - Changed the type of icmp_block_inversion option from str to bool (https://github.com/ansible-collections/ansible.posix/issues/586).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- skippy - Remove skippy pluglin as it is no longer supported(https://github.com/ansible-collections/ansible.posix/issues/350).
+
+Bugfixes
+--------
+
+- acl - Fixed to set ACLs on paths mounted with NFS version 4 correctly (https://github.com/ansible-collections/ansible.posix/issues/240).
+- mount - Handle ``boot`` option on Linux, NetBSD and OpenBSD correctly (https://github.com/ansible-collections/ansible.posix/issues/364).
+- mount - If a comment is appended to a fstab entry, state present creates a double-entry (https://github.com/ansible-collections/ansible.posix/issues/595).
+
+v1.6.2
+======
+
+Release Summary
+---------------
+
+This is the bugfix release of the stable version ``ansible.posix`` collection.
+This changelog contains all changes to the modules and plugins
+in this collection that have been added after the release of
+``ansible.posix`` 1.6.1.
+
+Bugfixes
+--------
+
+- backport - Drop ansible-core 2.14 and set 2.15 minimum version (https://github.com/ansible-collections/ansible.posix/issues/578).
+
+v1.6.1
+======
+
+Release Summary
+---------------
+
+This is the bugfix release of the stable version ``ansible.posix`` collection.
+This changelog contains all changes to the modules and plugins
+in this collection that have been added after the release of
+``ansible.posix`` 1.6.1.
+
+Bugfixes
+--------
+
+- acl - Fixed to set ACLs on paths mounted with NFS version 4 correctly (https://github.com/ansible-collections/ansible.posix/issues/240).
+- mount - Handle ``boot`` option on Linux, NetBSD and OpenBSD correctly (https://github.com/ansible-collections/ansible.posix/issues/364).
+- skippy - Revert removal of skippy plugin. It will be removed in version 2.0.0 (https://github.com/ansible-collections/ansible.posix/issues/573).
+
+v1.6.0
+======
+
+Release Summary
+---------------
+
+This is the minor release of the ``ansible.posix`` collection.
+This changelog contains all changes to the modules and plugins
+in this collection that have been added after the release of
+``ansible.posix`` 1.5.4.
+
+Major Changes
+-------------
+
+- Dropping support for Ansible 2.9, ansible-core 2.15 will be minimum required version for this release
+
+Minor Changes
+-------------
+
+- Add summary_only parameter to profile_roles and profile_tasks callbacks.
+- firewalld - add functionality to set forwarding (https://github.com/ansible-collections/ansible.posix/pull/548).
+- firewalld - added offline flag implementation (https://github.com/ansible-collections/ansible.posix/pull/484)
+- firewalld - respawn module to use the system python interpreter when the ``firewall`` python module is not available for ``ansible_python_interpreter`` (https://github.com/ansible-collections/ansible.posix/pull/460).
+- firewalld_info - Only warn about ignored zones, when there are zones ignored.
+- firewalld_info - respawn module to use the system python interpreter when the ``firewall`` python module is not available for ``ansible_python_interpreter`` (https://github.com/ansible-collections/ansible.posix/pull/460).
+- mount - add no_log option for opts parameter (https://github.com/ansible-collections/ansible.posix/pull/563).
+- seboolean - respawn module to use the system python interpreter when the ``selinux`` python module is not available for ``ansible_python_interpreter`` (https://github.com/ansible-collections/ansible.posix/pull/460).
+- selinux - respawn module to use the system python interpreter when the ``selinux`` python module is not available for ``ansible_python_interpreter`` (https://github.com/ansible-collections/ansible.posix/pull/460).
+
+Removed Features (previously deprecated)
+----------------------------------------
+
+- skippy - Remove skippy pluglin as it is no longer supported(https://github.com/ansible-collections/ansible.posix/issues/350).
+
+Bugfixes
+--------
+
+- Bugfix in the documentation regarding the path option for authorised_key(https://github.com/ansible-collections/ansible.posix/issues/483).
+- seboolean - make it work with disabled SELinux
+- synchronize - maintain proper formatting of the remote paths (https://github.com/ansible-collections/ansible.posix/pull/361).
+- sysctl - fix sysctl to work properly on symlinks (https://github.com/ansible-collections/ansible.posix/issues/111).
 
 v1.5.4
 ======

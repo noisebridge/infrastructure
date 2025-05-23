@@ -8,12 +8,18 @@ from __future__ import absolute_import, division, print_function
 __metaclass__ = type
 
 
-DOCUMENTATION = '''
----
+DOCUMENTATION = r"""
 module: profitbricks_volume_attachments
 short_description: Attach or detach a volume
 description:
-  - Allows you to attach or detach a volume from a ProfitBricks server. This module has a dependency on profitbricks >= 1.0.0
+  - Allows you to attach or detach a volume from a ProfitBricks server. This module has a dependency on profitbricks >= 1.0.0.
+deprecated:
+  removed_in: 11.0.0
+  why: Module relies on library unsupported since 2021.
+  alternative: >
+    Profitbricks has rebranded as Ionos Cloud and they provide a collection named ionoscloudsdk.ionoscloud.
+    Whilst it is likely it will provide the features of this module, that has not been verified.
+    Please refer to that collection's documentation for more details.
 extends_documentation_fragment:
   - community.general.attributes
 attributes:
@@ -36,38 +42,38 @@ options:
     type: str
   subscription_user:
     description:
-      - The ProfitBricks username. Overrides the PB_SUBSCRIPTION_ID environment variable.
+      - The ProfitBricks username. Overrides the E(PB_SUBSCRIPTION_ID) environment variable.
     type: str
     required: false
   subscription_password:
     description:
-      - THe ProfitBricks password. Overrides the PB_PASSWORD environment variable.
+      - THe ProfitBricks password. Overrides the E(PB_PASSWORD) environment variable.
     type: str
     required: false
   wait:
     description:
-      - wait for the operation to complete before returning
+      - Wait for the operation to complete before returning.
     required: false
     default: true
     type: bool
   wait_timeout:
     description:
-      - how long before wait gives up, in seconds
+      - How long before wait gives up, in seconds.
     type: int
     default: 600
   state:
     description:
-      - Indicate desired state of the resource
-      - "The available choices are: V(present), V(absent)."
+      - Indicate desired state of the resource.
+      - 'The available choices are: V(present), V(absent).'
     type: str
     required: false
     default: 'present'
 
-requirements: [ "profitbricks" ]
+requirements: ["profitbricks"]
 author: Matt Baldwin (@baldwinSPC) <baldwin@stackpointcloud.com>
-'''
+"""
 
-EXAMPLES = '''
+EXAMPLES = r"""
 - name: Attach a volume
   community.general.profitbricks_volume_attachments:
     datacenter: Tardis One
@@ -83,7 +89,7 @@ EXAMPLES = '''
     volume: vol01
     wait_timeout: 500
     state: absent
-'''
+"""
 
 import re
 import time

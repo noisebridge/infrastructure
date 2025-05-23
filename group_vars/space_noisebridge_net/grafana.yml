@@ -1,13 +1,17 @@
 ---
-grafana_url: https://grafana.noisebridge.net
-grafana_port: 3001
-grafana_address: 127.0.0.1
+grafana_ini:
+  instance_name: grafana.noisebridge.net
+  server:
+    http_addr: 127.0.0.1
+    http_port: 3001
+    root_url: https://grafana.noisebridge.net
+    domain: grafana.noisebridge.net
 
-grafana_security:
-  admin_user: admin
-  admin_password: "{{ grafana_admin_password }}"
+  security:
+    admin_user: admin
+    admin_password: "{{ grafana_admin_password }}"
 
-grafana_auth:
-  anonymous:
-    org_name: Noisebridge
-    org_role: Viewer
+  auth:
+    anonymous:
+      org_name: Noisebridge
+      org_role: Viewer
