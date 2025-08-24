@@ -1,0 +1,27 @@
+---
+name: Ansible CI
+on:
+  pull_request:
+    types:
+      - opened
+      - edited
+      - reopened
+      - synchronize
+    paths:
+      - ansible/**
+      - .github/workflows/ansible-ci.yml
+  workflow_dispatch:
+
+env:
+  ANSIBLE_FORCE_COLOR: true
+  ANSIBLE_GALAXY_SERVER_GALAXY_URL: "https://galaxy.ansible.com"
+  ANSIBLE_GALAXY_SERVER_GALAXY_TIMEOUT: 120
+  ANSIBLE_GALAXY_SERVER_LIST: "galaxy"
+
+jobs:
+  ansible-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint collection
+        uses: ansible/ansible-lint@main
