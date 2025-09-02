@@ -207,3 +207,14 @@ barnyard        IN      NS      brony.noisebridge.io.
 
 upotagma        IN      A       107.170.233.49
 upotagma        IN      AAAA    2604:a880:1:20:0:0:c3:a001
+
+
+; DNS-01 challenge to enable automatic provisioning of certificates to be used by our intranet
+; services hosted on our k8s cluster.
+; 
+; More info:
+; * https://www.noisebridge.net/wiki/NoiseGarden
+; * https://cert-manager.io/docs/configuration/acme/dns01/acme-dns/
+; * https://github.com/joohoi/acme-dns/blob/master/README.md
+_acme-challenge.garden          IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io
+
