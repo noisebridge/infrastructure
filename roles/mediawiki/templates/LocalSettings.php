@@ -324,5 +324,12 @@ wfLoadExtension( 'CategoryTree' );
 # https://www.mediawiki.org/wiki/Extension:ImageMap
 wfLoadExtension( 'ImageMap' );
 
+# https://www.noisebridge.net/wiki/Nb.wtf # https://github.com/audiodude/nb.wtf
+wfLoadExtension( 'NBWTF' );
+
+# https://www.mediawiki.org/wiki/Extension:JsonConfig
+wfLoadExtension( 'JsonConfig' );
+# https://www.mediawiki.org/wiki/Extension:Graph
+wfLoadExtension( 'Graph' );
 
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
