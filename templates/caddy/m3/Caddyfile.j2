@@ -98,10 +98,10 @@ www.noisebridge.net {
   route /img* {
     uri strip_prefix /images
     file_server {
-      root /srv/mediawiki/noisebridge.net-upgrade-2023/img
+      root /srv/mediawiki/noisebridge.net/img
     }
   }
-  root * /srv/mediawiki/noisebridge.net-upgrade-2023
+  root * /srv/mediawiki/noisebridge.net-1.39.13
   php_fastcgi unix//run/php/php8.2-fpm.sock
   file_server {
     hide *.php
@@ -110,7 +110,7 @@ www.noisebridge.net {
   @favicon path /favicon.ico
   handle @favicon {
     file_server {
-      root /srv/mediawiki/noisebridge.net-upgrade-2023/img
+      root /srv/mediawiki/noisebridge.net/img
     }
   }
   
