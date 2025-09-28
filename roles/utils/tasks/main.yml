@@ -38,6 +38,6 @@
   lineinfile:
     dest: /etc/sudoers
     regexp: "^%sudo"
-    line: "%sudo	ALL=(ALL:ALL) NOPASSWD: ALL" # noqa 203
+    line: "%sudo	ALL=(ALL:ALL) NOPASSWD: ALL" # noqa no-tabs
     state: present
     mode: 0440
