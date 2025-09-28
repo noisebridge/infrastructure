@@ -61,6 +61,9 @@ noisebridge.net {
     }
 {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
+  handle /.well-known/atproto-did {
+    respond "did:plc:4fn5ffs6txnxxozezxio3v7o" 200
+  }
   redir https://www.noisebridge.net{uri}
 }
 
