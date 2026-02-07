@@ -221,5 +221,9 @@ upotagma        IN      AAAA    2604:a880:1:20:0:0:c3:a001
 ; * https://www.noisebridge.net/wiki/NoiseGarden
 ; * https://cert-manager.io/docs/configuration/acme/dns01/acme-dns/
 ; * https://github.com/joohoi/acme-dns/blob/master/README.md
-_acme-challenge.garden          IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io.
 
+# DNS-01 Challenge for internal services hosted on NoiseGarden
+_acme-challenge.garden      IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io.
+
+# DNS-01 Challenge for internal services hosted on Ducky
+_acme-challenge.ducky       IN      CNAME   331d1498-d188-4fea-935c-7b2a225f684a.auth.acme-dns.io.
