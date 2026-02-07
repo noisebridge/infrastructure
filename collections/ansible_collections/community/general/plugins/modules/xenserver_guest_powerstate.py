@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2018, Bojan Vitnik <bvitnik@mainstream.rs>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: xenserver_guest_powerstate
@@ -88,98 +86,106 @@ EXAMPLES = r"""
 
 RETURN = r"""
 instance:
-    description: Metadata about the VM.
-    returned: always
-    type: dict
-    sample: {
-        "cdrom": {
-            "type": "none"
+  description: Metadata about the VM.
+  returned: always
+  type: dict
+  sample:
+    {
+      "cdrom": {
+        "type": "none"
+      },
+      "customization_agent": "native",
+      "disks": [
+        {
+          "name": "windows-template-testing-0",
+          "name_desc": "",
+          "os_device": "xvda",
+          "size": 42949672960,
+          "sr": "Local storage",
+          "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
+          "vbd_userdevice": "0"
         },
-        "customization_agent": "native",
-        "disks": [
-            {
-                "name": "windows-template-testing-0",
-                "name_desc": "",
-                "os_device": "xvda",
-                "size": 42949672960,
-                "sr": "Local storage",
-                "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
-                "vbd_userdevice": "0"
-            },
-            {
-                "name": "windows-template-testing-1",
-                "name_desc": "",
-                "os_device": "xvdb",
-                "size": 42949672960,
-                "sr": "Local storage",
-                "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
-                "vbd_userdevice": "1"
-            }
-        ],
-        "domid": "56",
-        "folder": "",
-        "hardware": {
-            "memory_mb": 8192,
-            "num_cpu_cores_per_socket": 2,
-            "num_cpus": 4
-        },
-        "home_server": "",
-        "is_template": false,
-        "name": "windows-template-testing",
-        "name_desc": "",
-        "networks": [
-            {
-                "gateway": "192.168.0.254",
-                "gateway6": "fc00::fffe",
-                "ip": "192.168.0.200",
-                "ip6": [
-                    "fe80:0000:0000:0000:e9cb:625a:32c5:c291",
-                    "fc00:0000:0000:0000:0000:0000:0000:0001"
-                ],
-                "mac": "ba:91:3a:48:20:76",
-                "mtu": "1500",
-                "name": "Pool-wide network associated with eth1",
-                "netmask": "255.255.255.128",
-                "prefix": "25",
-                "prefix6": "64",
-                "vif_device": "0"
-            }
-        ],
-        "other_config": {
-            "base_template_name": "Windows Server 2016 (64-bit)",
-            "import_task": "OpaqueRef:e43eb71c-45d6-5351-09ff-96e4fb7d0fa5",
-            "install-methods": "cdrom",
-            "instant": "true",
-            "mac_seed": "f83e8d8a-cfdc-b105-b054-ef5cb416b77e"
-        },
-        "platform": {
-            "acpi": "1",
-            "apic": "true",
-            "cores-per-socket": "2",
-            "device_id": "0002",
-            "hpet": "true",
-            "nx": "true",
-            "pae": "true",
-            "timeoffset": "-25200",
-            "vga": "std",
-            "videoram": "8",
-            "viridian": "true",
-            "viridian_reference_tsc": "true",
-            "viridian_time_ref_count": "true"
-        },
-        "state": "poweredon",
-        "uuid": "e3c0b2d5-5f05-424e-479c-d3df8b3e7cda",
-        "xenstore_data": {
-            "vm-data": ""
+        {
+          "name": "windows-template-testing-1",
+          "name_desc": "",
+          "os_device": "xvdb",
+          "size": 42949672960,
+          "sr": "Local storage",
+          "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
+          "vbd_userdevice": "1"
         }
+      ],
+      "domid": "56",
+      "folder": "",
+      "hardware": {
+        "memory_mb": 8192,
+        "num_cpu_cores_per_socket": 2,
+        "num_cpus": 4
+      },
+      "home_server": "",
+      "is_template": false,
+      "name": "windows-template-testing",
+      "name_desc": "",
+      "networks": [
+        {
+          "gateway": "192.168.0.254",
+          "gateway6": "fc00::fffe",
+          "ip": "192.168.0.200",
+          "ip6": [
+            "fe80:0000:0000:0000:e9cb:625a:32c5:c291",
+            "fc00:0000:0000:0000:0000:0000:0000:0001"
+          ],
+          "mac": "ba:91:3a:48:20:76",
+          "mtu": "1500",
+          "name": "Pool-wide network associated with eth1",
+          "netmask": "255.255.255.128",
+          "prefix": "25",
+          "prefix6": "64",
+          "vif_device": "0"
+        }
+      ],
+      "other_config": {
+        "base_template_name": "Windows Server 2016 (64-bit)",
+        "import_task": "OpaqueRef:e43eb71c-45d6-5351-09ff-96e4fb7d0fa5",
+        "install-methods": "cdrom",
+        "instant": "true",
+        "mac_seed": "f83e8d8a-cfdc-b105-b054-ef5cb416b77e"
+      },
+      "platform": {
+        "acpi": "1",
+        "apic": "true",
+        "cores-per-socket": "2",
+        "device_id": "0002",
+        "hpet": "true",
+        "nx": "true",
+        "pae": "true",
+        "timeoffset": "-25200",
+        "vga": "std",
+        "videoram": "8",
+        "viridian": "true",
+        "viridian_reference_tsc": "true",
+        "viridian_time_ref_count": "true"
+      },
+      "state": "poweredon",
+      "uuid": "e3c0b2d5-5f05-424e-479c-d3df8b3e7cda",
+      "xenstore_data": {
+        "vm-data": ""
+      }
     }
 """
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.general.plugins.module_utils.xenserver import (xenserver_common_argument_spec, XenServerObject, get_object_ref,
-                                                                                  gather_vm_params, gather_vm_facts, set_vm_power_state,
-                                                                                  wait_for_vm_ip_address)
+
+from ansible_collections.community.general.plugins.module_utils.xenserver import (
+    XenServerObject,
+    gather_vm_facts,
+    gather_vm_params,
+    get_object_ref,
+    set_vm_power_state,
+    wait_for_vm_ip_address,
+    xenserver_common_argument_spec,
+)
 
 
 class XenServerVM(XenServerObject):
@@ -197,9 +203,16 @@ class XenServerVM(XenServerObject):
         Args:
             module: Reference to Ansible module object.
         """
-        super(XenServerVM, self).__init__(module)
+        super().__init__(module)
 
-        self.vm_ref = get_object_ref(self.module, self.module.params['name'], self.module.params['uuid'], obj_type="VM", fail=True, msg_prefix="VM search: ")
+        self.vm_ref = get_object_ref(
+            self.module,
+            self.module.params["name"],
+            self.module.params["uuid"],
+            obj_type="VM",
+            fail=True,
+            msg_prefix="VM search: ",
+        )
         self.gather_params()
 
     def gather_params(self):
@@ -212,56 +225,72 @@ class XenServerVM(XenServerObject):
 
     def set_power_state(self, power_state):
         """Controls VM power state."""
-        state_changed, current_state = set_vm_power_state(self.module, self.vm_ref, power_state, self.module.params['state_change_timeout'])
+        state_changed, current_state = set_vm_power_state(
+            self.module, self.vm_ref, power_state, self.module.params["state_change_timeout"]
+        )
 
         # If state has changed, update vm_params.
         if state_changed:
-            self.vm_params['power_state'] = current_state.capitalize()
+            self.vm_params["power_state"] = current_state.capitalize()
 
         return state_changed
 
     def wait_for_ip_address(self):
         """Waits for VM to acquire an IP address."""
-        self.vm_params['guest_metrics'] = wait_for_vm_ip_address(self.module, self.vm_ref, self.module.params['state_change_timeout'])
+        self.vm_params["guest_metrics"] = wait_for_vm_ip_address(
+            self.module, self.vm_ref, self.module.params["state_change_timeout"]
+        )
 
 
 def main():
     argument_spec = xenserver_common_argument_spec()
     argument_spec.update(
-        state=dict(type='str', default='present',
-                   choices=['powered-on', 'powered-off', 'restarted', 'shutdown-guest', 'reboot-guest', 'suspended', 'present']),
-        name=dict(type='str', aliases=['name_label']),
-        uuid=dict(type='str'),
-        wait_for_ip_address=dict(type='bool', default=False),
-        state_change_timeout=dict(type='int', default=0),
+        state=dict(
+            type="str",
+            default="present",
+            choices=[
+                "powered-on",
+                "powered-off",
+                "restarted",
+                "shutdown-guest",
+                "reboot-guest",
+                "suspended",
+                "present",
+            ],
+        ),
+        name=dict(type="str", aliases=["name_label"]),
+        uuid=dict(type="str"),
+        wait_for_ip_address=dict(type="bool", default=False),
+        state_change_timeout=dict(type="int", default=0),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec,
-                           supports_check_mode=True,
-                           required_one_of=[
-                               ['name', 'uuid'],
-                           ],
-                           )
+    module = AnsibleModule(
+        argument_spec=argument_spec,
+        supports_check_mode=True,
+        required_one_of=[
+            ["name", "uuid"],
+        ],
+    )
 
-    result = {'failed': False, 'changed': False}
+    result = {"failed": False, "changed": False}
 
     # Module will exit with an error message if no VM is found.
     vm = XenServerVM(module)
 
     # Set VM power state.
-    if module.params['state'] != "present":
-        result['changed'] = vm.set_power_state(module.params['state'])
+    if module.params["state"] != "present":
+        result["changed"] = vm.set_power_state(module.params["state"])
 
-    if module.params['wait_for_ip_address']:
+    if module.params["wait_for_ip_address"]:
         vm.wait_for_ip_address()
 
-    result['instance'] = vm.gather_facts()
+    result["instance"] = vm.gather_facts()
 
-    if result['failed']:
+    if result["failed"]:
         module.fail_json(**result)
     else:
         module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

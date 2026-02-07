@@ -13,8 +13,8 @@ A role to install and configure official GitLab Omnibus package.
 
 Currently [supported platforms](meta/main.yml) are:
 
+- AlmaLinux 9
 - Debian 11 (Bullseye)
-- Ubuntu 20.04 LTS (Focal Fossa)
 - Ubuntu 22.04 LTS (Jemmy Jellyfish)
 - Ubuntu 24.04 LTS (Noble Numbat)
 
@@ -216,6 +216,16 @@ gitlab_feature_flags:
     enabled: false
 ```
 
+#### Configure gitlab_rails['repositories_storages'] on your own
+
+If you have the requirement to configure gitlab_rails['repositories_storages']
+on your own, set this variable to `false`.
+This can be useful if you want to configure multiple Gitaly instances.
+
+```yaml
+gitlab_use_default_repositories_storages: true
+```
+
 #### Mattermost only use case
 
 This role can be used to run Mattermost without deploying GitLab. In this
@@ -299,7 +309,7 @@ gitlab_ip_range: '{{ ansible_facts.default_ipv4.address }}/24'
 Set switch to `false` to enable external Gitaly instance:
 
 ```yaml
-gitlab_use_internal_gitaly: 'false'
+gitlab_use_internal_gitaly: false
 ```
 
 #### Path to GitLab Data Directory
@@ -381,6 +391,15 @@ gitlab_postgresql_db_password: 'changeme'
 ```
 
 **Caution: You have to use your own private and encrypted password here.**
+
+#### Configure monitoring whitelist for Gitlab rails
+
+Configure the monitoring whitelist for GitLab-Rails:
+
+```yaml
+gitlab_rails_monitoring_whitelist:
+  - "{{ gitlab_ip_range }}"
+```
 
 #### Configure GitLab Registry
 

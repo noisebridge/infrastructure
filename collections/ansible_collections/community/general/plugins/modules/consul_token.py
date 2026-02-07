@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2024, Florian Apolloner (@apollo13)
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: consul_token
@@ -29,7 +26,7 @@ attributes:
   diff_mode:
     support: partial
     details:
-      - In check mode the diff will miss operational attributes.
+      - In check mode the diff misses operational attributes.
   action_group:
     version_added: 8.3.0
 options:
@@ -41,11 +38,11 @@ options:
     type: str
   accessor_id:
     description:
-      - Specifies a UUID to use as the token's Accessor ID. If not specified a UUID will be generated for this field.
+      - Specifies a UUID to use as the token's Accessor ID. If not specified a UUID is generated for this field.
     type: str
   secret_id:
     description:
-      - Specifies a UUID to use as the token's Secret ID. If not specified a UUID will be generated for this field.
+      - Specifies a UUID to use as the token's Secret ID. If not specified a UUID is generated for this field.
     type: str
   description:
     description:
@@ -56,8 +53,8 @@ options:
     elements: dict
     description:
       - List of policies to attach to the token. Each policy is a dict.
-      - If the parameter is left blank, any policies currently assigned will not be changed.
-      - Any empty array (V([])) will clear any policies previously set.
+      - If the parameter is left blank, any policies currently assigned are not changed.
+      - Any empty array (V([])) clears any policies previously set.
     suboptions:
       name:
         description:
@@ -74,8 +71,8 @@ options:
     elements: dict
     description:
       - List of roles to attach to the token. Each role is a dict.
-      - If the parameter is left blank, any roles currently assigned will not be changed.
-      - Any empty array (V([])) will clear any roles previously set.
+      - If the parameter is left blank, any roles currently assigned are not changed.
+      - Any empty array (V([])) clears any roles previously set.
     suboptions:
       name:
         description:
@@ -108,8 +105,8 @@ options:
     elements: dict
     description:
       - List of service identities to attach to the token.
-      - If not specified, any service identities currently assigned will not be changed.
-      - If the parameter is an empty array (V([])), any node identities assigned will be unassigned.
+      - If not specified, any service identities currently assigned are not changed.
+      - If the parameter is an empty array (V([])), any node identities assigned are unassigned.
     suboptions:
       service_name:
         description:
@@ -120,8 +117,8 @@ options:
         required: true
       datacenters:
         description:
-          - The datacenters the token will be effective.
-          - If an empty array (V([])) is specified, the token will valid in all datacenters.
+          - The datacenters where the token is effective.
+          - If an empty array (V([])) is specified, the token is valid in all datacenters.
           - Including those which do not yet exist but may in the future.
         type: list
         elements: str
@@ -130,8 +127,8 @@ options:
     elements: dict
     description:
       - List of node identities to attach to the token.
-      - If not specified, any node identities currently assigned will not be changed.
-      - If the parameter is an empty array (V([])), any node identities assigned will be unassigned.
+      - If not specified, any node identities currently assigned are not changed.
+      - If the parameter is an empty array (V([])), any node identities assigned are unassigned.
     suboptions:
       node_name:
         description:
@@ -143,7 +140,7 @@ options:
       datacenter:
         description:
           - The nodes datacenter.
-          - This will result in effective token only being valid in this datacenter.
+          - This results in effective token only being valid in this datacenter.
         type: str
         required: true
   local:
@@ -152,7 +149,7 @@ options:
     type: bool
   expiration_ttl:
     description:
-      - This is a convenience field and if set will initialize the C(expiration_time). Can be specified in the form of V(60s)
+      - This is a convenience field and if set it initializes the C(expiration_time). Can be specified in the form of V(60s)
         or V(5m) (that is, 60 seconds or 5 minutes, respectively). Ingored when the token is updated!
     type: str
 """
@@ -204,6 +201,7 @@ operation:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.consul import (
     AUTH_ARGUMENTS_SPEC,
     _ConsulModule,
@@ -238,7 +236,7 @@ class ConsulTokenModule(_ConsulModule):
         # if `accessor_id` is not supplied we can only create objects and are not idempotent
         if not self.id_from_obj(self.params):
             return None
-        return super(ConsulTokenModule, self).read_object()
+        return super().read_object()
 
     def needs_update(self, api_obj, module_obj):
         # SecretID is usually not supplied
@@ -250,7 +248,7 @@ class ConsulTokenModule(_ConsulModule):
         # it writes to ExpirationTime, so we need to remove that as well
         if "ExpirationTTL" in module_obj:
             del module_obj["ExpirationTTL"]
-        return super(ConsulTokenModule, self).needs_update(api_obj, module_obj)
+        return super().needs_update(api_obj, module_obj)
 
 
 NAME_ID_SPEC = dict(

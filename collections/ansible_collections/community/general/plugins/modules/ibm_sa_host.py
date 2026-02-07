@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (C) 2018 IBM CORPORATION
 # Author(s): Tzur Eliyahu <tzure@il.ibm.com>
@@ -7,8 +6,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: ibm_sa_host
@@ -37,23 +35,19 @@ options:
   cluster:
     description:
       - The name of the cluster to include the host.
-    required: false
     type: str
   domain:
     description:
-      - The domains the cluster will be attached to. To include more than one domain, separate domain names with commas. To
-        include all existing domains, use an asterisk (V(*)).
-    required: false
+      - The domains the cluster is attached to. To include more than one domain, separate domain names with commas. To include
+        all existing domains, use an asterisk (V(*)).
     type: str
   iscsi_chap_name:
     description:
       - The host's CHAP name identifier.
-    required: false
     type: str
   iscsi_chap_secret:
     description:
       - The password of the initiator used to authenticate to the system when CHAP is enable.
-    required: false
     type: str
 
 extends_documentation_fragment:
@@ -85,15 +79,20 @@ RETURN = r"""
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.general.plugins.module_utils.ibm_sa_utils import execute_pyxcli_command, \
-    connect_ssl, spectrum_accelerate_spec, is_pyxcli_installed
+
+from ansible_collections.community.general.plugins.module_utils.ibm_sa_utils import (
+    connect_ssl,
+    execute_pyxcli_command,
+    is_pyxcli_installed,
+    spectrum_accelerate_spec,
+)
 
 
 def main():
     argument_spec = spectrum_accelerate_spec()
     argument_spec.update(
         dict(
-            state=dict(default='present', choices=['present', 'absent']),
+            state=dict(default="present", choices=["present", "absent"]),
             host=dict(required=True),
             cluster=dict(),
             domain=dict(),
@@ -107,20 +106,17 @@ def main():
     is_pyxcli_installed(module)
 
     xcli_client = connect_ssl(module)
-    host = xcli_client.cmd.host_list(
-        host=module.params['host']).as_single_element
-    state = module.params['state']
+    host = xcli_client.cmd.host_list(host=module.params["host"]).as_single_element
+    state = module.params["state"]
 
     state_changed = False
-    if state == 'present' and not host:
-        state_changed = execute_pyxcli_command(
-            module, 'host_define', xcli_client)
-    elif state == 'absent' and host:
-        state_changed = execute_pyxcli_command(
-            module, 'host_delete', xcli_client)
+    if state == "present" and not host:
+        state_changed = execute_pyxcli_command(module, "host_define", xcli_client)
+    elif state == "absent" and host:
+        state_changed = execute_pyxcli_command(module, "host_delete", xcli_client)
 
     module.exit_json(changed=state_changed)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

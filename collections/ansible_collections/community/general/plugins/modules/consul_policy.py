@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2022, Håkon Lerring
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: consul_policy
@@ -31,7 +28,7 @@ attributes:
     support: partial
     version_added: 8.3.0
     details:
-      - In check mode the diff will miss operational attributes.
+      - In check mode the diff misses operational attributes.
   action_group:
     version_added: 8.3.0
 options:
@@ -124,6 +121,7 @@ operation:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.consul import (
     AUTH_ARGUMENTS_SPEC,
     OPERATION_READ,
@@ -132,7 +130,7 @@ from ansible_collections.community.general.plugins.module_utils.consul import (
 
 _ARGUMENT_SPEC = {
     "name": dict(required=True),
-    "description": dict(required=False, type="str"),
+    "description": dict(type="str"),
     "rules": dict(type="str"),
     "valid_datacenters": dict(type="list", elements="str"),
     "state": dict(default="present", choices=["present", "absent"]),
@@ -148,7 +146,7 @@ class ConsulPolicyModule(_ConsulModule):
     def endpoint_url(self, operation, identifier=None):
         if operation == OPERATION_READ:
             return [self.api_endpoint, "name", self.params["name"]]
-        return super(ConsulPolicyModule, self).endpoint_url(operation, identifier)
+        return super().endpoint_url(operation, identifier)
 
 
 def main():

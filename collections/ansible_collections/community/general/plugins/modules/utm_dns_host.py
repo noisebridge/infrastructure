@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, Johannes Brunswicker <johannes.brunswicker@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: utm_dns_host
@@ -29,7 +26,7 @@ options:
   name:
     type: str
     description:
-      - The name of the object. Will be used to identify the entry.
+      - The name of the object that identifies the entry.
     required: true
   address:
     type: str
@@ -130,12 +127,11 @@ result:
       description: Whether the ipv6 address is resolved or not.
       type: bool
     timeout:
-      description: The timeout until a new resolving will be attempted.
+      description: The timeout until a new resolving is attempted.
       type: int
 """
 
 from ansible_collections.community.general.plugins.module_utils.utm_utils import UTM, UTMModule
-from ansible.module_utils.common.text.converters import to_native
 
 
 def main():
@@ -143,22 +139,22 @@ def main():
     key_to_check_for_changes = ["comment", "hostname", "interface"]
     module = UTMModule(
         argument_spec=dict(
-            name=dict(type='str', required=True),
-            address=dict(type='str', required=False, default='0.0.0.0'),
-            address6=dict(type='str', required=False, default='::'),
-            comment=dict(type='str', required=False, default=""),
-            hostname=dict(type='str', required=False),
-            interface=dict(type='str', required=False, default=""),
-            resolved=dict(type='bool', required=False, default=False),
-            resolved6=dict(type='bool', required=False, default=False),
-            timeout=dict(type='int', required=False, default=0),
+            name=dict(type="str", required=True),
+            address=dict(type="str", default="0.0.0.0"),
+            address6=dict(type="str", default="::"),
+            comment=dict(type="str", default=""),
+            hostname=dict(type="str"),
+            interface=dict(type="str", default=""),
+            resolved=dict(type="bool", default=False),
+            resolved6=dict(type="bool", default=False),
+            timeout=dict(type="int", default=0),
         )
     )
     try:
         UTM(module, endpoint, key_to_check_for_changes).execute()
     except Exception as e:
-        module.fail_json(msg=to_native(e))
+        module.fail_json(msg=f"{e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

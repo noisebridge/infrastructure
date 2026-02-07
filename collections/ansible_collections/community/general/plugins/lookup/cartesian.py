@@ -1,15 +1,13 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2013, Bradley Young <young.bradley@gmail.com>
 # Copyright (c) 2017 Ansible Project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 author: Unknown (!UNKNOWN)
 name: cartesian
-short_description: returns the cartesian product of lists
+short_description: Returns the cartesian product of lists
 description:
   - Takes the input lists and returns a list that represents the product of the input lists.
   - It is clearer with an example, it turns [1, 2, 3], [a, b] into [1, a], [1, b], [2, a], [2, b], [3, a], [3, b].
@@ -66,13 +64,7 @@ class LookupModule(LookupBase):
         """
         results = []
         for x in terms:
-            try:
-                intermediate = listify_lookup_plugin_terms(x, templar=self._templar)
-            except TypeError:
-                # The loader argument is deprecated in ansible-core 2.14+. Fall back to
-                # pre-2.14 behavior for older ansible-core versions.
-                intermediate = listify_lookup_plugin_terms(x, templar=self._templar, loader=self._loader)
-            results.append(intermediate)
+            results.append(listify_lookup_plugin_terms(x, templar=self._templar))
         return results
 
     def run(self, terms, variables=None, **kwargs):

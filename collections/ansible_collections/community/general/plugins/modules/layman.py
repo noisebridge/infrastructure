@@ -1,19 +1,20 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2014, Jakub Jirutka <jakub@jirutka.cz>
 #
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: layman
 author: "Jakub Jirutka (@jirutka)"
 short_description: Manage Gentoo overlays
+deprecated:
+  removed_in: 14.0.0
+  why: Gentoo deprecated C(layman) in mid-2023.
+  alternative: None.
 description:
   - Uses Layman to manage an additional repositories for the Portage package manager on Gentoo Linux. Please note that Layman
     must be installed on a managed node prior using this module.
@@ -35,7 +36,7 @@ options:
     type: str
   list_url:
     description:
-      - An URL of the alternative overlays list that defines the overlay to install. This list will be fetched and saved under
+      - An URL of the alternative overlays list that defines the overlay to install. This list is fetched and saved under
         C(${overlay_defs}/${name}.xml), where C(overlay_defs) is read from the Layman's configuration.
     aliases: [url]
     type: str
@@ -47,7 +48,7 @@ options:
     type: str
   validate_certs:
     description:
-      - If V(false), SSL certificates will not be validated. This should only be set to V(false) when no other option exists.
+      - If V(false), SSL certificates are not validated. This should only be set to V(false) when no other option exists.
     type: bool
     default: true
 """
@@ -81,13 +82,13 @@ EXAMPLES = r"""
 
 import shutil
 import traceback
-
 from os import path
 
 LAYMAN_IMP_ERR = None
 try:
     from layman.api import LaymanAPI
     from layman.config import BareConfig
+
     HAS_LAYMAN_API = True
 except ImportError:
     LAYMAN_IMP_ERR = traceback.format_exc()
@@ -96,8 +97,7 @@ except ImportError:
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.urls import fetch_url
 
-
-USERAGENT = 'ansible-httpget'
+USERAGENT = "ansible-httpget"
 
 
 class ModuleError(Exception):
@@ -105,39 +105,39 @@ class ModuleError(Exception):
 
 
 def init_layman(config=None):
-    '''Returns the initialized ``LaymanAPI``.
+    """Returns the initialized ``LaymanAPI``.
 
     :param config: the layman's configuration to use (optional)
-    '''
+    """
     if config is None:
         config = BareConfig(read_configfile=True, quietness=1)
     return LaymanAPI(config)
 
 
 def download_url(module, url, dest):
-    '''
+    """
     :param url: the URL to download
     :param dest: the absolute path of where to save the downloaded content to;
         it must be writable and not a directory
 
     :raises ModuleError
-    '''
+    """
 
     # Hack to add params in the form that fetch_url expects
-    module.params['http_agent'] = USERAGENT
+    module.params["http_agent"] = USERAGENT
     response, info = fetch_url(module, url)
-    if info['status'] != 200:
-        raise ModuleError("Failed to get %s: %s" % (url, info['msg']))
+    if info["status"] != 200:
+        raise ModuleError(f"Failed to get {url}: {info['msg']}")
 
     try:
-        with open(dest, 'w') as f:
+        with open(dest, "w") as f:
             shutil.copyfileobj(response, f)
-    except IOError as e:
-        raise ModuleError("Failed to write: %s" % str(e))
+    except OSError as e:
+        raise ModuleError(f"Failed to write: {e}") from e
 
 
 def install_overlay(module, name, list_url=None):
-    '''Installs the overlay repository. If not on the central overlays list,
+    """Installs the overlay repository. If not on the central overlays list,
     then :list_url of an alternative list must be provided. The list will be
     fetched and saved under ``%(overlay_defs)/%(name.xml)`` (location of the
     ``overlay_defs`` is read from the Layman's configuration).
@@ -149,7 +149,7 @@ def install_overlay(module, name, list_url=None):
     :returns: True if the overlay was installed, or False if already exists
         (i.e. nothing has changed)
     :raises ModuleError
-    '''
+    """
     # read Layman configuration
     layman_conf = BareConfig(read_configfile=True)
     layman = init_layman(layman_conf)
@@ -158,16 +158,17 @@ def install_overlay(module, name, list_url=None):
         return False
 
     if module.check_mode:
-        mymsg = 'Would add layman repo \'' + name + '\''
+        mymsg = f"Would add layman repo '{name}'"
         module.exit_json(changed=True, msg=mymsg)
 
     if not layman.is_repo(name):
         if not list_url:
-            raise ModuleError("Overlay '%s' is not on the list of known "
-                              "overlays and URL of the remote list was not provided." % name)
+            raise ModuleError(
+                f"Overlay '{name}' is not on the list of known overlays and URL of the remote list was not provided."
+            )
 
-        overlay_defs = layman_conf.get_option('overlay_defs')
-        dest = path.join(overlay_defs, name + '.xml')
+        overlay_defs = layman_conf.get_option("overlay_defs")
+        dest = path.join(overlay_defs, f"{name}.xml")
 
         download_url(module, list_url, dest)
 
@@ -181,21 +182,21 @@ def install_overlay(module, name, list_url=None):
 
 
 def uninstall_overlay(module, name):
-    '''Uninstalls the given overlay repository from the system.
+    """Uninstalls the given overlay repository from the system.
 
     :param name: the overlay id to uninstall
 
     :returns: True if the overlay was uninstalled, or False if doesn't exist
         (i.e. nothing has changed)
     :raises ModuleError
-    '''
+    """
     layman = init_layman()
 
     if not layman.is_installed(name):
         return False
 
     if module.check_mode:
-        mymsg = 'Would remove layman repo \'' + name + '\''
+        mymsg = f"Would remove layman repo '{name}'"
         module.exit_json(changed=True, msg=mymsg)
 
     layman.delete_repos(name)
@@ -206,11 +207,11 @@ def uninstall_overlay(module, name):
 
 
 def sync_overlay(name):
-    '''Synchronizes the specified overlay repository.
+    """Synchronizes the specified overlay repository.
 
     :param name: the overlay repository id to sync
     :raises ModuleError
-    '''
+    """
     layman = init_layman()
 
     if not layman.sync(name):
@@ -219,10 +220,10 @@ def sync_overlay(name):
 
 
 def sync_overlays():
-    '''Synchronize all of the installed overlays.
+    """Synchronize all of the installed overlays.
 
     :raises ModuleError
-    '''
+    """
     layman = init_layman()
 
     for name in layman.get_installed():
@@ -234,25 +235,25 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             name=dict(required=True),
-            list_url=dict(aliases=['url']),
-            state=dict(default="present", choices=['present', 'absent', 'updated']),
-            validate_certs=dict(required=False, default=True, type='bool'),
+            list_url=dict(aliases=["url"]),
+            state=dict(default="present", choices=["present", "absent", "updated"]),
+            validate_certs=dict(default=True, type="bool"),
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     if not HAS_LAYMAN_API:
-        module.fail_json(msg=missing_required_lib('Layman'), exception=LAYMAN_IMP_ERR)
+        module.fail_json(msg=missing_required_lib("Layman"), exception=LAYMAN_IMP_ERR)
 
-    state, name, url = (module.params[key] for key in ['state', 'name', 'list_url'])
+    state, name, url = (module.params[key] for key in ["state", "name", "list_url"])
 
     changed = False
     try:
-        if state == 'present':
+        if state == "present":
             changed = install_overlay(module, name, url)
 
-        elif state == 'updated':
-            if name == 'ALL':
+        elif state == "updated":
+            if name == "ALL":
                 sync_overlays()
             elif install_overlay(module, name, url):
                 changed = True
@@ -267,5 +268,5 @@ def main():
         module.exit_json(changed=changed, name=name)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2017, Nathan Davison <ndavison85@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: listen_ports_facts
@@ -20,7 +18,7 @@ requirements:
 short_description: Gather facts on processes listening on TCP and UDP ports
 notes:
   - C(ss) returns all processes for each listen address and port.
-  - This plugin will return each of them, so multiple entries for the same listen address and port are likely in results.
+  - This plugin returns each of them, so multiple entries for the same listen address and port are likely in results.
 extends_documentation_fragment:
   - community.general.attributes
   - community.general.attributes.facts
@@ -29,7 +27,7 @@ options:
   command:
     description:
       - Override which command to use for fetching listen ports.
-      - By default module will use first found supported command on the system (in alphanumerical order).
+      - By default module uses first found supported command on the system (in alphanumerical order).
     type: str
     choices:
       - netstat
@@ -61,7 +59,7 @@ EXAMPLES = r"""
 
 - name: List TCP ports
   ansible.builtin.debug:
-    msg: "{{ ansible_facts.tcp_listen  | map(attribute='port') | sort | list }}"
+    msg: "{{ ansible_facts.tcp_listen | map(attribute='port') | sort | list }}"
 
 - name: List UDP ports
   ansible.builtin.debug:
@@ -189,9 +187,9 @@ ansible_facts:
           sample: "root"
 """
 
-import re
 import platform
-from ansible.module_utils.common.text.converters import to_native
+import re
+
 from ansible.module_utils.basic import AnsibleModule
 
 
@@ -228,8 +226,14 @@ def netStatParse(raw):
             pid_and_name = ""
             process = ""
             formatted_line = line.split()
-            protocol, recv_q, send_q, address, foreign_address, rest = \
-                formatted_line[0], formatted_line[1], formatted_line[2], formatted_line[3], formatted_line[4], formatted_line[5:]
+            protocol, _recv_q, _send_q, address, foreign_address, rest = (
+                formatted_line[0],
+                formatted_line[1],
+                formatted_line[2],
+                formatted_line[3],
+                formatted_line[4],
+                formatted_line[5:],
+            )
             address, port = address.rsplit(":", 1)
 
             if protocol.startswith("tcp"):
@@ -250,13 +254,13 @@ def netStatParse(raw):
 
             pid, name = split_pid_name(pid_name=pid_and_name)
             result = {
-                'protocol': protocol,
-                'state': state,
-                'address': address,
-                'foreign_address': foreign_address,
-                'port': int(port),
-                'name': name,
-                'pid': int(pid),
+                "protocol": protocol,
+                "state": state,
+                "address": address,
+                "foreign_address": foreign_address,
+                "port": int(port),
+                "name": name,
+                "pid": int(pid),
             }
             if result not in results:
                 results.append(result)
@@ -272,14 +276,14 @@ def ss_parse(raw):
      connection.
     """
     results = list()
-    regex_conns = re.compile(pattern=r'\[?(.+?)\]?:([0-9]+)$')
+    regex_conns = re.compile(pattern=r"\[?(.+?)\]?:([0-9]+)$")
     regex_pid = re.compile(pattern=r'"(.*?)",pid=(\d+)')
 
     lines = raw.splitlines()
 
-    if len(lines) == 0 or not lines[0].startswith('Netid '):
+    if len(lines) == 0 or not lines[0].startswith("Netid "):
         # unexpected stdout from ss
-        raise EnvironmentError('Unknown stdout format of `ss`: {0}'.format(raw))
+        raise OSError(f"Unknown stdout format of `ss`: {raw}")
 
     # skip headers (-H arg is not present on e.g. Ubuntu 16)
     lines = lines[1:]
@@ -289,105 +293,99 @@ def ss_parse(raw):
         try:
             if len(cells) == 6:
                 # no process column, e.g. due to unprivileged user
-                process = str()
+                process = ""
                 protocol, state, recv_q, send_q, local_addr_port, peer_addr_port = cells
             else:
                 protocol, state, recv_q, send_q, local_addr_port, peer_addr_port, process = cells
-        except ValueError:
+        except ValueError as e:
             # unexpected stdout from ss
-            raise EnvironmentError(
-                'Expected `ss` table layout "Netid, State, Recv-Q, Send-Q, Local Address:Port, Peer Address:Port" and \
-                 optionally "Process", but got something else: {0}'.format(line)
-            )
+            raise OSError(
+                'Expected `ss` table layout "Netid, State, Recv-Q, Send-Q, Local Address:Port, Peer Address:Port" and'
+                f'optionally "Process", but got something else: {line}'
+            ) from e
 
         conns = regex_conns.search(local_addr_port)
         pids = regex_pid.findall(process)
-        if conns is None and pids is None:
+        if conns is None and not pids:
             continue
 
-        if pids is None:
+        if not pids:
             # likely unprivileged user, so add empty name & pid
             # as we do in netstat logic to be consistent with output
-            pids = [(str(), 0)]
+            pids = [("", 0)]
 
         address = conns.group(1)
         port = conns.group(2)
         for name, pid in pids:
             result = {
-                'protocol': protocol,
-                'state': state,
-                'address': address,
-                'foreign_address': peer_addr_port,
-                'port': int(port),
-                'name': name,
-                'pid': int(pid),
+                "protocol": protocol,
+                "state": state,
+                "address": address,
+                "foreign_address": peer_addr_port,
+                "port": int(port),
+                "name": name,
+                "pid": int(pid),
             }
             results.append(result)
     return results
 
 
 def main():
-    command_args = ['-p', '-l', '-u', '-n', '-t']
+    command_args = ["-p", "-l", "-u", "-n", "-t"]
     commands_map = {
-        'netstat': {
-            'args': [],
-            'parse_func': netStatParse
-        },
-        'ss': {
-            'args': [],
-            'parse_func': ss_parse
-        },
+        "netstat": {"args": [], "parse_func": netStatParse},
+        "ss": {"args": [], "parse_func": ss_parse},
     }
     module = AnsibleModule(
         argument_spec=dict(
-            command=dict(type='str', choices=list(sorted(commands_map))),
-            include_non_listening=dict(default=False, type='bool'),
+            command=dict(type="str", choices=list(sorted(commands_map))),
+            include_non_listening=dict(default=False, type="bool"),
         ),
         supports_check_mode=True,
     )
 
-    if module.params['include_non_listening']:
-        command_args = ['-p', '-u', '-n', '-t', '-a']
+    if module.params["include_non_listening"]:
+        command_args = ["-p", "-u", "-n", "-t", "-a"]
 
-    commands_map['netstat']['args'] = command_args
-    commands_map['ss']['args'] = command_args
+    commands_map["netstat"]["args"] = command_args
+    commands_map["ss"]["args"] = command_args
 
-    if platform.system() != 'Linux':
-        module.fail_json(msg='This module requires Linux.')
+    if platform.system() != "Linux":
+        module.fail_json(msg="This module requires Linux.")
 
     def getPidSTime(pid):
-        ps_cmd = module.get_bin_path('ps', True)
-        rc, ps_output, stderr = module.run_command([ps_cmd, '-o', 'lstart', '-p', str(pid)])
-        stime = ''
+        ps_cmd = module.get_bin_path("ps", True)
+        rc, ps_output, stderr = module.run_command([ps_cmd, "-o", "lstart", "-p", str(pid)])
+        stime = ""
         if rc == 0:
             for line in ps_output.splitlines():
-                if 'started' not in line:
+                if "started" not in line:
                     stime = line
         return stime
 
     def getPidUser(pid):
-        ps_cmd = module.get_bin_path('ps', True)
-        rc, ps_output, stderr = module.run_command([ps_cmd, '-o', 'user', '-p', str(pid)])
-        user = ''
+        ps_cmd = module.get_bin_path("ps", True)
+        rc, ps_output, stderr = module.run_command([ps_cmd, "-o", "user", "-p", str(pid)])
+        user = ""
         if rc == 0:
             for line in ps_output.splitlines():
-                if line != 'USER':
+                if line != "USER":
                     user = line
         return user
 
     result = {
-        'changed': False,
-        'ansible_facts': {
-            'tcp_listen': [],
-            'udp_listen': [],
+        "changed": False,
+        "ansible_facts": {
+            "tcp_listen": [],
+            "udp_listen": [],
         },
     }
 
     try:
         command = None
         bin_path = None
-        if module.params['command'] is not None:
-            command = module.params['command']
+        if module.params["command"] is not None:
+            command = module.params["command"]
             bin_path = module.get_bin_path(command, required=True)
         else:
             for c in sorted(commands_map):
@@ -397,31 +395,31 @@ def main():
                     break
 
         if bin_path is None:
-            raise EnvironmentError(msg='Unable to find any of the supported commands in PATH: {0}'.format(", ".join(sorted(commands_map))))
+            raise OSError(f"Unable to find any of the supported commands in PATH: {', '.join(sorted(commands_map))}")
 
         # which ports are listening for connections?
-        args = commands_map[command]['args']
+        args = commands_map[command]["args"]
         rc, stdout, stderr = module.run_command([bin_path] + args)
         if rc == 0:
-            parse_func = commands_map[command]['parse_func']
+            parse_func = commands_map[command]["parse_func"]
             results = parse_func(stdout)
 
             for connection in results:
                 # only display state and foreign_address for include_non_listening.
-                if not module.params['include_non_listening']:
-                    connection.pop('state', None)
-                    connection.pop('foreign_address', None)
-                connection['stime'] = getPidSTime(connection['pid'])
-                connection['user'] = getPidUser(connection['pid'])
-                if connection['protocol'].startswith('tcp'):
-                    result['ansible_facts']['tcp_listen'].append(connection)
-                elif connection['protocol'].startswith('udp'):
-                    result['ansible_facts']['udp_listen'].append(connection)
-    except (KeyError, EnvironmentError) as e:
-        module.fail_json(msg=to_native(e))
+                if not module.params["include_non_listening"]:
+                    connection.pop("state", None)
+                    connection.pop("foreign_address", None)
+                connection["stime"] = getPidSTime(connection["pid"])
+                connection["user"] = getPidUser(connection["pid"])
+                if connection["protocol"].startswith("tcp"):
+                    result["ansible_facts"]["tcp_listen"].append(connection)
+                elif connection["protocol"].startswith("udp"):
+                    result["ansible_facts"]["udp_listen"].append(connection)
+    except (KeyError, OSError) as e:
+        module.fail_json(msg=f"{e}")
 
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

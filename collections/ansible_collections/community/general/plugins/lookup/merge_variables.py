@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2020, Thales Netherlands
 # Copyright (c) 2021, Ansible Project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 author:
@@ -12,7 +10,7 @@ author:
   - Mark Ettema (@m-a-r-k-e)
   - Alexander Petrenz (@alpex8)
 name: merge_variables
-short_description: merge variables whose names match a given pattern
+short_description: Merge variables whose names match a given pattern
 description:
   - This lookup returns the merged result of all variables in scope that match the given prefixes, suffixes, or regular expressions,
     optionally.
@@ -20,8 +18,8 @@ version_added: 6.5.0
 options:
   _terms:
     description:
-      - Depending on the value of O(pattern_type), this is a list of prefixes, suffixes, or regular expressions that will
-        be used to match all variables that should be merged.
+      - Depending on the value of O(pattern_type), this is a list of prefixes, suffixes, or regular expressions that is used
+        to match all variables that should be merged.
     required: true
     type: list
     elements: str
@@ -45,11 +43,11 @@ options:
     type: raw
   override:
     description:
-      - Return an error, print a warning or ignore it when a key will be overwritten.
+      - Return an error, print a warning or ignore it when a key is overwritten.
       - The default behavior V(error) makes the plugin fail when a key would be overwritten.
       - When V(warn) and V(ignore) are used, note that it is important to know that the variables are sorted by name before
-        being merged. Keys for later variables in this order will overwrite keys of the same name for variables earlier in
-        this order. To avoid potential confusion, better use O(override=error) whenever possible.
+        being merged. Keys for later variables in this order overwrite keys of the same name for variables earlier in this
+        order. To avoid potential confusion, better use O(override=error) whenever possible.
     type: str
     default: 'error'
     choices:
@@ -111,8 +109,7 @@ example_b: "{{ lookup('community.general.merge_variables', '^.+__test_list$', in
 
 RETURN = r"""
 _raw:
-  description: In case the search matches list items, a list will be returned. In case the search matches dicts, a dict will
-    be returned.
+  description: In case the search matches list items, a list is returned. In case the search matches dicts, a dict is returned.
   type: raw
   elements: raw
 """
@@ -132,16 +129,16 @@ def _verify_and_get_type(variable):
     elif isinstance(variable, dict):
         return "dict"
     else:
-        raise AnsibleError("Not supported type detected, variable must be a list or a dict")
+        raise AnsibleError(f"Not supported type detected, variable must be a list or a dict: '{variable}'")
 
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
         self.set_options(direct=kwargs)
         initial_value = self.get_option("initial_value", None)
-        self._override = self.get_option('override', 'error')
-        self._pattern_type = self.get_option('pattern_type', 'regex')
-        self._groups = self.get_option('groups', None)
+        self._override = self.get_option("override", "error")
+        self._pattern_type = self.get_option("pattern_type", "regex")
+        self._groups = self.get_option("groups", None)
 
         ret = []
         for term in terms:
@@ -162,14 +159,11 @@ class LookupModule(LookupBase):
         return ret
 
     def _is_host_in_allowed_groups(self, host_groups):
-        if 'all' in self._groups:
+        if "all" in self._groups:
             return True
 
         group_intersection = [host_group_name for host_group_name in host_groups if host_group_name in self._groups]
-        if group_intersection:
-            return True
-
-        return False
+        return bool(group_intersection)
 
     def _var_matches(self, key, search_pattern):
         if self._pattern_type == "prefix":
@@ -194,8 +188,10 @@ class LookupModule(LookupBase):
             result = initial_value
 
         for var_name in var_merge_names:
-            with self._templar.set_temporary_context(available_variables=variables):  # tmp. switch renderer to context of current variables
-                var_value = self._templar.template(variables[var_name])  # Render jinja2 templates
+            temp_templar = self._templar.copy_with_new_env(
+                available_variables=variables
+            )  # tmp. switch renderer to context of current variables
+            var_value = temp_templar.template(variables[var_name])  # Render jinja2 templates
             var_type = _verify_and_get_type(var_value)
 
             if prev_var_type is None:

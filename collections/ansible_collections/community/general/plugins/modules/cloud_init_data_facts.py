@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2018, René Moser <mail@renemoser.net>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: cloud_init_data_facts
@@ -50,38 +47,41 @@ cloud_init_data_facts:
   description: Facts of result and status.
   returned: success
   type: dict
-  sample: '{
-    "status": {
+  sample:
+    {
+      "status": {
         "v1": {
-            "datasource": "DataSourceCloudStack",
-            "errors": []
-        },
-    "result": {
-        "v1": {
-            "datasource": "DataSourceCloudStack",
-            "init": {
-                "errors": [],
-                "finished": 1522066377.0185432,
-                "start": 1522066375.2648022
-            },
-            "init-local": {
-                "errors": [],
-                "finished": 1522066373.70919,
-                "start": 1522066373.4726632
-            },
-            "modules-config": {
-                "errors": [],
-                "finished": 1522066380.9097016,
-                "start": 1522066379.0011985
-            },
-            "modules-final": {
-                "errors": [],
-                "finished": 1522066383.56594,
-                "start": 1522066382.3449218
-            },
-            "stage": null
+          "datasource": "DataSourceCloudStack",
+          "errors": []
         }
-    }'
+      },
+      "result": {
+        "v1": {
+          "datasource": "DataSourceCloudStack",
+          "init": {
+            "errors": [],
+            "finished": 1522066377.0185432,
+            "start": 1522066375.2648022
+          },
+          "init-local": {
+            "errors": [],
+            "finished": 1522066373.70919,
+            "start": 1522066373.4726632
+          },
+          "modules-config": {
+            "errors": [],
+            "finished": 1522066380.9097016,
+            "start": 1522066379.0011985
+          },
+          "modules-final": {
+            "errors": [],
+            "finished": 1522066383.56594,
+            "start": 1522066382.3449218
+          },
+          "stage": null
+        }
+      }
+    }
 """
 
 import os
@@ -89,34 +89,31 @@ import os
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_text
 
-
 CLOUD_INIT_PATH = "/var/lib/cloud/data"
 
 
 def gather_cloud_init_data_facts(module):
-    res = {
-        'cloud_init_data_facts': dict()
-    }
+    res = {"cloud_init_data_facts": dict()}
 
-    for i in ['result', 'status']:
-        filter = module.params.get('filter')
+    for i in ["result", "status"]:
+        filter = module.params.get("filter")
         if filter is None or filter == i:
-            res['cloud_init_data_facts'][i] = dict()
-            json_file = os.path.join(CLOUD_INIT_PATH, i + '.json')
+            res["cloud_init_data_facts"][i] = dict()
+            json_file = os.path.join(CLOUD_INIT_PATH, f"{i}.json")
 
             if os.path.exists(json_file):
-                with open(json_file, 'rb') as f:
-                    contents = to_text(f.read(), errors='surrogate_or_strict')
+                with open(json_file, "rb") as f:
+                    contents = to_text(f.read(), errors="surrogate_or_strict")
 
                 if contents:
-                    res['cloud_init_data_facts'][i] = module.from_json(contents)
+                    res["cloud_init_data_facts"][i] = module.from_json(contents)
     return res
 
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            filter=dict(choices=['result', 'status']),
+            filter=dict(choices=["result", "status"]),
         ),
         supports_check_mode=True,
     )
@@ -126,5 +123,5 @@ def main():
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

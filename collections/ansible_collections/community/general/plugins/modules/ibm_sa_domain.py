@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, IBM CORPORATION
 # Author(s): Tzur Eliyahu <tzure@il.ibm.com>
@@ -7,8 +6,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: ibm_sa_domain
@@ -37,52 +35,42 @@ options:
   ldap_id:
     description:
       - LDAP ID to add to the domain.
-    required: false
     type: str
   size:
     description:
       - Size of the domain.
-    required: false
     type: str
   hard_capacity:
     description:
       - Hard capacity of the domain.
-    required: false
     type: str
   soft_capacity:
     description:
       - Soft capacity of the domain.
-    required: false
     type: str
   max_cgs:
     description:
       - Number of max cgs.
-    required: false
     type: str
   max_dms:
     description:
       - Number of max dms.
-    required: false
     type: str
   max_mirrors:
     description:
       - Number of max_mirrors.
-    required: false
     type: str
   max_pools:
     description:
       - Number of max_pools.
-    required: false
     type: str
   max_volumes:
     description:
       - Number of max_volumes.
-    required: false
     type: str
   perf_class:
     description:
       - Add the domain to a performance class.
-    required: false
     type: str
 
 extends_documentation_fragment:
@@ -120,15 +108,20 @@ msg:
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.general.plugins.module_utils.ibm_sa_utils import execute_pyxcli_command, \
-    connect_ssl, spectrum_accelerate_spec, is_pyxcli_installed
+
+from ansible_collections.community.general.plugins.module_utils.ibm_sa_utils import (
+    connect_ssl,
+    execute_pyxcli_command,
+    is_pyxcli_installed,
+    spectrum_accelerate_spec,
+)
 
 
 def main():
     argument_spec = spectrum_accelerate_spec()
     argument_spec.update(
         dict(
-            state=dict(default='present', choices=['present', 'absent']),
+            state=dict(default="present", choices=["present", "absent"]),
             domain=dict(required=True),
             size=dict(),
             max_dms=dict(),
@@ -139,7 +132,7 @@ def main():
             max_volumes=dict(),
             perf_class=dict(),
             hard_capacity=dict(),
-            soft_capacity=dict()
+            soft_capacity=dict(),
         )
     )
 
@@ -148,19 +141,16 @@ def main():
     is_pyxcli_installed(module)
 
     xcli_client = connect_ssl(module)
-    domain = xcli_client.cmd.domain_list(
-        domain=module.params['domain']).as_single_element
-    state = module.params['state']
+    domain = xcli_client.cmd.domain_list(domain=module.params["domain"]).as_single_element
+    state = module.params["state"]
 
     state_changed = False
-    msg = 'Domain \'{0}\''.format(module.params['domain'])
-    if state == 'present' and not domain:
-        state_changed = execute_pyxcli_command(
-            module, 'domain_create', xcli_client)
+    msg = f"Domain '{module.params['domain']}'"
+    if state == "present" and not domain:
+        state_changed = execute_pyxcli_command(module, "domain_create", xcli_client)
         msg += " created successfully."
-    elif state == 'absent' and domain:
-        state_changed = execute_pyxcli_command(
-            module, 'domain_delete', xcli_client)
+    elif state == "absent" and domain:
+        state_changed = execute_pyxcli_command(module, "domain_delete", xcli_client)
         msg += " deleted successfully."
     else:
         msg += " state unchanged."
@@ -168,5 +158,5 @@ def main():
     module.exit_json(changed=state_changed, msg=msg)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

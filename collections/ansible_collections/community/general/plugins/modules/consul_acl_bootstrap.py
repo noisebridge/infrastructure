@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2024, Florian Apolloner (@apollo13)
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: consul_acl_bootstrap
@@ -50,7 +47,7 @@ RETURN = r"""
 result:
   description:
     - The bootstrap result as returned by the Consul HTTP API.
-    - B(Note:) If O(bootstrap_secret) has been specified the C(SecretID) and C(ID) will not contain the secret but C(VALUE_SPECIFIED_IN_NO_LOG_PARAMETER).
+    - B(Note:) If O(bootstrap_secret) has been specified the C(SecretID) and C(ID) do not contain the secret but C(VALUE_SPECIFIED_IN_NO_LOG_PARAMETER).
       If you pass O(bootstrap_secret), make sure your playbook/role does not depend on this return value!
   returned: changed
   type: dict
@@ -70,6 +67,7 @@ result:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.consul import (
     AUTH_ARGUMENTS_SPEC,
     RequestError,

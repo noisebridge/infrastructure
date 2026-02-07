@@ -2,7 +2,7 @@
  "collection_info": {
   "namespace": "grafana",
   "name": "grafana",
-  "version": "6.0.1",
+  "version": "6.0.6",
   "authors": [
    "Grafana Labs <grafana.com>",
    "Ishan Jain <ishan.jain@grafana.com>",
@@ -19,7 +19,11 @@
    "GPL-3.0-or-later"
   ],
   "license_file": null,
-  "dependencies": {},
+  "dependencies": {
+   "community.general": ">=8.2.0",
+   "community.grafana": ">=1.5.4",
+   "ansible.posix": ">=1.5.4"
+  },
   "repository": "https://github.com/grafana/grafana-ansible-collection",
   "documentation": "https://docs.ansible.com/ansible/latest/collections/grafana/grafana/index.html",
   "homepage": null,
@@ -29,7 +33,7 @@
   "name": "FILES.json",
   "ftype": "file",
   "chksum_type": "sha256",
-  "chksum_sha256": "82f841a93e0b90908b38461c5b10a44003c5506c55d02ae2b552b2dc57bf656c",
+  "chksum_sha256": "bfe62e7c951fd8f92ef4ad516d0ecef8a3042446fd4edbe2e498dba1ace06b1a",
   "format": 1
  },
  "format": 1

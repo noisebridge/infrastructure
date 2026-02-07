@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2017, Loic Blot <loic.blot@unix-experience.fr>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: logstash_plugin
@@ -49,7 +46,7 @@ options:
   version:
     type: str
     description:
-      - Specify plugin Version of the plugin to install. If plugin exists with previous version, it will NOT be updated.
+      - Specify version of the plugin to install. If the plugin exists with a previous version, it is B(not) updated.
 """
 
 EXAMPLES = r"""
@@ -79,11 +76,7 @@ EXAMPLES = r"""
 
 from ansible.module_utils.basic import AnsibleModule
 
-
-PACKAGE_STATE_MAP = dict(
-    present="install",
-    absent="remove"
-)
+PACKAGE_STATE_MAP = dict(present="install", absent="remove")
 
 
 def is_plugin_present(module, plugin_bin, plugin_name):
@@ -95,26 +88,28 @@ def is_plugin_present(module, plugin_bin, plugin_name):
 def parse_error(string):
     reason = "reason: "
     try:
-        return string[string.index(reason) + len(reason):].strip()
+        return string[string.index(reason) + len(reason) :].strip()
     except ValueError:
         return string
 
 
 def install_plugin(module, plugin_bin, plugin_name, version, proxy_host, proxy_port):
-    cmd_args = [plugin_bin, PACKAGE_STATE_MAP["present"], plugin_name]
+    cmd_args = [plugin_bin, PACKAGE_STATE_MAP["present"]]
 
     if version:
-        cmd_args.append("--version %s" % version)
+        cmd_args.extend(["--version", version])
 
     if proxy_host and proxy_port:
-        cmd_args.append("-DproxyHost=%s -DproxyPort=%s" % (proxy_host, proxy_port))
+        cmd_args.extend([f"-DproxyHost={proxy_host}", f"-DproxyPort={proxy_port}"])
+
+    cmd_args.append(plugin_name)
 
     cmd = " ".join(cmd_args)
 
     if module.check_mode:
         rc, out, err = 0, "check mode", ""
     else:
-        rc, out, err = module.run_command(cmd)
+        rc, out, err = module.run_command(cmd_args)
 
     if rc != 0:
         reason = parse_error(out)
@@ -131,7 +126,7 @@ def remove_plugin(module, plugin_bin, plugin_name):
     if module.check_mode:
         rc, out, err = 0, "check mode", ""
     else:
-        rc, out, err = module.run_command(cmd)
+        rc, out, err = module.run_command(cmd_args)
 
     if rc != 0:
         reason = parse_error(out)
@@ -148,9 +143,9 @@ def main():
             plugin_bin=dict(default="/usr/share/logstash/bin/logstash-plugin", type="path"),
             proxy_host=dict(),
             proxy_port=dict(),
-            version=dict()
+            version=dict(),
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
     name = module.params["name"]
@@ -174,5 +169,5 @@ def main():
     module.exit_json(changed=changed, cmd=cmd, name=name, state=state, stdout=out, stderr=err)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

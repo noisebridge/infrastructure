@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 #  Copyright Edward Hilgendorf, <edward@hilgendorf.me>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: dnsimple_info
@@ -26,8 +23,8 @@ options:
   name:
     description:
       - The domain name to retrieve info from.
-      - Will return all associated records for this domain if specified.
-      - If not specified, will return all domains associated with the account ID.
+      - Returns all associated records for this domain if specified.
+      - If not specified, returns all domains associated with the account ID.
     type: str
 
   account_id:
@@ -43,13 +40,11 @@ options:
   record:
     description:
       - The record to find.
-      - If specified, only this record will be returned instead of all records.
-    required: false
+      - If specified, only this record is returned instead of all records.
     type: str
 
   sandbox:
     description: Whether or not to use sandbox environment.
-    required: false
     default: false
     type: bool
 
@@ -230,6 +225,7 @@ dnsimple_record_info:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils import deps
 
 with deps.declare("requests"):
@@ -237,10 +233,9 @@ with deps.declare("requests"):
 
 
 def build_url(account, key, is_sandbox):
-    headers = {'Accept': 'application/json',
-               'Authorization': 'Bearer {0}'.format(key)}
-    sandbox = '.sandbox' if is_sandbox else ''
-    url = 'https://api{sandbox}.dnsimple.com/v2/{account}'.format(sandbox=sandbox, account=account)
+    headers = {"Accept": "application/json", "Authorization": f"Bearer {key}"}
+    sandbox = ".sandbox" if is_sandbox else ""
+    url = f"https://api{sandbox}.dnsimple.com/v2/{account}"
     req = Request(url=url, headers=headers)
     prepped_request = req.prepare()
     return prepped_request
@@ -249,8 +244,8 @@ def build_url(account, key, is_sandbox):
 def iterate_data(module, request_object):
     base_url = request_object.url
     response = Session().send(request_object)
-    if 'pagination' not in response.json():
-        module.fail_json('API Call failed, check ID, key and sandbox values')
+    if "pagination" not in response.json():
+        module.fail_json("API Call failed, check ID, key and sandbox values")
 
     data = response.json()["data"]
     total_pages = response.json()["pagination"]["total_pages"]
@@ -258,73 +253,65 @@ def iterate_data(module, request_object):
 
     while page < total_pages:
         page = page + 1
-        request_object.url = '{url}&page={page}'.format(url=base_url, page=page)
+        request_object.url = f"{base_url}&page={page}"
         new_results = Session().send(request_object)
-        data = data + new_results.json()['data']
+        data = data + new_results.json()["data"]
 
     return data
 
 
 def record_info(dnsimple_mod, req_obj):
-    req_obj.url, req_obj.method = req_obj.url + '/zones/' + dnsimple_mod.params["name"] + '/records?name=' + dnsimple_mod.params["record"], 'GET'
+    req_obj.url, req_obj.method = (
+        f"{req_obj.url}/zones/{dnsimple_mod.params['name']}/records?name={dnsimple_mod.params['record']}",
+        "GET",
+    )
     return iterate_data(dnsimple_mod, req_obj)
 
 
 def domain_info(dnsimple_mod, req_obj):
-    req_obj.url, req_obj.method = req_obj.url + '/zones/' + dnsimple_mod.params["name"] + '/records?per_page=100', 'GET'
+    req_obj.url, req_obj.method = f"{req_obj.url}/zones/{dnsimple_mod.params['name']}/records?per_page=100", "GET"
     return iterate_data(dnsimple_mod, req_obj)
 
 
 def account_info(dnsimple_mod, req_obj):
-    req_obj.url, req_obj.method = req_obj.url + '/zones/?per_page=100', 'GET'
+    req_obj.url, req_obj.method = f"{req_obj.url}/zones/?per_page=100", "GET"
     return iterate_data(dnsimple_mod, req_obj)
 
 
 def main():
-    # define available arguments/parameters a user can pass to the module
-    fields = {
-        "account_id": {"required": True, "type": "str"},
-        "api_key": {"required": True, "type": "str", "no_log": True},
-        "name": {"required": False, "type": "str"},
-        "record": {"required": False, "type": "str"},
-        "sandbox": {"required": False, "type": "bool", "default": False}
-    }
-
-    result = {
-        'changed': False
-    }
+    result = {"changed": False}
 
     module = AnsibleModule(
-        argument_spec=fields,
-        supports_check_mode=True
+        argument_spec=dict(
+            account_id=dict(required=True, type="str"),
+            api_key=dict(required=True, type="str", no_log=True),
+            name=dict(type="str"),
+            record=dict(type="str"),
+            sandbox=dict(type="bool", default=False),
+        ),
+        supports_check_mode=True,
     )
 
     params = module.params
-    req = build_url(params['account_id'],
-                    params['api_key'],
-                    params['sandbox'])
+    req = build_url(params["account_id"], params["api_key"], params["sandbox"])
 
     deps.validate(module)
 
-    # At minimum we need account and key
-    if params['account_id'] and params['api_key']:
-        # If we have a record return info on that record
-        if params['name'] and params['record']:
-            result['dnsimple_record_info'] = record_info(module, req)
-            module.exit_json(**result)
+    # If we have a record return info on that record
+    if params["name"] and params["record"]:
+        result["dnsimple_record_info"] = record_info(module, req)
+        module.exit_json(**result)
 
-            # If we have the account only and domain, return records for the domain
-        elif params['name']:
-            result['dnsimple_records_info'] = domain_info(module, req)
-            module.exit_json(**result)
+        # If we have the account only and domain, return records for the domain
+    elif params["name"]:
+        result["dnsimple_records_info"] = domain_info(module, req)
+        module.exit_json(**result)
 
-            # If we have the account only, return domains
-        else:
-            result['dnsimple_domain_info'] = account_info(module, req)
-            module.exit_json(**result)
+        # If we have the account only, return domains
     else:
-        module.fail_json(msg="Need at least account_id and api_key")
+        result["dnsimple_domain_info"] = account_info(module, req)
+        module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

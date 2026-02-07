@@ -1,10 +1,8 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2024, Ansible Project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
-
 
 DOCUMENTATION = r"""
 name: run0
@@ -61,7 +59,7 @@ options:
       - name: ANSIBLE_RUN0_FLAGS
     type: string
 notes:
-  - This plugin will only work when a C(polkit) rule is in place.
+  - This plugin only works when a C(polkit) rule is in place.
 """
 
 EXAMPLES = r"""
@@ -79,22 +77,19 @@ EXAMPLES = r"""
 
 from re import compile as re_compile
 
+from ansible.module_utils.common.text.converters import to_bytes
 from ansible.plugins.become import BecomeBase
-from ansible.module_utils._text import to_bytes
 
 ansi_color_codes = re_compile(to_bytes(r"\x1B\[[0-9;]+m"))
 
 
 class BecomeModule(BecomeBase):
-
     name = "community.general.run0"
 
     prompt = "Password: "
     fail = ("==== AUTHENTICATION FAILED ====",)
     success = ("==== AUTHENTICATION COMPLETE ====",)
-    require_tty = (
-        True  # see https://github.com/ansible-collections/community.general/issues/6932
-    )
+    require_tty = True  # see https://github.com/ansible-collections/community.general/issues/6932
 
     @staticmethod
     def remove_ansi_codes(line):
@@ -110,9 +105,7 @@ class BecomeModule(BecomeBase):
         flags = self.get_option("become_flags")
         user = self.get_option("become_user")
 
-        return (
-            f"{become} --user={user} {flags} {self._build_success_command(cmd, shell)}"
-        )
+        return f"{become} --user={user} {flags} {self._build_success_command(cmd, shell)}"
 
     def check_success(self, b_output):
         b_output = self.remove_ansi_codes(b_output)

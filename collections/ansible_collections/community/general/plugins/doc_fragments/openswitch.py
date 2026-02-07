@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2015, Peter Sprygada <psprygada@ansible.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 
-class ModuleDocFragment(object):
-
+class ModuleDocFragment:
     # Standard files documentation fragment
     DOCUMENTATION = r"""
 options:
@@ -21,8 +17,8 @@ options:
   port:
     description:
       - Specifies the port to use when building the connection to the remote device. This value applies to either O(transport=cli)
-        or O(transport=rest). The port value will default to the appropriate transport common port if none is provided in
-        the task. (cli=22, http=80, https=443). Note this argument does not affect the SSH transport.
+        or O(transport=rest). The port value defaults to the appropriate transport common port if none is provided in the
+        task. (cli=22, http=80, https=443). Note this argument does not affect the SSH transport.
     type: int
     default: 0 (use common port)
   username:
@@ -30,25 +26,24 @@ options:
       - Configures the username to use to authenticate the connection to the remote device. This value is used to authenticate
         either the CLI login or the eAPI authentication depending on which transport is used. Note this argument does not
         affect the SSH transport. If the value is not specified in the task, the value of environment variable E(ANSIBLE_NET_USERNAME)
-        will be used instead.
+        is used instead.
     type: str
   password:
     description:
       - Specifies the password to use to authenticate the connection to the remote device. This is a common argument used
         for either O(transport=cli) or O(transport=rest). Note this argument does not affect the SSH transport. If the value
-        is not specified in the task, the value of environment variable E(ANSIBLE_NET_PASSWORD) will be used instead.
+        is not specified in the task, the value of environment variable E(ANSIBLE_NET_PASSWORD) is used instead.
     type: str
   timeout:
     description:
       - Specifies the timeout in seconds for communicating with the network device for either connecting or sending commands.
-        If the timeout is exceeded before the operation is completed, the module will error.
+        If the timeout is exceeded before the operation is completed, the module fails.
     type: int
     default: 10
   ssh_keyfile:
     description:
       - Specifies the SSH key to use to authenticate the connection to the remote device. This argument is only used for O(transport=cli).
-        If the value is not specified in the task, the value of environment variable E(ANSIBLE_NET_SSH_KEYFILE) will be used
-        instead.
+        If the value is not specified in the task, the value of environment variable E(ANSIBLE_NET_SSH_KEYFILE) is used instead.
     type: path
   transport:
     description:

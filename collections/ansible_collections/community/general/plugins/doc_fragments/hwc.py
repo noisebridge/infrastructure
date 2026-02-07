@@ -1,14 +1,11 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2018, Huawei Inc.
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 
-class ModuleDocFragment(object):
-
+class ModuleDocFragment:
     # HWC doc fragment.
     DOCUMENTATION = r"""
 options:
@@ -55,5 +52,5 @@ notes:
   - For authentication, you can set domain using the E(ANSIBLE_HWC_DOMAIN) environment variable.
   - For authentication, you can set project using the E(ANSIBLE_HWC_PROJECT) environment variable.
   - For authentication, you can set region using the E(ANSIBLE_HWC_REGION) environment variable.
-  - Environment variables values will only be used if the playbook values are not set.
+  - Environment variables values are only used when the playbook values are not set.
 """

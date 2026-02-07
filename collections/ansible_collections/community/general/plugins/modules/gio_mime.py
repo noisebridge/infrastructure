@@ -1,11 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: gio_mime
@@ -26,12 +24,12 @@ attributes:
 options:
   mime_type:
     description:
-      - MIME type for which a default handler will be set.
+      - MIME type for which a default handler is set.
     type: str
     required: true
   handler:
     description:
-      - Default handler will be set for the MIME type.
+      - Default handler set for the MIME type.
     type: str
     required: true
 notes:
@@ -61,18 +59,6 @@ handler:
   returned: success
   type: str
   sample: google-chrome.desktop
-stdout:
-  description:
-    - The output of the C(gio) command.
-  returned: success
-  type: str
-  sample: Set google-chrome.desktop as the default for x-scheme-handler/https
-stderr:
-  description:
-    - The error output of the C(gio) command.
-  returned: failure
-  type: str
-  sample: 'gio: Failed to load info for handler "never-existed.desktop"'
 version:
   description: Version of gio.
   type: str
@@ -81,32 +67,35 @@ version:
   version_added: 10.0.0
 """
 
+from ansible_collections.community.general.plugins.module_utils.gio_mime import gio_mime_get, gio_mime_runner
 from ansible_collections.community.general.plugins.module_utils.module_helper import ModuleHelper
-from ansible_collections.community.general.plugins.module_utils.gio_mime import gio_mime_runner, gio_mime_get
 
 
 class GioMime(ModuleHelper):
-    output_params = ['handler']
+    output_params = ["handler"]
     module = dict(
         argument_spec=dict(
-            mime_type=dict(type='str', required=True),
-            handler=dict(type='str', required=True),
+            mime_type=dict(type="str", required=True),
+            handler=dict(type="str", required=True),
         ),
         supports_check_mode=True,
     )
-    use_old_vardict = False
 
     def __init_module__(self):
         self.runner = gio_mime_runner(self.module, check_rc=True)
         with self.runner("version") as ctx:
             rc, out, err = ctx.run()
             self.vars.version = out.strip()
-        self.vars.set_meta("handler", initial_value=gio_mime_get(self.runner, self.vars.mime_type), diff=True, change=True)
+        self.vars.set_meta(
+            "handler", initial_value=gio_mime_get(self.runner, self.vars.mime_type), diff=True, change=True
+        )
 
     def __run__(self):
-        check_mode_return = (0, 'Module executed in check mode', '')
+        check_mode_return = (0, "Module executed in check mode", "")
         if self.vars.has_changed:
-            with self.runner.context(args_order="mime mime_type handler", check_mode_skip=True, check_mode_return=check_mode_return) as ctx:
+            with self.runner.context(
+                args_order="mime mime_type handler", check_mode_skip=True, check_mode_return=check_mode_return
+            ) as ctx:
                 rc, out, err = ctx.run()
                 self.vars.stdout = out
                 self.vars.stderr = err
@@ -117,5 +106,5 @@ def main():
     GioMime.execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

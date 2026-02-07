@@ -1,27 +1,29 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2025, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
-from ansible.module_utils.six import raise_from
+import typing as t
 
 from ansible_collections.community.general.plugins.module_utils import deps
+
+if t.TYPE_CHECKING:
+    from ansible.module_utils.basic import AnsibleModule
 
 
 with deps.declare("packaging"):
     from packaging.requirements import Requirement
-    from packaging.version import parse as parse_version, InvalidVersion
+    from packaging.version import InvalidVersion
+    from packaging.version import parse as parse_version
 
 
 class PackageRequirement:
-    def __init__(self, module, name):
+    def __init__(self, module: AnsibleModule, name: str) -> None:
         self.module = module
         self.parsed_name, self.requirement = self._parse_spec(name)
 
-    def _parse_spec(self, name):
+    def _parse_spec(self, name: str) -> tuple[str, Requirement | None]:
         """
         Parse a package name that may include version specifiers using PEP 508.
         Returns a tuple of (name, requirement) where requirement is of type packaging.requirements.Requirement and it may be None.
@@ -41,7 +43,7 @@ class PackageRequirement:
             return name, None
 
         # Quick check for simple package names
-        if not any(c in name for c in '>=<!~[]'):
+        if not any(c in name for c in ">=<!~[]"):
             return name.strip(), None
 
         deps.validate(self.module, "packaging")
@@ -51,9 +53,9 @@ class PackageRequirement:
             return req.name, req
 
         except Exception as e:
-            raise_from(ValueError("Invalid package specification for '{0}': {1}".format(name, e)), e)
+            raise ValueError(f"Invalid package specification for '{name}': {e}") from e
 
-    def matches_version(self, version):
+    def matches_version(self, version: str):
         """
         Check if a version string fulfills a version specifier.
 
@@ -72,4 +74,4 @@ class PackageRequirement:
             return ver in self.requirement.specifier
 
         except InvalidVersion as e:
-            raise_from(ValueError("Invalid version '{0}': {1}".format(version, e)))
+            raise ValueError(f"Invalid version '{version}': {e}") from e

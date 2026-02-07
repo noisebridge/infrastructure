@@ -1,14 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright Ansible Project
 #
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: dnsimple
@@ -25,8 +22,8 @@ attributes:
 options:
   account_email:
     description:
-      - Account email. If omitted, the environment variables E(DNSIMPLE_EMAIL) and E(DNSIMPLE_API_TOKEN) will be looked for.
-      - 'If those variables are not found, a C(.dnsimple) file will be looked for, see: U(https://github.com/mikemaccana/dnsimple-python#getting-started).'
+      - Account email. If omitted, the environment variables E(DNSIMPLE_EMAIL) and E(DNSIMPLE_API_TOKEN) are looked for.
+      - 'If those variables are not found, a C(.dnsimple) file is looked for, see: U(https://github.com/mikemaccana/dnsimple-python#getting-started).'
       - C(.dnsimple) config files are only supported in dnsimple-python<2.0.0.
     type: str
   account_api_token:
@@ -36,12 +33,12 @@ options:
   domain:
     description:
       - Domain to work with. Can be the domain name (for example V(mydomain.com)) or the numeric ID of the domain in DNSimple.
-      - If omitted, a list of domains will be returned.
-      - If domain is present but the domain does not exist, it will be created.
+      - If omitted, a list of domains is returned.
+      - If domain is present but the domain does not exist, it is created.
     type: str
   record:
     description:
-      - Record to add, if blank a record for the domain will be created, supports the wildcard (*).
+      - Record to add, if blank a record for the domain is created, supports the wildcard (*).
     type: str
   record_ids:
     description:
@@ -51,8 +48,23 @@ options:
   type:
     description:
       - The type of DNS record to create.
-    choices: ['A', 'ALIAS', 'CNAME', 'MX', 'SPF', 'URL', 'TXT', 'NS', 'SRV', 'NAPTR', 'PTR', 'AAAA', 'SSHFP', 'HINFO', 'POOL',
-      'CAA']
+    choices:
+      - A
+      - ALIAS
+      - CNAME
+      - MX
+      - SPF
+      - URL
+      - TXT
+      - NS
+      - SRV
+      - NAPTR
+      - PTR
+      - AAAA
+      - SSHFP
+      - HINFO
+      - POOL
+      - CAA
     type: str
   ttl:
     description:
@@ -151,15 +163,15 @@ EXAMPLES = r"""
   delegate_to: localhost
 """
 
-RETURN = r"""# """
+RETURN = r"""#"""
 
-import traceback
 import re
+import traceback
 
 from ansible_collections.community.general.plugins.module_utils.version import LooseVersion
 
 
-class DNSimpleV2():
+class DNSimpleV2:
     """class which uses dnsimple-python >= 2"""
 
     def __init__(self, account_email, account_api_token, sandbox, module):
@@ -175,11 +187,18 @@ class DNSimpleV2():
     def dnsimple_client(self):
         """creates a dnsimple client object"""
         if self.account_email and self.account_api_token:
-            client = Client(sandbox=self.sandbox, email=self.account_email, access_token=self.account_api_token, user_agent="ansible/community.general")
+            client = Client(
+                sandbox=self.sandbox,
+                email=self.account_email,
+                access_token=self.account_api_token,
+                user_agent="ansible/community.general",
+            )
         else:
-            msg = "Option account_email or account_api_token not provided. " \
-                  "Dnsimple authentication with a .dnsimple config file is not " \
-                  "supported with dnsimple-python>=2.0.0"
+            msg = (
+                "Option account_email or account_api_token not provided. "
+                "Dnsimple authentication with a .dnsimple config file is not "
+                "supported with dnsimple-python>=2.0.0"
+            )
             raise DNSimpleException(msg)
         client.identity.whoami()
         self.client = client
@@ -192,9 +211,11 @@ class DNSimpleV2():
         if not account:
             accounts = Accounts(self.client).list_accounts().data
             if len(accounts) != 1:
-                msg = "The provided dnsimple token is a user token with multiple accounts." \
-                    "Use an account token or a user token with access to a single account." \
+                msg = (
+                    "The provided dnsimple token is a user token with multiple accounts."
+                    "Use an account token or a user token with access to a single account."
                     "See https://support.dnsimple.com/articles/api-access-token/"
+                )
                 raise DNSimpleException(msg)
             account = accounts[0]
         self.account = account
@@ -226,9 +247,9 @@ class DNSimpleV2():
 
     def get_records(self, zone, dnsimple_filter=None):
         """return dns resource records which match a specified filter"""
-        records_list = self._get_paginated_result(self.client.zones.list_records,
-                                                  account_id=self.account.id,
-                                                  zone=zone, filter=dnsimple_filter)
+        records_list = self._get_paginated_result(
+            self.client.zones.list_records, account_id=self.account.id, zone=zone, filter=dnsimple_filter
+        )
         return [d.__dict__ for d in records_list]
 
     def delete_record(self, domain, rid):
@@ -262,64 +283,79 @@ try:
     # try to import dnsimple >= 2.0.0
     from dnsimple import Client, DNSimpleException
     from dnsimple.service import Accounts
+    from dnsimple.struct.zone_record import ZoneRecordInput, ZoneRecordUpdateInput
     from dnsimple.version import version as dnsimple_version
-    from dnsimple.struct.zone_record import ZoneRecordUpdateInput, ZoneRecordInput
+
     HAS_DNSIMPLE = True
 except ImportError:
     DNSIMPLE_IMP_ERR.append(traceback.format_exc())
 
-from ansible.module_utils.basic import AnsibleModule, missing_required_lib, env_fallback
+from ansible.module_utils.basic import AnsibleModule, env_fallback, missing_required_lib
 
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            account_email=dict(type='str', fallback=(env_fallback, ['DNSIMPLE_EMAIL'])),
-            account_api_token=dict(type='str',
-                                   no_log=True,
-                                   fallback=(env_fallback, ['DNSIMPLE_API_TOKEN'])),
-            domain=dict(type='str'),
-            record=dict(type='str'),
-            record_ids=dict(type='list', elements='str'),
-            type=dict(type='str', choices=['A', 'ALIAS', 'CNAME', 'MX', 'SPF',
-                                           'URL', 'TXT', 'NS', 'SRV', 'NAPTR',
-                                           'PTR', 'AAAA', 'SSHFP', 'HINFO',
-                                           'POOL', 'CAA']),
-            ttl=dict(type='int', default=3600),
-            value=dict(type='str'),
-            priority=dict(type='int'),
-            state=dict(type='str', choices=['present', 'absent'], default='present'),
-            solo=dict(type='bool', default=False),
-            sandbox=dict(type='bool', default=False),
+            account_email=dict(type="str", fallback=(env_fallback, ["DNSIMPLE_EMAIL"])),
+            account_api_token=dict(type="str", no_log=True, fallback=(env_fallback, ["DNSIMPLE_API_TOKEN"])),
+            domain=dict(type="str"),
+            record=dict(type="str"),
+            record_ids=dict(type="list", elements="str"),
+            type=dict(
+                type="str",
+                choices=[
+                    "A",
+                    "ALIAS",
+                    "CNAME",
+                    "MX",
+                    "SPF",
+                    "URL",
+                    "TXT",
+                    "NS",
+                    "SRV",
+                    "NAPTR",
+                    "PTR",
+                    "AAAA",
+                    "SSHFP",
+                    "HINFO",
+                    "POOL",
+                    "CAA",
+                ],
+            ),
+            ttl=dict(type="int", default=3600),
+            value=dict(type="str"),
+            priority=dict(type="int"),
+            state=dict(type="str", choices=["present", "absent"], default="present"),
+            solo=dict(type="bool", default=False),
+            sandbox=dict(type="bool", default=False),
         ),
-        required_together=[
-            ['record', 'value']
-        ],
+        required_together=[["record", "value"]],
         supports_check_mode=True,
     )
 
     if not HAS_DNSIMPLE:
-        module.fail_json(msg=missing_required_lib('dnsimple'), exception=DNSIMPLE_IMP_ERR[0])
+        module.fail_json(msg=missing_required_lib("dnsimple"), exception=DNSIMPLE_IMP_ERR[0])
 
-    account_email = module.params.get('account_email')
-    account_api_token = module.params.get('account_api_token')
-    domain = module.params.get('domain')
-    record = module.params.get('record')
-    record_ids = module.params.get('record_ids')
-    record_type = module.params.get('type')
-    ttl = module.params.get('ttl')
-    value = module.params.get('value')
-    priority = module.params.get('priority')
-    state = module.params.get('state')
-    is_solo = module.params.get('solo')
-    sandbox = module.params.get('sandbox')
+    account_email = module.params.get("account_email")
+    account_api_token = module.params.get("account_api_token")
+    domain = module.params.get("domain")
+    record = module.params.get("record")
+    record_ids = module.params.get("record_ids")
+    record_type = module.params.get("type")
+    ttl = module.params.get("ttl")
+    value = module.params.get("value")
+    priority = module.params.get("priority")
+    state = module.params.get("state")
+    is_solo = module.params.get("solo")
+    sandbox = module.params.get("sandbox")
 
     DNSIMPLE_MAJOR_VERSION = LooseVersion(dnsimple_version).version[0]
 
     try:
         if DNSIMPLE_MAJOR_VERSION < 2:
             module.fail_json(
-                msg='Support for python-dnsimple < 2 has been removed in community.general 5.0.0. Update python-dnsimple to version >= 2.0.0.')
+                msg="Support for python-dnsimple < 2 has been removed in community.general 5.0.0. Update python-dnsimple to version >= 2.0.0."
+            )
         ds = DNSimpleV2(account_email, account_api_token, sandbox, module)
         # Let's figure out what operation we want to do
         # No domain, return a list
@@ -335,7 +371,7 @@ def main():
                 typed_domain = str(domain)
             dr = ds.get_domain(typed_domain)
             # domain does not exist
-            if state == 'present':
+            if state == "present":
                 if dr:
                     module.exit_json(changed=False, result=dr)
                 else:
@@ -360,15 +396,18 @@ def main():
             if not value:
                 module.fail_json(msg="Missing the record value")
 
-            records_list = ds.get_records(domain, dnsimple_filter={'name': record})
-            rr = next((r for r in records_list if r['name'] == record and r['type'] == record_type and r['content'] == value), None)
-            if state == 'present':
+            records_list = ds.get_records(domain, dnsimple_filter={"name": record})
+            rr = next(
+                (r for r in records_list if r["name"] == record and r["type"] == record_type and r["content"] == value),
+                None,
+            )
+            if state == "present":
                 changed = False
                 if is_solo:
                     # delete any records that have the same name and record type
-                    same_type = [r['id'] for r in records_list if r['name'] == record and r['type'] == record_type]
+                    same_type = [r["id"] for r in records_list if r["name"] == record and r["type"] == record_type]
                     if rr:
-                        same_type = [rid for rid in same_type if rid != rr['id']]
+                        same_type = [rid for rid in same_type if rid != rr["id"]]
                     if same_type:
                         if not module.check_mode:
                             for rid in same_type:
@@ -376,11 +415,11 @@ def main():
                         changed = True
                 if rr:
                     # check if we need to update
-                    if rr['ttl'] != ttl or rr['priority'] != priority:
+                    if rr["ttl"] != ttl or rr["priority"] != priority:
                         if module.check_mode:
                             module.exit_json(changed=True)
                         else:
-                            response = ds.update_record(domain, rr['id'], ttl, priority)
+                            response = ds.update_record(domain, rr["id"], ttl, priority)
                             module.exit_json(changed=True, result=response)
                     else:
                         module.exit_json(changed=changed, result=rr)
@@ -395,7 +434,7 @@ def main():
             else:
                 if rr:
                     if not module.check_mode:
-                        ds.delete_record(domain, rr['id'])
+                        ds.delete_record(domain, rr["id"])
                     module.exit_json(changed=True)
                 else:
                     module.exit_json(changed=False)
@@ -403,12 +442,12 @@ def main():
         # Make sure these record_ids either all exist or none
         if record_ids:
             current_records = ds.get_records(domain, dnsimple_filter=None)
-            current_record_ids = [str(d['id']) for d in current_records]
+            current_record_ids = [str(d["id"]) for d in current_records]
             wanted_record_ids = [str(r) for r in record_ids]
-            if state == 'present':
+            if state == "present":
                 difference = list(set(wanted_record_ids) - set(current_record_ids))
                 if difference:
-                    module.fail_json(msg="Missing the following records: %s" % difference)
+                    module.fail_json(msg=f"Missing the following records: {difference}")
                 else:
                     module.exit_json(changed=False)
             # state is absent
@@ -424,11 +463,11 @@ def main():
 
     except DNSimpleException as e:
         if DNSIMPLE_MAJOR_VERSION > 1:
-            module.fail_json(msg="DNSimple exception: %s" % e.message)
+            module.fail_json(msg=f"DNSimple exception: {e.message}")
         else:
-            module.fail_json(msg="DNSimple exception: %s" % str(e.args[0]['message']))
+            module.fail_json(msg=f"DNSimple exception: {e.args[0]['message']}")
     module.fail_json(msg="Unknown what you wanted me to do")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
