@@ -91,6 +91,9 @@ www.noisebridge.net {
 
   route /images* {
     uri strip_prefix /images
+    @svg path *.svg *.SVG
+    header @svg Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'"
+    header @svg Content-Disposition "attachment"
     file_server {
       root /srv/mediawiki/noisebridge.net/images
     }
