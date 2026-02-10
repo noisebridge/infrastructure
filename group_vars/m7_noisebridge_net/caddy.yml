@@ -1,4 +1,5 @@
 ---
 caddy_packages:
 - 'github.com/greenpau/caddy-security@v1.1.20'
+- 'github.com/mholt/caddy-ratelimit@v0.1.0'
 caddy_config: "{{ lookup('template', 'templates/caddy/m7/Caddyfile.j2') }}"
