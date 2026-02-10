@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026020700 ; Serial
+                                2026020900 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -214,16 +214,23 @@ upotagma        IN      A       107.170.233.49
 upotagma        IN      AAAA    2604:a880:1:20:0:0:c3:a001
 
 
-; DNS-01 challenge to enable automatic provisioning of certificates to be used by our intranet
-; services hosted on our k8s cluster.
+; DNS-01 challenges enable automatic provisioning of certificates to be used by intranet
+; services on nodes that do not have a publically accessible route for an HTTP-01 challenge.
 ; 
 ; More info:
 ; * https://www.noisebridge.net/wiki/NoiseGarden
 ; * https://cert-manager.io/docs/configuration/acme/dns01/acme-dns/
-; * https://github.com/joohoi/acme-dns/blob/master/README.md
+; * https://github.com/joohoi/acme-dns/
+;
+; To register a new subdomain:
+; *  Using the following command and use the returned
+;    `curl -s -X POST https://auth.acme-dns.io/register | python -m json.tool`
+; * Create a CNAME record pointing to the provided subdomain.
+; * Use the provided credentials to self-provision a letsEncrypt cert.
+;
+; Note: We currently use auth.acme-dns.io but we can also self-host this service.
 
-# DNS-01 Challenge for internal services hosted on NoiseGarden
-_acme-challenge.garden      IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io.
-
-# DNS-01 Challenge for internal services hosted on Ducky
+_acme-challenge.colossus    IN      CNAME   16c8a8b7-44cc-4c18-8c43-0ae57d21b118.auth.acme-dns.io.
 _acme-challenge.ducky       IN      CNAME   331d1498-d188-4fea-935c-7b2a225f684a.auth.acme-dns.io.
+_acme-challenge.garden      IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io.
+_acme-challenge.hw          IN      CNAME   2d7577da-b584-44d9-a247-789807870e7b.auth.acme-dns.io.
