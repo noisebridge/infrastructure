@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2018, Milan Ilic <milani@nordeus.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 # Make coding more python3-ish
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: one_image
@@ -48,8 +46,8 @@ options:
     type: bool
   new_name:
     description:
-      - A name that will be assigned to the existing or new image.
-      - In the case of cloning, by default O(new_name) will take the name of the origin image with the prefix 'Copy of'.
+      - A name that is assigned to the existing or new image.
+      - In the case of cloning, by default O(new_name) is set to the name of the origin image with the prefix 'Copy of'.
     type: str
   persistent:
     description:
@@ -325,7 +323,7 @@ datastore:
   returned: when O(state=present), O(state=cloned), or O(state=renamed)
   version_added: 9.5.0
 vms:
-  description: The image's list of vm ID's.
+  description: The image's list of VM ID's.
   type: list
   elements: int
   returned: when O(state=present), O(state=cloned), or O(state=renamed)
@@ -370,66 +368,81 @@ snapshots:
 """
 
 
+import time
+
 from ansible_collections.community.general.plugins.module_utils.opennebula import OpenNebulaModule
 
-
-IMAGE_STATES = ['INIT', 'READY', 'USED', 'DISABLED', 'LOCKED', 'ERROR', 'CLONE', 'DELETE', 'USED_PERS', 'LOCKED_USED', 'LOCKED_USED_PERS']
+IMAGE_STATES = [
+    "INIT",
+    "READY",
+    "USED",
+    "DISABLED",
+    "LOCKED",
+    "ERROR",
+    "CLONE",
+    "DELETE",
+    "USED_PERS",
+    "LOCKED_USED",
+    "LOCKED_USED_PERS",
+]
 
 
 class ImageModule(OpenNebulaModule):
     def __init__(self):
         argument_spec = dict(
-            id=dict(type='int'),
-            name=dict(type='str'),
-            state=dict(type='str', choices=['present', 'absent', 'cloned', 'renamed'], default='present'),
-            enabled=dict(type='bool'),
-            new_name=dict(type='str'),
-            persistent=dict(type='bool'),
-            create=dict(type='bool'),
-            template=dict(type='str'),
-            datastore_id=dict(type='int'),
-            wait_timeout=dict(type='int', default=60),
+            id=dict(type="int"),
+            name=dict(type="str"),
+            state=dict(type="str", choices=["present", "absent", "cloned", "renamed"], default="present"),
+            enabled=dict(type="bool"),
+            new_name=dict(type="str"),
+            persistent=dict(type="bool"),
+            create=dict(type="bool"),
+            template=dict(type="str"),
+            datastore_id=dict(type="int"),
+            wait_timeout=dict(type="int", default=60),
         )
         required_if = [
-            ['state', 'renamed', ['id']],
-            ['create', True, ['template', 'datastore_id', 'name']],
+            ["state", "renamed", ["id"]],
+            ["create", True, ["template", "datastore_id", "name"]],
         ]
         mutually_exclusive = [
-            ['id', 'name'],
+            ["id", "name"],
         ]
 
-        OpenNebulaModule.__init__(self,
-                                  argument_spec,
-                                  supports_check_mode=True,
-                                  mutually_exclusive=mutually_exclusive,
-                                  required_if=required_if)
+        OpenNebulaModule.__init__(
+            self,
+            argument_spec,
+            supports_check_mode=True,
+            mutually_exclusive=mutually_exclusive,
+            required_if=required_if,
+        )
 
     def run(self, one, module, result):
         params = module.params
-        id = params.get('id')
-        name = params.get('name')
-        desired_state = params.get('state')
-        enabled = params.get('enabled')
-        new_name = params.get('new_name')
-        persistent = params.get('persistent')
-        create = params.get('create')
-        template = params.get('template')
-        datastore_id = params.get('datastore_id')
-        wait_timeout = params.get('wait_timeout')
+        id = params.get("id")
+        name = params.get("name")
+        desired_state = params.get("state")
+        enabled = params.get("enabled")
+        new_name = params.get("new_name")
+        persistent = params.get("persistent")
+        create = params.get("create")
+        template = params.get("template")
+        datastore_id = params.get("datastore_id")
+        wait_timeout = params.get("wait_timeout")
 
         self.result = {}
 
         image = self.get_image_instance(id, name)
-        if not image and desired_state != 'absent':
+        if not image and desired_state != "absent":
             if create:
                 self.result = self.create_image(name, template, datastore_id, wait_timeout)
             # Using 'if id:' doesn't work properly when id=0
             elif id is not None:
-                module.fail_json(msg="There is no image with id=" + str(id))
+                module.fail_json(msg=f"There is no image with id={id}")
             elif name is not None:
-                module.fail_json(msg="There is no image with name=" + name)
+                module.fail_json(msg=f"There is no image with name={name}")
 
-        if desired_state == 'absent':
+        if desired_state == "absent":
             self.result = self.delete_image(image, wait_timeout)
         else:
             if persistent is not None:
@@ -454,10 +467,10 @@ class ImageModule(OpenNebulaModule):
         return None
 
     def get_image_by_name(self, image_name):
-        return self.get_image(lambda image: (image.NAME == image_name))
+        return self.get_image(lambda image: (image_name == image.NAME))
 
     def get_image_by_id(self, image_id):
-        return self.get_image(lambda image: (image.ID == image_id))
+        return self.get_image(lambda image: (image_id == image.ID))
 
     def get_image_instance(self, requested_id, requested_name):
         # Using 'if requested_id:' doesn't work properly when requested_id=0
@@ -468,33 +481,31 @@ class ImageModule(OpenNebulaModule):
 
     def create_image(self, image_name, template, datastore_id, wait_timeout):
         if not self.module.check_mode:
-            image_id = self.one.image.allocate("NAME = \"" + image_name + "\"\n" + template, datastore_id)
+            image_id = self.one.image.allocate(f'NAME = "{image_name}"\n{template}', datastore_id)
             self.wait_for_ready(image_id, wait_timeout)
             image = self.get_image_by_id(image_id)
             result = self.get_image_info(image)
 
-        result['changed'] = True
+        result["changed"] = True
         return result
 
     def wait_for_ready(self, image_id, wait_timeout=60):
-        import time
         start_time = time.time()
 
         while (time.time() - start_time) < wait_timeout:
             image = self.one.image.info(image_id)
             state = image.STATE
 
-            if state in [IMAGE_STATES.index('ERROR')]:
-                self.module.fail_json(msg="Got an ERROR state: " + image.TEMPLATE['ERROR'])
+            if state in [IMAGE_STATES.index("ERROR")]:
+                self.module.fail_json(msg=f"Got an ERROR state: {image.TEMPLATE['ERROR']}")
 
-            if state in [IMAGE_STATES.index('READY')]:
+            if state in [IMAGE_STATES.index("READY")]:
                 return True
 
             time.sleep(1)
         self.module.fail_json(msg="Wait timeout has expired!")
 
     def wait_for_delete(self, image_id, wait_timeout=60):
-        import time
         start_time = time.time()
 
         while (time.time() - start_time) < wait_timeout:
@@ -508,7 +519,7 @@ class ImageModule(OpenNebulaModule):
 
             state = image.STATE
 
-            if state in [IMAGE_STATES.index('DELETE')]:
+            if state in [IMAGE_STATES.index("DELETE")]:
                 return True
 
             time.sleep(1)
@@ -521,21 +532,22 @@ class ImageModule(OpenNebulaModule):
 
         state = image.STATE
 
-        if state not in [IMAGE_STATES.index('READY'), IMAGE_STATES.index('DISABLED'), IMAGE_STATES.index('ERROR')]:
+        if state not in [IMAGE_STATES.index("READY"), IMAGE_STATES.index("DISABLED"), IMAGE_STATES.index("ERROR")]:
             if enable:
-                self.module.fail_json(msg="Cannot enable " + IMAGE_STATES[state] + " image!")
+                self.module.fail_json(msg=f"Cannot enable {IMAGE_STATES[state]} image!")
             else:
-                self.module.fail_json(msg="Cannot disable " + IMAGE_STATES[state] + " image!")
+                self.module.fail_json(msg=f"Cannot disable {IMAGE_STATES[state]} image!")
 
-        if ((enable and state != IMAGE_STATES.index('READY')) or
-                (not enable and state != IMAGE_STATES.index('DISABLED'))):
+        if (enable and state != IMAGE_STATES.index("READY")) or (
+            not enable and state != IMAGE_STATES.index("DISABLED")
+        ):
             changed = True
 
         if changed and not self.module.check_mode:
             self.one.image.enable(image.ID, enable)
 
         result = self.get_image_info(image)
-        result['changed'] = changed
+        result["changed"] = changed
 
         return result
 
@@ -545,35 +557,36 @@ class ImageModule(OpenNebulaModule):
 
         state = image.STATE
 
-        if state not in [IMAGE_STATES.index('READY'), IMAGE_STATES.index('DISABLED'), IMAGE_STATES.index('ERROR')]:
+        if state not in [IMAGE_STATES.index("READY"), IMAGE_STATES.index("DISABLED"), IMAGE_STATES.index("ERROR")]:
             if enable:
-                self.module.fail_json(msg="Cannot enable persistence for " + IMAGE_STATES[state] + " image!")
+                self.module.fail_json(msg=f"Cannot enable persistence for {IMAGE_STATES[state]} image!")
             else:
-                self.module.fail_json(msg="Cannot disable persistence for " + IMAGE_STATES[state] + " image!")
+                self.module.fail_json(msg=f"Cannot disable persistence for {IMAGE_STATES[state]} image!")
 
-        if ((enable and state != IMAGE_STATES.index('READY')) or
-                (not enable and state != IMAGE_STATES.index('DISABLED'))):
+        if (enable and state != IMAGE_STATES.index("READY")) or (
+            not enable and state != IMAGE_STATES.index("DISABLED")
+        ):
             changed = True
 
         if changed and not self.module.check_mode:
             self.one.image.persistent(image.ID, enable)
 
         result = self.get_image_info(image)
-        result['changed'] = changed
+        result["changed"] = changed
 
         return result
 
     def clone_image(self, image, new_name, wait_timeout):
         if new_name is None:
-            new_name = "Copy of " + image.NAME
+            new_name = f"Copy of {image.NAME}"
 
         tmp_image = self.get_image_by_name(new_name)
         if tmp_image:
             result = self.get_image_info(image)
-            result['changed'] = False
+            result["changed"] = False
             return result
 
-        if image.STATE == IMAGE_STATES.index('DISABLED'):
+        if IMAGE_STATES.index("DISABLED") == image.STATE:
             self.module.fail_json(msg="Cannot clone DISABLED image")
 
         if not self.module.check_mode:
@@ -582,7 +595,7 @@ class ImageModule(OpenNebulaModule):
             image = self.one.image.info(new_id)
 
         result = self.get_image_info(image)
-        result['changed'] = True
+        result["changed"] = True
 
         return result
 
@@ -592,37 +605,37 @@ class ImageModule(OpenNebulaModule):
 
         if new_name == image.NAME:
             result = self.get_image_info(image)
-            result['changed'] = False
+            result["changed"] = False
             return result
 
         tmp_image = self.get_image_by_name(new_name)
         if tmp_image:
-            self.module.fail_json(msg="Name '" + new_name + "' is already taken by IMAGE with id=" + str(tmp_image.ID))
+            self.module.fail_json(msg=f"Name '{new_name}' is already taken by IMAGE with id={tmp_image.ID!s}")
 
         if not self.module.check_mode:
             self.one.image.rename(image.ID, new_name)
 
         result = self.get_image_info(image)
-        result['changed'] = True
+        result["changed"] = True
         return result
 
     def delete_image(self, image, wait_timeout):
         if not image:
-            return {'changed': False}
+            return {"changed": False}
 
         if image.RUNNING_VMS > 0:
-            self.module.fail_json(msg="Cannot delete image. There are " + str(image.RUNNING_VMS) + " VMs using it.")
+            self.module.fail_json(msg=f"Cannot delete image. There are {image.RUNNING_VMS!s} VMs using it.")
 
         if not self.module.check_mode:
             self.one.image.delete(image.ID)
             self.wait_for_delete(image.ID, wait_timeout)
 
-        return {'changed': True}
+        return {"changed": True}
 
 
 def main():
     ImageModule().run_module()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

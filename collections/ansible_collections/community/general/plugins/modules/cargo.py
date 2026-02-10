@@ -1,14 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2021 Radek Sprta <mail@radeksprta.eu>
 # Copyright (c) 2024 Colin Nolan <cn580@alumni.york.ac.uk>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: cargo
@@ -28,7 +24,7 @@ options:
   executable:
     description:
       - Path to the C(cargo) installed in the system.
-      - If not specified, the module will look C(cargo) in E(PATH).
+      - If not specified, the module looks for C(cargo) in E(PATH).
     type: path
     version_added: 7.5.0
   name:
@@ -39,25 +35,22 @@ options:
     required: true
   path:
     description: The base path where to install the Rust packages. Cargo automatically appends V(/bin). In other words, V(/usr/local)
-      will become V(/usr/local/bin).
+      becomes V(/usr/local/bin).
     type: path
   version:
-    description: The version to install. If O(name) contains multiple values, the module will try to install all of them in
-      this version.
+    description: The version to install. If O(name) contains multiple values, the module tries to install all of them in this
+      version.
     type: str
-    required: false
   locked:
     description:
       - Install with locked dependencies.
       - This is only used when installing packages.
-    required: false
     type: bool
     default: false
     version_added: 7.5.0
   state:
     description:
       - The state of the Rust package.
-    required: false
     type: str
     default: present
     choices: ["present", "absent", "latest"]
@@ -66,8 +59,15 @@ options:
       - Path to the source directory to install the Rust package from.
       - This is only used when installing packages.
     type: path
-    required: false
     version_added: 9.1.0
+  features:
+    description:
+      - List of features to activate.
+      - This is only used when installing packages.
+    type: list
+    elements: str
+    default: []
+    version_added: 11.0.0
 requirements:
   - cargo installed
 """
@@ -106,6 +106,12 @@ EXAMPLES = r"""
   community.general.cargo:
     name: ludusavi
     directory: /path/to/ludusavi/source
+
+- name: Install "serpl" Rust package with ast_grep feature
+  community.general.cargo:
+    name: serpl
+    features:
+      - ast_grep
 """
 
 import json
@@ -115,7 +121,7 @@ import re
 from ansible.module_utils.basic import AnsibleModule
 
 
-class Cargo(object):
+class Cargo:
     def __init__(self, module, **kwargs):
         self.module = module
         self.executable = [kwargs["executable"] or module.get_bin_path("cargo", True)]
@@ -125,6 +131,7 @@ class Cargo(object):
         self.version = kwargs["version"]
         self.locked = kwargs["locked"]
         self.directory = kwargs["directory"]
+        self.features = kwargs["features"]
 
     @property
     def path(self):
@@ -133,12 +140,10 @@ class Cargo(object):
     @path.setter
     def path(self, path):
         if path is not None and not os.path.isdir(path):
-            self.module.fail_json(msg="Path %s is not a directory" % path)
+            self.module.fail_json(msg=f"Path {path} is not a directory")
         self._path = path
 
-    def _exec(
-        self, args, run_in_check_mode=False, check_rc=True, add_package_name=True
-    ):
+    def _exec(self, args, run_in_check_mode=False, check_rc=True, add_package_name=True):
         if not self.module.check_mode or (self.module.check_mode and run_in_check_mode):
             cmd = self.executable + args
             rc, out, err = self.module.run_command(cmd, check_rc=check_rc)
@@ -176,14 +181,14 @@ class Cargo(object):
         if self.directory:
             cmd.append("--path")
             cmd.append(self.directory)
+        if self.features:
+            cmd += ["--features", ",".join(self.features)]
         return self._exec(cmd)
 
     def is_outdated(self, name):
         installed_version = self.get_installed().get(name)
         latest_version = (
-            self.get_latest_published_version(name)
-            if not self.directory
-            else self.get_source_directory_version(name)
+            self.get_latest_published_version(name) if not self.directory else self.get_source_directory_version(name)
         )
         return installed_version != latest_version
 
@@ -193,9 +198,7 @@ class Cargo(object):
 
         match = re.search(r'"(.+)"', data)
         if not match:
-            self.module.fail_json(
-                msg="No published version for package %s found" % name
-            )
+            self.module.fail_json(msg=f"No published version for package {name} found")
         return match.group(1)
 
     def get_source_directory_version(self, name):
@@ -216,8 +219,7 @@ class Cargo(object):
         )
         if not package:
             self.module.fail_json(
-                msg="Package %s not defined in source, found: %s"
-                % (name, [x["name"] for x in manifest["packages"]])
+                msg=f"Package {name} not defined in source, found: {[x['name'] for x in manifest['packages']]}"
             )
         return package["version"]
 
@@ -229,13 +231,14 @@ class Cargo(object):
 
 def main():
     arg_spec = dict(
-        executable=dict(default=None, type="path"),
+        executable=dict(type="path"),
         name=dict(required=True, type="list", elements="str"),
-        path=dict(default=None, type="path"),
+        path=dict(type="path"),
         state=dict(default="present", choices=["present", "absent", "latest"]),
-        version=dict(default=None, type="str"),
+        version=dict(type="str"),
         locked=dict(default=False, type="bool"),
-        directory=dict(default=None, type="path"),
+        directory=dict(type="path"),
+        features=dict(default=[], type="list", elements="str"),
     )
     module = AnsibleModule(argument_spec=arg_spec, supports_check_mode=True)
 
@@ -251,27 +254,20 @@ def main():
         module.fail_json(msg="Source directory does not exist")
 
     # Set LANG env since we parse stdout
-    module.run_command_environ_update = dict(
-        LANG="C", LC_ALL="C", LC_MESSAGES="C", LC_CTYPE="C"
-    )
+    module.run_command_environ_update = dict(LANG="C", LC_ALL="C", LC_MESSAGES="C", LC_CTYPE="C")
 
     cargo = Cargo(module, **module.params)
     changed, out, err = False, None, None
     installed_packages = cargo.get_installed()
     if state == "present":
         to_install = [
-            n
-            for n in name
-            if (n not in installed_packages)
-            or (version and version != installed_packages[n])
+            n for n in name if (n not in installed_packages) or (version and version != installed_packages[n])
         ]
         if to_install:
             changed = True
             out, err = cargo.install(to_install)
     elif state == "latest":
-        to_update = [
-            n for n in name if n not in installed_packages or cargo.is_outdated(n)
-        ]
+        to_update = [n for n in name if n not in installed_packages or cargo.is_outdated(n)]
         if to_update:
             changed = True
             out, err = cargo.install(to_update)

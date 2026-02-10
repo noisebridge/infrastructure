@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2023, Steffen Scheib <steffen@scheib.me>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -18,6 +16,12 @@ options:
     description: The dictionary that should be converted to the INI format.
     type: dictionary
     required: true
+seealso:
+  - plugin: ansible.builtin.ini
+    plugin_type: lookup
+  - module: community.general.ini_file
+  - plugin: community.general.from_ini
+    plugin_type: filter
 """
 
 EXAMPLES = r"""
@@ -49,15 +53,15 @@ _value:
   type: string
 """
 
+from collections.abc import Mapping
+from configparser import ConfigParser
+from io import StringIO
 
 from ansible.errors import AnsibleFilterError
-from ansible.module_utils.common._collections_compat import Mapping
-from ansible.module_utils.six.moves import StringIO
-from ansible.module_utils.six.moves.configparser import ConfigParser
 
 
 class IniParser(ConfigParser):
-    ''' Implements a configparser which sets the correct optionxform '''
+    """Implements a configparser which sets the correct optionxform"""
 
     def __init__(self):
         super().__init__(interpolation=None)
@@ -65,23 +69,21 @@ class IniParser(ConfigParser):
 
 
 def to_ini(obj):
-    ''' Read the given dict and return an INI formatted string '''
+    """Read the given dict and return an INI formatted string"""
 
     if not isinstance(obj, Mapping):
-        raise AnsibleFilterError(f'to_ini requires a dict, got {type(obj)}')
+        raise AnsibleFilterError(f"to_ini requires a dict, got {type(obj)}")
 
     ini_parser = IniParser()
 
     try:
         ini_parser.read_dict(obj)
     except Exception as ex:
-        raise AnsibleFilterError('to_ini failed to parse given dict:'
-                                 f'{ex}', orig_exc=ex)
+        raise AnsibleFilterError(f"to_ini failed to parse given dict:{ex}", orig_exc=ex) from ex
 
     # catching empty dicts
     if obj == dict():
-        raise AnsibleFilterError('to_ini received an empty dict. '
-                                 'An empty dict cannot be converted.')
+        raise AnsibleFilterError("to_ini received an empty dict. An empty dict cannot be converted.")
 
     config = StringIO()
     ini_parser.write(config)
@@ -89,14 +91,11 @@ def to_ini(obj):
     # config.getvalue() returns two \n at the end
     # with the below insanity, we remove the very last character of
     # the resulting string
-    return ''.join(config.getvalue().rsplit(config.getvalue()[-1], 1))
+    return "".join(config.getvalue().rsplit(config.getvalue()[-1], 1))
 
 
-class FilterModule(object):
-    ''' Query filter '''
+class FilterModule:
+    """Query filter"""
 
     def filters(self):
-
-        return {
-            'to_ini': to_ini
-        }
+        return {"to_ini": to_ini}

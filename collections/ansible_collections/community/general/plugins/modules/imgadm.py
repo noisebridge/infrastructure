@@ -1,19 +1,16 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2016, 2017 Jasper Lievisse Adriaanse <j@jasper.la>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: imgadm
 short_description: Manage SmartOS images
 description:
-  - Manage SmartOS virtual machine images through imgadm(1M).
+  - Manage SmartOS virtual machine images through imgadm(8).
 author: Jasper Lievisse Adriaanse (@jasperla)
 extends_documentation_fragment:
   - community.general.attributes
@@ -24,18 +21,15 @@ attributes:
     support: none
 options:
   force:
-    required: false
     type: bool
     description:
-      - Force a given operation (where supported by imgadm(1M)).
+      - Force a given operation (where supported by imgadm(8)).
   pool:
-    required: false
     default: zones
     description:
       - The zpool to import to or delete images from.
     type: str
   source:
-    required: false
     description:
       - URI for the image source.
     type: str
@@ -44,11 +38,10 @@ options:
     choices: [present, absent, deleted, imported, updated, vacuumed]
     description:
       - State the object operated on should be in. V(imported) is an alias for for V(present) and V(deleted) for V(absent).
-        When set to V(vacuumed) and O(uuid=*), it will remove all unused images.
+        When set to V(vacuumed) and O(uuid=*), it removes all unused images.
     type: str
 
   type:
-    required: false
     choices: [imgapi, docker, dsapi]
     default: imgapi
     description:
@@ -56,10 +49,13 @@ options:
     type: str
 
   uuid:
-    required: false
     description:
       - Image UUID. Can either be a full UUID or V(*) for all images.
     type: str
+seealso:
+  - name: imgadm(8)
+    description: Complete manual page for the command C(imgadm).
+    link: https://smartos.org/man/8/imgadm
 """
 
 EXAMPLES = r"""
@@ -122,148 +118,146 @@ import re
 
 from ansible.module_utils.basic import AnsibleModule
 
-# Shortcut for the imgadm(1M) command. While imgadm(1M) supports a
+# Shortcut for the imgadm(8) command. While imgadm(8) supports a
 # -E option to return any errors in JSON, the generated JSON does not play well
 # with the JSON parsers of Python. The returned message contains '\n' as part of
 # the stacktrace, which breaks the parsers.
 
 
-class Imgadm(object):
+class Imgadm:
     def __init__(self, module):
         self.module = module
         self.params = module.params
-        self.cmd = module.get_bin_path('imgadm', required=True)
+        self.cmd = module.get_bin_path("imgadm", required=True)
         self.changed = False
-        self.uuid = module.params['uuid']
+        self.uuid = module.params["uuid"]
 
         # Since there are a number of (natural) aliases, prevent having to look
         # them up every time we operate on `state`.
-        if self.params['state'] in ['present', 'imported', 'updated']:
+        if self.params["state"] in ["present", "imported", "updated"]:
             self.present = True
         else:
             self.present = False
 
         # Perform basic UUID validation upfront.
-        if self.uuid and self.uuid != '*':
-            if not re.match('^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$', self.uuid, re.IGNORECASE):
-                module.fail_json(msg='Provided value for uuid option is not a valid UUID.')
+        if self.uuid and self.uuid != "*":
+            if not re.match("^[0-9a-f]{8}-([0-9a-f]{4}-){3}[0-9a-f]{12}$", self.uuid, re.IGNORECASE):
+                module.fail_json(msg="Provided value for uuid option is not a valid UUID.")
 
     # Helper method to massage stderr
     def errmsg(self, stderr):
-        match = re.match(r'^imgadm .*?: error \(\w+\): (.*): .*', stderr)
+        match = re.match(r"^imgadm .*?: error \(\w+\): (.*): .*", stderr)
         if match:
             return match.groups()[0]
         else:
-            return 'Unexpected failure'
+            return "Unexpected failure"
 
     def update_images(self):
-        if self.uuid == '*':
-            cmd = '{0} update'.format(self.cmd)
+        if self.uuid == "*":
+            cmd = [self.cmd, "update"]
         else:
-            cmd = '{0} update {1}'.format(self.cmd, self.uuid)
+            cmd = [self.cmd, "update", self.uuid]
 
         (rc, stdout, stderr) = self.module.run_command(cmd)
 
         if rc != 0:
-            self.module.fail_json(msg='Failed to update images: {0}'.format(self.errmsg(stderr)))
+            self.module.fail_json(msg=f"Failed to update images: {self.errmsg(stderr)}")
 
-        # There is no feedback from imgadm(1M) to determine if anything
+        # There is no feedback from imgadm(8) to determine if anything
         # was actually changed. So treat this as an 'always-changes' operation.
         # Note that 'imgadm -v' produces unparsable JSON...
         self.changed = True
 
     def manage_sources(self):
-        force = self.params['force']
-        source = self.params['source']
-        imgtype = self.params['type']
+        force = self.params["force"]
+        source = self.params["source"]
+        imgtype = self.params["type"]
 
-        cmd = '{0} sources'.format(self.cmd)
+        cmd = [self.cmd, "sources"]
 
         if force:
-            cmd += ' -f'
+            cmd = cmd + ["-f"]
 
         if self.present:
-            cmd = '{0} -a {1} -t {2}'.format(cmd, source, imgtype)
+            cmd = cmd + ["-a", source, "-t", imgtype]
             (rc, stdout, stderr) = self.module.run_command(cmd)
 
             if rc != 0:
-                self.module.fail_json(msg='Failed to add source: {0}'.format(self.errmsg(stderr)))
+                self.module.fail_json(msg=f"Failed to add source: {self.errmsg(stderr)}")
 
             # Check the various responses.
             # Note that trying to add a source with the wrong type is handled
             # above as it results in a non-zero status.
 
-            regex = 'Already have "{0}" image source "{1}", no change'.format(imgtype, source)
+            regex = f'Already have "{imgtype}" image source "{source}", no change'
             if re.match(regex, stdout):
                 self.changed = False
 
-            regex = 'Added "%s" image source "%s"' % (imgtype, source)
+            regex = f'Added "{imgtype}" image source "{source}"'
             if re.match(regex, stdout):
                 self.changed = True
         else:
-            # Type is ignored by imgadm(1M) here
-            cmd += ' -d %s' % source
+            # Type is ignored by imgadm(8) here
+            cmd += f" -d {source}"
             (rc, stdout, stderr) = self.module.run_command(cmd)
 
             if rc != 0:
-                self.module.fail_json(msg='Failed to remove source: {0}'.format(self.errmsg(stderr)))
+                self.module.fail_json(msg=f"Failed to remove source: {self.errmsg(stderr)}")
 
-            regex = 'Do not have image source "%s", no change' % source
+            regex = f'Do not have image source "{source}", no change'
             if re.match(regex, stdout):
                 self.changed = False
 
-            regex = 'Deleted ".*" image source "%s"' % source
+            regex = f'Deleted ".*" image source "{source}"'
             if re.match(regex, stdout):
                 self.changed = True
 
     def manage_images(self):
-        pool = self.params['pool']
-        state = self.params['state']
+        pool = self.params["pool"]
+        state = self.params["state"]
 
-        if state == 'vacuumed':
+        if state == "vacuumed":
             # Unconditionally pass '--force', otherwise we're prompted with 'y/N'
-            cmd = '{0} vacuum -f'.format(self.cmd)
+            cmd = [self.cmd, "vacuum", "-f"]
 
             (rc, stdout, stderr) = self.module.run_command(cmd)
 
             if rc != 0:
-                self.module.fail_json(msg='Failed to vacuum images: {0}'.format(self.errmsg(stderr)))
+                self.module.fail_json(msg=f"Failed to vacuum images: {self.errmsg(stderr)}")
             else:
-                if stdout == '':
+                if stdout == "":
                     self.changed = False
                 else:
                     self.changed = True
         if self.present:
-            cmd = '{0} import -P {1} -q {2}'.format(self.cmd, pool, self.uuid)
-
+            cmd = [self.cmd, "import", "-P", pool, "-q"] + ([self.uuid] if self.uuid else [])
             (rc, stdout, stderr) = self.module.run_command(cmd)
 
             if rc != 0:
-                self.module.fail_json(msg='Failed to import image: {0}'.format(self.errmsg(stderr)))
+                self.module.fail_json(msg=f"Failed to import image: {self.errmsg(stderr)}")
 
-            regex = r'Image {0} \(.*\) is already installed, skipping'.format(self.uuid)
+            regex = rf"Image {self.uuid} \(.*\) is already installed, skipping"
             if re.match(regex, stdout):
                 self.changed = False
 
-            regex = '.*ActiveImageNotFound.*'
+            regex = ".*ActiveImageNotFound.*"
             if re.match(regex, stderr):
                 self.changed = False
 
-            regex = 'Imported image {0}.*'.format(self.uuid)
+            regex = f"Imported image {self.uuid}.*"
             if re.match(regex, stdout.splitlines()[-1]):
                 self.changed = True
         else:
-            cmd = '{0} delete -P {1} {2}'.format(self.cmd, pool, self.uuid)
-
+            cmd = [self.cmd, "delete", "-P", pool] + ([self.uuid] if self.uuid else [])
             (rc, stdout, stderr) = self.module.run_command(cmd)
 
-            regex = '.*ImageNotInstalled.*'
+            regex = ".*ImageNotInstalled.*"
             if re.match(regex, stderr):
                 # Even if the 'rc' was non-zero (3), we handled the situation
                 # in order to determine if there was a change.
                 self.changed = False
 
-            regex = 'Deleted image {0}'.format(self.uuid)
+            regex = f"Deleted image {self.uuid}"
             if re.match(regex, stdout):
                 self.changed = True
 
@@ -271,44 +265,44 @@ class Imgadm(object):
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            force=dict(type='bool'),
-            pool=dict(default='zones'),
+            force=dict(type="bool"),
+            pool=dict(default="zones"),
             source=dict(),
-            state=dict(required=True, choices=['present', 'absent', 'deleted', 'imported', 'updated', 'vacuumed']),
-            type=dict(default='imgapi', choices=['imgapi', 'docker', 'dsapi']),
-            uuid=dict()
+            state=dict(required=True, choices=["present", "absent", "deleted", "imported", "updated", "vacuumed"]),
+            type=dict(default="imgapi", choices=["imgapi", "docker", "dsapi"]),
+            uuid=dict(),
         ),
-        # This module relies largely on imgadm(1M) to enforce idempotency, which does not
+        # This module relies largely on imgadm(8) to enforce idempotency, which does not
         # provide a "noop" (or equivalent) mode to do a dry-run.
         supports_check_mode=False,
     )
 
     imgadm = Imgadm(module)
 
-    uuid = module.params['uuid']
-    source = module.params['source']
-    state = module.params['state']
+    uuid = module.params["uuid"]
+    source = module.params["source"]
+    state = module.params["state"]
 
-    result = {'state': state}
+    result = {"state": state}
 
     # Either manage sources or images.
     if source:
-        result['source'] = source
+        result["source"] = source
         imgadm.manage_sources()
     else:
-        result['uuid'] = uuid
+        result["uuid"] = uuid
 
-        if state == 'updated':
+        if state == "updated":
             imgadm.update_images()
         else:
             # Make sure operate on a single image for the following actions
-            if (uuid == '*') and (state != 'vacuumed'):
+            if (uuid == "*") and (state != "vacuumed"):
                 module.fail_json(msg='Can only specify uuid as "*" when updating image(s)')
             imgadm.manage_images()
 
-    result['changed'] = imgadm.changed
+    result["changed"] = imgadm.changed
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

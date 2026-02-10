@@ -14,7 +14,6 @@ availability and scalability context.
 
 Currently [supported platforms](meta/main.yml) are:
 
-- Ubuntu 20.04 LTS
 - Ubuntu 22.04 LTS
 - Ubuntu 24.04 LTS
 
@@ -27,7 +26,7 @@ None.
 The Redis version to install:
 
 ```yaml
-redis_version: '7.2.1'
+redis_version: '8.0.1'
 ```
 
 Specifies whether the current node is `master`, or a `replica` instance:

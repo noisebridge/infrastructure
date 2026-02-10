@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2015, Marius Gedminas <marius@pov.lt>
 # Copyright (c) 2016, Matthew Gamble <git@matthewgamble.net>
@@ -7,9 +6,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: git_config
@@ -31,17 +28,11 @@ attributes:
   diff_mode:
     support: none
 options:
-  list_all:
-    description:
-      - List all settings (optionally limited to a given O(scope)).
-      - This option is B(deprecated) and will be removed from community.general 11.0.0. Please use M(community.general.git_config_info)
-        instead.
-    type: bool
-    default: false
   name:
     description:
-      - The name of the setting. If no value is supplied, the value will be read from the config if it has been set.
+      - The name of the setting.
     type: str
+    required: true
   repo:
     description:
       - Path to a git repository for reading and writing values from a specific repo.
@@ -57,7 +48,7 @@ options:
       - This is required when setting config values.
       - If this is set to V(local), you must also specify the O(repo) parameter.
       - If this is set to V(file), you must also specify the O(file) parameter.
-      - It defaults to system only when not using O(list_all=true).
+      - It defaults to system.
     choices: ["file", "local", "global", "system"]
     type: str
   state:
@@ -70,7 +61,7 @@ options:
   value:
     description:
       - When specifying the name of a single setting, supply a value to set that setting to the given value.
-      - From community.general 11.0.0 on, O(value) will be required if O(state=present). To read values, use the M(community.general.git_config_info)
+      - From community.general 11.0.0 on, O(value) is required if O(state=present). To read values, use the M(community.general.git_config_info)
         module instead.
     type: str
   add_mode:
@@ -144,21 +135,6 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-config_value:
-  description: When O(list_all=false) and value is not set, a string containing the value of the setting in name.
-  returned: success
-  type: str
-  sample: "vim"
-
-config_values:
-  description: When O(list_all=true), a dict containing key/value pairs of multiple configuration settings.
-  returned: success
-  type: dict
-  sample:
-    core.editor: "vim"
-    color.ui: "auto"
-    alias.diffc: "diff --cached"
-    alias.remotev: "remote -v"
 """
 
 from ansible.module_utils.basic import AnsibleModule
@@ -167,41 +143,36 @@ from ansible.module_utils.basic import AnsibleModule
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            list_all=dict(required=False, type='bool', default=False, removed_in_version='11.0.0', removed_from_collection='community.general'),
-            name=dict(type='str'),
-            repo=dict(type='path'),
-            file=dict(type='path'),
-            add_mode=dict(required=False, type='str', default='replace-all', choices=['add', 'replace-all']),
-            scope=dict(required=False, type='str', choices=['file', 'local', 'global', 'system']),
-            state=dict(required=False, type='str', default='present', choices=['present', 'absent']),
-            value=dict(required=False),
+            name=dict(type="str", required=True),
+            repo=dict(type="path"),
+            file=dict(type="path"),
+            add_mode=dict(type="str", default="replace-all", choices=["add", "replace-all"]),
+            scope=dict(type="str", choices=["file", "local", "global", "system"]),
+            state=dict(type="str", default="present", choices=["present", "absent"]),
+            value=dict(),
         ),
-        mutually_exclusive=[['list_all', 'name'], ['list_all', 'value'], ['list_all', 'state']],
         required_if=[
-            ('scope', 'local', ['repo']),
-            ('scope', 'file', ['file'])
+            ("scope", "local", ["repo"]),
+            ("scope", "file", ["file"]),
+            ("state", "present", ["value"]),
         ],
-        required_one_of=[['list_all', 'name']],
         supports_check_mode=True,
     )
-    git_path = module.get_bin_path('git', True)
+    git_path = module.get_bin_path("git", True)
 
     params = module.params
     # We check error message for a pattern, so we need to make sure the messages appear in the form we're expecting.
     # Set the locale to C to ensure consistent messages.
-    module.run_command_environ_update = dict(LANG='C', LC_ALL='C', LC_MESSAGES='C', LC_CTYPE='C')
+    module.run_command_environ_update = dict(LANG="C", LC_ALL="C", LC_MESSAGES="C", LC_CTYPE="C")
 
-    name = params['name'] or ''
-    unset = params['state'] == 'absent'
-    new_value = params['value'] or ''
-    add_mode = params['add_mode']
+    name = params["name"] or ""
+    unset = params["state"] == "absent"
+    new_value = params["value"] or ""
+    add_mode = params["add_mode"]
 
-    if not unset and not new_value and not params['list_all']:
-        module.deprecate(
-            'If state=present, a value must be specified from community.general 11.0.0 on.'
-            ' To read a config value, use the community.general.git_config_info module instead.',
-            version='11.0.0',
-            collection_name='community.general',
+    if not unset and not new_value:
+        module.fail_json(
+            msg="If state=present, a value must be specified. Use the community.general.git_config_info module to read a config value."
         )
 
     scope = determine_scope(params)
@@ -209,42 +180,27 @@ def main():
 
     base_args = [git_path, "config", "--includes"]
 
-    if scope == 'file':
-        base_args.append('-f')
-        base_args.append(params['file'])
+    if scope == "file":
+        base_args.append("-f")
+        base_args.append(params["file"])
     elif scope:
-        base_args.append("--" + scope)
+        base_args.append(f"--{scope}")
 
     list_args = list(base_args)
 
-    if params['list_all']:
-        list_args.append('-l')
-
-    if name:
-        list_args.append("--get-all")
-        list_args.append(name)
+    list_args.append("--get-all")
+    list_args.append(name)
 
     (rc, out, err) = module.run_command(list_args, cwd=cwd, expand_user_and_vars=False)
 
-    if params['list_all'] and scope and rc == 128 and 'unable to read config file' in err:
-        # This just means nothing has been set at the given scope
-        module.exit_json(changed=False, msg='', config_values={})
-    elif rc >= 2:
+    if rc >= 2:
         # If the return code is 1, it just means the option hasn't been set yet, which is fine.
-        module.fail_json(rc=rc, msg=err, cmd=' '.join(list_args))
+        module.fail_json(rc=rc, msg=err, cmd=" ".join(list_args))
 
     old_values = out.rstrip().splitlines()
 
-    if params['list_all']:
-        config_values = {}
-        for value in old_values:
-            k, v = value.split('=', 1)
-            config_values[k] = v
-        module.exit_json(changed=False, msg='', config_values=config_values)
-    elif not new_value and not unset:
-        module.exit_json(changed=False, msg='', config_value=old_values[0] if old_values else '')
-    elif unset and not out:
-        module.exit_json(changed=False, msg='no setting to unset')
+    if unset and not out:
+        module.exit_json(changed=False, msg="no setting to unset")
     elif new_value in old_values and (len(old_values) == 1 or add_mode == "add") and not unset:
         module.exit_json(changed=False, msg="")
 
@@ -255,7 +211,7 @@ def main():
         set_args.append("--unset-all")
         set_args.append(name)
     else:
-        set_args.append("--" + add_mode)
+        set_args.append(f"--{add_mode}")
         set_args.append(name)
         set_args.append(new_value)
 
@@ -272,45 +228,37 @@ def main():
         after_values = [new_value]
 
     module.exit_json(
-        msg='setting changed',
+        msg="setting changed",
         diff=dict(
-            before_header=' '.join(set_args),
+            before_header=" ".join(set_args),
             before=build_diff_value(old_values),
-            after_header=' '.join(set_args),
+            after_header=" ".join(set_args),
             after=build_diff_value(after_values),
         ),
-        changed=True
+        changed=True,
     )
 
 
 def determine_scope(params):
-    if params['scope']:
-        return params['scope']
-    elif params['list_all']:
-        return ""
-    else:
-        return 'system'
+    if params["scope"]:
+        return params["scope"]
+    return "system"
 
 
 def build_diff_value(value):
     if not value:
         return "\n"
-    elif len(value) == 1:
-        return value[0] + "\n"
-    else:
-        return value
+    if len(value) == 1:
+        return f"{value[0]}\n"
+    return value
 
 
 def determine_cwd(scope, params):
-    if scope == 'local':
-        return params['repo']
-    elif params['list_all'] and params['repo']:
-        # Include local settings from a specific repo when listing all available settings
-        return params['repo']
-    else:
-        # Run from root directory to avoid accidentally picking up any local config settings
-        return "/"
+    if scope == "local":
+        return params["repo"]
+    # Run from root directory to avoid accidentally picking up any local config settings
+    return "/"
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

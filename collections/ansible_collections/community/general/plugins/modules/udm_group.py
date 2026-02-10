@@ -1,14 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2016, Adfinis SyGroup AG
 # Tobias Rueetschi <tobias.ruetschi@adfinis-sygroup.ch>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: udm_group
@@ -27,7 +24,6 @@ attributes:
     support: partial
 options:
   state:
-    required: false
     default: "present"
     choices: [present, absent]
     description:
@@ -39,24 +35,20 @@ options:
       - Name of the POSIX group.
     type: str
   description:
-    required: false
     description:
       - Group description.
     type: str
   position:
-    required: false
     description:
       - Define the whole LDAP position of the group, for example V(cn=g123m-1A,cn=classes,cn=schueler,cn=groups,ou=schule,dc=example,dc=com).
     type: str
     default: ''
   ou:
-    required: false
     description:
       - LDAP OU, for example V(school) for LDAP OU V(ou=school,dc=example,dc=com).
     type: str
     default: ''
   subpath:
-    required: false
     description:
       - Subpath inside the OU, for example V(cn=classes,cn=students,cn=groups).
     type: str
@@ -85,68 +77,60 @@ EXAMPLES = r"""
 """
 
 
-RETURN = """# """
+RETURN = """#"""
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.univention_umc import (
+    base_dn,
+    ldap_search,
     umc_module_for_add,
     umc_module_for_edit,
-    ldap_search,
-    base_dn,
 )
 
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            name=dict(required=True,
-                      type='str'),
-            description=dict(type='str'),
-            position=dict(default='',
-                          type='str'),
-            ou=dict(default='',
-                    type='str'),
-            subpath=dict(default='cn=groups',
-                         type='str'),
-            state=dict(default='present',
-                       choices=['present', 'absent'],
-                       type='str')
+            name=dict(required=True, type="str"),
+            description=dict(type="str"),
+            position=dict(default="", type="str"),
+            ou=dict(default="", type="str"),
+            subpath=dict(default="cn=groups", type="str"),
+            state=dict(default="present", choices=["present", "absent"], type="str"),
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
     )
-    name = module.params['name']
-    description = module.params['description']
-    position = module.params['position']
-    ou = module.params['ou']
-    subpath = module.params['subpath']
-    state = module.params['state']
+    name = module.params["name"]
+    description = module.params["description"]
+    position = module.params["position"]
+    ou = module.params["ou"]
+    subpath = module.params["subpath"]
+    state = module.params["state"]
     changed = False
     diff = None
 
-    groups = list(ldap_search(
-        '(&(objectClass=posixGroup)(cn={0}))'.format(name),
-        attr=['cn']
-    ))
-    if position != '':
+    groups = list(ldap_search(f"(&(objectClass=posixGroup)(cn={name}))", attr=["cn"]))
+    if position != "":
         container = position
     else:
-        if ou != '':
-            ou = 'ou={0},'.format(ou)
-        if subpath != '':
-            subpath = '{0},'.format(subpath)
-        container = '{0}{1}{2}'.format(subpath, ou, base_dn())
-    group_dn = 'cn={0},{1}'.format(name, container)
+        if ou != "":
+            ou = f"ou={ou},"
+        if subpath != "":
+            subpath = f"{subpath},"
+        container = f"{subpath}{ou}{base_dn()}"
+    group_dn = f"cn={name},{container}"
 
     exists = bool(len(groups))
 
-    if state == 'present':
+    if state == "present":
         try:
             if not exists:
-                grp = umc_module_for_add('groups/group', container)
+                grp = umc_module_for_add("groups/group", container)
             else:
-                grp = umc_module_for_edit('groups/group', group_dn)
-            grp['name'] = name
-            grp['description'] = description
+                grp = umc_module_for_edit("groups/group", group_dn)
+            grp["name"] = name
+            grp["description"] = description
             diff = grp.diff()
             changed = grp.diff() != []
             if not module.check_mode:
@@ -155,28 +139,19 @@ def main():
                 else:
                     grp.modify()
         except Exception:
-            module.fail_json(
-                msg="Creating/editing group {0} in {1} failed".format(name, container)
-            )
+            module.fail_json(msg=f"Creating/editing group {name} in {container} failed")
 
-    if state == 'absent' and exists:
+    if state == "absent" and exists:
         try:
-            grp = umc_module_for_edit('groups/group', group_dn)
+            grp = umc_module_for_edit("groups/group", group_dn)
             if not module.check_mode:
                 grp.remove()
             changed = True
         except Exception:
-            module.fail_json(
-                msg="Removing group {0} failed".format(name)
-            )
+            module.fail_json(msg=f"Removing group {name} failed")
 
-    module.exit_json(
-        changed=changed,
-        name=name,
-        diff=diff,
-        container=container
-    )
+    module.exit_json(changed=changed, name=name, diff=diff, container=container)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

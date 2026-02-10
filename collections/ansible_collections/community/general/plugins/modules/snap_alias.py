@@ -1,13 +1,11 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2021, Alexei Znamensky (russoz) <russoz@gmail.com>
 #
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: snap_alias
@@ -91,7 +89,7 @@ version:
 import re
 
 from ansible_collections.community.general.plugins.module_utils.module_helper import StateModuleHelper
-from ansible_collections.community.general.plugins.module_utils.snap import snap_runner, get_version
+from ansible_collections.community.general.plugins.module_utils.snap import get_version, snap_runner
 
 
 class SnapAlias(StateModuleHelper):
@@ -99,17 +97,16 @@ class SnapAlias(StateModuleHelper):
 
     module = dict(
         argument_spec={
-            'state': dict(type='str', choices=['absent', 'present'], default='present'),
-            'name': dict(type='str'),
-            'alias': dict(type='list', elements='str', aliases=['aliases']),
+            "state": dict(type="str", choices=["absent", "present"], default="present"),
+            "name": dict(type="str"),
+            "alias": dict(type="list", elements="str", aliases=["aliases"]),
         },
         required_if=[
-            ('state', 'present', ['name', 'alias']),
-            ('state', 'absent', ['name', 'alias'], True),
+            ("state", "present", ["name", "alias"]),
+            ("state", "absent", ["name", "alias"], True),
         ],
         supports_check_mode=True,
     )
-    use_old_vardict = False
 
     def _aliases(self):
         n = self.vars.name
@@ -184,5 +181,5 @@ def main():
     SnapAlias.execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

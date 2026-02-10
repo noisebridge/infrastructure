@@ -109,7 +109,7 @@
    "name": ".azure-pipelines/azure-pipelines.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1c9c084ba74c99ff4f3ce30fe44f35dee2979134a1c409ff6b33b0d669130193",
+   "chksum_sha256": "1da7e800c5d6cc6b15b02ac94d2cbff7bf9bf9d91f74c0f4f96dd92642ffbfef",
    "format": 1
   },
   {
@@ -151,7 +151,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dea5908ea10b1d9cb28755352204a402a0a99a7aea56931b5d84fa0e8ec059c0",
+   "chksum_sha256": "8f573c54abb2839d3332662e34e5bf99e4fae8b4ec4de371dce8e96b301b0b6a",
    "format": 1
   },
   {
@@ -242,7 +242,7 @@
    "name": "plugins/callback/cgroup_perf_recap.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3164f364f40352a4f8e3d94e9837f0546e032442e46346f316f22768468629a0",
+   "chksum_sha256": "22aa0af6bb17bdc730beb22c56cd04059db81daa9965bbfbb4edb290c63e6e94",
    "format": 1
   },
   {
@@ -270,14 +270,14 @@
    "name": "plugins/callback/profile_roles.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "487c43f0c0f579f518c3ca7cec1b4149df338fb721a87dee4dc2ab89acf15b34",
+   "chksum_sha256": "a2b2dfd950398e66e12460fa5f29c2063ece9f0616175f3677e26902c9626e4b",
    "format": 1
   },
   {
    "name": "plugins/callback/profile_tasks.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "90541c65f80cf1520dd8b3283bfb6f709066baffaf47e130016261f9f3025014",
+   "chksum_sha256": "490a486078a4649e3d570cd1413a475ceb1d8422817df3f0814c665874e210c7",
    "format": 1
   },
   {
@@ -515,7 +515,7 @@
    "name": "tests/integration/targets/acl/tasks/acl.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a654b8b9406179993428e6ff6ebfc5fd50c2175a80bbfc0014e2274ee64ec70a",
+   "chksum_sha256": "58ced9311389a88fe2792501e31583a173e91d3f48309c2e539219b8204db45e",
    "format": 1
   },
   {
@@ -865,7 +865,7 @@
    "name": "tests/integration/targets/mount/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ff8d78e14a502037e64d7efd12b790239cb31c5d0d0ad629f846b8f8e1fc6d66",
+   "chksum_sha256": "67f5c8b0e4a48951826c8b6b6da2edda6ceba4666b5ce82e2f37c8273b5ae1a1",
    "format": 1
   },
   {
@@ -991,7 +991,7 @@
    "name": "tests/integration/targets/seboolean/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cbd2e5622661d9ac5c7ac3bf1fdf19e848710c5e6cbfe623210d5fcd7aca673b",
+   "chksum_sha256": "0f9492965a814f77e65ba20845eb83c472cc325aee6ca9206ba31904ee150230",
    "format": 1
   },
   {
@@ -1026,7 +1026,7 @@
    "name": "tests/integration/targets/selinux/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d1ecdf9f4d273e68c7c69e7941d0a83f28fe932cd1ebbc167333e8fc7a50fcee",
+   "chksum_sha256": "1ac1c355e122538dcb1d3d2d547ab183767929d48a5a59b6a4c42a851ae36959",
    "format": 1
   },
   {
@@ -1241,6 +1241,13 @@
   },
   {
    "name": "tests/sanity/ignore-2.19.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "972fd0ab0535c66cb4d8382134f0343caebde99b89675e6337bd93c67407afb5",
+   "format": 1
+  },
+  {
+   "name": "tests/sanity/ignore-2.20.txt",
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "972fd0ab0535c66cb4d8382134f0343caebde99b89675e6337bd93c67407afb5",
@@ -1964,7 +1971,7 @@
    "name": "tests/utils/shippable/shippable.sh",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "6ea1c2595e0ec52c1cf7f132fadcd02995b5f71d93e8b9f476b13f19bf0a326f",
+   "chksum_sha256": "9806b5cfc9ebeafab7d235e25af8a4498146e42949a715c892498dbb980419d2",
    "format": 1
   },
   {
@@ -2013,7 +2020,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "459080eac257173e33815506688f6ded4bc5d0cda7f9dbd3f27e3afbfb898fee",
+   "chksum_sha256": "3c9fdf26e9e33d6f079e71514a8d964f790bb1984050fe29ed098bfcc07186b5",
    "format": 1
   },
   {

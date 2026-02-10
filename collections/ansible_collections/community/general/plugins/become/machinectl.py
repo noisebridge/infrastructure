@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2018, Ansible Project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
@@ -71,10 +70,12 @@ options:
       - section: machinectl_become_plugin
         key: password
 notes:
-  - When not using this plugin with user V(root), it only works correctly with a polkit rule which will alter the behaviour
-    of machinectl. This rule must alter the prompt behaviour to ask directly for the user credentials, if the user is allowed
-    to perform the action (take a look at the examples section). If such a rule is not present the plugin only work if it
-    is used in context with the root user, because then no further prompt will be shown by machinectl.
+  - When not using this plugin with user V(root), it only works correctly with a polkit rule which alters the behaviour
+    of C(machinectl). This rule must alter the prompt behaviour to ask directly for the user credentials, if the user is allowed
+    to perform the action (take a look at the examples section). If such a rule is not present the plugin only works if it
+    is used in context with the root user, because then no further prompt is shown by C(machinectl).
+  - This become plugin does not work when connection pipelining is enabled. With ansible-core 2.19+, using it automatically
+    disables pipelining. On ansible-core 2.18 and before, pipelining must explicitly be disabled by the user.
 """
 
 EXAMPLES = r"""
@@ -91,37 +92,39 @@ EXAMPLES = r"""
 
 from re import compile as re_compile
 
+from ansible.module_utils.common.text.converters import to_bytes
 from ansible.plugins.become import BecomeBase
-from ansible.module_utils._text import to_bytes
 
-
-ansi_color_codes = re_compile(to_bytes(r'\x1B\[[0-9;]+m'))
+ansi_color_codes = re_compile(to_bytes(r"\x1B\[[0-9;]+m"))
 
 
 class BecomeModule(BecomeBase):
+    name = "community.general.machinectl"
 
-    name = 'community.general.machinectl'
-
-    prompt = 'Password: '
-    fail = ('==== AUTHENTICATION FAILED ====',)
-    success = ('==== AUTHENTICATION COMPLETE ====',)
+    prompt = "Password: "
+    fail = ("==== AUTHENTICATION FAILED ====",)
+    success = ("==== AUTHENTICATION COMPLETE ====",)
     require_tty = True  # see https://github.com/ansible-collections/community.general/issues/6932
+
+    # See https://github.com/ansible/ansible/issues/81254,
+    # https://github.com/ansible/ansible/pull/78111
+    pipelining = False
 
     @staticmethod
     def remove_ansi_codes(line):
         return ansi_color_codes.sub(b"", line)
 
     def build_become_command(self, cmd, shell):
-        super(BecomeModule, self).build_become_command(cmd, shell)
+        super().build_become_command(cmd, shell)
 
         if not cmd:
             return cmd
 
-        become = self.get_option('become_exe')
+        become = self.get_option("become_exe")
 
-        flags = self.get_option('become_flags')
-        user = self.get_option('become_user')
-        return f'{become} -q shell {flags} {user}@ {self._build_success_command(cmd, shell)}'
+        flags = self.get_option("become_flags")
+        user = self.get_option("become_user")
+        return f"{become} -q shell {flags} {user}@ {self._build_success_command(cmd, shell)}"
 
     def check_success(self, b_output):
         b_output = self.remove_ansi_codes(b_output)

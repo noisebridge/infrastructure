@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2018, Simon Weald <ansible@simonweald.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: memset_server_info
@@ -74,31 +72,32 @@ memset_api:
       description: Details about the firewall group this server is in.
       returned: always
       type: dict
-      sample: {
-        "default_outbound_policy": "RETURN",
-        "name": "testyaa-fw1",
-        "nickname": "testyaa cPanel rules",
-        "notes": "",
-        "public": false,
-        "rules": {
-          "51d7db54d39c3544ef7c48baa0b9944f": {
-            "action": "ACCEPT",
-            "comment": "",
-            "dest_ip6s": "any",
-            "dest_ips": "any",
-            "dest_ports": "any",
-            "direction": "Inbound",
-            "ip_version": "any",
-            "ordering": 2,
-            "protocols": "icmp",
-            "rule_group_name": "testyaa-fw1",
-            "rule_id": "51d7db54d39c3544ef7c48baa0b9944f",
-            "source_ip6s": "any",
-            "source_ips": "any",
-            "source_ports": "any"
+      sample:
+        {
+          "default_outbound_policy": "RETURN",
+          "name": "testyaa-fw1",
+          "nickname": "testyaa cPanel rules",
+          "notes": "",
+          "public": false,
+          "rules": {
+            "51d7db54d39c3544ef7c48baa0b9944f": {
+              "action": "ACCEPT",
+              "comment": "",
+              "dest_ip6s": "any",
+              "dest_ips": "any",
+              "dest_ports": "any",
+              "direction": "Inbound",
+              "ip_version": "any",
+              "ordering": 2,
+              "protocols": "icmp",
+              "rule_group_name": "testyaa-fw1",
+              "rule_id": "51d7db54d39c3544ef7c48baa0b9944f",
+              "source_ip6s": "any",
+              "source_ips": "any",
+              "source_ports": "any"
+            }
           }
         }
-      }
     firewall_type:
       description: The type of firewall the server has (for example self-managed, managed).
       returned: always
@@ -118,15 +117,16 @@ memset_api:
       description: List of dictionaries of all IP addresses assigned to the server.
       returned: always
       type: list
-      sample: [
-        {
-          "address": "1.2.3.4",
-          "bytes_in_today": 1000.0,
-          "bytes_in_yesterday": 2000.0,
-          "bytes_out_today": 1000.0,
-          "bytes_out_yesterday": 2000.0
-        }
-      ]
+      sample:
+        [
+          {
+            "address": "1.2.3.4",
+            "bytes_in_today": 1000.0,
+            "bytes_in_yesterday": 2000.0,
+            "bytes_out_today": 1000.0,
+            "bytes_out_yesterday": 2000.0
+          }
+        ]
     monitor:
       description: Whether the server has monitoring enabled.
       returned: always
@@ -146,7 +146,7 @@ memset_api:
       description: The network zone(s) the server is in.
       returned: always
       type: list
-      sample: ['reading']
+      sample: ["reading"]
     nickname:
       description: Customer-set nickname for the server.
       returned: always
@@ -221,10 +221,14 @@ memset_api:
       description: Dictionary of tagged and untagged VLANs this server is in.
       returned: always
       type: dict
-      sample: {
-        tagged: [],
-        untagged: [ 'testyaa-vlan1', 'testyaa-vlan2' ]
-      }
+      sample:
+        {
+          "tagged": [],
+          "untagged": [
+            "testyaa-vlan1",
+            "testyaa-vlan2"
+          ]
+        }
     vulnscan:
       description: Vulnerability scanning level.
       returned: always
@@ -233,43 +237,41 @@ memset_api:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.memset import memset_api_call
 
 
 def get_facts(args=None):
-    '''
+    """
     Performs a simple API call and returns a JSON blob.
-    '''
+    """
     retvals, payload = dict(), dict()
     has_changed, has_failed = False, False
-    msg, stderr, memset_api = None, None, None
 
-    payload['name'] = args['name']
+    payload["name"] = args["name"]
 
-    api_method = 'server.info'
-    has_failed, msg, response = memset_api_call(api_key=args['api_key'], api_method=api_method, payload=payload)
+    api_method = "server.info"
+    has_failed, msg, response = memset_api_call(api_key=args["api_key"], api_method=api_method, payload=payload)
 
     if has_failed:
         # this is the first time the API is called; incorrect credentials will
         # manifest themselves at this point so we need to ensure the user is
         # informed of the reason.
-        retvals['failed'] = has_failed
-        retvals['msg'] = msg
+        retvals["failed"] = has_failed
+        retvals["msg"] = msg
         if response.status_code is not None:
-            retvals['stderr'] = "API returned an error: {0}" . format(response.status_code)
+            retvals["stderr"] = f"API returned an error: {response.status_code}"
         else:
-            retvals['stderr'] = "{0}" . format(response.stderr)
+            retvals["stderr"] = f"{response.stderr}"
         return retvals
 
     # we don't want to return the same thing twice
-    msg = None
     memset_api = response.json()
 
-    retvals['changed'] = has_changed
-    retvals['failed'] = has_failed
-    for val in ['msg', 'memset_api']:
-        if val is not None:
-            retvals[val] = eval(val)
+    retvals["changed"] = has_changed
+    retvals["failed"] = has_failed
+    retvals["msg"] = None
+    retvals["memset_api"] = memset_api
 
     return retvals
 
@@ -277,10 +279,7 @@ def get_facts(args=None):
 def main():
     global module
     module = AnsibleModule(
-        argument_spec=dict(
-            api_key=dict(required=True, type='str', no_log=True),
-            name=dict(required=True, type='str')
-        ),
+        argument_spec=dict(api_key=dict(required=True, type="str", no_log=True), name=dict(required=True, type="str")),
         supports_check_mode=True,
     )
 
@@ -289,11 +288,11 @@ def main():
 
     retvals = get_facts(args)
 
-    if retvals['failed']:
+    if retvals["failed"]:
         module.fail_json(**retvals)
     else:
         module.exit_json(**retvals)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright 2013 Matt Coddington <coddington@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: newrelic_deployment
@@ -33,23 +30,19 @@ options:
     description:
       - The value of C(app_name) in the C(newrelic.yml) file used by the application.
       - One of O(app_name) or O(application_id) is required.
-    required: false
   application_id:
     type: str
     description:
       - The application ID found in the metadata of the application in APM.
       - One of O(app_name) or O(application_id) is required.
-    required: false
   changelog:
     type: str
     description:
       - A list of changes for this deployment.
-    required: false
   description:
     type: str
     description:
       - Text annotation for the deployment - notes for you.
-    required: false
   revision:
     type: str
     description:
@@ -59,12 +52,10 @@ options:
     type: str
     description:
       - The name of the user/process that triggered this deployment.
-    required: false
   validate_certs:
     description:
-      - If V(false), SSL certificates will not be validated. This should only be used on personally controlled sites using
-        self-signed certificates.
-    required: false
+      - If V(false), SSL certificates are not validated. This should only be used on personally controlled sites using self-signed
+        certificates.
     default: true
     type: bool
   app_name_exact_match:
@@ -72,7 +63,6 @@ options:
     description:
       - If this flag is set to V(true) then the application ID lookup by name would only work for an exact match. If set to
         V(false) it returns the first result.
-    required: false
     default: false
     version_added: 7.5.0
 requirements: []
@@ -87,10 +77,11 @@ EXAMPLES = r"""
     revision: '1.0'
 """
 
+import json
+from urllib.parse import quote
+
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
-from ansible.module_utils.six.moves.urllib.parse import quote
-import json
 
 # ===========================================
 # Module execution.
@@ -98,22 +89,21 @@ import json
 
 
 def main():
-
     module = AnsibleModule(
         argument_spec=dict(
             token=dict(required=True, no_log=True),
-            app_name=dict(required=False),
-            application_id=dict(required=False),
-            changelog=dict(required=False),
-            description=dict(required=False),
+            app_name=dict(),
+            application_id=dict(),
+            changelog=dict(),
+            description=dict(),
             revision=dict(required=True),
-            user=dict(required=False),
-            validate_certs=dict(default=True, type='bool'),
-            app_name_exact_match=dict(required=False, type='bool', default=False),
+            user=dict(),
+            validate_certs=dict(default=True, type="bool"),
+            app_name_exact_match=dict(type="bool", default=False),
         ),
-        required_one_of=[['app_name', 'application_id']],
-        required_if=[('app_name_exact_match', True, ['app_name'])],
-        supports_check_mode=True
+        required_one_of=[["app_name", "application_id"]],
+        required_if=[("app_name_exact_match", True, ["app_name"])],
+        supports_check_mode=True,
     )
 
     # build list of params
@@ -129,7 +119,7 @@ def main():
         module.fail_json(msg="you must set one of 'app_name' or 'application_id'")
 
     if app_id is None:
-        module.fail_json(msg="No application with name %s is found in NewRelic" % module.params["app_name"])
+        module.fail_json(msg=f"No application with name {module.params['app_name']} is found in NewRelic")
 
     for item in ["changelog", "description", "revision", "user"]:
         if module.params[item]:
@@ -140,35 +130,33 @@ def main():
         module.exit_json(changed=True)
 
     # Send the data to New Relic
-    url = "https://api.newrelic.com/v2/applications/%s/deployments.json" % quote(str(app_id), safe='')
-    data = {
-        'deployment': params
-    }
+    url = f"https://api.newrelic.com/v2/applications/{quote(str(app_id), safe='')}/deployments.json"
+    data = {"deployment": params}
     headers = {
-        'Api-Key': module.params["token"],
-        'Content-Type': 'application/json',
+        "Api-Key": module.params["token"],
+        "Content-Type": "application/json",
     }
     response, info = fetch_url(module, url, data=module.jsonify(data), headers=headers, method="POST")
-    if info['status'] in (200, 201):
+    if info["status"] in (200, 201):
         module.exit_json(changed=True)
     else:
-        module.fail_json(msg="Unable to insert deployment marker: %s" % info['msg'])
+        module.fail_json(msg=f"Unable to insert deployment marker: {info['msg']}")
 
 
 def get_application_id(module):
     url = "https://api.newrelic.com/v2/applications.json"
-    data = "filter[name]=%s" % module.params["app_name"]
+    data = f"filter[name]={module.params['app_name']}"
     application_id = None
     headers = {
-        'Api-Key': module.params["token"],
+        "Api-Key": module.params["token"],
     }
     response, info = fetch_url(module, url, data=data, headers=headers)
-    if info['status'] not in (200, 201):
-        module.fail_json(msg="Unable to get application: %s" % info['msg'])
+    if info["status"] not in (200, 201):
+        module.fail_json(msg=f"Unable to get application: {info['msg']}")
 
     result = json.loads(response.read())
     if result is None or len(result.get("applications", "")) == 0:
-        module.fail_json(msg='No application found with name "%s"' % module.params["app_name"])
+        module.fail_json(msg=f'No application found with name "{module.params["app_name"]}"')
 
     if module.params["app_name_exact_match"]:
         for item in result["applications"]:
@@ -176,12 +164,12 @@ def get_application_id(module):
                 application_id = item["id"]
                 break
         if application_id is None:
-            module.fail_json(msg='No application found with exact name "%s"' % module.params["app_name"])
+            module.fail_json(msg=f'No application found with exact name "{module.params["app_name"]}"')
     else:
         application_id = result["applications"][0]["id"]
 
     return application_id
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2021, Florian Dambrine <android.florian@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: pritunl_org_info
@@ -22,12 +19,11 @@ extends_documentation_fragment:
 options:
   organization:
     type: str
-    required: false
     aliases:
       - org
     default: null
     description:
-      - Name of the Pritunl organization to search for. If none provided, the module will return all Pritunl organizations.
+      - Name of the Pritunl organization to search for. If none provided, the module returns all Pritunl organizations.
 """
 
 EXAMPLES = r"""
@@ -41,42 +37,42 @@ EXAMPLES = r"""
 
 RETURN = r"""
 organizations:
-    description: List of Pritunl organizations.
-    returned: success
-    type: list
-    elements: dict
-    sample:
-        [
-            {
-                "auth_api": false,
-                "name": "FooOrg",
-                "auth_token": null,
-                "user_count": 0,
-                "auth_secret": null,
-                "id": "csftwlu6uhralzi2dpmhekz3",
-            },
-            {
-                "auth_api": false,
-                "name": "MyOrg",
-                "auth_token": null,
-                "user_count": 3,
-                "auth_secret": null,
-                "id": "58070daee63f3b2e6e472c36",
-            },
-            {
-                "auth_api": false,
-                "name": "BarOrg",
-                "auth_token": null,
-                "user_count": 0,
-                "auth_secret": null,
-                "id": "v1sncsxxybnsylc8gpqg85pg",
-            }
-        ]
+  description: List of Pritunl organizations.
+  returned: success
+  type: list
+  elements: dict
+  sample:
+    [
+      {
+        "auth_api": false,
+        "name": "FooOrg",
+        "auth_token": null,
+        "user_count": 0,
+        "auth_secret": null,
+        "id": "csftwlu6uhralzi2dpmhekz3"
+      },
+      {
+        "auth_api": false,
+        "name": "MyOrg",
+        "auth_token": null,
+        "user_count": 3,
+        "auth_secret": null,
+        "id": "58070daee63f3b2e6e472c36"
+      },
+      {
+        "auth_api": false,
+        "name": "BarOrg",
+        "auth_token": null,
+        "user_count": 0,
+        "auth_secret": null,
+        "id": "v1sncsxxybnsylc8gpqg85pg"
+      }
+    ]
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.text.converters import to_native
 from ansible.module_utils.common.dict_transformations import dict_merge
+
 from ansible_collections.community.general.plugins.module_utils.net_tools.pritunl.api import (
     PritunlException,
     get_pritunl_settings,
@@ -99,7 +95,7 @@ def get_pritunl_organizations(module):
 
     if org_name and len(organizations) == 0:
         # When an org_name is provided but no organization match return an error
-        module.fail_json(msg="Organization '%s' does not exist" % org_name)
+        module.fail_json(msg=f"Organization '{org_name}' does not exist")
 
     result = {}
     result["changed"] = False
@@ -111,18 +107,14 @@ def get_pritunl_organizations(module):
 def main():
     argument_spec = pritunl_argument_spec()
 
-    argument_spec.update(
-        dict(
-            organization=dict(required=False, type="str", default=None, aliases=["org"])
-        )
-    )
+    argument_spec.update(dict(organization=dict(type="str", aliases=["org"])))
 
     module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     try:
         get_pritunl_organizations(module)
     except PritunlException as e:
-        module.fail_json(msg=to_native(e))
+        module.fail_json(msg=f"{e}")
 
 
 if __name__ == "__main__":

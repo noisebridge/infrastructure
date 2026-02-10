@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2024, kurokobo <kurokobo@protonmail.com>
 # Copyright (c) 2014, Michael DeHaan <michael.dehaan@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
-
 
 DOCUMENTATION = r"""
 name: timestamp
@@ -51,12 +48,13 @@ extends_documentation_fragment:
 """
 
 
+import sys
+import types
+from datetime import datetime
+
+from ansible.module_utils.common.text.converters import to_text
 from ansible.plugins.callback.default import CallbackModule as Default
 from ansible.utils.display import get_text_width
-from ansible.module_utils.common.text.converters import to_text
-from datetime import datetime
-import types
-import sys
 
 # Store whether the zoneinfo module is available
 _ZONEINFO_AVAILABLE = sys.version_info >= (3, 9)
@@ -91,7 +89,7 @@ def banner(self, msg, color=None, cows=True):
     msg = msg.strip()
     try:
         star_len = self.columns - get_text_width(msg) - timestamp_len
-    except EnvironmentError:
+    except OSError:
         star_len = self.columns - len(msg) - timestamp_len
     if star_len <= 3:
         star_len = 3
@@ -105,13 +103,13 @@ class CallbackModule(Default):
     CALLBACK_NAME = "community.general.timestamp"
 
     def __init__(self):
-        super(CallbackModule, self).__init__()
+        super().__init__()
 
         # Replace the banner method of the display object with the custom one
         self._display.banner = types.MethodType(banner, self._display)
 
     def set_options(self, task_keys=None, var_options=None, direct=None):
-        super(CallbackModule, self).set_options(task_keys=task_keys, var_options=var_options, direct=direct)
+        super().set_options(task_keys=task_keys, var_options=var_options, direct=direct)
 
         # Store zoneinfo for specified timezone if available
         tzinfo = None
@@ -121,5 +119,5 @@ class CallbackModule(Default):
             tzinfo = ZoneInfo(self.get_option("timezone"))
 
         # Inject options into the display object
-        setattr(self._display, "timestamp_tzinfo", tzinfo)
-        setattr(self._display, "timestamp_format_string", self.get_option("format_string"))
+        self._display.timestamp_tzinfo = tzinfo
+        self._display.timestamp_format_string = self.get_option("format_string")

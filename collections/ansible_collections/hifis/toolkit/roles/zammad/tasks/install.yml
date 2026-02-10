@@ -5,28 +5,18 @@
 
 ---
 
-- name: "Variable elasticsearch_url is deprecated"
-  ansible.builtin.debug:
-    msg:
-      - "The variable elasticsearch_url is deprecated and will be removed in the next major release."
-      - "Please use zammad_elasticsearch_url instead"
-  when: "elasticsearch_url is defined and elasticsearch_url | length > 0"
-
-- name: "Set variable zammad_elasticsearch_url for backwards compatibility"
-  ansible.builtin.set_fact:
-    zammad_elasticsearch_url: "{{ elasticsearch_url }}"
-  when: "elasticsearch_url is defined and elasticsearch_url | length > 0"
-
 - name: "Configure Zammad repository for Centos-like"
-  when: "ansible_distribution | lower == 'centos'"
+  when: "ansible_facts.distribution | lower == 'centos'"
   block:
 
     - name: "Install | Install EPEL repo"
+      become: true
       ansible.builtin.dnf:
         name: "epel-release"
         state: "present"
 
     - name: "Install | Add Zammad yum repository"
+      become: true
       ansible.builtin.yum_repository:
         name: "zammad"
         state: "present"
@@ -39,21 +29,42 @@
         mode: "0644"
 
 - name: "Configure Zammad repository for Ubuntu"
-  when: "ansible_distribution | lower == 'ubuntu'"
+  when: "ansible_facts.distribution | lower == 'ubuntu'"
   block:
 
-    - name: "Install | Add Zammad apt key"
+    - name: "Remove Zammad apt key from legacy trusted.gpg keyring"
+      become: true
       ansible.builtin.apt_key:
         url: "https://dl.packager.io/srv/zammad/zammad/key"
-        state: "present"
+        state: "absent"
+
+    - name: "Remove Zammad DEB repository from sources.list"
+      become: true
+      ansible.builtin.apt_repository:
+        repo: "deb https://dl.packager.io/srv/deb/zammad/zammad/{{ zammad_release_channel }}/ubuntu {{ ansible_facts.distribution_version }} main"
+        state: "absent"
+        filename: "zammad"
+        update_cache: false
 
     - name: "Install | Add Zammad DEB repository"
-      ansible.builtin.apt_repository:
-        repo: "deb https://dl.packager.io/srv/deb/zammad/zammad/{{ zammad_release_channel }}/ubuntu {{ ansible_distribution_version }} main"
+      become: true
+      ansible.builtin.deb822_repository:
+        name: "zammad"
+        types: "deb"
+        uris: "{{ zammad_repo_url }}"
+        suites: "{{ ansible_facts.distribution_version }}"
+        components: "main"
+        signed_by: "https://dl.packager.io/srv/zammad/zammad/key"
+        architectures: "amd64"
         state: "present"
-        filename: "zammad"
-        update_cache: true
         mode: "0644"
+        enabled: true
+
+    - name: "Update apt cache"
+      become: true
+      ansible.builtin.apt:
+        update_cache: true
+      changed_when: false
 
 - name: "Gather the package facts to check wether Zammad has already been installed"
   ansible.builtin.package_facts:
@@ -64,6 +75,7 @@
     __zammad_is_installed: "{{ 'zammad' in ansible_facts.packages }}"
 
 - name: "Install | Install Zammad package"
+  become: true
   ansible.builtin.package:
     name: "zammad={{ zammad_version }}*"
     state: "present"
@@ -73,6 +85,7 @@
     - "Build search index"
 
 - name: "Install | Start and enable services"
+  become: true
   ansible.builtin.service:
     name: "{{ item }}"
     state: "started"

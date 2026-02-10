@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2022, Håkon Lerring
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: consul_role
@@ -29,7 +26,7 @@ attributes:
   diff_mode:
     support: partial
     details:
-      - In check mode the diff will miss operational attributes.
+      - In check mode the diff misses operational attributes.
     version_added: 8.3.0
   action_group:
     version_added: 8.3.0
@@ -48,15 +45,15 @@ options:
   description:
     description:
       - Description of the role.
-      - If not specified, the assigned description will not be changed.
+      - If not specified, the assigned description is not changed.
     type: str
   policies:
     type: list
     elements: dict
     description:
       - List of policies to attach to the role. Each policy is a dict.
-      - If the parameter is left blank, any policies currently assigned will not be changed.
-      - Any empty array (V([])) will clear any policies previously set.
+      - If the parameter is left blank, any policies currently assigned are not changed.
+      - Any empty array (V([])) clears any policies previously set.
     suboptions:
       name:
         description:
@@ -90,8 +87,8 @@ options:
     elements: dict
     description:
       - List of service identities to attach to the role.
-      - If not specified, any service identities currently assigned will not be changed.
-      - If the parameter is an empty array (V([])), any node identities assigned will be unassigned.
+      - If not specified, any service identities currently assigned are not changed.
+      - If the parameter is an empty array (V([])), any node identities assigned are unassigned.
     suboptions:
       service_name:
         description:
@@ -106,9 +103,9 @@ options:
           - name
       datacenters:
         description:
-          - The datacenters the policies will be effective.
-          - This will result in effective policy only being valid in this datacenter.
-          - If an empty array (V([])) is specified, the policies will valid in all datacenters.
+          - The datacenters where the policies are effective.
+          - This results in effective policy only being valid in this datacenter.
+          - If an empty array (V([])) is specified, the policies are valid in all datacenters.
           - Including those which do not yet exist but may in the future.
         type: list
         elements: str
@@ -117,8 +114,8 @@ options:
     elements: dict
     description:
       - List of node identities to attach to the role.
-      - If not specified, any node identities currently assigned will not be changed.
-      - If the parameter is an empty array (V([])), any node identities assigned will be unassigned.
+      - If not specified, any node identities currently assigned are not changed.
+      - If the parameter is an empty array (V([])), any node identities assigned are unassigned.
     suboptions:
       node_name:
         description:
@@ -134,7 +131,7 @@ options:
       datacenter:
         description:
           - The nodes datacenter.
-          - This will result in effective policy only being valid in this datacenter.
+          - This results in effective policy only being valid in this datacenter.
         type: str
         required: true
 """
@@ -182,17 +179,20 @@ role:
   returned: success
   type: dict
   sample:
-      {
-          "CreateIndex": 39,
-          "Description": "",
-          "Hash": "Trt0QJtxVEfvTTIcdTUbIJRr6Dsi6E4EcwSFxx9tCYM=",
-          "ID": "9a300b8d-48db-b720-8544-a37c0f5dafb5",
-          "ModifyIndex": 39,
-          "Name": "foo-role",
-          "Policies": [
-              {"ID": "b1a00172-d7a1-0e66-a12e-7a4045c4b774", "Name": "foo-access"}
-          ]
-      }
+    {
+      "CreateIndex": 39,
+      "Description": "",
+      "Hash": "Trt0QJtxVEfvTTIcdTUbIJRr6Dsi6E4EcwSFxx9tCYM=",
+      "ID": "9a300b8d-48db-b720-8544-a37c0f5dafb5",
+      "ModifyIndex": 39,
+      "Name": "foo-role",
+      "Policies": [
+        {
+          "ID": "b1a00172-d7a1-0e66-a12e-7a4045c4b774",
+          "Name": "foo-access"
+        }
+      ]
+    }
 operation:
   description: The operation performed on the role.
   returned: changed
@@ -201,6 +201,7 @@ operation:
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.consul import (
     AUTH_ARGUMENTS_SPEC,
     OPERATION_READ,
@@ -216,7 +217,7 @@ class ConsulRoleModule(_ConsulModule):
     def endpoint_url(self, operation, identifier=None):
         if operation == OPERATION_READ:
             return [self.api_endpoint, "name", self.params["name"]]
-        return super(ConsulRoleModule, self).endpoint_url(operation, identifier)
+        return super().endpoint_url(operation, identifier)
 
 
 NAME_ID_SPEC = dict(

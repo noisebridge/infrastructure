@@ -10,45 +10,63 @@
   ansible.builtin.package:
     name: "{{ gitlab_dependencies }}"
     state: "present"
+    allowerasing: "{{ true if ansible_facts['os_family'] == 'RedHat' else omit }}"
 
 - name: "Prepare Debian GitLab installation"
   when: "ansible_facts.os_family == 'Debian'"
   block:
-    - name: "Install APT GPG key"
+    - name: "Remove GitLab APT GPG key from legacy trusted.gpg keyring"
+      become: true
       ansible.builtin.apt_key:
         url: "{{ gitlab_gpg_key_url }}"
         id: "{{ gitlab_gpg_key_id }}"
-        state: "present"
-      when: "not gitlab_is_initial_dryrun"
+        state: "absent"
+      when: "not __gitlab_is_initial_dryrun"
 
-    - name: "Add GitLab APT repository"
+    - name: "Remove GitLab APT repository from sources.list"
+      become: true
       ansible.builtin.apt_repository:
         repo: "deb {{ gitlab_repo_url }} {{ ansible_facts.distribution_release }} main"
-        state: "present"
+        state: "absent"
         filename: "gitlab_{{ gitlab_edition }}"
-        mode: "0644"
+        update_cache: false
 
-    - name: "Add GitLab source APT repository"
+    - name: "Remove GitLab source APT repository from sources.list"
+      become: true
       ansible.builtin.apt_repository:
         repo: "deb-src {{ gitlab_repo_url }} {{ ansible_facts.distribution_release }} main"
-        state: "present"
+        state: "absent"
         filename: "gitlab_{{ gitlab_edition }}"
+        update_cache: false
+
+    - name: "Add GitLab APT repository"
+      become: true
+      ansible.builtin.deb822_repository:
+        name: "{{ gitlab_edition }}"
+        types:
+          - "deb"
+          - "deb-src"
+        uris: "{{ gitlab_repo_url }}"
+        suites: "{{ ansible_facts.distribution_release | lower }}"
+        components: "main"
+        signed_by: "{{ gitlab_gpg_key_url }}"
+        architectures: "amd64"
+        state: "present"
         mode: "0644"
+        enabled: true
 
     - name: "Update APT package cache"
+      become: true
       ansible.builtin.apt:
         update_cache: true
-        cache_valid_time: 3600
-      register: "gitlab_apt_cache"
       check_mode: false
-      changed_when:
-        - "gitlab_apt_cache.cache_updated"
-        - "not ansible_check_mode"
+      changed_when: false
 
 - name: "Install GitLab on RedHat Like OS"
   when: "ansible_facts.os_family == 'RedHat'"
   block:
     - name: "Add GitLab yum repository"
+      become: true
       ansible.builtin.yum_repository:
         name: "gitlab_{{ gitlab_edition }}"
         description: "GitLab yum repo"
@@ -60,11 +78,13 @@
         gpgkey:
           - "{{ gitlab_gpg_key_url }}"
           - "{{ gitlab_gpg_key_url }}/gitlab-{{ gitlab_edition }}-3D645A26AB9FBD22.pub.gpg"
+          - "{{ gitlab_gpg_key_url }}/gitlab-{{ gitlab_edition }}-CB947AD886C8E8FD.pub.gpg"
         sslverify: true
         sslcacert: "/etc/pki/tls/certs/ca-bundle.crt"
         metadata_expire: "300"
 
     - name: "Add GitLab source yum repository"
+      become: true
       ansible.builtin.yum_repository:
         name: "gitlab_{{ gitlab_edition }}-source"
         description: "GitLab source yum repo"
@@ -76,11 +96,13 @@
         gpgkey:
           - "{{ gitlab_gpg_key_url }}"
           - "{{ gitlab_gpg_key_url }}/gitlab-{{ gitlab_edition }}-3D645A26AB9FBD22.pub.gpg"
+          - "{{ gitlab_gpg_key_url }}/gitlab-{{ gitlab_edition }}-CB947AD886C8E8FD.pub.gpg"
         sslverify: true
         sslcacert: "/etc/pki/tls/certs/ca-bundle.crt"
         metadata_expire: "300"
 
     - name: "Update yum package cache"
+      become: true
       ansible.builtin.dnf:
         update_cache: true
       check_mode: false
@@ -88,36 +110,37 @@
 - name: "Check if VERSION file exists"
   ansible.builtin.stat:
     path: "/var/opt/gitlab/gitlab-rails/VERSION"
-  register: "gitlab_version_file"
+  register: "__gitlab_version_file"
 
 - name: "Wait for background migrations on primary node"
   when:
     - "gitlab_is_primary"
-    - "gitlab_version_file.stat.exists"
-    - "gitlab_rails_binary.stat.exists"
-    - "gitlab_rails_binary.stat.executable"
+    - "__gitlab_version_file.stat.exists"
+    - "__gitlab_rails_binary.stat.exists"
+    - "__gitlab_rails_binary.stat.executable"
   block:
     - name: "Get the currently installed GitLab version"
+      become: true
       ansible.builtin.slurp:
         path: "/var/opt/gitlab/gitlab-rails/VERSION"
-      register: "gitlab_version_base64"
+      register: "__gitlab_version_base64"
 
     - name: "Set fact about installed GitLab version"
       ansible.builtin.set_fact:
-        gitlab_installed_version: "{{ gitlab_version_base64['content'] | b64decode }}"
+        __gitlab_installed_version: "{{ __gitlab_version_base64['content'] | b64decode }}"
       check_mode: false
 
     - name: "Wait until all previous background migrations are processed."
       become: true
       ansible.builtin.command:
-        cmd: "gitlab-rails runner -e production 'puts Gitlab::BackgroundMigration.remaining'"
+        cmd: "gitlab-rails runner -e production 'puts Gitlab::Database::BackgroundMigration::BatchedMigration.queued.count'"
       register: "remaining"
       until: "remaining.stdout == '0'"
       retries: 10
       delay: 10
       check_mode: false
       changed_when: false
-      when: "gitlab_version == '' or gitlab_installed_version is version(gitlab_version, operator='lt', strict=True)"
+      when: "gitlab_version == '' or __gitlab_installed_version is version(gitlab_version, operator='lt', strict=True)"
 
 - name: "Install GitLab and add helper to detect failed reconfigures"
   block:
@@ -127,13 +150,13 @@
       ansible.builtin.package:
         name: "{{ gitlab_package_name }}"
         state: "{{ 'present' if gitlab_version | length > 0 else 'latest' }}"
-      register: "gitlab_install_output"
       notify: "GitLab has been installed or upgraded"
-      when: "not gitlab_is_initial_dryrun"
+      when: "not __gitlab_is_initial_dryrun"
 
   rescue:
 
     - name: "Ensure GitLab directory exists"
+      become: true
       ansible.builtin.file:
         path: "/etc/gitlab"
         state: "directory"
@@ -142,6 +165,7 @@
         mode: "0775"
 
     - name: "Create file to detect a failed reconfigure"
+      become: true
       ansible.builtin.copy:
         content: "This file is managed by Ansible."
         dest: "/etc/gitlab/reconfigure_failed"

@@ -1,34 +1,43 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2021, Phillipe Smith <phsmithcc@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 import json
+import traceback
+import typing as t
 
 from ansible.module_utils.urls import fetch_url, url_argument_spec
-from ansible.module_utils.common.text.converters import to_native
+
+if t.TYPE_CHECKING:
+    from ansible.module_utils.basic import AnsibleModule
 
 
-def api_argument_spec():
-    '''
+def api_argument_spec() -> dict[str, t.Any]:
+    """
     Creates an argument spec that can be used with any module
     that will be requesting content via Rundeck API
-    '''
+    """
     api_argument_spec = url_argument_spec()
-    api_argument_spec.update(dict(
-        url=dict(required=True, type="str"),
-        api_version=dict(type="int", default=39),
-        api_token=dict(required=True, type="str", no_log=True)
-    ))
+    api_argument_spec.update(
+        dict(
+            url=dict(required=True, type="str"),
+            api_version=dict(type="int", default=39),
+            api_token=dict(required=True, type="str", no_log=True),
+        )
+    )
 
     return api_argument_spec
 
 
-def api_request(module, endpoint, data=None, method="GET", content_type="application/json"):
+def api_request(
+    module: AnsibleModule,
+    endpoint: str,
+    data: t.Any | None = None,
+    method: str = "GET",
+    content_type: str = "application/json",
+) -> tuple[t.Any, dict[str, t.Any]]:
     """Manages Rundeck API requests via HTTP(S)
 
     :arg module:   The AnsibleModule (used to get url, api_version, api_token, etc).
@@ -55,31 +64,24 @@ def api_request(module, endpoint, data=None, method="GET", content_type="applica
 
     response, info = fetch_url(
         module=module,
-        url="%s/api/%s/%s" % (
-            module.params["url"],
-            module.params["api_version"],
-            endpoint
-        ),
+        url=f"{module.params['url']}/api/{module.params['api_version']}/{endpoint}",
         data=json.dumps(data),
         method=method,
         headers={
             "Content-Type": content_type,
             "Accept": "application/json",
-            "X-Rundeck-Auth-Token": module.params["api_token"]
-        }
+            "X-Rundeck-Auth-Token": module.params["api_token"],
+        },
     )
 
     if info["status"] == 403:
-        module.fail_json(msg="Token authorization failed",
-                         execution_info=json.loads(info["body"]))
+        module.fail_json(msg="Token authorization failed", execution_info=json.loads(info["body"]))
     elif info["status"] == 404:
         return None, info
     elif info["status"] == 409:
-        module.fail_json(msg="Job executions limit reached",
-                         execution_info=json.loads(info["body"]))
+        module.fail_json(msg="Job executions limit reached", execution_info=json.loads(info["body"]))
     elif info["status"] >= 500:
-        module.fail_json(msg="Rundeck API error",
-                         execution_info=json.loads(info["body"]))
+        module.fail_json(msg="Rundeck API error", execution_info=json.loads(info["body"]))
 
     try:
         content = response.read()
@@ -91,13 +93,9 @@ def api_request(module, endpoint, data=None, method="GET", content_type="applica
             return json_response, info
     except AttributeError as error:
         module.fail_json(
-            msg="Rundeck API request error",
-            exception=to_native(error),
-            execution_info=info
+            msg=f"Rundeck API request error: {error}", exception=traceback.format_exc(), execution_info=info
         )
     except ValueError as error:
         module.fail_json(
-            msg="No valid JSON response",
-            exception=to_native(error),
-            execution_info=content
+            msg=f"No valid JSON response: {error}", exception=traceback.format_exc(), execution_info=content
         )

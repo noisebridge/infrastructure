@@ -8,41 +8,29 @@
 - name: "Set OS distribution dependent variables"
   ansible.builtin.include_vars: "{{ ansible_facts.distribution }}.yml"
 
-- name: "Check whether gitlab-rails binary is installed"
-  ansible.builtin.stat:
-    path: "/usr/bin/gitlab-rails"
-  register: "gitlab_rails_binary"
-
-- name: "Determine if this is an initial dry-run"
-  ansible.builtin.set_fact:
-    gitlab_is_initial_dryrun: "{{ ansible_check_mode and not gitlab_rails_binary.stat.exists }}"
-
-- name: "Check if a previous reconfigure had failed"
-  ansible.builtin.stat:
-    path: "/etc/gitlab/reconfigure_failed"
-  register: "gitlab_reconfigure_failed"
+- name: "Perform prerequisite checks"
+  ansible.builtin.import_tasks: "check.yml"
 
 - name: "Reconfigure GitLab"
   ansible.builtin.import_tasks: "reconfigure.yml"
-  become: true
-  when: "gitlab_reconfigure_failed.stat.exists"
+  when: "__gitlab_reconfigure_failed.stat.exists"
 
 - name: "Install GitLab"
   ansible.builtin.import_tasks: "install.yml"
-  become: true
 
 - name: "Configure GitLab"
   ansible.builtin.import_tasks: "configure.yml"
-  become: true
 
 - name: "Check if GitLab is already configured"
   ansible.builtin.stat:
     path: "/opt/gitlab/etc/gitlab-rails-rc"
-  register: "gitlab_rails_rc"
+  register: "__gitlab_rails_rc"
 
 - name: "Force all notified handlers to run at this point. Required for feature flags."
   ansible.builtin.meta: "flush_handlers"
-  when: "not gitlab_rails_rc.stat.exists and gitlab_feature_flags | length > 0"
+  when:
+    - "not __gitlab_rails_rc.stat.exists"
+    - "gitlab_feature_flags | length > 0"
 
 - name: "Set feature flags"
   ansible.builtin.include_tasks: "feature-flag.yml"

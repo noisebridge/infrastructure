@@ -28,17 +28,30 @@ gitlab_rails['redis_sentinels'] = [
 gitlab_rails['redis_sentinels_password'] = "{{ gitlab_redis_sentinel_password }}"
 {% endif %}
 {% endif %}
-gitlab_rails['monitoring_whitelist'] = ["{{ gitlab_ip_range }}"]
+gitlab_rails['monitoring_whitelist'] = [{{ (gitlab_rails_monitoring_whitelist | list | unique | sort) | map('to_json') | join(', ') }}]
 
 {% if gitlab_use_internal_gitaly %}
-git_data_dirs({"default" => {"path" => "{{ gitlab_git_data_dir }}"} })
+{% if not __gitaly_configuration_exists %}
+gitaly['configuration'] = {
+  "storage": [
+    {
+      "name": "default",
+      "path": "{{ (gitlab_git_data_dir, 'repositories') | path_join }}",
+    },
+  ],
+}
+{% endif %}
 {% else %}
 gitaly['enable'] = false
 gitlab_rails['gitaly_token'] = "{{ gitlab_gitaly_token }}"
 gitlab_shell['secret_token'] = "{{ gitlab_secret_token }}"
-git_data_dirs({
-  'default' => { 'gitaly_address' => 'tcp://{{ gitlab_gitaly_instance_ip }}:{{ gitlab_gitaly_instance_port }}' },
-})
+{% if gitlab_use_default_repositories_storages %}
+gitlab_rails['repositories_storages'] = {
+  "default" => {
+    "gitaly_address" => "tcp://{{ gitlab_gitaly_instance_ip }}:{{ gitlab_gitaly_instance_port }}"
+  }
+}
+{% endif %}
 {% endif %}
 
 gitlab_rails['gitlab_email_enabled'] = {{ gitlab_email_enabled }}

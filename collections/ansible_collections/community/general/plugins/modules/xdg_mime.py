@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2025, Marcos Alano <marcoshalano@gmail.com>
 # Based on gio_mime module. Copyright (c) 2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -10,8 +9,7 @@
 
 # TODO: Add support for diff mode
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: xdg_mime
@@ -31,16 +29,15 @@ attributes:
 options:
   mime_types:
     description:
-      - One or more MIME types for which a default handler will be set.
+      - One or more MIME types for which a default handler is set.
     type: list
     elements: str
     required: true
   handler:
     description:
       - Sets the default handler for the specified MIME types.
-      - The desktop file must be installed in the system.
-        If the desktop file is not installed, the module
-        does not fail, but the handler is not set either.
+      - The desktop file must be installed in the system. If the desktop file is not installed, the module does not fail,
+        but the handler is not set either.
       - You must pass a handler in the form V(*.desktop), otherwise the module fails.
     type: str
     required: true
@@ -90,20 +87,19 @@ version:
 """
 
 from ansible_collections.community.general.plugins.module_utils.module_helper import ModuleHelper
-from ansible_collections.community.general.plugins.module_utils.xdg_mime import xdg_mime_runner, xdg_mime_get
+from ansible_collections.community.general.plugins.module_utils.xdg_mime import xdg_mime_get, xdg_mime_runner
 
 
 class XdgMime(ModuleHelper):
-    output_params = ['handler']
+    output_params = ["handler"]
 
     module = dict(
         argument_spec=dict(
-            mime_types=dict(type='list', elements='str', required=True),
-            handler=dict(type='str', required=True),
+            mime_types=dict(type="list", elements="str", required=True),
+            handler=dict(type="str", required=True),
         ),
         supports_check_mode=True,
     )
-    use_old_vardict = False
 
     def __init_module__(self):
         self.runner = xdg_mime_runner(self.module, check_rc=True)
@@ -119,17 +115,19 @@ class XdgMime(ModuleHelper):
         for mime in self.vars.mime_types:
             handler_value = xdg_mime_get(self.runner, mime)
             if not handler_value:
-                handler_value = ''
+                handler_value = ""
             self.vars.current_handlers.append(handler_value)
 
     def __run__(self):
-        check_mode_return = (0, 'Module executed in check mode', '')
+        check_mode_return = (0, "Module executed in check mode", "")
 
         if any(h != self.vars.handler for h in self.vars.current_handlers):
             self.changed = True
 
         if self.has_changed():
-            with self.runner.context(args_order="default handler mime_types", check_mode_skip=True, check_mode_return=check_mode_return) as ctx:
+            with self.runner.context(
+                args_order="default handler mime_types", check_mode_skip=True, check_mode_return=check_mode_return
+            ) as ctx:
                 rc, out, err = ctx.run()
                 self.vars.stdout = out
                 self.vars.stderr = err
@@ -140,5 +138,5 @@ def main():
     XdgMime.execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

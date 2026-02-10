@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Scaleway Serverless function namespace management module
 #
@@ -7,9 +6,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: scaleway_function_namespace
@@ -22,6 +19,7 @@ extends_documentation_fragment:
   - community.general.scaleway
   - community.general.scaleway_waitable_resource
   - community.general.attributes
+  - community.general.scaleway.actiongroup_scaleway
 requirements:
   - passlib[argon2] >= 1.7.4
 
@@ -30,6 +28,8 @@ attributes:
     support: full
   diff_mode:
     support: none
+  action_group:
+    version_added: 11.3.0
 
 options:
   state:
@@ -79,7 +79,7 @@ options:
   secret_environment_variables:
     description:
       - Secret environment variables of the function namespace.
-      - Updating those values will not output a C(changed) state in Ansible.
+      - Updating those values does not output a RV(ignore:changed) state in Ansible.
       - Injected in functions at runtime.
     type: dict
     default: {}
@@ -131,18 +131,18 @@ function_namespace:
 
 from copy import deepcopy
 
-from ansible_collections.community.general.plugins.module_utils.scaleway import (
-    SCALEWAY_REGIONS, scaleway_argument_spec, Scaleway,
-    scaleway_waitable_resource_argument_spec, resource_attributes_should_be_changed,
-    SecretVariables
-)
 from ansible.module_utils.basic import AnsibleModule
 
-
-STABLE_STATES = (
-    "ready",
-    "absent"
+from ansible_collections.community.general.plugins.module_utils.scaleway import (
+    SCALEWAY_REGIONS,
+    Scaleway,
+    SecretVariables,
+    resource_attributes_should_be_changed,
+    scaleway_argument_spec,
+    scaleway_waitable_resource_argument_spec,
 )
+
+STABLE_STATES = ("ready", "absent")
 
 MUTABLE_ATTRIBUTES = (
     "description",
@@ -157,7 +157,7 @@ def payload_from_wished_fn(wished_fn):
         "name": wished_fn["name"],
         "description": wished_fn["description"],
         "environment_variables": wished_fn["environment_variables"],
-        "secret_environment_variables": SecretVariables.dict_to_list(wished_fn["secret_environment_variables"])
+        "secret_environment_variables": SecretVariables.dict_to_list(wished_fn["secret_environment_variables"]),
     }
 
     return payload
@@ -178,10 +178,9 @@ def absent_strategy(api, wished_fn):
         return changed, {"status": "Function namespace would be destroyed"}
 
     api.wait_to_complete_state_transition(resource=target_fn, stable_states=STABLE_STATES, force_wait=True)
-    response = api.delete(path=api.api_path + "/%s" % target_fn["id"])
+    response = api.delete(path=f"{api.api_path}/{target_fn['id']}")
     if not response.ok:
-        api.module.fail_json(msg='Error deleting function namespace [{0}: {1}]'.format(
-            response.status_code, response.json))
+        api.module.fail_json(msg=f"Error deleting function namespace [{response.status_code}: {response.json}]")
 
     api.wait_to_complete_state_transition(resource=target_fn, stable_states=STABLE_STATES)
     return changed, response.json
@@ -202,28 +201,28 @@ def present_strategy(api, wished_fn):
 
         # Create function namespace
         api.warn(payload_fn)
-        creation_response = api.post(path=api.api_path,
-                                     data=payload_fn)
+        creation_response = api.post(path=api.api_path, data=payload_fn)
 
         if not creation_response.ok:
-            msg = "Error during function namespace creation: %s: '%s' (%s)" % (creation_response.info['msg'],
-                                                                               creation_response.json['message'],
-                                                                               creation_response.json)
+            msg = f"Error during function namespace creation: {creation_response.info['msg']}: '{creation_response.json['message']}' ({creation_response.json})"
             api.module.fail_json(msg=msg)
 
         api.wait_to_complete_state_transition(resource=creation_response.json, stable_states=STABLE_STATES)
-        response = api.get(path=api.api_path + "/%s" % creation_response.json["id"])
+        response = api.get(path=f"{api.api_path}/{creation_response.json['id']}")
         return changed, response.json
 
     target_fn = fn_lookup[wished_fn["name"]]
     decoded_target_fn = deepcopy(target_fn)
-    decoded_target_fn["secret_environment_variables"] = SecretVariables.decode(decoded_target_fn["secret_environment_variables"],
-                                                                               payload_fn["secret_environment_variables"])
+    decoded_target_fn["secret_environment_variables"] = SecretVariables.decode(
+        decoded_target_fn["secret_environment_variables"], payload_fn["secret_environment_variables"]
+    )
 
-    patch_payload = resource_attributes_should_be_changed(target=decoded_target_fn,
-                                                          wished=payload_fn,
-                                                          verifiable_mutable_attributes=MUTABLE_ATTRIBUTES,
-                                                          mutable_attributes=MUTABLE_ATTRIBUTES)
+    patch_payload = resource_attributes_should_be_changed(
+        target=decoded_target_fn,
+        wished=payload_fn,
+        verifiable_mutable_attributes=MUTABLE_ATTRIBUTES,
+        mutable_attributes=MUTABLE_ATTRIBUTES,
+    )
 
     if not patch_payload:
         return changed, target_fn
@@ -232,22 +231,19 @@ def present_strategy(api, wished_fn):
     if api.module.check_mode:
         return changed, {"status": "Function namespace attributes would be changed."}
 
-    fn_patch_response = api.patch(path=api.api_path + "/%s" % target_fn["id"],
-                                  data=patch_payload)
+    fn_patch_response = api.patch(path=f"{api.api_path}/{target_fn['id']}", data=patch_payload)
 
     if not fn_patch_response.ok:
-        api.module.fail_json(msg='Error during function namespace attributes update: [{0}: {1}]'.format(
-            fn_patch_response.status_code, fn_patch_response.json['message']))
+        api.module.fail_json(
+            msg=f"Error during function namespace attributes update: [{fn_patch_response.status_code}: {fn_patch_response.json['message']}]"
+        )
 
     api.wait_to_complete_state_transition(resource=target_fn, stable_states=STABLE_STATES)
-    response = api.get(path=api.api_path + "/%s" % target_fn["id"])
+    response = api.get(path=f"{api.api_path}/{target_fn['id']}")
     return changed, response.json
 
 
-state_strategy = {
-    "present": present_strategy,
-    "absent": absent_strategy
-}
+state_strategy = {"present": present_strategy, "absent": absent_strategy}
 
 
 def core(module):
@@ -258,13 +254,13 @@ def core(module):
         "state": module.params["state"],
         "project_id": module.params["project_id"],
         "name": module.params["name"],
-        "description": module.params['description'],
-        "environment_variables": module.params['environment_variables'],
-        "secret_environment_variables": module.params['secret_environment_variables']
+        "description": module.params["description"],
+        "environment_variables": module.params["environment_variables"],
+        "secret_environment_variables": module.params["secret_environment_variables"],
     }
 
     api = Scaleway(module=module)
-    api.api_path = "functions/v1beta1/regions/%s/namespaces" % region
+    api.api_path = f"functions/v1beta1/regions/{region}/namespaces"
 
     changed, summary = state_strategy[wished_function_namespace["state"]](api=api, wished_fn=wished_function_namespace)
 
@@ -274,15 +270,17 @@ def core(module):
 def main():
     argument_spec = scaleway_argument_spec()
     argument_spec.update(scaleway_waitable_resource_argument_spec())
-    argument_spec.update(dict(
-        state=dict(type='str', default='present', choices=['absent', 'present']),
-        project_id=dict(type='str', required=True),
-        region=dict(type='str', required=True, choices=SCALEWAY_REGIONS),
-        name=dict(type='str', required=True),
-        description=dict(type='str', default=''),
-        environment_variables=dict(type='dict', default={}),
-        secret_environment_variables=dict(type='dict', default={}, no_log=True)
-    ))
+    argument_spec.update(
+        dict(
+            state=dict(type="str", default="present", choices=["absent", "present"]),
+            project_id=dict(type="str", required=True),
+            region=dict(type="str", required=True, choices=SCALEWAY_REGIONS),
+            name=dict(type="str", required=True),
+            description=dict(type="str", default=""),
+            environment_variables=dict(type="dict", default={}),
+            secret_environment_variables=dict(type="dict", default={}, no_log=True),
+        )
+    )
     module = AnsibleModule(
         argument_spec=argument_spec,
         supports_check_mode=True,
@@ -291,5 +289,5 @@ def main():
     core(module)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

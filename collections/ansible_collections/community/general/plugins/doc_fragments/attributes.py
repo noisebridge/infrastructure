@@ -1,15 +1,11 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) Ansible Project
 # GNU General Public License v3.0+ (see COPYING or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 
-class ModuleDocFragment(object):
-
+class ModuleDocFragment:
     # Standard documentation fragment
     DOCUMENTATION = r"""
 options: {}
@@ -17,7 +13,7 @@ attributes:
   check_mode:
     description: Can run in C(check_mode) and return changed status prediction without modifying target.
   diff_mode:
-    description: Will return details on what has changed (or possibly needs changing in C(check_mode)), when in diff mode.
+    description: Returns details on what has changed (or possibly needs changing in C(check_mode)), when in diff mode.
 """
 
     PLATFORM = r"""
@@ -29,18 +25,18 @@ attributes:
 """
 
     # Should be used together with the standard fragment
-    INFO_MODULE = r'''
+    INFO_MODULE = r"""
 options: {}
 attributes:
-    check_mode:
-      support: full
-      details:
-        - This action does not modify state.
-    diff_mode:
-      support: N/A
-      details:
-        - This action does not modify state.
-'''
+  check_mode:
+    support: full
+    details:
+      - This action does not modify state.
+  diff_mode:
+    support: N/A
+    details:
+      - This action does not modify state.
+"""
 
     CONN = r"""
 options: {}
@@ -57,24 +53,24 @@ attributes:
 options: {}
 attributes:
   facts:
-    description: Action returns an C(ansible_facts) dictionary that will update existing host facts.
+    description: Action returns an C(ansible_facts) dictionary that updates existing host facts.
 """
 
     # Should be used together with the standard fragment and the FACTS fragment
-    FACTS_MODULE = r'''
+    FACTS_MODULE = r"""
 options: {}
 attributes:
-    check_mode:
-      support: full
-      details:
-        - This action does not modify state.
-    diff_mode:
-      support: N/A
-      details:
-        - This action does not modify state.
-    facts:
-      support: full
-'''
+  check_mode:
+    support: full
+    details:
+      - This action does not modify state.
+  diff_mode:
+    support: N/A
+    details:
+      - This action does not modify state.
+  facts:
+    support: full
+"""
 
     FILES = r"""
 options: {}

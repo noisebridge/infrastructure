@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (C) 2019 Huawei
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 ###############################################################################
 # Documentation
@@ -70,8 +68,8 @@ options:
       - SSD specifies the ultra-high I/O disk type.
       - SAS specifies the high I/O disk type.
       - SATA specifies the common I/O disk type.
-      - If the specified disk type is not available in the AZ, the disk will fail to create. If the EVS disk is created from
-        a snapshot, the volume_type field must be the same as that of the snapshot's source disk.
+      - If the specified disk type is not available in the AZ, the disk creation fails. If the EVS disk is created from a
+        snapshot, the volume_type field must be the same as that of the snapshot's source disk.
     type: str
     required: true
   backup_id:
@@ -79,48 +77,40 @@ options:
       - Specifies the ID of the backup that can be used to create a disk. This parameter is mandatory when you use a backup
         to create the disk.
     type: str
-    required: false
   description:
     description:
       - Specifies the disk description. The value can contain a maximum of 255 bytes.
     type: str
-    required: false
   enable_full_clone:
     description:
       - If the disk is created from a snapshot and linked cloning needs to be used, set this parameter to True.
     type: bool
-    required: false
   enable_scsi:
     description:
-      - If this parameter is set to True, the disk device type will be SCSI, which allows ECS OSs to directly access underlying
-        storage media. SCSI reservation command is supported. If this parameter is set to False, the disk device type will
-        be VBD, which supports only simple SCSI read/write commands.
+      - If this parameter is set to V(true), the disk device type is SCSI, which allows ECS OSs to directly access underlying
+        storage media. SCSI reservation command is supported. If this parameter is set to V(false), the disk device type is
+        VBD, which supports only simple SCSI read/write commands.
       - If parameter enable_share is set to True and this parameter is not specified, shared SCSI disks are created. SCSI
         EVS disks cannot be created from backups, which means that this parameter cannot be True if backup_id has been specified.
     type: bool
-    required: false
   enable_share:
     description:
       - Specifies whether the disk is shareable. The default value is False.
     type: bool
-    required: false
   encryption_id:
     description:
       - Specifies the encryption ID. The length of it fixes at 36 bytes.
     type: str
-    required: false
   enterprise_project_id:
     description:
       - Specifies the enterprise project ID. This ID is associated with the disk during the disk creation. If it is not specified,
         the disk is bound to the default enterprise project.
     type: str
-    required: false
   image_id:
     description:
       - Specifies the image ID. If this parameter is specified, the disk is created from an image. BMS system disks cannot
         be created from BMS images.
     type: str
-    required: false
   size:
     description:
       - Specifies the disk size, in GB. Its values are as follows, System disk 1 GB to 1024 GB, Data disk 10 GB to 32768 GB.
@@ -129,12 +119,10 @@ options:
         This parameter is optional when you use a backup to create a disk. If this parameter is not specified, the disk size
         is equal to the backup size.
     type: int
-    required: false
   snapshot_id:
     description:
       - Specifies the snapshot ID. If this parameter is specified, the disk is created from a snapshot.
     type: str
-    required: false
 extends_documentation_fragment:
   - community.general.hwc
   - community.general.attributes
@@ -167,8 +155,8 @@ volume_type:
     - SSD specifies the ultra-high I/O disk type.
     - SAS specifies the high I/O disk type.
     - SATA specifies the common I/O disk type.
-    - If the specified disk type is not available in the AZ, the disk will fail to create. If the EVS disk is created from
-      a snapshot, the volume_type field must be the same as that of the snapshot's source disk.
+    - If the specified disk type is not available in the AZ, the disk creation fails. If the EVS disk is created from a snapshot,
+      the volume_type field must be the same as that of the snapshot's source disk.
   type: str
   returned: success
 backup_id:
@@ -189,8 +177,8 @@ enable_full_clone:
   returned: success
 enable_scsi:
   description:
-    - If this parameter is set to True, the disk device type will be SCSI, which allows ECS OSs to directly access underlying
-      storage media. SCSI reservation command is supported. If this parameter is set to False, the disk device type will be
+    - If this parameter is set to V(true), the disk device type is SCSI, which allows ECS OSs to directly access underlying
+      storage media. SCSI reservation command is supported. If this parameter is set to V(false), the disk device type is
       VBD, which supports only simple SCSI read/write commands.
     - If parameter enable_share is set to True and this parameter is not specified, shared SCSI disks are created. SCSI EVS
       disks cannot be created from backups, which means that this parameter cannot be True if backup_id has been specified.
@@ -297,33 +285,44 @@ tags:
 """
 
 from ansible_collections.community.general.plugins.module_utils.hwc_utils import (
-    Config, HwcClientException, HwcModule, are_different_dicts, build_path,
-    get_region, is_empty_value, navigate_value, wait_to_finish)
+    Config,
+    HwcClientException,
+    HwcModule,
+    are_different_dicts,
+    build_path,
+    get_region,
+    is_empty_value,
+    navigate_value,
+    wait_to_finish,
+)
 
 
 def build_module():
     return HwcModule(
         argument_spec=dict(
-            state=dict(default='present', choices=['present', 'absent'],
-                       type='str'),
-            timeouts=dict(type='dict', options=dict(
-                create=dict(default='30m', type='str'),
-                update=dict(default='30m', type='str'),
-                delete=dict(default='30m', type='str'),
-            ), default=dict()),
-            availability_zone=dict(type='str', required=True),
-            name=dict(type='str', required=True),
-            volume_type=dict(type='str', required=True),
-            backup_id=dict(type='str'),
-            description=dict(type='str'),
-            enable_full_clone=dict(type='bool'),
-            enable_scsi=dict(type='bool'),
-            enable_share=dict(type='bool'),
-            encryption_id=dict(type='str'),
-            enterprise_project_id=dict(type='str'),
-            image_id=dict(type='str'),
-            size=dict(type='int'),
-            snapshot_id=dict(type='str')
+            state=dict(default="present", choices=["present", "absent"], type="str"),
+            timeouts=dict(
+                type="dict",
+                options=dict(
+                    create=dict(default="30m", type="str"),
+                    update=dict(default="30m", type="str"),
+                    delete=dict(default="30m", type="str"),
+                ),
+                default=dict(),
+            ),
+            availability_zone=dict(type="str", required=True),
+            name=dict(type="str", required=True),
+            volume_type=dict(type="str", required=True),
+            backup_id=dict(type="str"),
+            description=dict(type="str"),
+            enable_full_clone=dict(type="bool"),
+            enable_scsi=dict(type="bool"),
+            enable_share=dict(type="bool"),
+            encryption_id=dict(type="str"),
+            enterprise_project_id=dict(type="str"),
+            image_id=dict(type="str"),
+            size=dict(type="int"),
+            snapshot_id=dict(type="str"),
         ),
         supports_check_mode=True,
     )
@@ -337,11 +336,11 @@ def main():
 
     try:
         _init(config)
-        is_exist = module.params.get('id')
+        is_exist = module.params.get("id")
 
         result = None
         changed = False
-        if module.params['state'] == 'present':
+        if module.params["state"] == "present":
             if not is_exist:
                 if not module.check_mode:
                     create(config)
@@ -360,12 +359,11 @@ def main():
                     result = build_state(inputv, resp, array_index)
                     set_readonly_options(inputv, result)
                     if are_different_dicts(inputv, result):
-                        raise Exception("Update resource failed, "
-                                        "some attributes are not updated")
+                        raise Exception("Update resource failed, some attributes are not updated")
 
                 changed = True
 
-            result['id'] = module.params.get('id')
+            result["id"] = module.params.get("id")
         else:
             result = dict()
             if is_exist:
@@ -377,25 +375,22 @@ def main():
         module.fail_json(msg=str(ex))
 
     else:
-        result['changed'] = changed
+        result["changed"] = changed
         module.exit_json(**result)
 
 
 def _init(config):
     module = config.module
-    if module.params.get('id'):
+    if module.params.get("id"):
         return
 
     v = search_resource(config)
     n = len(v)
     if n > 1:
-        raise Exception("find more than one resources(%s)" % ", ".join([
-            navigate_value(i, ["id"])
-            for i in v
-        ]))
+        raise Exception(f"find more than one resources({', '.join([navigate_value(i, ['id']) for i in v])})")
 
     if n == 1:
-        module.params['id'] = navigate_value(v[0], ["id"])
+        module.params["id"] = navigate_value(v[0], ["id"])
 
 
 def user_input_parameters(module):
@@ -419,7 +414,7 @@ def user_input_parameters(module):
 def create(config):
     module = config.module
     client = config.client(get_region(module), "volumev3", "project")
-    timeout = 60 * int(module.params['timeouts']['create'].rstrip('m'))
+    timeout = 60 * int(module.params["timeouts"]["create"].rstrip("m"))
     opts = user_input_parameters(module)
     opts["ansible_module"] = module
 
@@ -429,7 +424,7 @@ def create(config):
     client1 = config.client(get_region(module), "volume", "project")
     client1.endpoint = client1.endpoint.replace("/v2/", "/v1/")
     obj = async_wait(config, r, client1, timeout)
-    module.params['id'] = navigate_value(obj, ["entities", "volume_id"])
+    module.params["id"] = navigate_value(obj, ["entities", "volume_id"])
 
 
 def update(config, expect_state, current_state):
@@ -437,7 +432,7 @@ def update(config, expect_state, current_state):
     expect_state["current_state"] = current_state
     current_state["current_state"] = current_state
     client = config.client(get_region(module), "evs", "project")
-    timeout = 60 * int(module.params['timeouts']['update'].rstrip('m'))
+    timeout = 60 * int(module.params["timeouts"]["update"].rstrip("m"))
 
     params = build_update_parameters(expect_state)
     params1 = build_update_parameters(current_state)
@@ -458,7 +453,7 @@ def update(config, expect_state, current_state):
 def delete(config):
     module = config.module
     client = config.client(get_region(module), "evs", "project")
-    timeout = 60 * int(module.params['timeouts']['delete'].rstrip('m'))
+    timeout = 60 * int(module.params["timeouts"]["delete"].rstrip("m"))
 
     r = send_delete_request(module, None, client)
 
@@ -490,22 +485,19 @@ def _build_query_link(opts):
 
     v = navigate_value(opts, ["enable_share"])
     if v or v in [False, 0]:
-        query_params.append(
-            "multiattach=" + (str(v) if v else str(v).lower()))
+        query_params.append(f"multiattach={str(v) if v else str(v).lower()}")
 
     v = navigate_value(opts, ["name"])
     if v or v in [False, 0]:
-        query_params.append(
-            "name=" + (str(v) if v else str(v).lower()))
+        query_params.append(f"name={str(v) if v else str(v).lower()}")
 
     v = navigate_value(opts, ["availability_zone"])
     if v or v in [False, 0]:
-        query_params.append(
-            "availability_zone=" + (str(v) if v else str(v).lower()))
+        query_params.append(f"availability_zone={str(v) if v else str(v).lower()}")
 
     query_link = "?limit=10&offset={start}"
     if query_params:
-        query_link += "&" + "&".join(query_params)
+        query_link += f"&{'&'.join(query_params)}"
 
     return query_link
 
@@ -516,10 +508,10 @@ def search_resource(config):
     opts = user_input_parameters(module)
     name = module.params.get("name")
     query_link = _build_query_link(opts)
-    link = "os-vendor-volumes/detail" + query_link
+    link = f"os-vendor-volumes/detail{query_link}"
 
     result = []
-    p = {'start': 0}
+    p = {"start": 0}
     while True:
         url = link.format(**p)
         r = send_list_request(module, client, url)
@@ -533,7 +525,7 @@ def search_resource(config):
         if len(result) > 1:
             break
 
-        p['start'] += len(r)
+        p["start"] += len(r)
 
     return result
 
@@ -637,8 +629,7 @@ def send_create_request(module, params, client):
     try:
         r = client.post(url, params)
     except HwcClientException as ex:
-        msg = ("module(hwc_evs_disk): error running "
-               "api(create), error: %s" % str(ex))
+        msg = f"module(hwc_evs_disk): error running api(create), error: {ex}"
         module.fail_json(msg=msg)
 
     return r
@@ -669,8 +660,7 @@ def send_update_request(module, params, client):
     try:
         r = client.put(url, params)
     except HwcClientException as ex:
-        msg = ("module(hwc_evs_disk): error running "
-               "api(update), error: %s" % str(ex))
+        msg = f"module(hwc_evs_disk): error running api(update), error: {ex}"
         module.fail_json(msg=msg)
 
     return r
@@ -682,8 +672,7 @@ def send_delete_request(module, params, client):
     try:
         r = client.delete(url, params)
     except HwcClientException as ex:
-        msg = ("module(hwc_evs_disk): error running "
-               "api(delete), error: %s" % str(ex))
+        msg = f"module(hwc_evs_disk): error running api(delete), error: {ex}"
         module.fail_json(msg=msg)
 
     return r
@@ -715,8 +704,7 @@ def send_extend_disk_request(module, params, client):
     try:
         r = client.post(url, params)
     except HwcClientException as ex:
-        msg = ("module(hwc_evs_disk): error running "
-               "api(extend_disk), error: %s" % str(ex))
+        msg = f"module(hwc_evs_disk): error running api(extend_disk), error: {ex}"
         module.fail_json(msg=msg)
 
     return r
@@ -746,13 +734,9 @@ def async_wait(config, result, client, timeout):
             return None, ""
 
     try:
-        return wait_to_finish(
-            ["SUCCESS"],
-            ["RUNNING", "INIT"],
-            _query_status, timeout)
+        return wait_to_finish(["SUCCESS"], ["RUNNING", "INIT"], _query_status, timeout)
     except Exception as ex:
-        module.fail_json(msg="module(hwc_evs_disk): error "
-                             "waiting to be done, error= %s" % str(ex))
+        module.fail_json(msg=f"module(hwc_evs_disk): error waiting to be done, error= {ex}")
 
 
 def send_read_request(module, client):
@@ -762,8 +746,7 @@ def send_read_request(module, client):
     try:
         r = client.get(url)
     except HwcClientException as ex:
-        msg = ("module(hwc_evs_disk): error running "
-               "api(read), error: %s" % str(ex))
+        msg = f"module(hwc_evs_disk): error running api(read), error: {ex}"
         module.fail_json(msg=msg)
 
     return navigate_value(r, ["volume"], None)
@@ -892,16 +875,13 @@ def flatten_options(response, array_index):
     v = navigate_value(response, ["read", "multiattach"], array_index)
     r["enable_share"] = v
 
-    v = navigate_value(
-        response, ["read", "metadata", "__system__cmkid"], array_index)
+    v = navigate_value(response, ["read", "metadata", "__system__cmkid"], array_index)
     r["encryption_id"] = v
 
-    v = navigate_value(
-        response, ["read", "enterprise_project_id"], array_index)
+    v = navigate_value(response, ["read", "enterprise_project_id"], array_index)
     r["enterprise_project_id"] = v
 
-    v = navigate_value(
-        response, ["read", "volume_image_metadata", "id"], array_index)
+    v = navigate_value(response, ["read", "volume_image_metadata", "id"], array_index)
     r["image_id"] = v
 
     v = flatten_is_bootable(response, array_index)
@@ -935,8 +915,7 @@ def flatten_options(response, array_index):
 
 
 def flatten_attachments(d, array_index):
-    v = navigate_value(d, ["read", "attachments"],
-                       array_index)
+    v = navigate_value(d, ["read", "attachments"], array_index)
     if not v:
         return None
     n = len(v)
@@ -972,16 +951,14 @@ def flatten_attachments(d, array_index):
 
 
 def flatten_enable_full_clone(d, array_index):
-    v = navigate_value(d, ["read", "metadata", "full_clone"],
-                       array_index)
+    v = navigate_value(d, ["read", "metadata", "full_clone"], array_index)
     if v is None:
         return v
     return True if v == "0" else False
 
 
 def flatten_enable_scsi(d, array_index):
-    v = navigate_value(d, ["read", "metadata", "hw:passthrough"],
-                       array_index)
+    v = navigate_value(d, ["read", "metadata", "hw:passthrough"], array_index)
     if v is None:
         return v
     return True if v in ["true", "True"] else False
@@ -995,8 +972,7 @@ def flatten_is_bootable(d, array_index):
 
 
 def flatten_is_readonly(d, array_index):
-    v = navigate_value(d, ["read", "metadata", "readonly"],
-                       array_index)
+    v = navigate_value(d, ["read", "metadata", "readonly"], array_index)
     if v is None:
         return v
     return True if v in ["true", "True"] else False
@@ -1025,13 +1001,11 @@ def set_readonly_options(opts, states):
 
 
 def send_list_request(module, client, url):
-
     r = None
     try:
         r = client.get(url)
     except HwcClientException as ex:
-        msg = ("module(hwc_evs_disk): error running "
-               "api(list), error: %s" % str(ex))
+        msg = f"module(hwc_evs_disk): error running api(list), error: {ex}"
         module.fail_json(msg=msg)
 
     return navigate_value(r, ["volumes"], None)
@@ -1169,5 +1143,5 @@ def fill_list_resp_volume_image_metadata(value):
     return result
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

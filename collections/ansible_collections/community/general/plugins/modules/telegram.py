@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2016, Artem Feofanov <artem.feofanov@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: telegram
@@ -21,7 +18,7 @@ description:
   - Send notifications using telegram bot, to a verified group or user.
   - Also, the user may try to use any other telegram bot API method, if you specify O(api_method) argument.
 notes:
-  - You will require a telegram account and create telegram bot to use this module.
+  - You need a telegram account and create telegram bot to use this module.
 extends_documentation_fragment:
   - community.general.attributes
 attributes:
@@ -55,7 +52,7 @@ EXAMPLES = r"""
   community.general.telegram:
     token: '9999999:XXXXXXXXXXXXXXXXXXXXXXX'
     api_args:
-      chat_id: 000000
+      chat_id: "000000"
       parse_mode: "markdown"
       text: "Your precious application has been deployed: https://example.com"
       disable_web_page_preview: true
@@ -66,7 +63,7 @@ EXAMPLES = r"""
     token: '9999999:XXXXXXXXXXXXXXXXXXXXXXX'
     api_method: forwardMessage
     api_args:
-      chat_id: 000000
+      chat_id: "000000"
       from_chat_id: 111111
       disable_notification: true
       message_id: '{{ saved_msg_id }}'
@@ -86,57 +83,55 @@ telegram_error:
 """
 
 import json
+from urllib.parse import quote
 
 from ansible.module_utils.basic import AnsibleModule
+
 # noinspection PyUnresolvedReferences
-from ansible.module_utils.six.moves.urllib.parse import quote
 from ansible.module_utils.urls import fetch_url
 
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            token=dict(type='str', required=True, no_log=True),
-            api_args=dict(type='dict'),
+            token=dict(type="str", required=True, no_log=True),
+            api_args=dict(type="dict"),
             api_method=dict(type="str", default="SendMessage"),
         ),
-        supports_check_mode=True
+        supports_check_mode=True,
     )
 
-    token = quote(module.params.get('token'))
-    api_args = module.params.get('api_args') or {}
-    api_method = module.params.get('api_method')
+    token = quote(module.params.get("token"))
+    api_args = module.params.get("api_args") or {}
+    api_method = module.params.get("api_method")
     # filling backward compatibility args
-    api_args['chat_id'] = api_args.get('chat_id')
-    api_args['parse_mode'] = api_args.get('parse_mode')
-    api_args['text'] = api_args.get('text')
+    api_args["chat_id"] = api_args.get("chat_id")
+    api_args["parse_mode"] = api_args.get("parse_mode")
+    api_args["text"] = api_args.get("text")
 
-    if api_args['parse_mode'] == 'plain':
-        del api_args['parse_mode']
+    if api_args["parse_mode"] == "plain":
+        del api_args["parse_mode"]
 
-    url = 'https://api.telegram.org/bot{token}/{api_method}'.format(token=token, api_method=api_method)
+    url = f"https://api.telegram.org/bot{token}/{api_method}"
 
     if module.check_mode:
         module.exit_json(changed=False)
 
-    response, info = fetch_url(module, url, method="POST", data=json.dumps(api_args),
-                               headers={'Content-Type': 'application/json'})
-    if info['status'] == 200:
+    response, info = fetch_url(
+        module, url, method="POST", data=json.dumps(api_args), headers={"Content-Type": "application/json"}
+    )
+    if info["status"] == 200:
         module.exit_json(changed=True)
-    elif info['status'] == -1:
+    elif info["status"] == -1:
         # SSL errors, connection problems, etc.
         module.fail_json(msg="Failed to send message", info=info, response=response)
     else:
-        body = json.loads(info['body'])
+        body = json.loads(info["body"])
         module.fail_json(
-            msg="Failed to send message, return status = {status}\n"
-                "url = {api_url}\n"
-                "api_args = {api_args}".format(
-                    status=info['status'], api_url=url, api_args=api_args
-                ),
-            telegram_error=body['description'],
+            msg=f"Failed to send message, return status = {info['status']}\nurl = {url}\napi_args = {api_args}",
+            telegram_error=body["description"],
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

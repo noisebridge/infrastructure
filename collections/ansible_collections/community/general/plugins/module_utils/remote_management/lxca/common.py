@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 # This code is part of Ansible, but is an independent component.
 # This particular file snippet, and this file snippet only, is BSD licensed.
 # Modules you write using this snippet, which is embedded dynamically by
@@ -12,21 +11,26 @@
 # Contains LXCA common class
 # Lenovo xClarity Administrator (LXCA)
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 import traceback
+import typing as t
+
 try:
     from pylxca import connect, disconnect
+
     HAS_PYLXCA = True
 except ImportError:
     HAS_PYLXCA = False
+
+if t.TYPE_CHECKING:
+    from ansible.module_utils.basic import AnsibleModule
 
 
 PYLXCA_REQUIRED = "Lenovo xClarity Administrator Python Client (Python package 'pylxca') is required for this module."
 
 
-def has_pylxca(module):
+def has_pylxca(module: AnsibleModule) -> None:
     """
     Check pylxca is installed
     :param module:
@@ -43,17 +47,17 @@ LXCA_COMMON_ARGS = dict(
 
 
 class connection_object:
-    def __init__(self, module):
+    def __init__(self, module: AnsibleModule) -> None:
         self.module = module
 
     def __enter__(self):
         return setup_conn(self.module)
 
-    def __exit__(self, type, value, traceback):
+    def __exit__(self, type, value, traceback) -> None:
         close_conn()
 
 
-def setup_conn(module):
+def setup_conn(module: AnsibleModule):
     """
     this function create connection to LXCA
     :param module:
@@ -61,17 +65,16 @@ def setup_conn(module):
     """
     lxca_con = None
     try:
-        lxca_con = connect(module.params['auth_url'],
-                           module.params['login_user'],
-                           module.params['login_password'],
-                           "True")
+        lxca_con = connect(
+            module.params["auth_url"], module.params["login_user"], module.params["login_password"], "True"
+        )
     except Exception as exception:
-        error_msg = '; '.join(exception.args)
+        error_msg = "; ".join(exception.args)
         module.fail_json(msg=error_msg, exception=traceback.format_exc())
     return lxca_con
 
 
-def close_conn():
+def close_conn() -> None:
     """
     this function close connection to LXCA
     :param module:

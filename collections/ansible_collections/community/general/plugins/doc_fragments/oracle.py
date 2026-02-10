@@ -1,13 +1,17 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2018, Oracle and/or its affiliates.
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
+
+#
+# DEPRECATED
+#
+# This fragment is deprecated and will be removed in community.general 13.0.0
+#
 
 
-class ModuleDocFragment(object):
+class ModuleDocFragment:
     DOCUMENTATION = r"""
 requirements:
   - Python SDK for Oracle Cloud Infrastructure U(https://oracle-cloud-infrastructure-python-sdk.readthedocs.io)
@@ -54,9 +58,9 @@ options:
   auth_type:
     description:
       - The type of authentication to use for making API requests. By default O(auth_type=api_key) based authentication is
-        performed and the API key (see O(api_user_key_file)) in your config file will be used. If this 'auth_type' module
-        option is not specified, the value of the E(OCI_ANSIBLE_AUTH_TYPE), if any, is used. Use O(auth_type=instance_principal)
-        to use instance principal based authentication when running ansible playbooks within an OCI compute instance.
+        performed and the API key (see O(api_user_key_file)) in your config file is used. If O(auth_type) is not specified,
+        the value of the E(OCI_ANSIBLE_AUTH_TYPE), if any, is used. Use O(auth_type=instance_principal) to use instance principal
+        based authentication when running ansible playbooks within an OCI compute instance.
     choices: ['api_key', 'instance_principal']
     default: 'api_key'
     type: str

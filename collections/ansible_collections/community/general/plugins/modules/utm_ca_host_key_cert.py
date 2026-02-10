@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, Stephan Schwarz <stearz@gmx.de>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: utm_ca_host_key_cert
@@ -29,7 +26,7 @@ attributes:
 options:
   name:
     description:
-      - The name of the object. Will be used to identify the entry.
+      - The name of the object that identifies the entry.
     required: true
     type: str
   ca:
@@ -136,7 +133,6 @@ result:
 """
 
 from ansible_collections.community.general.plugins.module_utils.utm_utils import UTM, UTMModule
-from ansible.module_utils.common.text.converters import to_native
 
 
 def main():
@@ -144,21 +140,21 @@ def main():
     key_to_check_for_changes = ["ca", "certificate", "comment", "encrypted", "key", "meta"]
     module = UTMModule(
         argument_spec=dict(
-            name=dict(type='str', required=True),
-            ca=dict(type='str', required=True),
-            meta=dict(type='str', required=True),
-            certificate=dict(type='str', required=True),
-            comment=dict(type='str', required=False),
-            encrypted=dict(type='bool', required=False, default=False),
-            key=dict(type='str', required=False, no_log=True),
+            name=dict(type="str", required=True),
+            ca=dict(type="str", required=True),
+            meta=dict(type="str", required=True),
+            certificate=dict(type="str", required=True),
+            comment=dict(type="str"),
+            encrypted=dict(type="bool", default=False),
+            key=dict(type="str", no_log=True),
         )
     )
     try:
         # This is needed because the bool value only accepts int values in the backend
         UTM(module, endpoint, key_to_check_for_changes).execute()
     except Exception as e:
-        module.fail_json(msg=to_native(e))
+        module.fail_json(msg=f"{e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,12 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, Johannes Brunswicker <johannes.brunswicker@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: utm_aaa_group
@@ -28,7 +25,7 @@ attributes:
 options:
   name:
     description:
-      - The name of the object. Will be used to identify the entry.
+      - The name of the object that identifies the entry.
     type: str
     required: true
   adirectory_groups:
@@ -199,38 +196,50 @@ result:
 """
 
 from ansible_collections.community.general.plugins.module_utils.utm_utils import UTM, UTMModule
-from ansible.module_utils.common.text.converters import to_native
 
 
 def main():
     endpoint = "aaa/group"
-    key_to_check_for_changes = ["comment", "adirectory_groups", "adirectory_groups_sids", "backend_match", "dynamic",
-                                "edirectory_groups", "ipsec_dn", "ldap_attribute", "ldap_attribute_value", "members",
-                                "network", "radius_groups", "tacacs_groups"]
+    key_to_check_for_changes = [
+        "comment",
+        "adirectory_groups",
+        "adirectory_groups_sids",
+        "backend_match",
+        "dynamic",
+        "edirectory_groups",
+        "ipsec_dn",
+        "ldap_attribute",
+        "ldap_attribute_value",
+        "members",
+        "network",
+        "radius_groups",
+        "tacacs_groups",
+    ]
     module = UTMModule(
         argument_spec=dict(
-            name=dict(type='str', required=True),
-            adirectory_groups=dict(type='list', elements='str', required=False, default=[]),
-            adirectory_groups_sids=dict(type='dict', required=False, default={}),
-            backend_match=dict(type='str', required=False, default="none",
-                               choices=["none", "adirectory", "edirectory", "radius", "tacacs", "ldap"]),
-            comment=dict(type='str', required=False, default=""),
-            dynamic=dict(type='str', required=False, default="none", choices=["none", "ipsec_dn", "directory_groups"]),
-            edirectory_groups=dict(type='list', elements='str', required=False, default=[]),
-            ipsec_dn=dict(type='str', required=False, default=""),
-            ldap_attribute=dict(type='str', required=False, default=""),
-            ldap_attribute_value=dict(type='str', required=False, default=""),
-            members=dict(type='list', elements='str', required=False, default=[]),
-            network=dict(type='str', required=False, default=""),
-            radius_groups=dict(type='list', elements='str', required=False, default=[]),
-            tacacs_groups=dict(type='list', elements='str', required=False, default=[]),
+            name=dict(type="str", required=True),
+            adirectory_groups=dict(type="list", elements="str", default=[]),
+            adirectory_groups_sids=dict(type="dict", default={}),
+            backend_match=dict(
+                type="str", default="none", choices=["none", "adirectory", "edirectory", "radius", "tacacs", "ldap"]
+            ),
+            comment=dict(type="str", default=""),
+            dynamic=dict(type="str", default="none", choices=["none", "ipsec_dn", "directory_groups"]),
+            edirectory_groups=dict(type="list", elements="str", default=[]),
+            ipsec_dn=dict(type="str", default=""),
+            ldap_attribute=dict(type="str", default=""),
+            ldap_attribute_value=dict(type="str", default=""),
+            members=dict(type="list", elements="str", default=[]),
+            network=dict(type="str", default=""),
+            radius_groups=dict(type="list", elements="str", default=[]),
+            tacacs_groups=dict(type="list", elements="str", default=[]),
         )
     )
     try:
         UTM(module, endpoint, key_to_check_for_changes).execute()
     except Exception as e:
-        module.fail_json(msg=to_native(e))
+        module.fail_json(msg=f"{e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

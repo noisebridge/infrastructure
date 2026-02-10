@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2012, Dag Wieers <dag@wieers.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: hponcfg
@@ -32,7 +29,6 @@ options:
   minfw:
     description:
       - The minimum firmware level needed.
-    required: false
     type: str
   executable:
     description:
@@ -86,10 +82,10 @@ from ansible_collections.community.general.plugins.module_utils.module_helper im
 class HPOnCfg(ModuleHelper):
     module = dict(
         argument_spec=dict(
-            src=dict(type='path', required=True, aliases=['path']),
-            minfw=dict(type='str'),
-            executable=dict(default='hponcfg', type='str'),
-            verbose=dict(default=False, type='bool'),
+            src=dict(type="path", required=True, aliases=["path"]),
+            minfw=dict(type="str"),
+            executable=dict(default="hponcfg", type="str"),
+            verbose=dict(default=False, type="bool"),
         )
     )
     command_args_formats = dict(
@@ -97,7 +93,6 @@ class HPOnCfg(ModuleHelper):
         verbose=cmd_runner_fmt.as_bool("-v"),
         minfw=cmd_runner_fmt.as_opt_val("-m"),
     )
-    use_old_vardict = False
 
     def __run__(self):
         runner = CmdRunner(
@@ -106,7 +101,7 @@ class HPOnCfg(ModuleHelper):
             self.command_args_formats,
             check_rc=True,
         )
-        runner(['src', 'verbose', 'minfw']).run()
+        runner(["src", "verbose", "minfw"]).run()
 
         # Consider every action a change (not idempotent yet!)
         self.changed = True
@@ -116,5 +111,5 @@ def main():
     HPOnCfg.execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

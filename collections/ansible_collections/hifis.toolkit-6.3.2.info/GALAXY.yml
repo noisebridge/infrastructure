@@ -1,0 +1,8 @@
+download_url: https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/hifis-toolkit-6.3.2.tar.gz
+format_version: 1.0.0
+name: toolkit
+namespace: hifis
+server: https://galaxy.ansible.com/api/
+signatures: []
+version: 6.3.2
+version_url: /api/v3/plugin/ansible/content/published/collections/index/hifis/toolkit/versions/6.3.2/

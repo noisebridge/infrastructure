@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2015, Sebastian Kornehl <sebastian.kornehl@asideas.de>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: datadog_monitor
@@ -34,7 +31,6 @@ options:
     description:
       - The URL to the Datadog API. Default value is V(https://api.datadoghq.com).
       - This value can also be set with the E(DATADOG_HOST) environment variable.
-    required: false
     type: str
     version_added: '0.2.0'
   app_key:
@@ -92,26 +88,26 @@ options:
     type: dict
     description:
       - Dictionary of scopes to silence, with timestamps or None.
-      - Each scope will be muted until the given POSIX timestamp or forever if the value is None.
+      - Each scope is muted until the given POSIX timestamp or forever if the value is V(None).
   notify_no_data:
     description:
-      - Whether this monitor will notify when data stops reporting.
+      - Whether this monitor notifies when data stops reporting.
     type: bool
     default: false
   no_data_timeframe:
     description:
-      - The number of minutes before a monitor will notify when data stops reporting.
+      - The number of minutes before a monitor notifies when data stops reporting.
       - Must be at least 2x the monitor timeframe for metric alerts or 2 minutes for service checks.
       - If not specified, it defaults to 2x timeframe for metric, 2 minutes for service.
     type: str
   timeout_h:
     description:
-      - The number of hours of the monitor not reporting data before it will automatically resolve from a triggered state.
+      - The number of hours of the monitor not reporting data before it automatically resolves from a triggered state.
     type: str
   renotify_interval:
     description:
-      - The number of minutes after the last notification before a monitor will re-notify on the current status.
-      - It will only re-notify if it is not resolved.
+      - The number of minutes after the last notification before a monitor re-notifies on the current status.
+      - It only re-notifies if it is not resolved.
     type: str
   escalation_message:
     description:
@@ -120,7 +116,7 @@ options:
     type: str
   notify_audit:
     description:
-      - Whether tagged users will be notified on changes to this monitor.
+      - Whether tagged users are notified on changes to this monitor.
     type: bool
     default: false
   thresholds:
@@ -138,7 +134,7 @@ options:
   require_full_window:
     description:
       - Whether this monitor needs a full window of data before it gets evaluated.
-      - We highly recommend you set this to False for sparse metrics, otherwise some evaluations will be skipped.
+      - We highly recommend you set this to V(false) for sparse metrics, otherwise some evaluations are skipped.
     type: bool
   new_host_delay:
     description:
@@ -153,7 +149,7 @@ options:
   id:
     description:
       - The ID of the alert.
-      - If set, will be used instead of the name to locate the alert.
+      - If set, it is used instead of O(name) to locate the alert.
     type: str
   include_tags:
     description:
@@ -245,14 +241,14 @@ import traceback
 # Import Datadog
 DATADOG_IMP_ERR = None
 try:
-    from datadog import initialize, api
+    from datadog import api, initialize
+
     HAS_DATADOG = True
 except Exception:
     DATADOG_IMP_ERR = traceback.format_exc()
     HAS_DATADOG = False
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible.module_utils.common.text.converters import to_native
 
 
 def main():
@@ -261,43 +257,54 @@ def main():
             api_key=dict(required=True, no_log=True),
             api_host=dict(),
             app_key=dict(required=True, no_log=True),
-            state=dict(required=True, choices=['present', 'absent', 'mute', 'unmute']),
-            type=dict(choices=['metric alert', 'service check', 'event alert', 'event-v2 alert', 'process alert',
-                               'log alert', 'query alert', 'trace-analytics alert',
-                               'rum alert', 'composite']),
+            state=dict(required=True, choices=["present", "absent", "mute", "unmute"]),
+            type=dict(
+                choices=[
+                    "metric alert",
+                    "service check",
+                    "event alert",
+                    "event-v2 alert",
+                    "process alert",
+                    "log alert",
+                    "query alert",
+                    "trace-analytics alert",
+                    "rum alert",
+                    "composite",
+                ]
+            ),
             name=dict(required=True),
             query=dict(),
             notification_message=dict(no_log=True),
-            silenced=dict(type='dict'),
-            notify_no_data=dict(default=False, type='bool'),
+            silenced=dict(type="dict"),
+            notify_no_data=dict(default=False, type="bool"),
             no_data_timeframe=dict(),
             timeout_h=dict(),
             renotify_interval=dict(),
             escalation_message=dict(),
-            notify_audit=dict(default=False, type='bool'),
-            thresholds=dict(type='dict', default=None),
-            tags=dict(type='list', elements='str', default=None),
-            locked=dict(default=False, type='bool'),
-            require_full_window=dict(type='bool'),
+            notify_audit=dict(default=False, type="bool"),
+            thresholds=dict(type="dict"),
+            tags=dict(type="list", elements="str"),
+            locked=dict(default=False, type="bool"),
+            require_full_window=dict(type="bool"),
             new_host_delay=dict(),
             evaluation_delay=dict(),
             id=dict(),
-            include_tags=dict(required=False, default=True, type='bool'),
-            priority=dict(type='int'),
-            notification_preset_name=dict(choices=['show_all', 'hide_query', 'hide_handles', 'hide_all']),
-            renotify_occurrences=dict(type='int'),
-            renotify_statuses=dict(type='list', elements='str', choices=['alert', 'warn', 'no data']),
+            include_tags=dict(default=True, type="bool"),
+            priority=dict(type="int"),
+            notification_preset_name=dict(choices=["show_all", "hide_query", "hide_handles", "hide_all"]),
+            renotify_occurrences=dict(type="int"),
+            renotify_statuses=dict(type="list", elements="str", choices=["alert", "warn", "no data"]),
         )
     )
 
     # Prepare Datadog
     if not HAS_DATADOG:
-        module.fail_json(msg=missing_required_lib('datadogpy'), exception=DATADOG_IMP_ERR)
+        module.fail_json(msg=missing_required_lib("datadogpy"), exception=DATADOG_IMP_ERR)
 
     options = {
-        'api_key': module.params['api_key'],
-        'api_host': module.params['api_host'],
-        'app_key': module.params['app_key']
+        "api_key": module.params["api_key"],
+        "api_host": module.params["api_host"],
+        "app_key": module.params["app_key"],
     }
 
     initialize(**options)
@@ -306,57 +313,62 @@ def main():
     # if not, then fail here.
     response = api.Monitor.get_all()
     if isinstance(response, dict):
-        msg = response.get('errors', None)
+        msg = response.get("errors", None)
         if msg:
-            module.fail_json(msg="Failed to connect Datadog server using given app_key and api_key : {0}".format(msg[0]))
+            module.fail_json(msg=f"Failed to connect Datadog server using given app_key and api_key : {msg[0]}")
 
-    if module.params['state'] == 'present':
+    if module.params["state"] == "present":
         install_monitor(module)
-    elif module.params['state'] == 'absent':
+    elif module.params["state"] == "absent":
         delete_monitor(module)
-    elif module.params['state'] == 'mute':
+    elif module.params["state"] == "mute":
         mute_monitor(module)
-    elif module.params['state'] == 'unmute':
+    elif module.params["state"] == "unmute":
         unmute_monitor(module)
 
 
 def _fix_template_vars(message):
     if message:
-        return message.replace('[[', '{{').replace(']]', '}}')
+        return message.replace("[[", "{{").replace("]]", "}}")
     return message
 
 
 def _get_monitor(module):
-    if module.params['id'] is not None:
-        monitor = api.Monitor.get(module.params['id'])
-        if 'errors' in monitor:
-            module.fail_json(msg="Failed to retrieve monitor with id %s, errors are %s" % (module.params['id'], str(monitor['errors'])))
+    if module.params["id"] is not None:
+        monitor = api.Monitor.get(module.params["id"])
+        if "errors" in monitor:
+            module.fail_json(
+                msg=f"Failed to retrieve monitor with id {module.params['id']}, errors are {monitor['errors']}"
+            )
         return monitor
     else:
         monitors = api.Monitor.get_all()
         for monitor in monitors:
-            if monitor['name'] == _fix_template_vars(module.params['name']):
+            if monitor["name"] == _fix_template_vars(module.params["name"]):
                 return monitor
     return {}
 
 
 def _post_monitor(module, options):
     try:
-        kwargs = dict(type=module.params['type'], query=module.params['query'],
-                      name=_fix_template_vars(module.params['name']),
-                      message=_fix_template_vars(module.params['notification_message']),
-                      escalation_message=_fix_template_vars(module.params['escalation_message']),
-                      priority=module.params['priority'],
-                      options=options)
-        if module.params['tags'] is not None:
-            kwargs['tags'] = module.params['tags']
+        kwargs = dict(
+            type=module.params["type"],
+            query=module.params["query"],
+            name=_fix_template_vars(module.params["name"]),
+            message=_fix_template_vars(module.params["notification_message"]),
+            escalation_message=_fix_template_vars(module.params["escalation_message"]),
+            priority=module.params["priority"],
+            options=options,
+        )
+        if module.params["tags"] is not None:
+            kwargs["tags"] = module.params["tags"]
         msg = api.Monitor.create(**kwargs)
-        if 'errors' in msg:
-            module.fail_json(msg=str(msg['errors']))
+        if "errors" in msg:
+            module.fail_json(msg=str(msg["errors"]))
         else:
             module.exit_json(changed=True, msg=msg)
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=f"{e}", exception=traceback.format_exc())
 
 
 def _equal_dicts(a, b, ignore_keys):
@@ -367,49 +379,57 @@ def _equal_dicts(a, b, ignore_keys):
 
 def _update_monitor(module, monitor, options):
     try:
-        kwargs = dict(id=monitor['id'], query=module.params['query'],
-                      name=_fix_template_vars(module.params['name']),
-                      message=_fix_template_vars(module.params['notification_message']),
-                      escalation_message=_fix_template_vars(module.params['escalation_message']),
-                      priority=module.params['priority'],
-                      options=options)
-        if module.params['tags'] is not None:
-            kwargs['tags'] = module.params['tags']
+        kwargs = dict(
+            id=monitor["id"],
+            query=module.params["query"],
+            name=_fix_template_vars(module.params["name"]),
+            message=_fix_template_vars(module.params["notification_message"]),
+            escalation_message=_fix_template_vars(module.params["escalation_message"]),
+            priority=module.params["priority"],
+            options=options,
+        )
+        if module.params["tags"] is not None:
+            kwargs["tags"] = module.params["tags"]
         msg = api.Monitor.update(**kwargs)
 
-        if 'errors' in msg:
-            module.fail_json(msg=str(msg['errors']))
-        elif _equal_dicts(msg, monitor, ['creator', 'overall_state', 'modified', 'matching_downtimes', 'overall_state_modified']):
+        if "errors" in msg:
+            module.fail_json(msg=str(msg["errors"]))
+        elif _equal_dicts(
+            msg, monitor, ["creator", "overall_state", "modified", "matching_downtimes", "overall_state_modified"]
+        ):
             module.exit_json(changed=False, msg=msg)
         else:
             module.exit_json(changed=True, msg=msg)
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=f"{e}", exception=traceback.format_exc())
 
 
 def install_monitor(module):
     options = {
-        "silenced": module.params['silenced'],
-        "notify_no_data": module.boolean(module.params['notify_no_data']),
-        "no_data_timeframe": module.params['no_data_timeframe'],
-        "timeout_h": module.params['timeout_h'],
-        "renotify_interval": module.params['renotify_interval'],
-        "escalation_message": module.params['escalation_message'],
-        "notify_audit": module.boolean(module.params['notify_audit']),
-        "locked": module.boolean(module.params['locked']),
-        "require_full_window": module.params['require_full_window'],
-        "new_host_delay": module.params['new_host_delay'],
-        "evaluation_delay": module.params['evaluation_delay'],
-        "include_tags": module.params['include_tags'],
-        "notification_preset_name": module.params['notification_preset_name'],
-        "renotify_occurrences": module.params['renotify_occurrences'],
-        "renotify_statuses": module.params['renotify_statuses'],
+        "silenced": module.params["silenced"],
+        "notify_no_data": module.boolean(module.params["notify_no_data"]),
+        "no_data_timeframe": module.params["no_data_timeframe"],
+        "timeout_h": module.params["timeout_h"],
+        "renotify_interval": module.params["renotify_interval"],
+        "escalation_message": module.params["escalation_message"],
+        "notify_audit": module.boolean(module.params["notify_audit"]),
+        "locked": module.boolean(module.params["locked"]),
+        "require_full_window": module.params["require_full_window"],
+        "new_host_delay": module.params["new_host_delay"],
+        "evaluation_delay": module.params["evaluation_delay"],
+        "include_tags": module.params["include_tags"],
+        "notification_preset_name": module.params["notification_preset_name"],
+        "renotify_occurrences": module.params["renotify_occurrences"],
+        "renotify_statuses": module.params["renotify_statuses"],
     }
 
-    if module.params['type'] == "service check":
-        options["thresholds"] = module.params['thresholds'] or {'ok': 1, 'critical': 1, 'warning': 1}
-    if module.params['type'] in ["metric alert", "log alert", "query alert", "trace-analytics alert", "rum alert"] and module.params['thresholds'] is not None:
-        options["thresholds"] = module.params['thresholds']
+    if module.params["type"] == "service check":
+        options["thresholds"] = module.params["thresholds"] or {"ok": 1, "critical": 1, "warning": 1}
+    if (
+        module.params["type"] in ["metric alert", "log alert", "query alert", "trace-analytics alert", "rum alert"]
+        and module.params["thresholds"] is not None
+    ):
+        options["thresholds"] = module.params["thresholds"]
 
     monitor = _get_monitor(module)
     if not monitor:
@@ -423,42 +443,47 @@ def delete_monitor(module):
     if not monitor:
         module.exit_json(changed=False)
     try:
-        msg = api.Monitor.delete(monitor['id'])
+        msg = api.Monitor.delete(monitor["id"])
         module.exit_json(changed=True, msg=msg)
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=f"{e}", exception=traceback.format_exc())
 
 
 def mute_monitor(module):
     monitor = _get_monitor(module)
     if not monitor:
-        module.fail_json(msg="Monitor %s not found!" % module.params['name'])
-    elif monitor['options']['silenced']:
-        module.fail_json(msg="Monitor is already muted. Datadog does not allow to modify muted alerts, consider unmuting it first.")
-    elif (module.params['silenced'] is not None and len(set(monitor['options']['silenced']) ^ set(module.params['silenced'])) == 0):
+        module.fail_json(msg=f"Monitor {module.params['name']} not found!")
+    elif monitor["options"]["silenced"]:
+        module.fail_json(
+            msg="Monitor is already muted. Datadog does not allow to modify muted alerts, consider unmuting it first."
+        )
+    elif (
+        module.params["silenced"] is not None
+        and len(set(monitor["options"]["silenced"]) ^ set(module.params["silenced"])) == 0
+    ):
         module.exit_json(changed=False)
     try:
-        if module.params['silenced'] is None or module.params['silenced'] == "":
-            msg = api.Monitor.mute(id=monitor['id'])
+        if module.params["silenced"] is None or module.params["silenced"] == "":
+            msg = api.Monitor.mute(id=monitor["id"])
         else:
-            msg = api.Monitor.mute(id=monitor['id'], silenced=module.params['silenced'])
+            msg = api.Monitor.mute(id=monitor["id"], silenced=module.params["silenced"])
         module.exit_json(changed=True, msg=msg)
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=f"{e}", exception=traceback.format_exc())
 
 
 def unmute_monitor(module):
     monitor = _get_monitor(module)
     if not monitor:
-        module.fail_json(msg="Monitor %s not found!" % module.params['name'])
-    elif not monitor['options']['silenced']:
+        module.fail_json(msg=f"Monitor {module.params['name']} not found!")
+    elif not monitor["options"]["silenced"]:
         module.exit_json(changed=False)
     try:
-        msg = api.Monitor.unmute(monitor['id'])
+        msg = api.Monitor.unmute(monitor["id"])
         module.exit_json(changed=True, msg=msg)
     except Exception as e:
-        module.fail_json(msg=to_native(e), exception=traceback.format_exc())
+        module.fail_json(msg=f"{e}", exception=traceback.format_exc())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

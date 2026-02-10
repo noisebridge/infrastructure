@@ -1,11 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) 2021, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: xfconf_info
@@ -128,21 +126,18 @@ version:
 """
 
 from ansible_collections.community.general.plugins.module_utils.module_helper import ModuleHelper
-from ansible_collections.community.general.plugins.module_utils.xfconf import xfconf_runner, get_xfconf_version
+from ansible_collections.community.general.plugins.module_utils.xfconf import get_xfconf_version, xfconf_runner
 
 
 class XFConfInfo(ModuleHelper):
     module = dict(
         argument_spec=dict(
-            channel=dict(type='str'),
-            property=dict(type='str'),
+            channel=dict(type="str"),
+            property=dict(type="str"),
         ),
-        required_by=dict(
-            property=['channel']
-        ),
+        required_by=dict(property=["channel"]),
         supports_check_mode=True,
     )
-    use_old_vardict = False
 
     def __init_module__(self):
         self.runner = xfconf_runner(self.module, check_rc=True)
@@ -154,9 +149,12 @@ class XFConfInfo(ModuleHelper):
         result = out.rstrip()
         if "Value is an array with" in result:
             result = result.split("\n")
-            result.pop(0)
-            result.pop(0)
             self.vars.is_array = True
+            if len(result) > 1:
+                result.pop(0)
+                result.pop(0)
+            else:
+                return []
 
         return result
 
@@ -171,16 +169,16 @@ class XFConfInfo(ModuleHelper):
 
     def __run__(self):
         self.vars.list_arg = not (bool(self.vars.channel) and bool(self.vars.property))
-        output = 'value'
+        output = "value"
         proc = self.process_command_output
         if self.vars.channel is None:
-            output = 'channels'
+            output = "channels"
             proc = self._process_list_channels
         elif self.vars.property is None:
-            output = 'properties'
+            output = "properties"
             proc = self._process_list_properties
 
-        with self.runner.context('list_arg channel property', output_process=proc) as ctx:
+        with self.runner.context("list_arg channel property", output_process=proc) as ctx:
             result = ctx.run(**self.vars.as_dict())
 
         if not self.vars.list_arg and self.vars.is_array:
@@ -192,5 +190,5 @@ def main():
     XFConfInfo.execute()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

@@ -1,13 +1,10 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) Ansible project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 """The community.general.random_words Ansible lookup plugin."""
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 name: random_words
@@ -94,12 +91,8 @@ class LookupModule(LookupBase):
     """The random_words Ansible lookup class."""
 
     def run(self, terms, variables=None, **kwargs):
-
         if not HAS_XKCDPASS:
-            raise AnsibleLookupError(
-                "Python xkcdpass library is required. "
-                'Please install using "pip install xkcdpass"'
-            )
+            raise AnsibleLookupError('Python xkcdpass library is required. Please install using "pip install xkcdpass"')
 
         self.set_options(var_options=variables, direct=kwargs)
         method = self.get_option("case")
@@ -109,12 +102,8 @@ class LookupModule(LookupBase):
         numwords = self.get_option("numwords")
 
         words = xp.locate_wordfile()
-        wordlist = xp.generate_wordlist(
-            max_length=max_length, min_length=min_length, wordfile=words
-        )
+        wordlist = xp.generate_wordlist(max_length=max_length, min_length=min_length, wordfile=words)
 
-        values = xp.generate_xkcdpassword(
-            wordlist, case=method, delimiter=delimiter, numwords=numwords
-        )
+        values = xp.generate_xkcdpassword(wordlist, case=method, delimiter=delimiter, numwords=numwords)
 
         return [values]
