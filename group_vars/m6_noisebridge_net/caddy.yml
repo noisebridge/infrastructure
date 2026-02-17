@@ -1,2 +1,4 @@
 ---
+caddy_packages:
+- 'github.com/mholt/caddy-ratelimit@v0.1.0'
 caddy_config: "{{ lookup('template', 'templates/caddy/m6/Caddyfile.j2') }}"
