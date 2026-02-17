@@ -41,6 +41,7 @@
     - { role: mydumper, tags: [ 'mydumper' ] }
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
+    - { role: geerlingguy.redis, tags: [ 'redis' ] }
 
 - name: donate_noisebridge_net
   hosts: donate_noisebridge_net

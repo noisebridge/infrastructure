@@ -4,6 +4,7 @@
   order cgi last
   order authenticate before respond
   order authorize before basic_auth
+  order cache before rewrite
   security {
     authorization policy noisebridge-github {
       set auth url https://auth.noisebridge.net/auth
@@ -11,6 +12,13 @@
       crypto key token name access_token
       allow roles members rack
     }
+  }
+  cache {
+    redis {
+      url localhost:6379
+    }
+    ttl 7200s
+    stale 3600s
   }
   servers {
       metrics
@@ -84,10 +92,13 @@ www.noisebridge.net {
   }
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
 
-  @claudebot {
-    header User-Agent *ClaudeBot*
+  @anon {
+    not header Cookie *wiki_wiki_UserID*
+    not header Cookie *wiki_wiki_Token*
+    not header Cookie *wiki_wiki__session*
+    not header Cookie *wiki_wiki_mwuser-sessionId*
   }
-  respond @claudebot 403
+  header @anon Cache-Control "public, max-age=7200"
 
   route /images* {
     uri strip_prefix /images
