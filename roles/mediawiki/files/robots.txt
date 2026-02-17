@@ -1,4 +1,11 @@
 User-agent: *
+Disallow: /
+
+User-agent: Googlebot
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
 Disallow: /wiki/86
 Disallow: /86
 Disallow: /index.php?page=86
@@ -6,8 +13,110 @@ Noindex: /wiki/86
 Noindex: /86
 Noindex: /index.php?page=86
 
-User-agent: ClaudeBot
-Disallow: /
+User-agent: Bingbot
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
 
-User-agent: Amazonbot
-Disallow: /
+User-agent: Slurp
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: YandexBot
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: ChatGPT-User
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: Claude-Web
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /wiki/Special:
+Disallow: /index.php?
+Disallow: /api.php
+Disallow: /wiki/86
+Disallow: /86
+Disallow: /index.php?page=86
+Noindex: /wiki/86
+Noindex: /86
+Noindex: /index.php?page=86
