@@ -2,6 +2,8 @@
 caddy_packages:
 - 'github.com/aksdb/caddy-cgi/v2@v2.2.1'
 - 'github.com/greenpau/caddy-security@v1.1.20'
+- 'github.com/darkweak/souin/plugins/caddy'
+- 'github.com/darkweak/souin/plugins/radix-redis'
 caddy_config: "{{ lookup('template', 'templates/caddy/m3/Caddyfile.j2') }}"
 
 noisebridge_mailman_cgi_scripts:
