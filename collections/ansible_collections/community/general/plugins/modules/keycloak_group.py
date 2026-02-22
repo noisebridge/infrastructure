@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2019, Adam Goossens <adam.goossens@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: keycloak_group
@@ -20,9 +18,9 @@ description:
     scope tailored to your needs and a user having the expected roles.
   - The names of module options are snake_cased versions of the camelCase ones found in the Keycloak API and its documentation
     at U(https://www.keycloak.org/docs-api/20.0.2/rest-api/index.html).
-  - Attributes are multi-valued in the Keycloak API. All attributes are lists of individual values and will be returned that
-    way by this module. You may pass single values for attributes when calling the module, and this will be translated into
-    a list suitable for the API.
+  - Attributes are multi-valued in the Keycloak API. All attributes are lists of individual values and are returned that way
+    by this module. You may pass single values for attributes when calling the module, and this is translated into a list
+    suitable for the API.
   - When updating a group, where possible provide the group ID to the module. This removes a lookup to the API to translate
     the name into the group ID.
 attributes:
@@ -37,9 +35,9 @@ options:
   state:
     description:
       - State of the group.
-      - On V(present), the group will be created if it does not yet exist, or updated with the parameters you provide.
-      - On V(absent), the group will be removed if it exists. Be aware that absenting a group with subgroups will automatically
-        delete all its subgroups too.
+      - On V(present), the group is created if it does not yet exist, or updated with the parameters you provide.
+      - On V(absent), the group is removed if it exists. Be aware that absenting a group with subgroups automatically deletes
+        all its subgroups too.
     default: 'present'
     type: str
     choices:
@@ -61,8 +59,7 @@ options:
     type: str
     description:
       - The unique identifier for this group.
-      - This parameter is not required for updating or deleting a group but providing it will reduce the number of API calls
-        required.
+      - This parameter is not required for updating or deleting a group but providing it reduces the number of API calls required.
   attributes:
     type: dict
     description:
@@ -282,8 +279,7 @@ end_state:
       returned: always
       sample: []
     subGroups:
-      description: A list of groups that are children of this group. These groups will have the same parameters as documented
-        here.
+      description: A list of groups that are children of this group. These groups have the same parameters as documented here.
       type: list
       returned: always
     clientRoles:
@@ -301,9 +297,15 @@ end_state:
         view: true
 """
 
-from ansible_collections.community.general.plugins.module_utils.identity.keycloak.keycloak import KeycloakAPI, camel, \
-    keycloak_argument_spec, get_token, KeycloakError
 from ansible.module_utils.basic import AnsibleModule
+
+from ansible_collections.community.general.plugins.module_utils.identity.keycloak.keycloak import (
+    KeycloakAPI,
+    KeycloakError,
+    camel,
+    get_token,
+    keycloak_argument_spec,
+)
 
 
 def main():
@@ -315,31 +317,34 @@ def main():
     argument_spec = keycloak_argument_spec()
 
     meta_args = dict(
-        state=dict(default='present', choices=['present', 'absent']),
-        realm=dict(default='master'),
-        id=dict(type='str'),
-        name=dict(type='str'),
-        attributes=dict(type='dict'),
+        state=dict(default="present", choices=["present", "absent"]),
+        realm=dict(default="master"),
+        id=dict(type="str"),
+        name=dict(type="str"),
+        attributes=dict(type="dict"),
         parents=dict(
-            type='list', elements='dict',
-            options=dict(
-                id=dict(type='str'),
-                name=dict(type='str')
-            ),
+            type="list",
+            elements="dict",
+            options=dict(id=dict(type="str"), name=dict(type="str")),
         ),
     )
 
     argument_spec.update(meta_args)
 
-    module = AnsibleModule(argument_spec=argument_spec,
-                           supports_check_mode=True,
-                           required_one_of=([['id', 'name'],
-                                             ['token', 'auth_realm', 'auth_username', 'auth_password']]),
-                           required_together=([['auth_realm', 'auth_username', 'auth_password']]),
-                           required_by={'refresh_token': 'auth_realm'},
-                           )
+    module = AnsibleModule(
+        argument_spec=argument_spec,
+        supports_check_mode=True,
+        required_one_of=(
+            [
+                ["id", "name"],
+                ["token", "auth_realm", "auth_username", "auth_password", "auth_client_id", "auth_client_secret"],
+            ]
+        ),
+        required_together=([["auth_username", "auth_password"]]),
+        required_by={"refresh_token": "auth_realm"},
+    )
 
-    result = dict(changed=False, msg='', diff={}, group='')
+    result = dict(changed=False, msg="", diff={}, group="")
 
     # Obtain access token, initialize API
     try:
@@ -349,25 +354,28 @@ def main():
 
     kc = KeycloakAPI(module, connection_header)
 
-    realm = module.params.get('realm')
-    state = module.params.get('state')
-    gid = module.params.get('id')
-    name = module.params.get('name')
-    attributes = module.params.get('attributes')
+    realm = module.params.get("realm")
+    state = module.params.get("state")
+    gid = module.params.get("id")
+    name = module.params.get("name")
+    attributes = module.params.get("attributes")
 
-    parents = module.params.get('parents')
+    parents = module.params.get("parents")
 
     # attributes in Keycloak have their values returned as lists
     # using the API. attributes is a dict, so we'll transparently convert
     # the values to lists.
     if attributes is not None:
-        for key, val in module.params['attributes'].items():
-            module.params['attributes'][key] = [val] if not isinstance(val, list) else val
+        for key, val in module.params["attributes"].items():
+            module.params["attributes"][key] = [val] if not isinstance(val, list) else val
 
     # Filter and map the parameters names that apply to the group
-    group_params = [x for x in module.params
-                    if x not in list(keycloak_argument_spec().keys()) + ['state', 'realm', 'parents'] and
-                    module.params.get(x) is not None]
+    group_params = [
+        x
+        for x in module.params
+        if x not in list(keycloak_argument_spec().keys()) + ["state", "realm", "parents"]
+        and module.params.get(x) is not None
+    ]
 
     # See if it already exists in Keycloak
     if gid is None:
@@ -393,23 +401,23 @@ def main():
 
     # Cater for when it doesn't exist (an empty dict)
     if not before_group:
-        if state == 'absent':
+        if state == "absent":
             # Do nothing and exit
             if module._diff:
-                result['diff'] = dict(before='', after='')
-            result['changed'] = False
-            result['end_state'] = {}
-            result['msg'] = 'Group does not exist; doing nothing.'
+                result["diff"] = dict(before="", after="")
+            result["changed"] = False
+            result["end_state"] = {}
+            result["msg"] = "Group does not exist; doing nothing."
             module.exit_json(**result)
 
         # Process a creation
-        result['changed'] = True
+        result["changed"] = True
 
         if name is None:
-            module.fail_json(msg='name must be specified when creating a new group')
+            module.fail_json(msg="name must be specified when creating a new group")
 
         if module._diff:
-            result['diff'] = dict(before='', after=desired_group)
+            result["diff"] = dict(before="", after=desired_group)
 
         if module.check_mode:
             module.exit_json(**result)
@@ -424,28 +432,27 @@ def main():
 
         after_group = kc.get_group_by_name(name, realm, parents=parents)
 
-        result['end_state'] = after_group
+        result["end_state"] = after_group
 
-        result['msg'] = 'Group {name} has been created with ID {id}'.format(name=after_group['name'],
-                                                                            id=after_group['id'])
+        result["msg"] = f"Group {after_group['name']} has been created with ID {after_group['id']}"
         module.exit_json(**result)
 
     else:
-        if state == 'present':
+        if state == "present":
             # Process an update
 
             # no changes
             if desired_group == before_group:
-                result['changed'] = False
-                result['end_state'] = desired_group
-                result['msg'] = "No changes required to group {name}.".format(name=before_group['name'])
+                result["changed"] = False
+                result["end_state"] = desired_group
+                result["msg"] = f"No changes required to group {before_group['name']}."
                 module.exit_json(**result)
 
             # doing an update
-            result['changed'] = True
+            result["changed"] = True
 
             if module._diff:
-                result['diff'] = dict(before=before_group, after=desired_group)
+                result["diff"] = dict(before=before_group, after=desired_group)
 
             if module.check_mode:
                 module.exit_json(**result)
@@ -453,33 +460,33 @@ def main():
             # do the update
             kc.update_group(desired_group, realm=realm)
 
-            after_group = kc.get_group_by_groupid(desired_group['id'], realm=realm)
+            after_group = kc.get_group_by_groupid(desired_group["id"], realm=realm)
 
-            result['end_state'] = after_group
+            result["end_state"] = after_group
 
-            result['msg'] = "Group {id} has been updated".format(id=after_group['id'])
+            result["msg"] = f"Group {after_group['id']} has been updated"
             module.exit_json(**result)
 
         else:
             # Process a deletion (because state was not 'present')
-            result['changed'] = True
+            result["changed"] = True
 
             if module._diff:
-                result['diff'] = dict(before=before_group, after='')
+                result["diff"] = dict(before=before_group, after="")
 
             if module.check_mode:
                 module.exit_json(**result)
 
             # delete it
-            gid = before_group['id']
+            gid = before_group["id"]
             kc.delete_group(groupid=gid, realm=realm)
 
-            result['end_state'] = {}
+            result["end_state"] = {}
 
-            result['msg'] = "Group {name} has been deleted".format(name=before_group['name'])
+            result["msg"] = f"Group {before_group['name']} has been deleted"
 
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

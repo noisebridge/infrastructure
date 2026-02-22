@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2018, Bojan Vitnik <bvitnik@mainstream.rs>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: xenserver_guest_info
@@ -61,97 +59,104 @@ EXAMPLES = r"""
 
 RETURN = r"""
 instance:
-    description: Metadata about the VM.
-    returned: always
-    type: dict
-    sample: {
-        "cdrom": {
-            "type": "none"
+  description: Metadata about the VM.
+  returned: always
+  type: dict
+  sample:
+    {
+      "cdrom": {
+        "type": "none"
+      },
+      "customization_agent": "native",
+      "disks": [
+        {
+          "name": "testvm_11-0",
+          "name_desc": "",
+          "os_device": "xvda",
+          "size": 42949672960,
+          "sr": "Local storage",
+          "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
+          "vbd_userdevice": "0"
         },
-        "customization_agent": "native",
-        "disks": [
-            {
-                "name": "testvm_11-0",
-                "name_desc": "",
-                "os_device": "xvda",
-                "size": 42949672960,
-                "sr": "Local storage",
-                "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
-                "vbd_userdevice": "0"
-            },
-            {
-                "name": "testvm_11-1",
-                "name_desc": "",
-                "os_device": "xvdb",
-                "size": 42949672960,
-                "sr": "Local storage",
-                "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
-                "vbd_userdevice": "1"
-            }
-        ],
-        "domid": "56",
-        "folder": "",
-        "hardware": {
-            "memory_mb": 8192,
-            "num_cpu_cores_per_socket": 2,
-            "num_cpus": 4
-        },
-        "home_server": "",
-        "is_template": false,
-        "name": "testvm_11",
-        "name_desc": "",
-        "networks": [
-            {
-                "gateway": "192.168.0.254",
-                "gateway6": "fc00::fffe",
-                "ip": "192.168.0.200",
-                "ip6": [
-                    "fe80:0000:0000:0000:e9cb:625a:32c5:c291",
-                    "fc00:0000:0000:0000:0000:0000:0000:0001"
-                ],
-                "mac": "ba:91:3a:48:20:76",
-                "mtu": "1500",
-                "name": "Pool-wide network associated with eth1",
-                "netmask": "255.255.255.128",
-                "prefix": "25",
-                "prefix6": "64",
-                "vif_device": "0"
-            }
-        ],
-        "other_config": {
-            "base_template_name": "Windows Server 2016 (64-bit)",
-            "import_task": "OpaqueRef:e43eb71c-45d6-5351-09ff-96e4fb7d0fa5",
-            "install-methods": "cdrom",
-            "instant": "true",
-            "mac_seed": "f83e8d8a-cfdc-b105-b054-ef5cb416b77e"
-        },
-        "platform": {
-            "acpi": "1",
-            "apic": "true",
-            "cores-per-socket": "2",
-            "device_id": "0002",
-            "hpet": "true",
-            "nx": "true",
-            "pae": "true",
-            "timeoffset": "-25200",
-            "vga": "std",
-            "videoram": "8",
-            "viridian": "true",
-            "viridian_reference_tsc": "true",
-            "viridian_time_ref_count": "true"
-        },
-        "state": "poweredon",
-        "uuid": "e3c0b2d5-5f05-424e-479c-d3df8b3e7cda",
-        "xenstore_data": {
-            "vm-data": ""
+        {
+          "name": "testvm_11-1",
+          "name_desc": "",
+          "os_device": "xvdb",
+          "size": 42949672960,
+          "sr": "Local storage",
+          "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
+          "vbd_userdevice": "1"
         }
+      ],
+      "domid": "56",
+      "folder": "",
+      "hardware": {
+        "memory_mb": 8192,
+        "num_cpu_cores_per_socket": 2,
+        "num_cpus": 4
+      },
+      "home_server": "",
+      "is_template": false,
+      "name": "testvm_11",
+      "name_desc": "",
+      "networks": [
+        {
+          "gateway": "192.168.0.254",
+          "gateway6": "fc00::fffe",
+          "ip": "192.168.0.200",
+          "ip6": [
+            "fe80:0000:0000:0000:e9cb:625a:32c5:c291",
+            "fc00:0000:0000:0000:0000:0000:0000:0001"
+          ],
+          "mac": "ba:91:3a:48:20:76",
+          "mtu": "1500",
+          "name": "Pool-wide network associated with eth1",
+          "netmask": "255.255.255.128",
+          "prefix": "25",
+          "prefix6": "64",
+          "vif_device": "0"
+        }
+      ],
+      "other_config": {
+        "base_template_name": "Windows Server 2016 (64-bit)",
+        "import_task": "OpaqueRef:e43eb71c-45d6-5351-09ff-96e4fb7d0fa5",
+        "install-methods": "cdrom",
+        "instant": "true",
+        "mac_seed": "f83e8d8a-cfdc-b105-b054-ef5cb416b77e"
+      },
+      "platform": {
+        "acpi": "1",
+        "apic": "true",
+        "cores-per-socket": "2",
+        "device_id": "0002",
+        "hpet": "true",
+        "nx": "true",
+        "pae": "true",
+        "timeoffset": "-25200",
+        "vga": "std",
+        "videoram": "8",
+        "viridian": "true",
+        "viridian_reference_tsc": "true",
+        "viridian_time_ref_count": "true"
+      },
+      "state": "poweredon",
+      "uuid": "e3c0b2d5-5f05-424e-479c-d3df8b3e7cda",
+      "xenstore_data": {
+        "vm-data": ""
+      }
     }
 """
 
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible_collections.community.general.plugins.module_utils.xenserver import (xenserver_common_argument_spec, XenServerObject, get_object_ref,
-                                                                                  gather_vm_params, gather_vm_facts)
+
+from ansible_collections.community.general.plugins.module_utils.xenserver import (
+    XenServerObject,
+    gather_vm_facts,
+    gather_vm_params,
+    get_object_ref,
+    xenserver_common_argument_spec,
+)
 
 
 class XenServerVM(XenServerObject):
@@ -169,9 +174,16 @@ class XenServerVM(XenServerObject):
         Args:
             module: Reference to AnsibleModule object.
         """
-        super(XenServerVM, self).__init__(module)
+        super().__init__(module)
 
-        self.vm_ref = get_object_ref(self.module, self.module.params['name'], self.module.params['uuid'], obj_type="VM", fail=True, msg_prefix="VM search: ")
+        self.vm_ref = get_object_ref(
+            self.module,
+            self.module.params["name"],
+            self.module.params["uuid"],
+            obj_type="VM",
+            fail=True,
+            msg_prefix="VM search: ",
+        )
         self.gather_params()
 
     def gather_params(self):
@@ -186,30 +198,31 @@ class XenServerVM(XenServerObject):
 def main():
     argument_spec = xenserver_common_argument_spec()
     argument_spec.update(
-        name=dict(type='str', aliases=['name_label']),
-        uuid=dict(type='str'),
+        name=dict(type="str", aliases=["name_label"]),
+        uuid=dict(type="str"),
     )
 
-    module = AnsibleModule(argument_spec=argument_spec,
-                           supports_check_mode=True,
-                           required_one_of=[
-                               ['name', 'uuid'],
-                           ],
-                           )
+    module = AnsibleModule(
+        argument_spec=argument_spec,
+        supports_check_mode=True,
+        required_one_of=[
+            ["name", "uuid"],
+        ],
+    )
 
-    result = {'failed': False, 'changed': False}
+    result = {"failed": False, "changed": False}
 
     # Module will exit with an error message if no VM is found.
     vm = XenServerVM(module)
 
     # Gather facts.
-    result['instance'] = vm.gather_facts()
+    result["instance"] = vm.gather_facts()
 
-    if result['failed']:
+    if result["failed"]:
         module.fail_json(**result)
     else:
         module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

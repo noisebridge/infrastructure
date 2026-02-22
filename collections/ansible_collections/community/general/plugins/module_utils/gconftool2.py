@@ -1,12 +1,15 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2022, Alexei Znamensky <russoz@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
+
+import typing as t
 
 from ansible_collections.community.general.plugins.module_utils.cmd_runner import CmdRunner, cmd_runner_fmt
+
+if t.TYPE_CHECKING:
+    from ansible.module_utils.basic import AnsibleModule
 
 
 _state_map = {
@@ -16,10 +19,10 @@ _state_map = {
 }
 
 
-def gconftool2_runner(module, **kwargs):
+def gconftool2_runner(module: AnsibleModule, **kwargs) -> CmdRunner:
     return CmdRunner(
         module,
-        command='gconftool-2',
+        command="gconftool-2",
         arg_formats=dict(
             state=cmd_runner_fmt.as_map(_state_map),
             key=cmd_runner_fmt.as_list(),
@@ -29,5 +32,5 @@ def gconftool2_runner(module, **kwargs):
             config_source=cmd_runner_fmt.as_opt_val("--config-source"),
             version=cmd_runner_fmt.as_fixed("--version"),
         ),
-        **kwargs
+        **kwargs,
     )

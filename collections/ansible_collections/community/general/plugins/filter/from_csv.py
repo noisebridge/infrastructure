@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 # Copyright (c) 2021, Andrew Pantuso (@ajpantuso) <ajpantuso@gmail.com>
 # Copyright (c) 2018, Dag Wieers (@dagwieers) <dag@wieers.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
@@ -81,13 +79,16 @@ _value:
 
 from ansible.errors import AnsibleFilterError
 
-from ansible_collections.community.general.plugins.module_utils.csv import (initialize_dialect, read_csv, CSVError,
-                                                                            DialectNotAvailableError,
-                                                                            CustomDialectFailureError)
+from ansible_collections.community.general.plugins.module_utils.csv import (
+    CSVError,
+    CustomDialectFailureError,
+    DialectNotAvailableError,
+    initialize_dialect,
+    read_csv,
+)
 
 
-def from_csv(data, dialect='excel', fieldnames=None, delimiter=None, skipinitialspace=None, strict=None):
-
+def from_csv(data, dialect="excel", fieldnames=None, delimiter=None, skipinitialspace=None, strict=None):
     dialect_params = {
         "delimiter": delimiter,
         "skipinitialspace": skipinitialspace,
@@ -97,7 +98,7 @@ def from_csv(data, dialect='excel', fieldnames=None, delimiter=None, skipinitial
     try:
         dialect = initialize_dialect(dialect, **dialect_params)
     except (CustomDialectFailureError, DialectNotAvailableError) as e:
-        raise AnsibleFilterError(str(e))
+        raise AnsibleFilterError(str(e)) from e
 
     reader = read_csv(data, dialect, fieldnames)
 
@@ -107,14 +108,11 @@ def from_csv(data, dialect='excel', fieldnames=None, delimiter=None, skipinitial
         for row in reader:
             data_list.append(row)
     except CSVError as e:
-        raise AnsibleFilterError(f"Unable to process file: {e}")
+        raise AnsibleFilterError(f"Unable to process file: {e}") from e
 
     return data_list
 
 
-class FilterModule(object):
-
+class FilterModule:
     def filters(self):
-        return {
-            'from_csv': from_csv
-        }
+        return {"from_csv": from_csv}

@@ -1,5 +1,4 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2017 John Kwiatkoski (@JayKayy) <jkwiat40@gmail.com>
 # Copyright (c) 2018 Alexander Bethke (@oolongbrothers) <oolongbrothers@gmx.net>
@@ -7,8 +6,7 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: flatpak_remote
@@ -17,7 +15,7 @@ description:
   - Allows users to add or remove flatpak remotes.
   - The flatpak remotes concept is comparable to what is called repositories in other packaging formats.
   - Currently, remote addition is only supported using C(flatpakrepo) file URLs.
-  - Existing remotes will not be updated.
+  - Existing remotes are not updated.
   - See the M(community.general.flatpak) module for managing flatpaks.
 author:
   - John Kwiatkoski (@JayKayy)
@@ -56,8 +54,8 @@ options:
   name:
     description:
       - The desired name for the flatpak remote to be registered under on the managed host.
-      - When used with O(state=present), the remote will be added to the managed host under the specified O(name).
-      - When used with O(state=absent) the remote with that name will be removed.
+      - When used with O(state=present), the remote is added to the managed host under the specified O(name).
+      - When used with O(state=absent) the remote with that name is removed.
     type: str
     required: true
   state:
@@ -112,58 +110,37 @@ command:
   returned: When a flatpak command has been executed
   type: str
   sample: "/usr/bin/flatpak remote-add --system flatpak-test https://dl.flathub.org/repo/flathub.flatpakrepo"
-msg:
-  description: Module error message.
-  returned: failure
-  type: str
-  sample: "Executable '/usr/local/bin/flatpak' was not found on the system."
-rc:
-  description: Return code from flatpak binary.
-  returned: When a flatpak command has been executed
-  type: int
-  sample: 0
-stderr:
-  description: Error output from flatpak binary.
-  returned: When a flatpak command has been executed
-  type: str
-  sample: "error: GPG verification enabled, but no summary found (check that the configured URL in remote config is correct)\n"
-stdout:
-  description: Output from flatpak binary.
-  returned: When a flatpak command has been executed
-  type: str
-  sample: "flathub\tFlathub\thttps://dl.flathub.org/repo/\t1\t\n"
 """
 
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.common.text.converters import to_bytes, to_native
 
 
 def add_remote(module, binary, name, flatpakrepo_url, method):
     """Add a new remote."""
     global result  # pylint: disable=global-variable-not-assigned
-    command = [binary, "remote-add", "--{0}".format(method), name, flatpakrepo_url]
+    command = [binary, "remote-add", f"--{method}", name, flatpakrepo_url]
     _flatpak_command(module, module.check_mode, command)
-    result['changed'] = True
+    result["changed"] = True
 
 
 def remove_remote(module, binary, name, method):
     """Remove an existing remote."""
     global result  # pylint: disable=global-variable-not-assigned
-    command = [binary, "remote-delete", "--{0}".format(method), "--force", name]
+    command = [binary, "remote-delete", f"--{method}", "--force", name]
     _flatpak_command(module, module.check_mode, command)
-    result['changed'] = True
+    result["changed"] = True
 
 
 def remote_exists(module, binary, name, method):
     """Check if the remote exists."""
-    command = [binary, "remote-list", "--show-disabled", "--{0}".format(method)]
+    command = [binary, "remote-list", "--show-disabled", f"--{method}"]
     # The query operation for the remote needs to be run even in check mode
     output = _flatpak_command(module, False, command)
     for line in output.splitlines():
         listed_remote = line.split()
         if len(listed_remote) == 0:
             continue
-        if listed_remote[0] == to_native(name):
+        if listed_remote[0] == name:
             return True
     return False
 
@@ -171,91 +148,85 @@ def remote_exists(module, binary, name, method):
 def enable_remote(module, binary, name, method):
     """Enable a remote."""
     global result  # pylint: disable=global-variable-not-assigned
-    command = [binary, "remote-modify", "--enable", "--{0}".format(method), name]
+    command = [binary, "remote-modify", "--enable", f"--{method}", name]
     _flatpak_command(module, module.check_mode, command)
-    result['changed'] = True
+    result["changed"] = True
 
 
 def disable_remote(module, binary, name, method):
     """Disable a remote."""
     global result  # pylint: disable=global-variable-not-assigned
-    command = [binary, "remote-modify", "--disable", "--{0}".format(method), name]
+    command = [binary, "remote-modify", "--disable", f"--{method}", name]
     _flatpak_command(module, module.check_mode, command)
-    result['changed'] = True
+    result["changed"] = True
 
 
 def remote_enabled(module, binary, name, method):
     """Check if the remote is enabled."""
-    command = [binary, "remote-list", "--show-disabled", "--{0}".format(method)]
+    command = [binary, "remote-list", "--show-disabled", f"--{method}"]
     # The query operation for the remote needs to be run even in check mode
     output = _flatpak_command(module, False, command)
     for line in output.splitlines():
         listed_remote = line.split()
         if len(listed_remote) == 0:
             continue
-        if listed_remote[0] == to_native(name):
+        if listed_remote[0] == name:
             return len(listed_remote) == 1 or "disabled" not in listed_remote[1].split(",")
     return False
 
 
 def _flatpak_command(module, noop, command):
     global result  # pylint: disable=global-variable-not-assigned
-    result['command'] = ' '.join(command)
+    result["command"] = " ".join(command)
     if noop:
-        result['rc'] = 0
+        result["rc"] = 0
         return ""
 
-    result['rc'], result['stdout'], result['stderr'] = module.run_command(
-        command, check_rc=True
-    )
-    return result['stdout']
+    result["rc"], result["stdout"], result["stderr"] = module.run_command(command, check_rc=True)
+    return result["stdout"]
 
 
 def main():
     module = AnsibleModule(
         argument_spec=dict(
-            name=dict(type='str', required=True),
-            flatpakrepo_url=dict(type='str'),
-            method=dict(type='str', default='system',
-                        choices=['user', 'system']),
-            state=dict(type='str', default="present",
-                       choices=['absent', 'present']),
-            enabled=dict(type='bool', default=True),
-            executable=dict(type='str', default="flatpak")
+            name=dict(type="str", required=True),
+            flatpakrepo_url=dict(type="str"),
+            method=dict(type="str", default="system", choices=["user", "system"]),
+            state=dict(type="str", default="present", choices=["absent", "present"]),
+            enabled=dict(type="bool", default=True),
+            executable=dict(type="str", default="flatpak"),
         ),
         # This module supports check mode
         supports_check_mode=True,
     )
 
-    name = module.params['name']
-    flatpakrepo_url = module.params['flatpakrepo_url']
-    method = module.params['method']
-    state = module.params['state']
-    enabled = module.params['enabled']
-    executable = module.params['executable']
+    name = module.params["name"]
+    flatpakrepo_url = module.params["flatpakrepo_url"]
+    method = module.params["method"]
+    state = module.params["state"]
+    enabled = module.params["enabled"]
+    executable = module.params["executable"]
     binary = module.get_bin_path(executable, None)
 
     if flatpakrepo_url is None:
-        flatpakrepo_url = ''
+        flatpakrepo_url = ""
 
     global result
-    result = dict(
-        changed=False
-    )
+    result = dict(changed=False)
 
     # If the binary was not found, fail the operation
     if not binary:
-        module.fail_json(msg="Executable '%s' was not found on the system." % executable, **result)
+        module.fail_json(msg=f"Executable '{executable}' was not found on the system.", **result)
 
-    remote_already_exists = remote_exists(module, binary, to_bytes(name), method)
+    remote_already_exists = remote_exists(module, binary, name, method)
 
-    if state == 'present' and not remote_already_exists:
+    if state == "present" and not remote_already_exists:
         add_remote(module, binary, name, flatpakrepo_url, method)
-    elif state == 'absent' and remote_already_exists:
+    elif state == "absent" and remote_already_exists:
         remove_remote(module, binary, name, method)
 
-    if state == 'present':
-        remote_already_enabled = remote_enabled(module, binary, to_bytes(name), method)
+    if state == "present":
+        remote_already_enabled = remote_enabled(module, binary, name, method)
 
         if enabled and not remote_already_enabled:
             enable_remote(module, binary, name, method)
@@ -265,5 +236,5 @@ def main():
     module.exit_json(**result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

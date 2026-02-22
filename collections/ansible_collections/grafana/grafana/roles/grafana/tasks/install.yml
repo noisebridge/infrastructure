@@ -9,11 +9,13 @@
     name: "{{ _grafana_dependencies }}"
     state: present
     update_cache: true
-  when: "(_grafana_dependencies | default())"
+  when:
+   - _grafana_dependencies is defined
+   - _grafana_dependencies | length > 0
 
 - name: "Prepare zypper"
   when:
-    - "ansible_pkg_mgr == 'zypper'"
+    - "ansible_facts['pkg_mgr'] == 'zypper'"
     - "(grafana_manage_repo)"
   environment: "{{ grafana_environment }}"
   block:
@@ -91,17 +93,38 @@
     - "(grafana_manage_repo)"
   environment: "{{ grafana_environment }}"
   block:
+    - name: "Use deb822 format?"
+      ansible.builtin.set_fact:
+        __use_deb822: "{{ (ansible_facts['distribution'] == 'Debian' and (ansible_facts['distribution_major_version'] | int) >= 12) or
+                          (ansible_facts['distribution'] == 'Ubuntu' and (ansible_facts['distribution_major_version'] | int) >= 24) }}"
     - name: "Import Grafana apt gpg key"
       ansible.builtin.get_url:
         url: "{{ grafana_apt_key }}"
-        dest: /usr/share/keyrings/grafana.key
+        dest: /usr/share/keyrings/grafana.asc
         mode: "0644"
-
+      when: not __use_deb822
     - name: "Add Grafana apt repository"
+      when: not __use_deb822
       ansible.builtin.apt_repository:
         repo: "{{ grafana_apt_repo }}"
-        state: present
         update_cache: true
+    - name: "Add Grafana apt repository"
+      when: __use_deb822
+      ansible.builtin.deb822_repository:
+        name: "{{ grafana_apt_name }}"
+        types: deb
+        uris: "{{ grafana_apt_repo_uri }}"
+        suites: "{{ grafana_apt_release_channel }}"
+        components:
+          - main
+        architectures:
+          - "{{ grafana_apt_arch }}"
+        signed_by: "{{ grafana_apt_key }}"
+      register: __update_cache
+    - name: "Update apt cache"
+      ansible.builtin.apt:
+        update_cache: true
+      when: __update_cache is defined and __update_cache.changed
 
 - name: "Install Grafana"
   ansible.builtin.package:

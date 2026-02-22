@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2021, Phillipe Smith <phsmithcc@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: rundeck_job_executions_info
@@ -39,7 +36,7 @@ options:
     default: 0
 extends_documentation_fragment:
   - community.general.rundeck
-  - url
+  - ansible.builtin.url
   - community.general.attributes
   - community.general.attributes.info_module
 """
@@ -80,58 +77,64 @@ paging:
       description: Maximum number of results per page.
       type: int
       returned: success
-  sample: {"count": 20, "total": 100, "offset": 0, "max": 20}
+  sample:
+    {
+      "count": 20,
+      "total": 100,
+      "offset": 0,
+      "max": 20
+    }
 executions:
-    description: Job executions list.
-    returned: always
-    type: list
-    elements: dict
-    sample: [
-        {
-            "id": 1,
-            "href": "https://rundeck.example.org/api/39/execution/1",
-            "permalink": "https://rundeck.example.org/project/myproject/execution/show/1",
-            "status": "succeeded",
-            "project": "myproject",
-            "executionType": "user",
-            "user": "admin",
-            "date-started": {
-                "unixtime": 1633525515026,
-                "date": "2021-10-06T13:05:15Z"
-            },
-            "date-ended": {
-                "unixtime": 1633525518386,
-                "date": "2021-10-06T13:05:18Z"
-            },
-            "job": {
-                "id": "697af0c4-72d3-4c15-86a3-b5bfe3c6cb6a",
-                "averageDuration": 6381,
-                "name": "Test",
-                "group": "",
-                "project": "myproject",
-                "description": "",
-                "options": {
-                    "exit_code": "0"
-                },
-                "href": "https://rundeck.example.org/api/39/job/697af0c4-72d3-4c15-86a3-b5bfe3c6cb6a",
-                "permalink": "https://rundeck.example.org/project/myproject/job/show/697af0c4-72d3-4c15-86a3-b5bfe3c6cb6a"
-            },
-            "description": "Plugin[com.batix.rundeck.plugins.AnsiblePlaybookInlineWorkflowStep, nodeStep: false]",
-            "argstring": "-exit_code 0",
-            "serverUUID": "5b9a1438-fa3a-457e-b254-8f3d70338068"
-        }
+  description: Job executions list.
+  returned: always
+  type: list
+  elements: dict
+  sample:
+    [
+      {
+        "id": 1,
+        "href": "https://rundeck.example.org/api/39/execution/1",
+        "permalink": "https://rundeck.example.org/project/myproject/execution/show/1",
+        "status": "succeeded",
+        "project": "myproject",
+        "executionType": "user",
+        "user": "admin",
+        "date-started": {
+          "unixtime": 1633525515026,
+          "date": "2021-10-06T13:05:15Z"
+        },
+        "date-ended": {
+          "unixtime": 1633525518386,
+          "date": "2021-10-06T13:05:18Z"
+        },
+        "job": {
+          "id": "697af0c4-72d3-4c15-86a3-b5bfe3c6cb6a",
+          "averageDuration": 6381,
+          "name": "Test",
+          "group": "",
+          "project": "myproject",
+          "description": "",
+          "options": {
+            "exit_code": "0"
+          },
+          "href": "https://rundeck.example.org/api/39/job/697af0c4-72d3-4c15-86a3-b5bfe3c6cb6a",
+          "permalink": "https://rundeck.example.org/project/myproject/job/show/697af0c4-72d3-4c15-86a3-b5bfe3c6cb6a"
+        },
+        "description": "Plugin[com.batix.rundeck.plugins.AnsiblePlaybookInlineWorkflowStep, nodeStep: false]",
+        "argstring": "-exit_code 0",
+        "serverUUID": "5b9a1438-fa3a-457e-b254-8f3d70338068"
+      }
     ]
 """
 
+from urllib.parse import quote
+
 from ansible.module_utils.basic import AnsibleModule
-from ansible.module_utils.six.moves.urllib.parse import quote
-from ansible_collections.community.general.plugins.module_utils.rundeck import (
-    api_argument_spec,
-    api_request
-)
+
+from ansible_collections.community.general.plugins.module_utils.rundeck import api_argument_spec, api_request
 
 
-class RundeckJobExecutionsInfo(object):
+class RundeckJobExecutionsInfo:
     def __init__(self, module):
         self.module = module
         self.url = self.module.params["url"]
@@ -144,36 +147,28 @@ class RundeckJobExecutionsInfo(object):
     def job_executions(self):
         response, info = api_request(
             module=self.module,
-            endpoint="job/%s/executions?offset=%s&max=%s&status=%s"
-                     % (quote(self.job_id), self.offset, self.max, self.status),
-            method="GET"
+            endpoint=f"job/{quote(self.job_id)}/executions?offset={self.offset}&max={self.max}&status={self.status}",
+            method="GET",
         )
 
         if info["status"] != 200:
-            self.module.fail_json(
-                msg=info["msg"],
-                executions=response
-            )
+            self.module.fail_json(msg=info["msg"], executions=response)
 
         self.module.exit_json(msg="Executions info result", **response)
 
 
 def main():
     argument_spec = api_argument_spec()
-    argument_spec.update(dict(
-        job_id=dict(required=True, type="str"),
-        offset=dict(type="int", default=0),
-        max=dict(type="int", default=20),
-        status=dict(
-            type="str",
-            choices=["succeeded", "failed", "aborted", "running"]
+    argument_spec.update(
+        dict(
+            job_id=dict(required=True, type="str"),
+            offset=dict(type="int", default=0),
+            max=dict(type="int", default=20),
+            status=dict(type="str", choices=["succeeded", "failed", "aborted", "running"]),
         )
-    ))
-
-    module = AnsibleModule(
-        argument_spec=argument_spec,
-        supports_check_mode=True
     )
+
+    module = AnsibleModule(argument_spec=argument_spec, supports_check_mode=True)
 
     if module.params["api_version"] < 14:
         module.fail_json(msg="API version should be at least 14")

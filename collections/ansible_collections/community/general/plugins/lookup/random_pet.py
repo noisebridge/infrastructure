@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2021, Abhijeet Kasurde <akasurde@redhat.com>
 # Copyright (c) 2018, Ansible Project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 name: random_pet
@@ -27,7 +24,7 @@ options:
   length:
     description:
       - The maximal length of every component of the pet name.
-      - Values below 3 will be set to 3 by petname.
+      - Values below V(3) are set to V(3) by petname.
     default: 6
     type: int
   prefix:
@@ -80,18 +77,15 @@ from ansible.plugins.lookup import LookupBase
 
 
 class LookupModule(LookupBase):
-
     def run(self, terms, variables=None, **kwargs):
-
         if not HAS_PETNAME:
-            raise AnsibleError('Python petname library is required. '
-                               'Please install using "pip install petname"')
+            raise AnsibleError('Python petname library is required. Please install using "pip install petname"')
 
         self.set_options(var_options=variables, direct=kwargs)
-        words = self.get_option('words')
-        length = self.get_option('length')
-        prefix = self.get_option('prefix')
-        separator = self.get_option('separator')
+        words = self.get_option("words")
+        length = self.get_option("length")
+        prefix = self.get_option("prefix")
+        separator = self.get_option("separator")
 
         values = petname.Generate(words=words, separator=separator, letters=length)
         if prefix:

@@ -1,12 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2014, Ravi Bhure <ravibhure@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: haproxy
@@ -32,7 +30,7 @@ options:
   backend:
     description:
       - Name of the HAProxy backend pool.
-      - If this parameter is unset, it will be auto-detected.
+      - If this parameter is unset, it is auto-detected.
     type: str
   drain:
     description:
@@ -62,8 +60,7 @@ options:
   state:
     description:
       - Desired state of the provided backend host.
-      - Note that V(drain) state is supported only by HAProxy version 1.5 or later. When used on versions < 1.5, it will be
-        ignored.
+      - Note that V(drain) state is supported only by HAProxy version 1.5 or later. When used on versions < 1.5, it is ignored.
     type: str
     required: true
     choices: [disabled, drain, enabled]
@@ -103,7 +100,7 @@ options:
   weight:
     description:
       - The value passed in argument.
-      - If the value ends with the V(%) sign, then the new weight will be relative to the initially configured weight.
+      - If the value ends with the V(%) sign, then the new weight is relative to the initially configured weight.
       - Relative weights are only permitted between 0 and 100% and absolute weights are permitted between 0 and 256.
     type: str
 """
@@ -217,10 +214,9 @@ from string import Template
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.common.text.converters import to_bytes, to_text
 
-
 DEFAULT_SOCKET_LOCATION = "/var/run/haproxy.sock"
 RECV_SIZE = 1024
-ACTION_CHOICES = ['enabled', 'disabled', 'drain']
+ACTION_CHOICES = ["enabled", "disabled", "drain"]
 WAIT_RETRIES = 25
 WAIT_INTERVAL = 5
 
@@ -230,7 +226,7 @@ class TimeoutException(Exception):
     pass
 
 
-class HAProxy(object):
+class HAProxy:
     """
     Used for communicating with HAProxy through its local UNIX socket interface.
     Perform common tasks in Haproxy related to enable server and
@@ -245,19 +241,19 @@ class HAProxy(object):
     def __init__(self, module):
         self.module = module
 
-        self.state = self.module.params['state']
-        self.host = self.module.params['host']
-        self.backend = self.module.params['backend']
-        self.weight = self.module.params['weight']
-        self.socket = self.module.params['socket']
-        self.shutdown_sessions = self.module.params['shutdown_sessions']
-        self.fail_on_not_found = self.module.params['fail_on_not_found']
-        self.agent = self.module.params['agent']
-        self.health = self.module.params['health']
-        self.wait = self.module.params['wait']
-        self.wait_retries = self.module.params['wait_retries']
-        self.wait_interval = self.module.params['wait_interval']
-        self._drain = self.module.params['drain']
+        self.state = self.module.params["state"]
+        self.host = self.module.params["host"]
+        self.backend = self.module.params["backend"]
+        self.weight = self.module.params["weight"]
+        self.socket = self.module.params["socket"]
+        self.shutdown_sessions = self.module.params["shutdown_sessions"]
+        self.fail_on_not_found = self.module.params["fail_on_not_found"]
+        self.agent = self.module.params["agent"]
+        self.health = self.module.params["health"]
+        self.wait = self.module.params["wait"]
+        self.wait_retries = self.module.params["wait_retries"]
+        self.wait_interval = self.module.params["wait_interval"]
+        self._drain = self.module.params["drain"]
         self.command_results = {}
 
     def execute(self, cmd, timeout=200, capture_output=True):
@@ -267,15 +263,15 @@ class HAProxy(object):
         """
         self.client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         self.client.connect(self.socket)
-        self.client.sendall(to_bytes('%s\n' % cmd))
+        self.client.sendall(to_bytes(f"{cmd}\n"))
 
-        result = b''
-        buf = b''
+        result = b""
+        buf = b""
         buf = self.client.recv(RECV_SIZE)
         while buf:
             result += buf
             buf = self.client.recv(RECV_SIZE)
-        result = to_text(result, errors='surrogate_or_strict')
+        result = to_text(result, errors="surrogate_or_strict")
 
         if capture_output:
             self.capture_command_output(cmd, result.strip())
@@ -286,32 +282,32 @@ class HAProxy(object):
         """
         Capture the output for a command
         """
-        if 'command' not in self.command_results:
-            self.command_results['command'] = []
-        self.command_results['command'].append(cmd)
-        if 'output' not in self.command_results:
-            self.command_results['output'] = []
-        self.command_results['output'].append(output)
+        if "command" not in self.command_results:
+            self.command_results["command"] = []
+        self.command_results["command"].append(cmd)
+        if "output" not in self.command_results:
+            self.command_results["output"] = []
+        self.command_results["output"].append(output)
 
     def discover_all_backends(self):
         """
         Discover all entries with svname = 'BACKEND' and return a list of their corresponding
         pxnames
         """
-        data = self.execute('show stat', 200, False).lstrip('# ')
+        data = self.execute("show stat", 200, False).lstrip("# ")
         r = csv.DictReader(data.splitlines())
-        return tuple(map(lambda d: d['pxname'], filter(lambda d: d['svname'] == 'BACKEND', r)))
+        return tuple(d["pxname"] for d in r if d["svname"] == "BACKEND")
 
     def discover_version(self):
         """
         Attempt to extract the haproxy version.
         Return a tuple containing major and minor version.
         """
-        data = self.execute('show info', 200, False)
+        data = self.execute("show info", 200, False)
         lines = data.splitlines()
-        line = [x for x in lines if 'Version:' in x]
+        line = [x for x in lines if "Version:" in x]
         try:
-            version_values = line[0].partition(':')[2].strip().split('.', 3)
+            version_values = line[0].partition(":")[2].strip().split(".", 3)
             version = (int(version_values[0]), int(version_values[1]))
         except (ValueError, TypeError, IndexError):
             version = None
@@ -334,8 +330,7 @@ class HAProxy(object):
             # Fail when backends were not found
             state = self.get_state_for(backend, svname)
             if (self.fail_on_not_found) and state is None:
-                self.module.fail_json(
-                    msg="The specified backend '%s/%s' was not found!" % (backend, svname))
+                self.module.fail_json(msg=f"The specified backend '{backend}/{svname}' was not found!")
 
             if state is not None:
                 self.execute(Template(cmd).substitute(pxname=backend, svname=svname))
@@ -347,15 +342,13 @@ class HAProxy(object):
         Find the state of specific services. When pxname is not set, get all backends for a specific host.
         Returns a list of dictionaries containing the status and weight for those services.
         """
-        data = self.execute('show stat', 200, False).lstrip('# ')
+        data = self.execute("show stat", 200, False).lstrip("# ")
         r = csv.DictReader(data.splitlines())
-        state = tuple(
-            map(
-                lambda d: {'status': d['status'], 'weight': d['weight'], 'scur': d['scur']},
-                filter(lambda d: (pxname is None or d['pxname']
-                                  == pxname) and d['svname'] == svname, r)
-            )
-        )
+
+        def unpack_state(d):
+            return {"status": d["status"], "weight": d["weight"], "scur": d["scur"]}
+
+        state = tuple(unpack_state(d) for d in r if (pxname is None or d["pxname"] == pxname) and d["svname"] == svname)
         return state or None
 
     def wait_until_status(self, pxname, svname, status):
@@ -365,18 +358,19 @@ class HAProxy(object):
         the expected status in that time, the module will fail. If the service was
         not found, the module will fail.
         """
-        for i in range(1, self.wait_retries):
+        for _i in range(1, self.wait_retries):
             state = self.get_state_for(pxname, svname)
 
             # We can assume there will only be 1 element in state because both svname and pxname are always set when we get here
             # When using track we get a status like this: MAINT (via pxname/svname) so we need to do substring matching
-            if status in state[0]['status']:
-                if not self._drain or state[0]['scur'] == '0':
+            if status in state[0]["status"]:
+                if not self._drain or state[0]["scur"] == "0":
                     return True
             time.sleep(self.wait_interval)
 
-        self.module.fail_json(msg="server %s/%s not status '%s' after %d retries. Aborting." %
-                              (pxname, svname, status, self.wait_retries))
+        self.module.fail_json(
+            msg=f"server {pxname}/{svname} not status '{status}' after {self.wait_retries} retries. Aborting."
+        )
 
     def enabled(self, host, backend, weight):
         """
@@ -390,8 +384,8 @@ class HAProxy(object):
         if self.health:
             cmd += "; enable health $pxname/$svname"
         if weight:
-            cmd += "; set weight $pxname/$svname %s" % weight
-        self.execute_for_backends(cmd, backend, host, 'UP')
+            cmd += f"; set weight $pxname/$svname {weight}"
+        self.execute_for_backends(cmd, backend, host, "UP")
 
     def disabled(self, host, backend, shutdown_sessions):
         """
@@ -407,9 +401,9 @@ class HAProxy(object):
         cmd += "; disable server $pxname/$svname"
         if shutdown_sessions:
             cmd += "; shutdown sessions server $pxname/$svname"
-        self.execute_for_backends(cmd, backend, host, 'MAINT')
+        self.execute_for_backends(cmd, backend, host, "MAINT")
 
-    def drain(self, host, backend, status='DRAIN'):
+    def drain(self, host, backend, status="DRAIN"):
         """
         Drain action, sets the server to DRAIN mode.
         In this mode, the server will not accept any new connections
@@ -418,7 +412,7 @@ class HAProxy(object):
         haproxy_version = self.discover_version()
 
         # check if haproxy version supports DRAIN state (starting with 1.5)
-        if haproxy_version and (1, 5) <= haproxy_version:
+        if haproxy_version and haproxy_version >= (1, 5):
             cmd = "set server $pxname/$svname state drain"
             self.execute_for_backends(cmd, backend, host, "DRAIN")
             if status == "MAINT":
@@ -429,47 +423,46 @@ class HAProxy(object):
         Figure out what you want to do from ansible, and then do it.
         """
         # Get the state before the run
-        self.command_results['state_before'] = self.get_state_for(self.backend, self.host)
+        self.command_results["state_before"] = self.get_state_for(self.backend, self.host)
 
         # toggle enable/disable server
-        if self.state == 'enabled':
+        if self.state == "enabled":
             self.enabled(self.host, self.backend, self.weight)
-        elif self.state == 'disabled' and self._drain:
-            self.drain(self.host, self.backend, status='MAINT')
-        elif self.state == 'disabled':
+        elif self.state == "disabled" and self._drain:
+            self.drain(self.host, self.backend, status="MAINT")
+        elif self.state == "disabled":
             self.disabled(self.host, self.backend, self.shutdown_sessions)
-        elif self.state == 'drain':
+        elif self.state == "drain":
             self.drain(self.host, self.backend)
         else:
-            self.module.fail_json(msg="unknown state specified: '%s'" % self.state)
+            self.module.fail_json(msg=f"unknown state specified: '{self.state}'")
 
         # Get the state after the run
-        self.command_results['state_after'] = self.get_state_for(self.backend, self.host)
+        self.command_results["state_after"] = self.get_state_for(self.backend, self.host)
 
         # Report change status
-        self.command_results['changed'] = (self.command_results['state_before'] != self.command_results['state_after'])
+        self.command_results["changed"] = self.command_results["state_before"] != self.command_results["state_after"]
 
         self.module.exit_json(**self.command_results)
 
 
 def main():
-
     # load ansible module object
     module = AnsibleModule(
         argument_spec=dict(
-            state=dict(type='str', required=True, choices=ACTION_CHOICES),
-            host=dict(type='str', required=True),
-            backend=dict(type='str'),
-            weight=dict(type='str'),
-            socket=dict(type='path', default=DEFAULT_SOCKET_LOCATION),
-            shutdown_sessions=dict(type='bool', default=False),
-            fail_on_not_found=dict(type='bool', default=False),
-            health=dict(type='bool', default=False),
-            agent=dict(type='bool', default=False),
-            wait=dict(type='bool', default=False),
-            wait_retries=dict(type='int', default=WAIT_RETRIES),
-            wait_interval=dict(type='int', default=WAIT_INTERVAL),
-            drain=dict(type='bool', default=False),
+            state=dict(type="str", required=True, choices=ACTION_CHOICES),
+            host=dict(type="str", required=True),
+            backend=dict(type="str"),
+            weight=dict(type="str"),
+            socket=dict(type="path", default=DEFAULT_SOCKET_LOCATION),
+            shutdown_sessions=dict(type="bool", default=False),
+            fail_on_not_found=dict(type="bool", default=False),
+            health=dict(type="bool", default=False),
+            agent=dict(type="bool", default=False),
+            wait=dict(type="bool", default=False),
+            wait_retries=dict(type="int", default=WAIT_RETRIES),
+            wait_interval=dict(type="int", default=WAIT_INTERVAL),
+            drain=dict(type="bool", default=False),
         ),
     )
 
@@ -480,5 +473,5 @@ def main():
     ansible_haproxy.act()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

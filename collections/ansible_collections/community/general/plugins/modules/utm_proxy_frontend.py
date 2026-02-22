@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright (c) 2018, Johannes Brunswicker <johannes.brunswicker@gmail.com>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: utm_proxy_frontend
@@ -30,7 +27,7 @@ options:
   name:
     type: str
     description:
-      - The name of the object. Will be used to identify the entry.
+      - The name of the object that identifies the entry.
     required: true
   add_content_type_header:
     description:
@@ -76,12 +73,12 @@ options:
     default: []
   htmlrewrite:
     description:
-      - Whether to enable html rewrite or not.
+      - Whether to enable HTML rewrite or not.
     type: bool
     default: false
   htmlrewrite_cookies:
     description:
-      - Whether to enable html rewrite cookie or not.
+      - Whether to enable HTML rewrite cookie or not.
     type: bool
     default: false
   implicitredirect:
@@ -204,7 +201,7 @@ result:
       description: List of associated proxy exceptions.
       type: list
     htmlrewrite:
-      description: State of html rewrite.
+      description: State of HTML rewrite.
       type: bool
     htmlrewrite_cookies:
       description: Whether the HTML rewrite cookie is set.
@@ -239,45 +236,60 @@ result:
 """
 
 from ansible_collections.community.general.plugins.module_utils.utm_utils import UTM, UTMModule
-from ansible.module_utils.common.text.converters import to_native
 
 
 def main():
     endpoint = "reverse_proxy/frontend"
-    key_to_check_for_changes = ["add_content_type_header", "address", "allowed_networks", "certificate",
-                                "comment", "disable_compression", "domain", "exceptions", "htmlrewrite",
-                                "htmlrewrite_cookies", "implicitredirect", "lbmethod", "locations",
-                                "port", "preservehost", "profile", "status", "type", "xheaders"]
+    key_to_check_for_changes = [
+        "add_content_type_header",
+        "address",
+        "allowed_networks",
+        "certificate",
+        "comment",
+        "disable_compression",
+        "domain",
+        "exceptions",
+        "htmlrewrite",
+        "htmlrewrite_cookies",
+        "implicitredirect",
+        "lbmethod",
+        "locations",
+        "port",
+        "preservehost",
+        "profile",
+        "status",
+        "type",
+        "xheaders",
+    ]
     module = UTMModule(
         argument_spec=dict(
-            name=dict(type='str', required=True),
-            add_content_type_header=dict(type='bool', required=False, default=False),
-            address=dict(type='str', required=False, default="REF_DefaultInternalAddress"),
-            allowed_networks=dict(type='list', elements='str', required=False, default=["REF_NetworkAny"]),
-            certificate=dict(type='str', required=False, default=""),
-            comment=dict(type='str', required=False, default=""),
-            disable_compression=dict(type='bool', required=False, default=False),
-            domain=dict(type='list', elements='str', required=False),
-            exceptions=dict(type='list', elements='str', required=False, default=[]),
-            htmlrewrite=dict(type='bool', required=False, default=False),
-            htmlrewrite_cookies=dict(type='bool', required=False, default=False),
-            implicitredirect=dict(type='bool', required=False, default=False),
-            lbmethod=dict(type='str', required=False, default="bybusyness",
-                          choices=['bybusyness', 'bytraffic', 'byrequests', '']),
-            locations=dict(type='list', elements='str', required=False, default=[]),
-            port=dict(type='int', required=False, default=80),
-            preservehost=dict(type='bool', required=False, default=False),
-            profile=dict(type='str', required=False, default=""),
-            status=dict(type='bool', required=False, default=True),
-            type=dict(type='str', required=False, default="http", choices=['http', 'https']),
-            xheaders=dict(type='bool', required=False, default=False),
+            name=dict(type="str", required=True),
+            add_content_type_header=dict(type="bool", default=False),
+            address=dict(type="str", default="REF_DefaultInternalAddress"),
+            allowed_networks=dict(type="list", elements="str", default=["REF_NetworkAny"]),
+            certificate=dict(type="str", default=""),
+            comment=dict(type="str", default=""),
+            disable_compression=dict(type="bool", default=False),
+            domain=dict(type="list", elements="str"),
+            exceptions=dict(type="list", elements="str", default=[]),
+            htmlrewrite=dict(type="bool", default=False),
+            htmlrewrite_cookies=dict(type="bool", default=False),
+            implicitredirect=dict(type="bool", default=False),
+            lbmethod=dict(type="str", default="bybusyness", choices=["bybusyness", "bytraffic", "byrequests", ""]),
+            locations=dict(type="list", elements="str", default=[]),
+            port=dict(type="int", default=80),
+            preservehost=dict(type="bool", default=False),
+            profile=dict(type="str", default=""),
+            status=dict(type="bool", default=True),
+            type=dict(type="str", default="http", choices=["http", "https"]),
+            xheaders=dict(type="bool", default=False),
         )
     )
     try:
         UTM(module, endpoint, key_to_check_for_changes).execute()
     except Exception as e:
-        module.fail_json(msg=to_native(e))
+        module.fail_json(msg=f"{e}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

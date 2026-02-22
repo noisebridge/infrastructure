@@ -1,11 +1,9 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 # Copyright (c) Ansible project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: online_user_info
@@ -37,27 +35,29 @@ online_user_info:
   returned: success
   type: dict
   sample:
-    "online_user_info": {
-        "company": "foobar LLC",
-        "email": "foobar@example.com",
-        "first_name": "foo",
-        "id": 42,
-        "last_name": "bar",
-        "login": "foobar"
+    {
+      "company": "foobar LLC",
+      "email": "foobar@example.com",
+      "first_name": "foo",
+      "id": 42,
+      "last_name": "bar",
+      "login": "foobar"
     }
 """
 
 from ansible.module_utils.basic import AnsibleModule
+
 from ansible_collections.community.general.plugins.module_utils.online import (
-    Online, OnlineException, online_argument_spec
+    Online,
+    OnlineException,
+    online_argument_spec,
 )
 
 
 class OnlineUserInfo(Online):
-
     def __init__(self, module):
-        super(OnlineUserInfo, self).__init__(module)
-        self.name = 'api/v1/user'
+        super().__init__(module)
+        self.name = "api/v1/user"
 
 
 def main():
@@ -67,12 +67,10 @@ def main():
     )
 
     try:
-        module.exit_json(
-            online_user_info=OnlineUserInfo(module).get_resources()
-        )
+        module.exit_json(online_user_info=OnlineUserInfo(module).get_resources())
     except OnlineException as exc:
         module.fail_json(msg=exc.message)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

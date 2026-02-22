@@ -1,11 +1,9 @@
-# -*- coding: utf-8 -*-
 # Copyright (c) 2016, Samuel Boucher <boucher.samuel.c@gmail.com>
 # Copyright (c) 2017 Ansible Project
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import (absolute_import, division, print_function)
-__metaclass__ = type
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 name: keyring
@@ -13,7 +11,7 @@ author:
   - Samuel Boucher (!UNKNOWN) <boucher.samuel.c@gmail.com>
 requirements:
   - keyring (python library)
-short_description: grab secrets from the OS keyring
+short_description: Grab secrets from the OS keyring
 description:
   - Allows you to access data stored in the OS provided keyring/keychain.
 """
@@ -54,7 +52,6 @@ display = Display()
 
 
 class LookupModule(LookupBase):
-
     def run(self, terms, variables=None, **kwargs):
         if not HAS_KEYRING:
             raise AnsibleError("Can't LOOKUP(keyring): missing required python library 'keyring'")

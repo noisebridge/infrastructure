@@ -1,13 +1,10 @@
 #!/usr/bin/python
-# -*- coding: utf-8 -*-
 
 # Copyright 2013 Bruce Pennypacker <bruce@pennypacker.org>
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from __future__ import absolute_import, division, print_function
-__metaclass__ = type
-
+from __future__ import annotations
 
 DOCUMENTATION = r"""
 module: airbrake_deployment
@@ -45,35 +42,29 @@ options:
   user:
     description:
       - The username of the person doing the deployment.
-    required: false
     type: str
   repo:
     description:
       - URL of the project repository.
-    required: false
     type: str
   revision:
     description:
       - A hash, number, tag, or other identifier showing what revision from version control was deployed.
-    required: false
     type: str
   version:
     description:
       - A string identifying what version was deployed.
-    required: false
     type: str
     version_added: '1.0.0'
   url:
     description:
       - Optional URL to submit the notification to. Use to send notifications to Airbrake-compliant tools like Errbit.
-    required: false
     default: "https://api.airbrake.io/api/v4/projects/"
     type: str
   validate_certs:
     description:
-      - If V(false), SSL certificates for the target URL will not be validated. This should only be used on personally controlled
+      - If V(false), SSL certificates for the target URL is not validated. This should only be used on personally controlled
         sites using self-signed certificates.
-    required: false
     default: true
     type: bool
 
@@ -102,24 +93,23 @@ EXAMPLES = r"""
 from ansible.module_utils.basic import AnsibleModule
 from ansible.module_utils.urls import fetch_url
 
-
 # ===========================================
 # Module execution.
 #
 
-def main():
 
+def main():
     module = AnsibleModule(
         argument_spec=dict(
-            project_id=dict(required=True, no_log=True, type='str'),
-            project_key=dict(required=True, no_log=True, type='str'),
-            environment=dict(required=True, type='str'),
-            user=dict(required=False, type='str'),
-            repo=dict(required=False, type='str'),
-            revision=dict(required=False, type='str'),
-            version=dict(required=False, type='str'),
-            url=dict(required=False, default='https://api.airbrake.io/api/v4/projects/', type='str'),
-            validate_certs=dict(default=True, type='bool'),
+            project_id=dict(required=True, no_log=True, type="str"),
+            project_key=dict(required=True, no_log=True, type="str"),
+            environment=dict(required=True, type="str"),
+            user=dict(type="str"),
+            repo=dict(type="str"),
+            revision=dict(type="str"),
+            version=dict(type="str"),
+            url=dict(default="https://api.airbrake.io/api/v4/projects/", type="str"),
+            validate_certs=dict(default=True, type="bool"),
         ),
         supports_check_mode=True,
     )
@@ -148,21 +138,20 @@ def main():
         params["version"] = module.params["version"]
 
     # Build deploy url
-    url = module.params.get('url') + module.params["project_id"] + '/deploys?key=' + module.params["project_key"]
+    url = f"{module.params.get('url')}{module.params['project_id']}/deploys?key={module.params['project_key']}"
     json_body = module.jsonify(params)
 
     # Build header
-    headers = {'Content-Type': 'application/json'}
+    headers = {"Content-Type": "application/json"}
 
     # Notify Airbrake of deploy
-    response, info = fetch_url(module, url, data=json_body,
-                               headers=headers, method='POST')
+    response, info = fetch_url(module, url, data=json_body, headers=headers, method="POST")
 
-    if info['status'] == 200 or info['status'] == 201:
+    if info["status"] == 200 or info["status"] == 201:
         module.exit_json(changed=True)
     else:
-        module.fail_json(msg="HTTP result code: %d connecting to %s" % (info['status'], url))
+        module.fail_json(msg=f"HTTP result code: {info['status']} connecting to {url}")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
