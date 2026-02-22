@@ -389,13 +389,38 @@ system {
             }
             level admin
         }
+        user elan {
+            authentication {
+                encrypted-password $6$/lNpC3jEW3$4F.s3AaDt/aEs0lFtdtvniT44vX4pzV8o8C4z2xwZT.YEdjdMzEfh3kcKcuP5cjkQhAw7N.ZTRAkM97zPZp88/
+                plaintext-password ""
+                public-keys gh {
+                    key AAAAC3NzaC1lZDI1NTE5AAAAIG/BqjSWbsCADWHsuVYwuRQmrAmHi2uFZ/QhmrLK1WAZ
+                    type ssh-ed25519
+                }
+            }
+        }
         user jof {
             authentication {
                 encrypted-password $6$qWZWDtAiOxdDp$osgdgYBBq.xYKIN1U8McDCVdZCA0mKOeStR7zjBpkkPBJv6YjI309ep5ut5Q.Dzn72NPR4vU6znYvBzkDJhGn0
                 plaintext-password ""
                 public-keys jof {
-                    key AAAAB3NzaC1yc2EAAAADAQABAAABAQDKiN5i2O2aBJBp3+xZqRyWgEGgOY3hpXVjY+iBMBdC0gQdTCSuAR+Rcj7/MWNqnFgdpUdvi0K7ONoZ8cAsOoMWcG7I9WjHe4P60rq92CLWWsH77HaL7davPb4y41F1pnLn7MNE+aaUKh34NyD+IcOtkAwWM/fhbdxCFCuiZ7g8OFRhymK66w4nP99PvBglaVZL5jrIwhM2TyFYAjiCCmNvdQF3xkIdmfaeb1PIn+PkFzkjhJYHAHR6od1s555aEGidmJYh+LLG4QMCKJNY1d046cOp1Qo882DzaAQzrq8EpvEDOVEaI5nL5MSBKK3H5/NvOfWPsX1xG6Y11CbYvpXH
-                    type ssh-rsa
+                    key AAAAC3NzaC1lZDI1NTE5AAAAIOuY6EvHXYsIUze58ezF6wiExe64t1+8r2Mk5AYC+YM+
+                    type ssh-ed25519
+                }
+            }
+            level admin
+        }
+        user mcint {
+            authentication {
+                encrypted-password $6$MhFaiE/mN$Rj5Pt42Gj7JoeCCYy1Noq5VOAYbD2zXmVsR2Bf1Y426OCvs709OTN82oKf5rii3Vikc7YrtFFKa0NVpPoKwiS0
+                plaintext-password ""
+                public-keys mcint-1 {
+                    key AAAAC3NzaC1lZDI1NTE5AAAAIOzAzD+eXQ8ZBXxZjnOXYKPDN77FSb5gKFn/d5oMNtBJ
+                    type ssh-ed25519
+                }
+                public-keys mcint-2 {
+                    key AAAAC3NzaC1lZDI1NTE5AAAAIBxZdS4NIujCRre4QhDSRYFhcXhPGCXvkxFNkOQ6BpJE
+                    type ssh-ed25519
                 }
             }
             level admin
