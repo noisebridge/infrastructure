@@ -14,4 +14,5 @@ site.retry
 /collections/ansible_collections/*/*/examples/**
 /collections/ansible_collections/*/*/molecule/**
 /collections/ansible_collections/*/*/tests/**
+/collections/ansible_collections/*/*/yarn*
 /collections/ansible_collections/*/*/Pipfile*
