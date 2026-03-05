@@ -1,6 +1,0 @@
----
-- name: restart unifi-poller
-  systemd:
-    daemon_reload: true
-    name: unifi-poller
-    state: restarted
