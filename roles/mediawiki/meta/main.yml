@@ -1,7 +1,0 @@
----
-dependencies:
-  - role: percona
-    tags: mysql
-  - role: geerlingguy.mysql
-    tags: mysql
-  - role: memcached

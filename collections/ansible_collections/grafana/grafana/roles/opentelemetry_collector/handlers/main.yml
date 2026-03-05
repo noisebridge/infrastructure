@@ -1,6 +1,0 @@
-- name: Restart OpenTelemetry Collector
-  ansible.builtin.systemd:
-    name: "{{ otel_collector_service_name }}"
-    state: restarted
-  become: true
-  ignore_errors: '{{ ansible_check_mode | bool }}'
