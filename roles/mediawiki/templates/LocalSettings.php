@@ -149,8 +149,10 @@ wfLoadExtension( 'mwGoogleSheet' );
 # Add more configuration options below.
 
 $wgUseGzip = true;
-$wgUseFileCache = false;
+$wgUseFileCache = true;
 $wgFileCacheDirectory = '/var/cache/mediawiki/';
+$wgShowIPinHeader = false;
+$wgCdnMaxAge = 7200;
 
 wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/ReCaptchaNoCaptcha' ]);
 #wfLoadExtensions([ 'ConfirmEdit', 'ConfirmEdit/QuestyCaptcha', 'QuestyCaptchaEditor' ]);

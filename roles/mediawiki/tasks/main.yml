@@ -22,6 +22,14 @@
     url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki_version }}.tar.gz"
     checksum: "sha256:{{ mediawiki_version_checksum }}"
 
+- name: make wiki cache directory
+  file:
+    dest: "/var/cache/mediawiki"
+    state: directory
+    owner: "www-data"
+    group: "www-data"
+    mode: 0755
+
 - name: make wiki directory
   file:
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
