@@ -164,6 +164,13 @@ $wgCaptchaQuestions = [
 ## https://www.mediawiki.org/wiki/Extension:ConfirmEdit#URL_and_IP_whitelists
 $wgCaptchaWhitelistIP = [ '192.195.83.130' ]; ## Noisebridge space IP, from MonkeyBrains
 
+## Exclude Noisebridge building subnet from MediaWiki rate limits.
+## All building users share a single public IP via NAT.
+$wgRateLimitsExcludedIPs = [ '192.195.83.128/29' ];
+
+## Exclude logged-in users from rate limits.
+$wgGroupPermissions['user']['noratelimit'] = true;
+
 # Configure ReCaptcha
 $wgCaptchaClass = 'ReCaptchaNoCaptcha';
 $wgReCaptchaSiteKey = '{{ mediawiki_recaptcha_site_key }}';
