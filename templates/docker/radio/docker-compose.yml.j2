@@ -1,0 +1,48 @@
+{{ ansible_managed | comment }}
+
+services:
+  # Meshtastic web client
+  meshtastic-web:
+    image: ghcr.io/meshtastic/web:{{ meshtastic_web_version }}
+    container_name: meshtastic-web-client
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:{{ meshtastic_web_port }}:8080"
+
+  node-serial-bridge:
+    image: ghcr.io/yeraze/meshtastic-serial-bridge:{{ meshtastic_serial_bridge_version }}
+    container_name: meshtastic-serial-bridge
+    devices:
+      - /dev/ttyACM0:/dev/ttyACM0
+    restart: unless-stopped
+    environment:
+      - SERIAL_DEVICE=/dev/ttyACM0
+      - BAUD_RATE=115200
+      - TCP_PORT=4403
+    networks:
+      - meshtastic-serial
+
+  node-monitor:
+    image: ghcr.io/yeraze/meshmonitor:{{ meshtastic_meshmonitor_version }}
+    container_name: meshmonitor
+    restart: unless-stopped
+    depends_on:
+      - node-serial-bridge
+    volumes:
+      - meshmonitor-data:/data
+    environment:
+      - MESHTASTIC_NODE_IP=serial-bridge
+      - ALLOWED_ORIGINS=https://radio.noise
+      - BASE_URL=/meshtastic/monitor
+    networks:
+      - meshtastic-serial
+    ports:
+      - "127.0.0.1:{{ meshtastic_meshmonitor_port }}:3001"
+
+volumes:
+  meshmonitor-data:
+
+networks:
+  # Bridge between serial-bridge and meshmonitor
+  meshtastic-serial:
+    driver: bridge

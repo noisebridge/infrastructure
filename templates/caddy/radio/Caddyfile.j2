@@ -1,0 +1,91 @@
+{{ ansible_managed | comment }}
+
+# Global config
+{
+  servers {
+      metrics
+  }
+}
+
+# Metrics server
+{{ ansible_fqdn }} {
+  route /metrics {
+    basic_auth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    metrics
+  }
+  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+}
+
+# Direct node forwarding
+radio.noise:4040 spacecamp:4040 spacecamp.reverse-bramble.ts.net:4040 {
+	tls internal
+	log {
+		output file "{{ caddy_log_dir }}/radio.noise.log" {
+			{{ noisebridge_caddy_log_roll | indent(width=6) }}
+		}
+		{{ noisebridge_caddy_log_filter | indent(width=4) }}
+	}
+	{{ noisebridge_caddy_secure_header | indent(width=2) }}
+
+	reverse_proxy {{ meshtastic_node_ip }}:80 {
+		transport http {
+			dial_timeout 30s
+		}
+	}
+}
+
+# Proxy to backend Docker services
+radio.noise spacecamp spacecamp.reverse-bramble.ts.net {
+    tls internal
+	log {
+		output file "{{ caddy_log_dir }}/radio.noise.log" {
+			{{ noisebridge_caddy_log_roll | indent(width=6) }}
+		}
+		{{ noisebridge_caddy_log_filter | indent(width=4) }}
+	}
+	{{ noisebridge_caddy_secure_header | indent(width=2) }}
+
+    # Serve autoconnect script
+    handle_path /site/* {
+		root * /srv
+		file_server
+	}
+
+	# Forward requests to the Meshtastic HTTP server
+	redir /meshtastic/node /meshtastic/node/ 308
+	handle_path /meshtastic/node/* {
+		reverse_proxy {{ meshtastic_node_ip }}:80 {
+			transport http {
+				dial_timeout 30s
+			}
+		}
+	}
+
+	# Forward requests to the Meshmonitor service
+	redir /meshtastic/monitor /meshtastic/monitor/ 308
+	handle_path /meshtastic/monitor/* {
+		rewrite * /meshtastic/monitor{uri}
+		reverse_proxy localhost:3001 {
+			transport http {
+				dial_timeout 30s
+			}
+		}
+	}
+
+	# Inject autoconnect script into page
+	replace {
+		match {
+			header Content-Type text/html*
+		}
+		"</body>" "<script src='/site/autoconnect.js' async></script></script>"
+	}
+
+    # Handle all other requests (acts as a fallback)
+    handle {
+        reverse_proxy localhost:8080 {
+			header_up Accept-Encoding identity
+		}
+    }
+}

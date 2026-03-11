@@ -1,0 +1,4 @@
+---
+caddy_features:
+- 'github.com/caddyserver/replace-response@8096288'
+caddy_config: "{{ lookup('template', 'templates/caddy/radio/Caddyfile.j2') }}"

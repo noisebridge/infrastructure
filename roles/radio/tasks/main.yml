@@ -1,0 +1,19 @@
+- name: Ensure radio directory exists
+  file:
+    path: "{{ meshtastic_deployment_dir }}"
+    state: directory
+
+- name: Upload docker-compose
+  template:
+    src: docker/radio/docker-compose.yml.j2
+    dest: "{{ meshtastic_deployment_dir }}/docker-compose.yml"
+
+- name: Upload autoconnect script
+  copy:
+    src: radio/autoconnect.js
+    dest: "{{ meshtastic_deployment_dir }}/autoconnect.js"
+
+- name: Start Meshtastic services
+  community.docker.docker_compose_v2:
+    project_src: "{{ meshtastic_deployment_dir }}"
+    state: present
