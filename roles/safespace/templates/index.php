@@ -1,7 +1,8 @@
-declare(strict_types=1);
+<?php declare(strict_types=1); ?>
 
 <!DOCTYPE html>
 {{ ansible_managed | comment('xml') }}
+{% raw %}
 <!--
 <?php
 date_default_timezone_set(timezoneId: "America/Los_Angeles");
@@ -14,10 +15,10 @@ define(
 	value: 'https://discord.com/api/webhooks/');
 define(
 	constant_name: 'DISCORD_WEBHOOK_URL_PUBLIC',
-	value: DISCORD_WEBHOOK_BASE_URL.'{{ safespace_public_discord_channel_webhook_token }}');
+	value: DISCORD_WEBHOOK_BASE_URL.'{% endraw %}{{ safespace_public_discord_channel_webhook_token }}{% raw %}');
 define(
 	constant_name: 'DISCORD_WEBHOOK_URL_PRIVATE',
-	value: DISCORD_WEBHOOK_BASE_URL.'{{ safespace_private_discord_channel_webhook_token }}');
+	value: DISCORD_WEBHOOK_BASE_URL.'{% endraw %}{{ safespace_private_discord_channel_webhook_token }}{% raw %}');
 
 function post_to_discord(
 	string $msg,
@@ -67,7 +68,6 @@ function post_to_discord(
 	$msg .= "<@&1348361508467376138>";
 
 
-	echo "msg:". $msg ."\nusername:". $name_or_empty.
 	$json_data = json_encode(
 		value: [
 			"thread_name" => $thead_name,
@@ -157,6 +157,7 @@ if ($isPost) {
 
 ?>
 -->
+{% endraw %}
 <html>
 <head>
 	<title>Safespace Reporting Tool</title>

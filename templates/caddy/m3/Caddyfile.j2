@@ -167,14 +167,14 @@ lists.noisebridge.net {
 # Safespace
 safespace.noisebridge.net {
   log {
-    output file "{{ caddy_log_dir }}/spafespace.noisebridge.net.log" {
+    output file "{{ caddy_log_dir }}/safespace.noisebridge.net.log" {
 {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
 {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
   root * /var/www/safespace.noisebridge.net
-  php_fastcgi unix//run/php/php7.4-fpm.sock
+  php_fastcgi unix//run/php/php8.2-fpm.sock
 }
 
 # Monitoring
