@@ -1,6 +1,5 @@
 ---
 mediawiki:
-  database: noisebridge_mediawiki
   database_username: wiki
   domain: noisebridge.net
   system_group: wiki
