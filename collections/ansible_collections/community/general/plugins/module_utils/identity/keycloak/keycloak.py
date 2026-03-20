@@ -25,6 +25,9 @@ URL_REALMS = "{url}/admin/realms"
 URL_REALM = "{url}/admin/realms/{realm}"
 URL_REALM_KEYS_METADATA = "{url}/admin/realms/{realm}/keys"
 
+URL_LOCALIZATIONS = "{url}/admin/realms/{realm}/localization/{locale}"
+URL_LOCALIZATION = "{url}/admin/realms/{realm}/localization/{locale}/{key}"
+
 URL_TOKEN = "{url}/realms/{realm}/protocol/openid-connect/token"
 URL_CLIENT = "{url}/admin/realms/{realm}/clients/{id}"
 URL_CLIENTS = "{url}/admin/realms/{realm}/clients"
@@ -386,7 +389,9 @@ class KeycloakAPI:
         self.restheaders = connection_header
         self.http_agent = self.module.params.get("http_agent")
 
-    def _request(self, url: str, method: str, data: str | bytes | None = None):
+    def _request(
+        self, url: str, method: str, data: str | bytes | None = None, *, extra_headers: dict[str, str] | None = None
+    ):
         """Makes a request to Keycloak and returns the raw response.
         If a 401 is returned, attempts to re-authenticate
         using first the module's refresh_token (if provided)
@@ -397,17 +402,18 @@ class KeycloakAPI:
         :param url: request path
         :param method: request method (e.g., 'GET', 'POST', etc.)
         :param data: (optional) data for request
+        :param extra_headers headers to be sent with request, defaults to self.restheaders
         :return: raw API response
         """
 
-        def make_request_catching_401() -> object | HTTPError:
+        def make_request_catching_401(headers: dict[str, str]) -> object | HTTPError:
             try:
                 return open_url(
                     url,
                     method=method,
                     data=data,
                     http_agent=self.http_agent,
-                    headers=self.restheaders,
+                    headers=headers,
                     timeout=self.connection_timeout,
                     validate_certs=self.validate_certs,
                 )
@@ -416,7 +422,12 @@ class KeycloakAPI:
                     raise e
                 return e
 
-        r = make_request_catching_401()
+        headers = self.restheaders
+        if extra_headers is not None:
+            headers = headers.copy()
+            headers.update(extra_headers)
+
+        r = make_request_catching_401(headers)
 
         if isinstance(r, Exception):
             # Try to refresh token and retry, if available
@@ -426,7 +437,7 @@ class KeycloakAPI:
                     token = _request_token_using_refresh_token(self.module.params)
                     self.restheaders["Authorization"] = f"Bearer {token}"
 
-                    r = make_request_catching_401()
+                    r = make_request_catching_401(headers)
                 except KeycloakError as e:
                     # Token refresh returns 400 if token is expired/invalid, so continue on if we get a 400
                     if e.authError is not None and e.authError.code != 400:  # type: ignore # TODO!
@@ -440,7 +451,7 @@ class KeycloakAPI:
                 token = _request_token_using_credentials(self.module.params)
                 self.restheaders["Authorization"] = f"Bearer {token}"
 
-                r = make_request_catching_401()
+                r = make_request_catching_401(headers)
 
         if isinstance(r, Exception):
             # Try to re-auth with client_id and client_secret, if available
@@ -451,7 +462,7 @@ class KeycloakAPI:
                     token = _request_token_using_client_credentials(self.module.params)
                     self.restheaders["Authorization"] = f"Bearer {token}"
 
-                    r = make_request_catching_401()
+                    r = make_request_catching_401(headers)
                 except KeycloakError as e:
                     # Token refresh returns 400 if token is expired/invalid, so continue on if we get a 400
                     if e.authError is not None and e.authError.code != 400:  # type: ignore # TODO!
@@ -589,6 +600,78 @@ class KeycloakAPI:
             return self._request(realm_url, method="DELETE")
         except Exception as e:
             self.fail_request(e, msg=f"Could not delete realm {realm}: {e}", exception=traceback.format_exc())
+
+    def get_localization_values(self, locale: str, realm: str = "master") -> dict[str, str]:
+        """
+        Get all localization overrides for a given realm and locale.
+
+        :param locale: Locale code (for example, 'en', 'fi', 'de').
+        :param realm: Realm name. Defaults to 'master'.
+
+        :return: Mapping of localization keys to override values.
+
+        :raise KeycloakError: Wrapped HTTP/JSON error with context
+        """
+        realm_url = URL_LOCALIZATIONS.format(url=self.baseurl, realm=realm, locale=locale)
+
+        try:
+            return self._request_and_deserialize(realm_url, method="GET")
+        except Exception as e:
+            self.fail_request(
+                e,
+                msg=f"Could not read localization overrides for realm {realm}, locale {locale}: {e}",
+                exception=traceback.format_exc(),
+            )
+
+    def set_localization_value(self, locale: str, key: str, value: str, realm: str = "master"):
+        """
+        Create or update a single localization override for the given key.
+
+        :param locale: Locale code (for example, 'en').
+        :param key: Localization message key to set.
+        :param value: Override value to set.
+        :param realm: Realm name. Defaults to 'master'.
+
+        :return: HTTPResponse: Response object on success.
+
+        :raise KeycloakError: Wrapped HTTP error with context
+        """
+        realm_url = URL_LOCALIZATION.format(url=self.baseurl, realm=realm, locale=locale, key=key)
+
+        headers = {}
+        headers["Content-Type"] = "text/plain; charset=utf-8"
+
+        try:
+            return self._request(realm_url, method="PUT", data=to_native(value), extra_headers=headers)
+        except Exception as e:
+            self.fail_request(
+                e,
+                msg=f"Could not set localization value in realm {realm}, locale {locale}: {key}={value}: {e}",
+                exception=traceback.format_exc(),
+            )
+
+    def delete_localization_value(self, locale: str, key: str, realm: str = "master"):
+        """
+        Delete a single localization override key for the given locale.
+
+        :param locale: Locale code (for example, 'en').
+        :param key: Localization message key to delete.
+        :param realm: Realm name. Defaults to 'master'.
+
+        :return: HTTPResponse: Response object on success.
+
+        :raise KeycloakError: Wrapped HTTP error with context
+        """
+        realm_url = URL_LOCALIZATION.format(url=self.baseurl, realm=realm, locale=locale, key=key)
+
+        try:
+            return self._request(realm_url, method="DELETE")
+        except Exception as e:
+            self.fail_request(
+                e,
+                msg=f"Could not delete localization value in realm {realm}, locale {locale}, key {key}: {e}",
+                exception=traceback.format_exc(),
+            )
 
     def get_clients(self, realm: str = "master", filter=None):
         """Obtains client representations for clients in a realm
@@ -998,7 +1081,7 @@ class KeycloakAPI:
         :param realm: Realm in which the user resides; default 'master'
         """
         users_url = URL_USERS.format(url=self.baseurl, realm=realm)
-        users_url += f"?username={username}&exact=true"
+        users_url += f"?username={quote(username, safe='')}&exact=true"
         try:
             userrep = None
             users = self._request_and_deserialize(users_url, method="GET")
@@ -1637,9 +1720,8 @@ class KeycloakAPI:
     def get_group_by_name(self, name, realm: str = "master", parents=None):
         """Fetch a keycloak group within a realm based on its name.
 
-        The Keycloak API does not allow filtering of the Groups resource by name.
-        As a result, this method first retrieves the entire list of groups - name and ID -
-        then performs a second query to fetch the group.
+        Uses the Keycloak search API with exact matching for efficient lookup
+        instead of fetching all groups.
 
         If the group does not exist, None is returned.
         :param name: Name of the group to fetch.
@@ -1653,11 +1735,21 @@ class KeycloakAPI:
                 if not parent:
                     return None
 
-                all_groups = self.get_subgroups(parent, realm)
+                # For subgroups: use children endpoint with search parameter
+                search_url = "{url}?search={name}&exact=true".format(
+                    url=URL_GROUP_CHILDREN.format(url=self.baseurl, realm=realm, groupid=parent["id"]),
+                    name=quote(name, safe=""),
+                )
             else:
-                all_groups = self.get_groups(realm=realm)
+                # For top-level groups: use groups endpoint with search parameter
+                search_url = "{url}?search={name}&exact=true".format(
+                    url=URL_GROUPS.format(url=self.baseurl, realm=realm), name=quote(name, safe="")
+                )
 
-            for group in all_groups:
+            groups = self._request_and_deserialize(search_url, method="GET")
+
+            # exact=true should return only exact matches, but verify the name
+            for group in groups:
                 if group["name"] == name:
                     return self.get_group_by_groupid(group["id"], realm=realm)
 
@@ -3018,7 +3110,7 @@ class KeycloakAPI:
     def get_authz_permission_by_name(self, name, client_id, realm):
         """Get authorization permission by name"""
         url = URL_AUTHZ_POLICIES.format(url=self.baseurl, client_id=client_id, realm=realm)
-        search_url = f"{url}/search?name={name.replace(' ', '%20')}"
+        search_url = f"{url}/search?name={quote(name, safe='')}"
 
         try:
             return self._request_and_deserialize(search_url, method="GET")
@@ -3064,7 +3156,7 @@ class KeycloakAPI:
     def get_authz_resource_by_name(self, name, client_id, realm):
         """Get authorization resource by name"""
         url = URL_AUTHZ_RESOURCES.format(url=self.baseurl, client_id=client_id, realm=realm)
-        search_url = f"{url}/search?name={name.replace(' ', '%20')}"
+        search_url = f"{url}/search?name={quote(name, safe='')}"
 
         try:
             return self._request_and_deserialize(search_url, method="GET")
@@ -3074,7 +3166,7 @@ class KeycloakAPI:
     def get_authz_policy_by_name(self, name, client_id, realm):
         """Get authorization policy by name"""
         url = URL_AUTHZ_POLICIES.format(url=self.baseurl, client_id=client_id, realm=realm)
-        search_url = f"{url}/search?name={name.replace(' ', '%20')}"
+        search_url = f"{url}/search?name={quote(name, safe='')}"
 
         try:
             return self._request_and_deserialize(search_url, method="GET")
