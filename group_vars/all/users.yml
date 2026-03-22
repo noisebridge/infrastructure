@@ -74,6 +74,11 @@ users:
     email: nb@mcint.io
     github_username: mcint
 
+  daniel:
+    fullname: Daniel Angell
+    email: me@danangell.com
+    github_username: danthedaniel
+
   miloh:
     fullname: 'Ronald Miloh Alexander'
     email: ...
