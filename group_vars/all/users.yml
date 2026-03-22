@@ -60,6 +60,11 @@ users:
     fullname: ''
     email: ...
 
+  jetpham:
+    fullname: Jet Pham
+    email: ...
+    github_username: jetpham
+
   jof:
     fullname: 'Jonathan Lassoff'
     email: ...
