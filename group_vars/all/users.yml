@@ -86,6 +86,7 @@ users:
   nthmost:
     fullname: 'Naomi Most'
     email: ...
+    github_username: nthmost
 
   patrickod:
     fullname: Patrick O'Doherty
