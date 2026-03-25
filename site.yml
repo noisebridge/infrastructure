@@ -39,6 +39,7 @@
     - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
+    - { role: wiki_dumps, tags: [ 'wiki_dumps' ] }
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 

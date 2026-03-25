@@ -1,0 +1,40 @@
+---
+- name: Create private dump directory
+  file:
+    path: "{{ wiki_dumps_private_dir }}"
+    state: directory
+    owner: "{{ wiki_dumps_user }}"
+    group: "{{ wiki_dumps_user }}"
+    mode: 0750
+
+- name: Create public dump directory
+  file:
+    path: "{{ wiki_dumps_public_dir }}"
+    state: directory
+    owner: "{{ wiki_dumps_user }}"
+    group: "{{ wiki_dumps_user }}"
+    mode: 0755
+
+- name: Deploy dump script
+  copy:
+    src: wiki_dump.sh
+    dest: /usr/local/sbin/wiki_dump
+    mode: 0755
+    owner: root
+    group: root
+
+- name: Install cron job
+  cron:
+    name: MediaWiki Dump
+    cron_file: wiki_dump
+    user: "{{ wiki_dumps_user }}"
+    hour: "{{ wiki_dumps_cron_hour }}"
+    minute: "{{ wiki_dumps_cron_minute }}"
+    job: >-
+      MEDIAWIKI_PATH={{ wiki_dumps_mediawiki_path }}
+      LOCALSETTINGS={{ wiki_dumps_localsettings }}
+      PRIVATE_DIR={{ wiki_dumps_private_dir }}
+      PUBLIC_DIR={{ wiki_dumps_public_dir }}
+      PRIVATE_KEEP_DAYS={{ wiki_dumps_private_keep_days }}
+      PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
+      /usr/local/sbin/wiki_dump >> /var/log/wiki_dump.log 2>&1

@@ -1,0 +1,10 @@
+---
+wiki_dumps_mediawiki_path: /srv/mediawiki/noisebridge.net-1.39.13
+wiki_dumps_localsettings: /srv/mediawiki/LocalSettings.php
+wiki_dumps_user: www-data
+wiki_dumps_private_dir: /var/backups/wiki
+wiki_dumps_public_dir: /var/www/dumps.noisebridge.net
+wiki_dumps_private_keep_days: 14
+wiki_dumps_public_keep_days: 7
+wiki_dumps_cron_hour: 2
+wiki_dumps_cron_minute: 0

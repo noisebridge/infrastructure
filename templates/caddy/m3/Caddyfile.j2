@@ -177,6 +177,18 @@ safespace.noisebridge.net {
   php_fastcgi unix//run/php/php8.2-fpm.sock
 }
 
+# Wiki dumps (public, for bot consumption)
+dumps.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/dumps.noisebridge.net.log" {
+{{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  root * {{ wiki_dumps_public_dir }}
+  file_server browse
+}
+
 # Monitoring
 prometheus.noisebridge.net {
   route {
