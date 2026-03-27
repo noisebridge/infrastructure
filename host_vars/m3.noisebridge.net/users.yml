@@ -1,7 +1,8 @@
 ---
+noisebridge_admins:
+- nthmost
 noisebridge_users:
 - yar
 - mcint
 - elan
 - jetpham
-- nthmost
