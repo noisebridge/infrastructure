@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026020900 ; Serial
+                                2026032800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -182,6 +182,7 @@ _dmarc.donate             IN  TXT  "v=DMARC1; p=none;"
 stuff           IN      CNAME   m6
 parts           IN      CNAME   m6
 library         IN      CNAME   m6
+locker          IN      A       137.184.11.99
 
 ; Services hosted on m7
 auth            IN      CNAME   m7
