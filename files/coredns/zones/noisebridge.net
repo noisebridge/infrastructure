@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026020900 ; Serial
+                                2026032800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -163,14 +163,14 @@ cycletrailer    IN      CNAME   biketrailer
 earl            IN      AAAA    2607:f598:b2cf:100:f8ea:fa58:5dd2:6ff4
 pegasus         IN      AAAA    2607:f598:b0cf:200:250:c2ff:fe28:3070
 pegasus         IN      A       192.195.83.134
-grafana         IN      CNAME   pegasus
 
 ; Services hosted on m3
 safespace       IN      CNAME   m3
-prometheus      IN      CNAME   m3
 
 ; Services hosted on m5
 donate          IN      CNAME   donate-noisebridge-net.onrender.com.
+grafana         IN      CNAME   m5
+prometheus      IN      CNAME   m5
 
 ; donate.noisebridge.net email records (resend.com)
 resend._domainkey.donate  IN  TXT  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCoQWXGT4XLCErI5+ILqqMcSybWz1DxAqGyw9cxuaPN39YIyD6+SsvoP0p83iX3appGI4EXAVXe2YNPmNaa9UBnG7eio0tUe61L/J/82XEV/XbYTZpCGE5laIbQWZh77BBD9Ie6RpmYW2p1frnSUuz6BmnsT63fCToPfVU8K3jC/wIDAQAB"
