@@ -1,0 +1,25 @@
+wildwest {
+  tls internal
+  log {
+    output file "/var/log/caddy/safespace.noisebridge.net.log" {
+      roll_size 100mb
+      roll_keep 5
+      roll_keep_for 720h
+    }
+    format filter {
+      wrap console
+      fields {
+        request>headers>Authorization delete
+        request>headers>Cookie delete
+      }
+    }
+  }
+  header {
+    X-Content-Type-Options nosniff
+    X-Frame-Options DENY
+    Referrer-Policy strict-origin-when-cross-origin
+    Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'"    
+    -Server
+  }
+  reverse_proxy app:80
+}

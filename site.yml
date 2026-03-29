@@ -126,3 +126,11 @@
   roles:
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
+
+- name: Safespace (wildwest)
+  hosts: wildwest
+  become: yes
+  become_method: sudo
+  tags: [wildwest, safespace]
+  roles:
+    - { role: safespace-docker, tags: [ 'safespace' ] }

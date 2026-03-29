@@ -1,0 +1,49 @@
+# SPDX-License-Identifier: MIT-0
+---
+- name: Install Docker prerequisites
+  apt:
+    name:
+      - docker.io
+      - docker-compose-plugin
+    state: present
+    update_cache: yes
+
+- name: Ensure Docker is running
+  systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Create safespace deploy directory
+  file:
+    path: /opt/safespace
+    state: directory
+    mode: '0755'
+
+- name: Create logs directory
+  file:
+    path: /opt/safespace/logs
+    state: directory
+    mode: '0755'
+
+- name: Copy safespace stack
+  copy:
+    src: "{{ item }}"
+    dest: /opt/safespace/{{ item }}
+  loop:
+    - compose.yaml
+    - Caddyfile
+    - app/
+
+- name: Deploy secrets from vault
+  template:
+    src: env.j2
+    dest: /opt/safespace/.env
+    mode: '0600'
+  no_log: true
+
+- name: Build and start safespace containers
+  community.docker.docker_compose_v2:
+    project_src: /opt/safespace
+    build: always
+    state: present

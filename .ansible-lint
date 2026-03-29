@@ -5,5 +5,5 @@ exclude_paths:
 - roles/geerlingguy.mysql
 - roles/nickjj.docker
 skip_list:
-- 701 # No 'galaxy_info' found, not needed.
-- 106 # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'
+- '701' # No 'galaxy_info' found, not needed.
+- '106' # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'
