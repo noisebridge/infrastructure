@@ -1,8 +1,15 @@
 {{ ansible_managed | comment }}
 # Global config
 {
-  servers {
-      metrics
+  order authenticate before respond
+  order authorize before basic_auth
+  security {
+    authorization policy noisebridge-github {
+      set auth url https://auth.noisebridge.net/auth
+      crypto key verify {{ noisebridge_jwt_token_secret }}
+      crypto key token name access_token
+      allow roles members rack
+    }
   }
 }
 # Metrics server
@@ -16,6 +23,7 @@
   respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
+# Donation site
 test-donate.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/test-donate.noisebridge.net.log" {
@@ -24,9 +32,11 @@ test-donate.noisebridge.net {
     {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
   {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  root * /var/www/donate.noisebridge.net
-  file_server
+  # root * /var/www/donate.noisebridge.net
+  # file_server
+  respond "This donate endpoint is currently offline" 503
 }
+
 donate.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/donate.noisebridge.net.log" {
@@ -35,5 +45,13 @@ donate.noisebridge.net {
     {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
   {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  reverse_proxy localhost:{{ pydonate_port }}
+  respond "This donate endpoint is currently offline" 503
+}
+
+# Monitoring
+prometheus.noisebridge.net {
+  route {
+    authorize with noisebridge-github
+    reverse_proxy localhost:9090
+  }
 }

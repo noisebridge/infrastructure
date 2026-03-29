@@ -36,24 +36,20 @@
     - { role: mediawiki, tags: [ 'mediawiki' ] }
     - { role: website, tags: [ 'website' ] }
     - { role: safespace, tags: [ 'safespace' ] }
-    - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
-    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
-- name: donate_noisebridge_net
-  hosts: donate_noisebridge_net
+- name: m5
+  hosts: m5_noisebridge_net
   become: yes
   become_method: sudo
-  tags: [donate]
+  tags: [m5]
   roles:
-    - donate
-    - percona
-    - geerlingguy.mysql
+    - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
+    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
-    - { role: pydonate, tags: ['pydonate'] }
 
 - name: List server
   hosts: lists_noisebridge_net
