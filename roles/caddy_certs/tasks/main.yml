@@ -7,7 +7,7 @@
     group: root
     mode: 0755
   notify:
-    - Restart caddy_certs.service
+    - Restart caddy_certs.path
 
 - name: Create cert directory
   ansible.builtin.file:
@@ -25,7 +25,7 @@
     group: root
     mode: 0644
   notify:
-    - Reload caddy_certs.path
+    - Restart caddy_certs.path
 
 - name: Configure copy certs service
   ansible.builtin.template:
@@ -41,8 +41,10 @@
   ansible.builtin.systemd:
     name: caddy_certs.path
     enabled: true
+    state: started
 
 - name: Enable caddy_certs.service
   ansible.builtin.systemd:
     name: caddy_certs.service
     enabled: true
+    state: started
