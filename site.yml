@@ -48,6 +48,7 @@
   roles:
     - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
+    - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
