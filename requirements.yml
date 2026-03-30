@@ -15,6 +15,9 @@ collections:
 - name: hifis.toolkit
   type: galaxy
   version: ">=6.3.2"
+- name: community.docker
+  type: galaxy
+  version: ">=5.0.0"
 roles:
 - name: caddy_ansible.caddy_ansible
   type: galaxy
