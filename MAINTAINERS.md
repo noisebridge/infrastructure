@@ -23,6 +23,7 @@ Maintainers actively work on noisebridge infrastructure.  If you wish to join th
 
 
 * [SuperQ](https://github.com/SuperQ)
+* [mcint](https://github.com/mcint)
 * [rizend](https://github.com/rizend)
 * [Kevin](https://github.com/kevinjos)
 * [Tim](https://github.com/allyourbasepair)
