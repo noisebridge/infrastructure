@@ -69,6 +69,8 @@ $wgDBTableOptions = "ENGINE=InnoDB, DEFAULT CHARSET=binary";
 # Experimental charset support for MySQL 5.0.
 $wgDBmysql5 = false;
 
+#$wgCachePrefix = "mw1.39_"
+
 ## Shared memory settings
 $wgMainCacheType = CACHE_MEMCACHED;
 $wgMessageCacheType = CACHE_MEMCACHED;
@@ -85,8 +87,14 @@ $wgUseImageMagick = true;
 $wgUseImageResize = true;
 $wgImageMagickConvertCommand = "/usr/bin/convert";
 
+#$wgUploadDirectory = '/srv/mediawiki/noisebridge.net-1.39.13'
+
+$wgThumbnailEpoch = '20250926004905';
+
 # InstantCommons allows wiki to use images from https://commons.wikimedia.org
+# VisualEditor -- gallery -- image search -- just images from our wiki
 $wgUseInstantCommons = false;
+
 
 ## If you use ImageMagick (or any other shell command) on a
 ## Linux server, this will need to be set to the name of an
@@ -133,6 +141,10 @@ $wgDefaultSkin = "vector";
 wfLoadSkin( 'CologneBlue' );
 wfLoadSkin( 'MonoBook' );
 wfLoadSkin( 'Vector' );
+#wfLoadSkin( 'chameleon' );
+wfLoadSkin( 'MinervaNeue' );
+wfLoadSkin( 'Modern' );
+wfLoadSkin( 'Timeless' );
 
 
 # Enabled extensions. Most of the extensions are enabled by adding
@@ -149,7 +161,7 @@ wfLoadExtension( 'mwGoogleSheet' );
 # Add more configuration options below.
 
 $wgUseGzip = true;
-$wgUseFileCache = true;
+$wgUseFileCache = true; # NOTE for performance
 $wgFileCacheDirectory = '/var/cache/mediawiki/';
 $wgShowIPinHeader = false;
 $wgCdnMaxAge = 7200;
@@ -190,7 +202,7 @@ $wgCaptchaTriggers['badlogin'] = true;
 $wgGroupPermissions['*']['createpage'] = false;
 $wgGroupPermissions['user']['createpage'] = false;
 $wgGroupPermissions['*']['createtalk'] = false;
-$wgGroupPermissions['user']['createtalk'] = false;
+$wgGroupPermissions['user']['createtalk'] = true;
 $wgGroupPermissions['autoconfirmed' ]['createpage'] = true;
 $wgGroupPermissions['autoconfirmed' ]['createtalk'] = true;
 $wgGroupPermissions['*']['move'] = false;
@@ -272,7 +284,7 @@ wfLoadExtension( 'EmbedVideo' ); # mainly allowed embeded links for services. ig
 
 # https://www.mediawiki.org/wiki/Extension:Admin_Links
 wfLoadExtension( 'AdminLinks' );
-#$wgGroupPermissions['...']['.adminlinks'] = true;
+$wgGroupPermissions['user']['adminlinks'] = true;
 
 # https://www.mediawiki.org/wiki/Extension:QRLite
 wfLoadExtension( 'QRLite' );
@@ -283,7 +295,7 @@ date_default_timezone_set( $wgLocaltimezone );
 
 # https://www.mediawiki.org/wiki/Extension:Scribunto
 wfLoadExtension( 'Scribunto' );
-$wgScribuntoDefaultEngine = 'luasandbox'; #'luastandalone';
+> $wgScribuntoDefaultEngine = 'luastandalone'; # 'luasandbox';
 
 # https://www.mediawiki.org/wiki/Extension:CharInsert
 wfLoadExtension( 'CharInsert' );
@@ -333,5 +345,84 @@ wfLoadExtension( 'CategoryTree' );
 # https://www.mediawiki.org/wiki/Extension:ImageMap
 wfLoadExtension( 'ImageMap' );
 
+# https://www.noisebridge.net/wiki/Nb.wtf # https://github.com/audiodude/nb.wtf
+wfLoadExtension( 'NBWTF' );
 
+# https://www.mediawiki.org/wiki/Extension:JsonConfig
+wfLoadExtension( 'JsonConfig' );
+# https://www.mediawiki.org/wiki/Extension:Graph
+wfLoadExtension( 'Graph' );
+
+# https://www.mediawiki.org/wiki/Extension:Echo
+wfLoadExtension( 'Echo' );
+# https://www.mediawiki.org/wiki/Extension:Thanks/en
+wfLoadExtension( 'Thanks' );
+#$wgThanksSendToBots = false; # default
+$wgThanksLogTypeWhitelist = [
+    "contentmodel",
+    "delete",
+    "import",
+    "merge",
+    "move",
+    "patrol",
+    "protect",
+    "tag",
+    "managetags",
+    "rights"
+];
+
+# https://www.mediawiki.org/wiki/Extension:InputBox
+wfLoadExtension( 'InputBox' );
+
+# https://www.mediawiki.org/wiki/Extension:PWA
+wfLoadExtension( 'PWA' );
+# https://www.mediawiki.org/wiki/Extension:MobileFrontend
+wfLoadExtension( 'MobileFrontend' );
+#wfLoadSkin( 'Vector' );
+#$wgDefaultMobileSkin = 'vector'; // use Vector skin
+
+## https://www.mediawiki.org/wiki/Extension:MsCalendar
+#wfLoadExtension( 'MsCalendar' );
+
+# https://www.mediawiki.org/wiki/Extension:CrawlerProtection
+wfLoadExtension( 'CrawlerProtection' );
+$wgCrawlerProtectedSpecialPages = [
+    'mobilediff',
+    'recentchangeslinked',
+    'whatlinkshere',
+    'feedrecentchanges'
+];
+#$wgCrawlerProtectionUse418 = false;
+$wgCrawlerProtectionUse418 = true;
+
+#$wgGroupPermissions['*']['read'] = false; # overeager -- make wiki private viewing only
+$wgGroupPermissions['user']['read'] = true; # keep readable for account users
+
+## https://www.mediawiki.org/wiki/Extension:Lockdown
+#wfLoadExtension( 'Lockdown' );
+#$wgActionLockdown['history'] = [ 'user' ];
+
+## https://www.mediawiki.org/wiki/Extension:Bootstrap
+#wfLoadExtension( 'Bootstrap' );
+#$wgHooks['SetupAfterCache'][] = function(){
+#		\Bootstrap\BootstrapManager::getInstance()->addAllBootstrapModules();
+#			return true;
+#};
+
+#$wgHooks['ParserAfterParse'][]=function( Parser &$parser, &$text, StripState &$stripState ){
+#		$parser->getOutput()->addModuleStyles( ['ext.bootstrap.styles'] );
+#			$parser->getOutput()->addModules( ['ext.bootstrap.scripts'] );
+#			return true;
+#};
+
+
+## https://www.mediawiki.org/wiki/Extension:SemanticMediaWiki
+#wfLoadExtension( 'SemanticMediaWiki' );
+#enableSemantics( 'www.noisebridge.net' );
+#
+## https://www.mediawiki.org/wiki/Extension:Cargo
+#wfLoadExtension( 'Cargo' );
+
+
+#$wgShowExceptionDetails = true;
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
