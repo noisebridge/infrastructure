@@ -135,4 +135,3 @@
   roles:
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
-    - { role: prometheus.prometheus.node_exporter, tags: [ 'node_exporter' ] }
