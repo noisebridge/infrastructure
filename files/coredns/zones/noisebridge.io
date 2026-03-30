@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridge.io.  (
-        2022020601 ; Serial
+        2026033000 ; Serial
         3600 ; Refresh
         300 ; Retry
         604800 ; Expire
@@ -30,8 +30,8 @@ brony           1800    IN      A       199.241.139.224
 cia             1800    IN      A       199.188.195.8
 cycletrailer    1800    IN      CNAME   cycletrailer.noisebridge.net.
 jitsi           1800    IN      A       199.188.195.96
-pegasus         1800    IN      A       pegasus.noisebridge.net.
+pegasus         1800    IN      CNAME   pegasus.noisebridge.net.
 share           1800    IN      A       199.188.195.78
 webmail         10800   IN      CNAME   webmail.gandi.net.
 www             10800   IN      CNAME   m3.noisebridge.net.
-zeppelin        1800    IN      A       zeppelin.noisebridge.net.
+zeppelin        1800    IN      CNAME   zeppelin.noisebridge.net.
