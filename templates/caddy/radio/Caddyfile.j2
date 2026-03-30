@@ -29,7 +29,7 @@ radio.noise:4040 spacecamp:4040 spacecamp.reverse-bramble.ts.net:4040 {
 	}
 	{{ noisebridge_caddy_secure_header | indent(width=2) }}
 
-	reverse_proxy {{ meshtastic_node_ip }}:80 {
+	reverse_proxy {{ meshtastic_node_ip | mandatory }}:80 {
 		transport http {
 			dial_timeout 30s
 		}
@@ -56,7 +56,7 @@ radio.noise spacecamp spacecamp.reverse-bramble.ts.net {
 	# Forward requests to the Meshtastic HTTP server
 	redir /meshtastic/node /meshtastic/node/ 308
 	handle_path /meshtastic/node/* {
-		reverse_proxy {{ meshtastic_node_ip }}:80 {
+		reverse_proxy {{ meshtastic_node_ip | mandatory }}:80 {
 			transport http {
 				dial_timeout 30s
 			}

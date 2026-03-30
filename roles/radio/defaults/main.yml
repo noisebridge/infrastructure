@@ -1,2 +1,7 @@
 ---
 meshtastic_deployment_dir: /opt/radio
+meshtastic_web_version: "2.6.7"
+meshtastic_serial_bridge_version: "v1.1.1"
+meshtastic_meshmonitor_version: "v3.6.5"
+meshtastic_web_port: 8080
+meshtastic_meshmonitor_port: 3001
