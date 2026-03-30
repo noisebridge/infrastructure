@@ -21,6 +21,7 @@
     dest: /tmp/
     url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki_version }}.tar.gz"
     checksum: "sha256:{{ mediawiki_version_checksum }}"
+  check_mode: false
 
 - name: make wiki cache directory
   file:
@@ -46,12 +47,14 @@
     group: "{{ mediawiki.system_group }}"
     remote_src: true
     extra_opts: ["--strip-components=1"]
+  check_mode: false
 
 - name: install mwGoogleSheets extension
   git:
     repo: 'https://github.com/marcidy/mwGoogleSheet.git'
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
     version: REL1_27
+  when: not ansible_check_mode
 
 - name: install LocalSettings
   template:
