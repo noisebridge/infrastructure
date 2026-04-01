@@ -9,6 +9,7 @@
       crypto key verify {{ noisebridge_jwt_token_secret }}
       crypto key token name access_token
       allow roles members rack
+      inject headers with claims
     }
   }
 }
@@ -49,6 +50,13 @@ donate.noisebridge.net {
 }
 
 # Monitoring
+grafana.noisebridge.net {
+  route {
+    authorize with noisebridge-github
+    reverse_proxy localhost:3001
+  }
+}
+
 prometheus.noisebridge.net {
   route {
     authorize with noisebridge-github

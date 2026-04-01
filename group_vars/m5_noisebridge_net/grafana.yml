@@ -1,0 +1,32 @@
+---
+noisebridge_grafana_admin_password: "{{ vault_noisebridge_grafana_admin_password }}"
+
+grafana_ini:
+  instance_name: grafana.noisebridge.net
+  server:
+    http_addr: 127.0.0.1
+    http_port: 3001
+    root_url: https://grafana.noisebridge.net
+    domain: grafana.noisebridge.net
+
+  security:
+    admin_user: admin
+    admin_password: "{{ noisebridge_grafana_admin_password }}"
+
+  auth:
+    anonymous:
+      org_name: Noisebridge
+      org_role: Viewer
+    proxy:
+      enabled: true
+      header_name: X-Token-Subject
+      header_property: username
+      auto_sign_up: true
+
+  users:
+    allow_sign_up: false
+    auto_assign_org: true
+    auto_assign_org_role: Editor
+
+  metrics:
+    enabled: true
