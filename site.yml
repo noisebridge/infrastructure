@@ -37,6 +37,7 @@
     - { role: website, tags: [ 'website' ] }
     - { role: safespace, tags: [ 'safespace' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
+    - { role: prometheus.prometheus.mysqld_exporter, tags: [ 'mysqld_exporter' ] }
     - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
