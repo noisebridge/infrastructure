@@ -108,3 +108,11 @@ prometheus_scrape_configs:
     static_configs:
       - targets:
         - localhost:3001
+  - job_name: mysqld
+    basic_auth:
+      username: prometheus
+      password: "{{ noisebridge_prometheus_password }}"
+    scheme: https
+    static_configs:
+      - targets:
+        - m3.noisebridge.net:9104
