@@ -1,9 +1,10 @@
 ---
-- name: Reload caddy_certs.path
+- name: Restart caddy_certs.path
   become: true
   ansible.builtin.systemd:
     name: caddy_certs.path
     daemon_reload: true
+    state: restarted
 
 - name: Restart caddy_certs.service
   become: true
