@@ -48,6 +48,7 @@
     }
     reverse_proxy localhost:9153
   }
+  {{ noisebridge_caddy_cadvisor_route | indent(width=2) }}
   respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
