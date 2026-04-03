@@ -7,6 +7,7 @@
   * [The Caddyfile](#the-caddyfile)
   * [Whether to template the Caddyfile on each run](#whether-to-template-the-caddyfile-on-each-run)
   * [The OS to download caddy for](#the-os-to-download-caddy-for)
+  * [The version of Caddy to use](#the-version-of-caddy-to-use)
   * [Auto update Caddy?](#auto-update-caddy)
   * [Additional Available Packages](#additional-available-packages)
   * [Use `setcap`?](#use-setcap)
@@ -25,7 +26,7 @@ This role installs and configures the caddy web server. The user can specify any
 
 ## Dependencies
 
-None
+`jmespath`, which must be manually installed on the Ansible controller. See [Selecting JSON data: JSON queries](https://docs.ansible.com/ansible/latest/collections/community/general/docsite/filter_guide_selecting_json_data.html) for more details.
 
 ## Role Variables
 
@@ -64,6 +65,18 @@ default:
 caddy_os: linux
 ```
 
+### The version of Caddy to use
+
+default:
+
+```yaml
+caddy_version: ''
+```
+
+This option cannot be used together with `caddy_packages` because that option prevents the downloads from using Github, meaning no older versions are available.
+
+The version of Caddy will only be changed after the first run of the role if `caddy_update` is set to `true`, otherwise the version of Caddy will remain as the one selected on first run of the role.
+
 ### Auto update Caddy?
 
 default:
@@ -96,22 +109,16 @@ caddy_setcap: true
 
 ### Use systemd capabilities controls
 
+Set this to `false` if you need to use this on a version of systemd without support for
+the `CapabilityBoundingSet`, `AmbientCapabilities` and `NoNewPrivileges` options, otherwise
+it should generally be fine to leave as default.
+
 default:
 
 ```yaml
-caddy_systemd_capabilities_enabled: false
+caddy_systemd_capabilities_enabled: true
 caddy_systemd_capabilities: "CAP_NET_BIND_SERVICE"
 ```
-
-NOTE: This feature requires systemd v229 or newer and might be needed in addition to `caddy_setcap: yes`.
-
-Supported:
-
-* Debian 9 (stretch)
-* Fedora 25
-* Ubuntu 16.04 (xenial)
-
-RHEL/CentOS has no release that supports systemd capability controls at this time.
 
 ### Add additional environment variables or files
 
@@ -218,9 +225,23 @@ Example with DigitalOcean DNS for TLS:
 
 ## Developing
 
+It is recommended to create a virtualenv for development and then install all requirements for tests:
+
 ```bash
-python3 -m pip install -U ansible ansible-lint yamllint molecule[docker] pytest testinfra
+python3 -m pip install -U requirements.txt
+python3 -m pip install -U ansible ansible-lint yamllint molecule-plugins[docker,lint] pytest pytest-testinfra
+```
+
+After doing so you can run the molecule tests with:
+
+```bash
 PY_COLORS=1 ANSIBLE_FORCE_COLOR=1 MOLECULE_DISTRO=ubuntu2004 molecule test
+```
+
+Or run the alternate playbook for testing when a specific version is requested:
+
+```bash
+PY_COLORS=1 ANSIBLE_FORCE_COLOR=1 MOLECULE_DISTRO=ubuntu2004 MOLECULE_PLAYBOOK=converge-version.yml molecule test
 ```
 
 ## Debugging
