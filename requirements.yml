@@ -19,6 +19,6 @@ collections:
   type: galaxy
   version: ">=5.0.0"
 roles:
-- name: caddy_ansible.caddy_ansible
-  type: galaxy
-  version: "v3.2.0"
+- name: caddy-ansible.caddy-ansible
+  src: https://github.com/caddy-ansible/caddy-ansible.git
+  version: 989ef227034c5ae67112b8fd781605b368018d7e

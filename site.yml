@@ -38,7 +38,7 @@
     - { role: safespace, tags: [ 'safespace' ] }
     - { role: mydumper, tags: [ 'mydumper' ] }
     - { role: prometheus.prometheus.mysqld_exporter, tags: [ 'mysqld_exporter' ] }
-    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
 - name: m5
@@ -50,7 +50,7 @@
     - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
-    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
 
 - name: List server
@@ -111,7 +111,7 @@
   tags: [m6_noisebridge_net]
   roles:
     - { role: podman, tags: ['podman'] }
-    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: library-org, tags: [ 'library-org' ] }
     - { role: stuff-org, tags: [ 'stuff-org' ] }
@@ -122,5 +122,5 @@
   become_method: sudo
   tags: [m7_noisebridge_net]
   roles:
-    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
