@@ -116,6 +116,11 @@ users:
     email: superq@gmail.com
     github_username: SuperQ
 
+  dp:
+    fullname: Dave
+    email: contact@davidporter.id.au
+    github_username: davidporter-id-au
+
   tdfischer:
     fullname: 'Torrie Fischer'
     email: ...
