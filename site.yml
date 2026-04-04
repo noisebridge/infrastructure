@@ -48,6 +48,7 @@
   tags: [m5]
   roles:
     - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
+    - { role: prometheus.prometheus.alertmanager, tags: [ 'alertmanager' ] }
     - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
     - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
     - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
