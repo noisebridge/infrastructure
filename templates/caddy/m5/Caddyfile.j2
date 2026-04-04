@@ -54,6 +54,13 @@ test-safespace.noisebridge.net {
 }
 
 # Monitoring
+alertmanager.noisebridge.net {
+  route {
+    authorize with noisebridge-github-rack
+    reverse_proxy [::1]:9093
+  }
+}
+
 grafana.noisebridge.net {
   route {
     authorize with noisebridge-github-rack

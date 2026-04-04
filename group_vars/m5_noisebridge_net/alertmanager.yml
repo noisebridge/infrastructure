@@ -1,0 +1,18 @@
+---
+noisebridge_zulip_api_key: "{{ vault_noisebridge_zulip_api_key }}"
+noisebridge_zulip_url: "https://noisebridge.zulipchat.com/api/v1/external/alertmanager"
+noisebridge_am_zulip_url: "{{ noisebridge_zulip_url }}?api_key={{ noisebridge_zulip_api_key }}&stream=558694&topic=alerts"
+
+alertmanager_web_listen_address: "[::1]:9093"
+
+alertmanager_receivers:
+  - name: zulip
+    webhook_configs:
+      - url: "{{ noisebridge_am_zulip_url }}"
+
+alertmanager_route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 30s
+  group_interval: 5m
+  repeat_interval: 24h
+  receiver: zulip
