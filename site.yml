@@ -110,7 +110,6 @@
   become_method: sudo
   tags: [m6_noisebridge_net]
   roles:
-    - { role: podman, tags: ['podman'] }
     - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: library-org, tags: [ 'library-org' ] }
