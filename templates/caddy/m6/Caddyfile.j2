@@ -13,6 +13,7 @@
     }
     metrics
   }
+  {{ noisebridge_caddy_cadvisor_route | indent(width=2) }}
   respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 

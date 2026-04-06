@@ -45,6 +45,31 @@ prometheus_scrape_configs:
         - "m5.noisebridge.net:443"
         - "m6.noisebridge.net:443"
         - "m7.noisebridge.net:443"
+  - job_name: "cadvisor"
+    scheme: https
+    metrics_path: /cadvisor/metrics
+    scrape_interval: 10s
+    track_timestamps_staleness: true
+    basic_auth:
+      username: prometheus
+      password: "{{ noisebridge_prometheus_password }}"
+    static_configs:
+      - targets:
+        - "m3.noisebridge.net:443"
+        - "m5.noisebridge.net:443"
+        - "m6.noisebridge.net:443"
+        - "m7.noisebridge.net:443"
+    metric_relabel_configs:
+      - source_labels:
+          - id
+        regex: "/(system|user)\\.slice/.+"
+        target_label: namespace
+        replacement: "$1.slice"
+      - source_labels:
+          - id
+        regex: "/(system|user)\\.slice/(.+)"
+        target_label: container
+        replacement: "$2"
   - job_name: "coredns"
     scheme: https
     metrics_path: /coredns/metrics

@@ -1,0 +1,13 @@
+---
+cadvisor_listen_ip: '[::1]'
+cadvisor_port: 9106
+cadvisor_disable_metrics:
+  - cpuLoad
+
+noisebridge_caddy_cadvisor_route: |
+  handle_path /cadvisor/* {
+    basic_auth {
+      prometheus {{ noisebridge_prometheus_password_hash }}
+    }
+    reverse_proxy [::1]:9106
+  }
