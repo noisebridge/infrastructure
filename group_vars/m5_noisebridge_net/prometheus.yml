@@ -97,6 +97,8 @@ prometheus_scrape_configs:
         - https://library.noisebridge.net
         - https://lists.noisebridge.net
         - https://parts.noisebridge.net
+        - https://safespace.noisebridge.net
+        - https://www.noisebridge.net/wiki/About
     relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_http_v6
     metrics_path: /probe
@@ -110,6 +112,8 @@ prometheus_scrape_configs:
         - https://library.noisebridge.net
         - https://lists.noisebridge.net
         - https://parts.noisebridge.net
+        - https://safespace.noisebridge.net
+        - https://www.noisebridge.net/wiki/About
     relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_smtp_v4
     metrics_path: /probe
