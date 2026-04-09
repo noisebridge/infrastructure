@@ -2357,6 +2357,7 @@ class Nmcli:
             "ipv6.ignore-auto-routes",
             "802-11-wireless.hidden",
             "team.runner-fast-rate",
+            "macvlan.tap",
         }:
             return bool
         elif setting in {
@@ -2371,6 +2372,7 @@ class Nmcli:
             "ipv6.dns-search",
             "ipv6.dns-options",
             "ipv6.routes",
+            "ipv6.routing-rules",
             "802-11-wireless-security.group",
             "802-11-wireless-security.leap-password-flags",
             "802-11-wireless-security.pairwise",

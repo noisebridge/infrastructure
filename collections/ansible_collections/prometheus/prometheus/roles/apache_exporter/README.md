@@ -4,7 +4,6 @@ Deploy prometheus [apache exporter](https://github.com/Lusitaniae/apache_exporte
 
 ## Requirements
 
-- Ansible >= 2.9 (It might work on previous versions, but we cannot guarantee it)
 - gnu-tar on Mac deployer host (`brew install gnu-tar`)
 - Passlib is required when using the basic authentication feature (`pip install "passlib[bcrypt<5]"`)
 
@@ -27,7 +26,7 @@ Use it in a playbook as follows:
 
 ### TLS config
 
-Before running mysqld_exporter role, the user needs to provision their own certificate and key.
+Before running apache_exporter role, the user needs to provision their own certificate and key.
 ```yaml
 - hosts: all
   pre_tasks:
