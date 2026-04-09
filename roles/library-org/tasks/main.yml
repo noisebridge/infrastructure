@@ -1,69 +1,125 @@
 ---
-- name: install packages
+- name: check for docker engine
+  command: docker --version
+  register: library_org_docker_check
+  changed_when: false
+  failed_when: false
+
+- name: check for docker compose plugin
+  command: docker compose version
+  register: library_org_compose_check
+  changed_when: false
+  failed_when: false
+
+- name: check for python docker module
+  command: python3 -c "import docker"
+  register: library_org_pydocker_check
+  changed_when: false
+  failed_when: false
+
+- name: install docker engine
   apt:
-    package:
-    - python3-pip
-    - python3-setuptools
-    - python3-virtualenv
-
-- name: create group
-  group:
-    name: library-org
-    system: true
+    name: docker.io
     state: present
+    update_cache: true
+  when: library_org_docker_check.rc != 0
 
-- name: create user
-  user:
-    name: library-org
-    system: true
-    shell: /sbin/nologin
-    group: library-org
-    createhome: false
-    home: /srv/library-org
+- name: install docker compose plugin
+  apt:
+    name: docker-compose-v2
+    state: present
+    update_cache: true
+  when: library_org_compose_check.rc != 0
 
-- name: extract library code
-  git:
-    dest: /srv/library-org
-    repo: https://github.com/noisebridge/library-org.git
-    version: "{{ library_org_version }}"
+- name: install python docker module
+  apt:
+    name: python3-docker
+    state: present
+    update_cache: true
+  when: library_org_pydocker_check.rc != 0
+
+- name: stop and disable legacy systemd service
+  systemd:
+    name: library-org.service
+    state: stopped
+    enabled: false
+  failed_when: false
+
+- name: remove legacy systemd unit
+  file:
+    path: /etc/systemd/system/library-org.service
+    state: absent
+
+- name: create deploy directory
+  file:
+    path: "{{ library_org_deploy_path }}"
+    state: directory
+    mode: '0755'
+
+- name: check for legacy sqlite database
+  stat:
+    path: "{{ library_org_legacy_src_path }}/database/books.sqlite"
+  register: library_org_legacy_db
+
+- name: preserve legacy sqlite database as seed
+  copy:
+    src: "{{ library_org_legacy_src_path }}/database/books.sqlite"
+    dest: "{{ library_org_deploy_path }}/seed-books.sqlite"
+    remote_src: true
+    force: false
+    mode: '0644'
+  when: library_org_legacy_db.stat.exists
+
+- name: install docker-compose.yml
+  copy:
+    src: docker-compose.yml
+    dest: "{{ library_org_deploy_path }}/docker-compose.yml"
+    mode: '0644'
   notify:
   - restart library-org
 
-- name: configure library-org
+- name: render .env file
+  template:
+    src: env.j2
+    dest: "{{ library_org_deploy_path }}/.env"
+    mode: '0644'
+  notify:
+  - restart library-org
+
+- name: render library.cfg
   template:
     src: library.cfg.j2
-    dest: /srv/library-org/library.cfg
-    mode: 0644
-  notify:
-  - restart library-org
-
-- name: setup virtual env
-  pip:
-    requirements: /srv/library-org/requirements.txt
-    virtualenv: /srv/library-org/venv
-  notify:
-  - restart library-org
-
-- name: setup database file
-  file:
-    path: /srv/library-org/database/books.sqlite
-    owner: library-org
-    group: library-org
-    mode: '0644'
-
-- name: create systemd service unit
-  template:
-    src: library-org.service.j2
-    dest: /etc/systemd/system/library-org.service
-    owner: root
-    group: root
+    dest: "{{ library_org_deploy_path }}/library.cfg"
     mode: '0644'
   notify:
   - restart library-org
 
-- name: ensure library-org service is started and enabled
-  systemd:
-    daemon_reload: true
-    name: library-org.service
-    state: started
-    enabled: true
+- name: deploy library-org with docker compose
+  community.docker.docker_compose_v2:
+    project_src: "{{ library_org_deploy_path }}"
+    state: present
+
+- name: check whether container database is populated
+  command: docker exec library-org test -s /app/database/books.sqlite
+  register: library_org_container_db_check
+  changed_when: false
+  failed_when: false
+
+- name: seed container database from legacy file
+  when:
+    - library_org_legacy_db.stat.exists
+    - library_org_container_db_check.rc != 0
+  block:
+    - name: copy seed sqlite into container
+      command: >-
+        docker cp
+        {{ library_org_deploy_path }}/seed-books.sqlite
+        library-org:/app/database/books.sqlite
+
+    - name: fix seeded database ownership
+      command: docker exec -u root library-org chown nobody:nogroup /app/database/books.sqlite
+  notify:
+  - restart library-org
+
+# TODO: defaults/main.yml has `wtf_csrv_secret_key` (typo) but library.cfg.j2
+# references `wtf_csrf_secret_key`. Reconcile against the vaulted secrets.
