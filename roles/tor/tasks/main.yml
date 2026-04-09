@@ -1,6 +1,6 @@
 ---
  - name: install tor debian repository
-   items:
+   with_items:
      - 'deb http://deb.torproject.org/torproject.org jessie main'
      - 'deb-src http://deb.torproject.org/torproject.org jessie main'
    apt_repository:
@@ -18,7 +18,7 @@
      - gnupg
 
  - name: install tor
-   items:
+   with_items:
      - tor
      - deb.torproject.org-keyring
    apt:
