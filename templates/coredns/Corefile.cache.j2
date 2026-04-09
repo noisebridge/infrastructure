@@ -1,0 +1,15 @@
+{{ ansible_managed | comment }}
+. {
+  bind 127.0.0.1 ::1
+  prometheus localhost:9153
+  errors
+  loop
+  # Forward to quad9.net.
+  forward . tls://2620:fe::fe tls://2620:fe::9 tls://9.9.9.9 tls://149.112.112.112 {
+    tls_servername dns.quad9.net
+    health_check 5s
+  }
+  cache {
+    prefetch 10 60s 10%
+  }
+}
