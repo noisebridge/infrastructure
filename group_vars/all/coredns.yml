@@ -1,0 +1,4 @@
+---
+coredns_config_file: coredns/Corefile.cache.j2
+coredns_zone_files_paths: []
+coredns_key_files_paths: []
