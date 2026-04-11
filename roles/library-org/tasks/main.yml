@@ -100,6 +100,14 @@
         library-org:/app/database/books.sqlite
 
     - name: fix seeded database ownership
+- name: install podman container engine
+  ansible.builtin.package:
+    name:
+      - podman
+      - podman-compose
+      - python3-podman
+    state: present
+    update_cache: true
       command: docker exec -u root library-org chown nobody:nogroup /app/database/books.sqlite
   notify:
   - restart library-org
