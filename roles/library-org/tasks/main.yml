@@ -1,21 +1,4 @@
 ---
-- name: check for docker engine
-  command: docker --version
-  register: library_org_docker_check
-  changed_when: false
-  failed_when: false
-
-- name: check for docker compose plugin
-  command: docker compose version
-  register: library_org_compose_check
-  changed_when: false
-  failed_when: false
-
-- name: check for python docker module
-  command: python3 -c "import docker"
-  register: library_org_pydocker_check
-  changed_when: false
-  failed_when: false
 
 - name: install docker engine
   apt:
