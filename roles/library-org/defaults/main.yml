@@ -2,7 +2,7 @@
 library_org_version: "2.0.1"
 # Path the legacy systemd-based deployment used; only read from for sqlite seed.
 library_org_legacy_src_path: /srv/library-org
-library_org_deploy_path: /srv/library-org-deploy
+library_org_path: /srv/library.noisebridge.net
 library_org_port: 5000
 library_org_config:
   secrets:
