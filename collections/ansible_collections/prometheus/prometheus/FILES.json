@@ -851,7 +851,7 @@
    "name": "roles/alertmanager/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1ecbfc9b78fc0ef581a8d73e16f8f4f3fb7c9dc878b4cdf335fbe7954c26707e",
+   "chksum_sha256": "2996f003f3e4e71fb4227989c2cc4178353fb285e7187aefea3fdf77f5d95e95",
    "format": 1
   },
   {
@@ -865,7 +865,7 @@
    "name": "roles/alertmanager/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d21f5f4cc4126ea7e94158fce33056a76ace0799f652f6b583c1a5a7140e88ec",
+   "chksum_sha256": "df8527f7ce76b8b6b1019fdc460d81a13f5d9268bc688d9101dd33b8cc134c97",
    "format": 1
   },
   {
@@ -1306,7 +1306,7 @@
    "name": "roles/cadvisor/templates/cadvisor.service.j2",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ebcd44a116360918c382abe91e64498b88b8055d26e0350744fdc184c5c58ffc",
+   "chksum_sha256": "70b2e9144f38f1073a0f99b110f6cd59fc319c38bbb4f5922a0dc1859c4b9a01",
    "format": 1
   },
   {
@@ -1670,7 +1670,7 @@
    "name": "roles/influxdb_exporter/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "1e60744c0cd5a5bd53c813fe54d35e135da4e6543991226ce254999df76d75ed",
+   "chksum_sha256": "fc023846c0c315e67babae64de7105776df4e6d49d868939e1547056b6e00c92",
    "format": 1
   },
   {
@@ -1684,7 +1684,7 @@
    "name": "roles/influxdb_exporter/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "fa88535358821ba63da07888de7d71f425aeac678eb0ac3b64420829acd6f335",
+   "chksum_sha256": "db6940561976f92d0c2f9edbd785beab13fd8095823e315de38482ca881f4849",
    "format": 1
   },
   {
@@ -2020,7 +2020,7 @@
    "name": "roles/_common/tasks/preflight.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "82a6208c545dbf0259740d5cc8f84720c68d04aad02dd35a57704f8e05a7f930",
+   "chksum_sha256": "cfc1b32e6e3480f0b28b54855e09b964f6d34ab97abd8c4852df0ff3be08a413",
    "format": 1
   },
   {
@@ -2895,7 +2895,7 @@
    "name": "roles/prometheus/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9ace15e156349983d26ff0bda998e0f74cc64808670afa9d98f01dcd7d0f04f6",
+   "chksum_sha256": "b74ec4dfeb5a57a5c4ff21a653080e9f7d80b9a1769402af8c1a19788ab0ad64",
    "format": 1
   },
   {
@@ -2909,7 +2909,7 @@
    "name": "roles/prometheus/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "7989d5947cdf11069d71eda6a0de26631092333067e7c355f3fcebe5f255ba2b",
+   "chksum_sha256": "dace87a3c7d4d05eee36cea7922d392f7ae376a108bf9a47c2045ef95605d389",
    "format": 1
   },
   {
@@ -3189,7 +3189,7 @@
    "name": "SECURITY.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9508031caf342f4c8d2fc408625bad7acc1afa2e401cc1a6fd59c17b17235148",
+   "chksum_sha256": "1171576cf7b292217f0ddcc513e5a120f41330811a996711986ca2cbd30f89da",
    "format": 1
   },
   {
@@ -3210,7 +3210,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "46cec22c43ec5fcef3c059713c4c9d750095472e979b895493e5fd4dd4e64623",
+   "chksum_sha256": "a51ddd25700483768d755c2d994ffa360a81e77fbbb3423e50b2223ddb990699",
    "format": 1
   },
   {
