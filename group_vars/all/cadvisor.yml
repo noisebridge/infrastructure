@@ -2,7 +2,13 @@
 cadvisor_listen_ip: '[::1]'
 cadvisor_port: 9106
 cadvisor_disable_metrics:
+  - advtcp
   - cpuLoad
+  - cpu_topology
+  - perf_event
+  - referenced_memory
+  - tcp
+  - udp
 
 noisebridge_caddy_cadvisor_route: |
   handle_path /cadvisor/* {
