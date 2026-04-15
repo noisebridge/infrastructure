@@ -1,0 +1,14 @@
+---
+services:
+  library-org:
+    container_name: library-org
+    image: ghcr.io/noisebridge/library-org:${LIBRARY_ORG_VERSION}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${LIBRARY_ORG_PORT}:5000"
+    volumes:
+      - ./library.cfg:/app/library.cfg:ro
+      - library-org-database:/app/database
+
+volumes:
+  library-org-database:
