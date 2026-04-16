@@ -85,11 +85,6 @@ www.noisebridge.net {
   }
 {{ noisebridge_caddy_secure_header | indent(width=2) }}
 
-  @claudebot {
-    header User-Agent *ClaudeBot*
-  }
-  respond @claudebot 403
-
   route /images* {
     uri strip_prefix /images
     @svg path *.svg *.SVG
