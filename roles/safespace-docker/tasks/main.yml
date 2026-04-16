@@ -1,18 +1,11 @@
 # SPDX-License-Identifier: MIT-0
 ---
-- name: Install Podman prerequisites
+- name: Install podman-compose
   apt:
     name:
-      - podman
       - podman-compose
     state: present
     update_cache: yes
-
-- name: Ensure Podman API socket is enabled
-  systemd:
-    name: podman.socket
-    state: started
-    enabled: yes
 
 - name: Create safespace deploy directory
   file:
