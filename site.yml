@@ -125,3 +125,12 @@
   roles:
     - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
+
+- name: Radio
+  hosts: radio
+  become: yes
+  become_method: sudo
+  tags: [radio]
+  roles:
+    - { role: caddy_ansible.caddy_ansible, tags: [ 'caddy' ] }
+    - { role: caddy_certs, tags: [ 'caddy_certs' ] }

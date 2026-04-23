@@ -3,6 +3,9 @@ collections:
 - name: community.general
   type: galaxy
   version: ">=12.3.0"
+- name: community.docker
+  type: galaxy
+  version: ">=5.0.6"
 - name: ansible.posix
   type: galaxy
   version: ">=2.1.0"
