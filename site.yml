@@ -41,6 +41,7 @@
     - { role: prometheus.prometheus.mysqld_exporter, tags: [ 'mysqld_exporter' ] }
     - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
+    - { role: oomadj, tags: [ 'oomadj' ] }
 
 - name: m5
   hosts: m5_noisebridge_net
@@ -54,6 +55,7 @@
     - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
     - { role: caddy-ansible.caddy-ansible, tags: [ 'caddy' ] }
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
+    - { role: oomadj, tags: [ 'oomadj' ] }
 
 - name: List server
   hosts: lists_noisebridge_net

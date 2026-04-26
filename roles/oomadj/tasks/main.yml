@@ -1,0 +1,24 @@
+---
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- name: Create service.d dirs
+  ansible.builtin.file:
+    path: "/etc/systemd/system/{{ item.key }}.d"
+    state: directory
+    owner: root
+    group: root
+    mode: '0755'
+  when: "ansible_facts['services'][item.key]['status'] | default('not-found') == 'enabled'"
+  loop: "{{ oomadj_scores | dict2items }}"
+  
+- name: Crate OOMScoreAdjust
+  ansible.builtin.template:
+    src: oomscoreadjust.conf.j2
+    dest: "/etc/systemd/system/{{ item.key }}.d/oomscoreadjust.conf"
+    owner: root
+    group: root
+    mode: '0755'
+  when: "ansible_facts['services'][item.key]['status'] | default('not-found') == 'enabled'"
+  notify: restart {{ item.key }}
+  loop: "{{ oomadj_scores | dict2items }}"

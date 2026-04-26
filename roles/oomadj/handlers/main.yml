@@ -1,0 +1,12 @@
+---
+- name: restart caddy.service
+  ansible.builtin.systemd:
+    name: caddy.service
+    daemon_reload: true
+    state: restarted
+
+- name: restart mysql.service
+  ansible.builtin.systemd:
+    name: mysql.service
+    daemon_reload: true
+    state: restarted
