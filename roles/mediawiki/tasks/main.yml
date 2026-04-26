@@ -56,6 +56,13 @@
     version: REL1_27
   when: not ansible_check_mode
 
+- name: install LastModified extension
+  git:
+    repo: 'https://gerrit.wikimedia.org/r/mediawiki/extensions/LastModified'
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/LastModified"
+    version: REL1_39
+  when: not ansible_check_mode
+
 - name: install LocalSettings
   template:
     src: LocalSettings.php
