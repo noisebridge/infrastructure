@@ -1,58 +1,51 @@
 # SPDX-License-Identifier: MIT-0
 ---
-- name: Install podman-compose
-  apt:
-    name:
-      - podman-compose
-    state: present
-    update_cache: yes
-
 - name: Create safespace deploy directory
-  file:
+  ansible.builtin.file:
     path: /opt/safespace
     state: directory
     mode: '0755'
 
 - name: Create logs directory
-  file:
+  ansible.builtin.file:
     path: /opt/safespace/logs
     state: directory
     mode: '0755'
 
 - name: Copy compose file
-  copy:
+  ansible.builtin.copy:
     src: compose.yaml
     dest: /opt/safespace/compose.yaml
     mode: '0644'
 
 - name: Render Caddyfile from template
-  template:
+  ansible.builtin.template:
     src: Caddyfile.j2
     dest: /opt/safespace/Caddyfile
     mode: '0644'
 
 - name: Deploy secrets from vault
-  template:
+  ansible.builtin.template:
     src: env.j2
     dest: /opt/safespace/.env
     mode: '0600'
   no_log: true
 
 - name: Pull safespace image
-  command: podman-compose pull
+  ansible.builtin.command: podman-compose pull
   args:
     chdir: /opt/safespace
   register: safespace_pull
   changed_when: "'Downloaded newer image' in safespace_pull.stdout or 'Pulling' in safespace_pull.stderr"
 
 - name: Start safespace stack
-  command: podman-compose up -d
+  ansible.builtin.command: podman-compose up -d
   args:
     chdir: /opt/safespace
   register: safespace_up
   changed_when: "'Recreating' in safespace_up.stderr or 'Creating' in safespace_up.stderr or 'Starting' in safespace_up.stderr"
 
 - name: Prune dangling images
-  command: podman image prune -f
+  ansible.builtin.command: podman image prune -f
   register: safespace_prune
   changed_when: safespace_prune.stdout | trim | length > 0
