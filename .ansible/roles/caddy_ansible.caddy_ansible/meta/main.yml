@@ -1,0 +1,36 @@
+---
+galaxy_info:
+  author: caddy_ansible
+  role_name: caddy_ansible
+  description: Installs and configures a Caddy webserver
+  license: MIT
+  min_ansible_version: "2.9"
+  platforms:
+    - name: EL
+      versions:
+        - 7
+        - 8
+    - name: Ubuntu
+      versions:
+        - bionic
+        - focal
+        - jammy
+    - name: Debian
+      versions:
+        - stretch
+        - buster
+        - bullseye
+    - name: Fedora
+      versions:
+        - 29
+        - 30
+        - 31
+        - 32
+        - 33
+  galaxy_tags:
+    - system
+    - web
+dependencies: []
+
+collections:
+  - community.general

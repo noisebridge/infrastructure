@@ -1,0 +1,47 @@
+---
+# Copyright 2025 Wong Hoi Sing Edison <hswong3i@pantarei-design.com>
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+- name: rpm --import
+  ansible.builtin.rpm_key:
+    key: "{{ item.key }}"
+    fingerprint: "{{ item.fingerprint }}"
+    state: "{{ item.state }}"
+  loop: "{{ _rpm_key }}"
+  register: result
+  until: result is succeeded
+
+- name: yum-config-manager --add-repo
+  ansible.builtin.yum_repository:
+    file: "{{ item.file }}"
+    name: "{{ item.name }}"
+    description: "{{ item.description }}"
+    baseurl: "{{ item.baseurl }}"
+    enabled: "{{ item.enabled }}"
+    priority: "{{ item.priority }}"
+    module_hotfixes: "{{ item.module_hotfixes }}"
+    gpgcheck: "{{ item.gpgcheck }}"
+    gpgkey: "{{ item.gpgkey }}"
+    state: "{{ item.state }}"
+  loop: "{{ _yum_repository }}"
+
+- name: yum install
+  ansible.builtin.yum: # noqa fqcn[action-core]
+    name: "{{ item.name }}"
+    state: "{{ item.state }}"
+  loop: "{{ _yum }}"
+  register: result
+  until: result is succeeded
+  notify:
+    - podman | systemctl restart podman.service

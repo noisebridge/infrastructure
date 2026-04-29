@@ -1,0 +1,17 @@
+*.log
+*.orig
+*.pyc
+*.rej
+*.retry
+.cache
+__pycache__
+
+inventory/*/
+!inventory/default/
+
+packer/*/*/
+packer/*/packer-provisioner-*
+!packer/*/group_vars/
+!packer/*/host_vars/
+
+.vagrant/
