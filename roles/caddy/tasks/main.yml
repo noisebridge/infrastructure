@@ -1,4 +1,9 @@
 ---
+- name: Allow firewall
+  community.general.ufw:
+    rule: allow
+    name: WWW Full
+
 - name: Install
   ansible.builtin.include_role:
     name: caddy-ansible.caddy-ansible
