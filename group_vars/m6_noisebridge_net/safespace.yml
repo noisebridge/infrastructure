@@ -1,0 +1,3 @@
+---
+safespace_hostname: safespace.noisebridge.net
+safespace_tls: letsencrypt

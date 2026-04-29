@@ -118,6 +118,7 @@
     - { role: caddy_certs, tags: [ 'caddy_certs' ] }
     - { role: library-org, tags: [ 'library-org' ] }
     - { role: stuff-org, tags: [ 'stuff-org' ] }
+    - { role: safespace-docker, tags: [ 'safespace' ] }
 
 - name: Seattle Linode
   hosts: m7_noisebridge_net

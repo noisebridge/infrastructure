@@ -1,0 +1,10 @@
+---
+- hosts: all
+  become: true
+  tasks:
+    - name: Install curl
+      ansible.builtin.package:
+        name: curl
+        state: present
+  roles:
+    - caddy_ansible.caddy_ansible

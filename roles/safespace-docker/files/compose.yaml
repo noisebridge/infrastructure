@@ -1,0 +1,26 @@
+services:
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - ./logs:/var/log/caddy
+    depends_on:
+      - app
+  app:
+    image: ghcr.io/noisebridge/safespace:${SAFESPACE_IMAGE_TAG:-latest}
+    container_name: safespace
+    restart: unless-stopped
+    env_file:
+      - .env
+
+volumes:
+  caddy_data:
+  caddy_config:
