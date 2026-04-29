@@ -1,0 +1,15 @@
+---
+- name: Install
+  ansible.builtin.include_role:
+    name: caddy-ansible.caddy-ansible
+
+- name: Install jq
+  become: true
+  ansible.builtin.package:
+    name: jq
+
+- name: Adjust certs
+  ansible.builtin.include_tasks:
+    file: certs.yml
+  tags:
+  - caddy_certs
