@@ -1,9 +1,8 @@
 {{ ansible_managed | comment }}
 # Global config
 {
-  servers {
-      metrics
-  }
+  {{ noisebridge_caddy_global_security | indent(width=2) }}
+  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
 }
 # Metrics server
 {{ ansible_fqdn }} {
