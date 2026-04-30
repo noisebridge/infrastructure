@@ -17,3 +17,6 @@ noisebridge_mailman_cgi_scripts:
 - rmlist
 - roster
 - subscribe
+
+noisebridge_atproto_did: "{{ vault_noisebridge_atproto_did }}"
+noisebridge_goaccess_basic_auth: "{{ vault_noisebridge_goaccess_basic_auth }}"

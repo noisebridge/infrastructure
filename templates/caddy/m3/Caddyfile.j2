@@ -4,6 +4,13 @@
   order cgi last
   order authenticate before respond
   order authorize before basic_auth
+
+  # TODO ratelimit incl somewhere here
+
+  # TODO want:  cache before rate_limit
+  #order file_server before rate_limit
+  #order rate_limit after file_server
+
   security {
     authorization policy noisebridge-github {
       set auth url https://auth.noisebridge.net/auth
@@ -12,12 +19,27 @@
       allow roles members rack
     }
   }
-  servers {
-      metrics
+  metrics {
+    per_host
   }
 }
 # Metrics server
 {{ ansible_fqdn }} {
+  handle_path /anubis/* {
+    reverse_proxy {
+        to unix//var/run/anubis/anubis-public.sock
+        header_up X-Forwarded-Prefix /anubis
+    }
+  }
+
+  handle_path /goaccess/* {
+    basic_auth {
+      nb {{ noisebridge_goaccess_basic_auth }}
+    }
+    root * /var/www/goaccess
+    file_server # /var/www/goaccess/live.html
+  }
+
   route /metrics {
     basic_auth {
       prometheus {{ noisebridge_prometheus_password_hash }}
@@ -34,23 +56,12 @@
   respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
-# Redirects to www.noisebride.net
-noisebridge.com, www.noisebridge.com {
-  log {
-    output file "{{ caddy_log_dir }}/noisebridge.com.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  redir https://www.noisebridge.net{uri}
-}
-
 noisebridge.io, www.noisebridge.io {
   log {
     output file "{{ caddy_log_dir }}/noisebridge.io.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
   redir https://www.noisebridge.net{uri}
 }
@@ -58,9 +69,12 @@ noisebridge.io, www.noisebridge.io {
 noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/noisebridge.net.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  {{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  handle /.well-known/atproto-did {
+    respond "{{ noisebridge_atproto_did }}" 200
   }
   redir https://www.noisebridge.net{uri}
 }
@@ -68,9 +82,9 @@ noisebridge.net {
 noisebridge.org, www.noisebridge.org {
   log {
     output file "{{ caddy_log_dir }}/noisebridge.org.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
   redir https://www.noisebridge.net{uri}
 }
@@ -79,22 +93,25 @@ noisebridge.org, www.noisebridge.org {
 www.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/www.noisebridge.net.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
-{{ noisebridge_caddy_secure_header | indent(width=2) }}
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
 
   @claudebot {
     header User-Agent *ClaudeBot*
   }
   respond @claudebot 403
 
+  @images {
+    file
+    path *.jpg *.jpeg *.png *.gif *.webp *.svg
+  }
+  header @images Cache-Control "public, max-age=600, must-revalidate"
+
   route /images* {
     uri strip_prefix /images
-    @svg path *.svg *.SVG
-    header @svg Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'"
-    header @svg Content-Disposition "attachment"
     file_server {
       root /srv/mediawiki/noisebridge.net/images
     }
@@ -105,8 +122,134 @@ www.noisebridge.net {
       root /srv/mediawiki/noisebridge.net/img
     }
   }
+
+  # NOTE: rate limits match in order
+  @heavy path /api.php /wiki/Special:* /wiki/Special:MobileDiff* /index.php?days=14* /index.php?*title=Special%3ARecentChanges* /index.php?*title=Special:RecentChanges* /index.php?*returnto=Special%3ARecentChanges* /index.php?*veaction=edit*
+  #/index.php?*
+  #@heavy path /api.php /wiki/Special:* 
+
+  #/index.php?days=14*
+  #/index.php?*title=Special%3ARecentChanges*
+  #/index.php?*title=Special:RecentChanges*
+  #/index.php?*
+  #/index.php?*returnto=Special%3ARecentChanges*
+  #/wiki/Special:MobileDiff*
+  #/wiki  index.php ... redirect Special
+
+  @bot header_regexp User-Agent (?i)bot
+  route @bot {
+    rate_limit {
+      zone bots {
+        key {remote_ip}
+        events 5
+        window 1m
+
+      }
+    }
+    php_fastcgi unix//run/php/php8.2-fpm.sock ## FIXME -- invoked in each rate limit scope [1/3]
+  }
+
+  route @heavy {
+    rate_limit {
+      # for [nb]: allow [1000] req / [5s]
+      zone nb_zone {
+        key {remote_ip}
+        match {
+          remote_ip 192.195.83.130 # Noisebridge-Monkeybrains SF space IP
+        }
+        events 1000
+        window 5s
+      }
+      zone anon_zone {
+        match {
+          not {
+            remote_ip 192.195.83.130 # Noisebridge-Monkeybrains SF space IP
+            #header Cookie wiki_wiki_User*
+            #header Authorization Basic* # easy to guess, not relevant?  hack of bypass for curl/API use?
+          }
+        }
+        #key {client_ip /24} # smallest routeable ip block, still, too small to even likely catch within-cloud ip variation
+        key {remote_ip}
+        events 25 # superq 2026-04-13
+        #events 75 # 50 # 25 # 20 (ok~), 15, 10 2026-02-16 # 5 @ 2026-02-15 # growing from left
+        #events 5 # 50 # 25 # 20 (ok~), 15, 10 2026-02-16 # 5 @ 2026-02-15 # growing from left
+        # 72 required to load the home page, logged in
+        # 46 required to load the home page, anon
+        #window 5s
+        window 10s
+      }
+    }
+    php_fastcgi unix//run/php/php8.2-fpm.sock ## FIXME -- invoked in each rate limit scope [2/3]
+  }
+
+  route {
+    rate_limit {
+      # for [nb]: allow [1000] req / [5s]
+      zone nb_zone {
+        key {remote_ip}
+        match {
+          remote_ip 192.195.83.130 # Noisebridge-Monkeybrains SF space IP
+        }
+        events 1000
+        window 5s
+      }
+
+      zone user_zone {
+        match {
+          header Cookie wiki_wiki_UserID=* #; wiki_wiki__session=*
+          # logged out user gets: wiki_wiki_mwuser-sessionId=fd49f9679fe28031d2dd
+            #not{
+            #!remote_ip 192.195.83.130 # Noisebridge-Monkeybrains SF space IP
+            #!header Cookie wiki_wiki_s*
+            #!header Authorization Basic* # easy to guess, not relevant?  hack of bypass for curl/API use?
+            #}
+        }
+        key {http.request.cookie.mw_session}
+        #events 150
+        events 300
+        window 5s
+        # 72 required to load the home page, logged in
+        # 46 required to load the home page, anon
+        # 20 (ok~), 15, 10 2026-02-16 # 5 @ 2026-02-15 # growing from left
+      }
+
+      zone anon_zone {
+        match {
+          not {
+            remote_ip 192.195.83.130 # Noisebridge-Monkeybrains SF space IP
+            #header Cookie wiki_wiki_User*
+            #header Authorization Basic* # easy to guess, not relevant?  hack of bypass for curl/API use?
+          }
+        }
+        key {client_ip /24} # smallest routeable ip block, still, too small to even likely catch within-cloud ip variation
+        events 75 # 50 # 25 # 20 (ok~), 15, 10 2026-02-16 # 5 @ 2026-02-15 # growing from left
+        #events 25 # 50 # 25 # 20 (ok~), 15, 10 2026-02-16 # 5 @ 2026-02-15 # growing from left
+        # 72 required to load the home page, logged in
+        # 46 required to load the home page, anon
+        #window 5s
+        window 10s
+      }
+
+      # User Agent: facebook / meta dev
+      zone bot_zone {
+        match {
+          #import allowed 
+          #not {
+          header User-Agent meta-externalagent/1.1*
+            #header Authorization Basic* # easy to guess, not relevant?  hack of bypass for curl/API use?
+          #}
+        }
+        key {client_ip /24} # smallest routeable ip block, still, too small to even likely catch within-cloud ip variation
+        events 1
+        window 5s
+      }
+
+    }
+    php_fastcgi unix//run/php/php8.2-fpm.sock ## FIXME -- invoked in each rate limit scope [3/3]
+  }
+
   root * /srv/mediawiki/noisebridge.net-1.39.13
-  php_fastcgi unix//run/php/php8.2-fpm.sock
+  # php_fastcgi unix//run/php/php8.2-fpm.sock ## FIXME -- invoked in each rate limit scope - [orig]
   file_server {
     hide *.php
   }
@@ -136,17 +279,46 @@ www.noisebridge.net {
 lists.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/lists.noisebridge.net.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
-{{ noisebridge_caddy_secure_header | indent(width=2) }}
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
 
-{% for cgi in noisebridge_mailman_cgi_scripts %}
-  cgi /{{ cgi }}* /var/lib/mailman/cgi-bin/{{ cgi }} {
-    script_name /{{ cgi }}
-  }
-{% endfor %}
+  # superq - 2026-04-13 mailman cgi is broken, disable for now.
+  # cgi /admin* /var/lib/mailman/cgi-bin/admin {
+  #   script_name /admin
+  # }
+  # cgi /admindb* /var/lib/mailman/cgi-bin/admindb {
+  #   script_name /admindb
+  # }
+  # cgi /confirm* /var/lib/mailman/cgi-bin/confirm {
+  #   script_name /confirm
+  # }
+  # cgi /create* /var/lib/mailman/cgi-bin/create {
+  #   script_name /create
+  # }
+  # cgi /edithtml* /var/lib/mailman/cgi-bin/edithtml {
+  #   script_name /edithtml
+  # }
+  # cgi /listinfo* /var/lib/mailman/cgi-bin/listinfo {
+  #   script_name /listinfo
+  # }
+  # cgi /options* /var/lib/mailman/cgi-bin/options {
+  #   script_name /options
+  # }
+  # cgi /private* /var/lib/mailman/cgi-bin/private {
+  #   script_name /private
+  # }
+  # cgi /rmlist* /var/lib/mailman/cgi-bin/rmlist {
+  #   script_name /rmlist
+  # }
+  # cgi /roster* /var/lib/mailman/cgi-bin/roster {
+  #   script_name /roster
+  # }
+  # cgi /subscribe* /var/lib/mailman/cgi-bin/subscribe {
+  #   script_name /subscribe
+  # }
 
   route /images/mailman* {
     uri strip_prefix /images/mailman
@@ -163,17 +335,19 @@ lists.noisebridge.net {
 
   redir / /listinfo
   rewrite /mailman /{uri}
+
+  respond "Mailman list archives currently offline"
 }
 
 # Safespace
 safespace.noisebridge.net {
   log {
     output file "{{ caddy_log_dir }}/safespace.noisebridge.net.log" {
-{{ noisebridge_caddy_log_roll | indent(width=6) }}
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
     }
-{{ noisebridge_caddy_log_filter | indent(width=4) }}
+  {{ noisebridge_caddy_log_filter | indent(width=4) }}
   }
-{{ noisebridge_caddy_secure_header | indent(width=2) }}
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
   root * /var/www/safespace.noisebridge.net
   php_fastcgi unix//run/php/php8.2-fpm.sock
 }
