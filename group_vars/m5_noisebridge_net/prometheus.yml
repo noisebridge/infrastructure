@@ -10,6 +10,11 @@ prometheus_global:
   scrape_timeout: 10s
   evaluation_interval: 30s
 
+prometheus_alertmanager_config:
+  - static_configs:
+     - targets:
+         - "[::1]:9093"
+
 prometheus_blackbox_relabel_configs:
 - source_labels: [__address__]
   target_label: __param_target

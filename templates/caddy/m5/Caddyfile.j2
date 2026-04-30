@@ -51,6 +51,13 @@ donate.noisebridge.net {
 }
 
 # Monitoring
+alertmanager.noisebridge.net {
+  route {
+    authorize with noisebridge-github
+    reverse_proxy [::1]:9093
+  }
+}
+
 grafana.noisebridge.net {
   route {
     authorize with noisebridge-github
