@@ -1,17 +1,17 @@
 ---
 mysql_packages:
-- percona-server-server
-- percona-server-client
-- libperconaserverclient21-dev
+  - percona-server-server
+  - percona-server-client
+  - libperconaserverclient21-dev
 mysql_bind_address: 127.0.0.1
 mysql_databases:
-- name: donate_prod
-- name: donate_test
+  - name: donate_prod
+  - name: donate_test
 mysql_users:
-- name: donate
-  host: "%"
-  password: "{{ pydonate_config.secrets.db_pass }}"
-  priv: "donate_prod.*:ALL/donate_test.*:ALL"
+  - name: donate
+    host: "%"
+    password: "{{ pydonate_config.secrets.db_pass }}"
+    priv: "donate_prod.*:ALL/donate_test.*:ALL"
 
 percona_enable_ps80: true
 

@@ -1,7 +1,7 @@
 ---
-- name: restart stuff-org
+- name: Restart stuff-org
   become: true
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
     name: stuff-org
     state: restarted

@@ -5,7 +5,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
 
 - name: Deploy safespace script
   template:
@@ -13,4 +13,4 @@
     dest: /var/www/safespace.noisebridge.net/index.php
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"

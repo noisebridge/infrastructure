@@ -17,26 +17,26 @@ prometheus_scrape_configs:
     scheme: https
     static_configs:
       - targets:
-        - "donate.noisebridge.net:443"
-        - "test-donate.noisebridge.net:443"
+          - "donate.noisebridge.net:443"
+          - "test-donate.noisebridge.net:443"
   - job_name: "prometheus"
     static_configs:
       - targets:
-        - "pegasus.noisebridge.net:9090"
+          - "pegasus.noisebridge.net:9090"
   - job_name: "node"
     static_configs:
       - targets:
-        - "pegasus.noisebridge.net:9100"
-        - "cycletrailer.noise:9100"
+          - "pegasus.noisebridge.net:9100"
+          - "cycletrailer.noise:9100"
   - job_name: "smartpi"
     scrape_interval: 1s
     static_configs:
       - targets:
-        - "entropi.noise:9246"
+          - "entropi.noise:9246"
   - job_name: "earl"
     static_configs:
       - targets:
-        - "earl.noise:1212"
+          - "earl.noise:1212"
   - job_name: "snmp_if_mib"
     metrics_path: /snmp
     params:
@@ -47,10 +47,10 @@ prometheus_scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+        replacement: 127.0.0.1:9116 # The SNMP exporter's real hostname:port.
     static_configs:
       - targets:
-        - edgeswitch.noise
+          - edgeswitch.noise
   - job_name: "snmp_if_mib_v1"
     metrics_path: /snmp
     params:
@@ -61,10 +61,10 @@ prometheus_scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+        replacement: 127.0.0.1:9116 # The SNMP exporter's real hostname:port.
     static_configs:
       - targets:
-        - roofswitch.noise
+          - roofswitch.noise
   - job_name: "snmp_cyber"
     metrics_path: /snmp
     params:
@@ -75,10 +75,10 @@ prometheus_scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+        replacement: 127.0.0.1:9116 # The SNMP exporter's real hostname:port.
     static_configs:
       - targets:
-        - cyber.noise
+          - cyber.noise
   - job_name: "snmp_unifi_ap"
     metrics_path: /snmp
     params:
@@ -89,17 +89,17 @@ prometheus_scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 127.0.0.1:9116  # The SNMP exporter's real hostname:port.
+        replacement: 127.0.0.1:9116 # The SNMP exporter's real hostname:port.
     static_configs:
       - targets:
-        - center-ap.noise
-        - church-ap.noise
-        - flaschen-ap.noise
-        - sparkle-ap.noise
-        - west-ap.noise
+          - center-ap.noise
+          - church-ap.noise
+          - flaschen-ap.noise
+          - sparkle-ap.noise
+          - west-ap.noise
   - job_name: "unifi"
     static_configs:
       - targets:
-        - pegasus.noise:9130
+          - pegasus.noise:9130
 
 prometheus_targets: {}

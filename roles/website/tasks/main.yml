@@ -1,33 +1,33 @@
 ---
-- name: make image directory
-  file:
+- name: Make image directory
+  ansible.builtin.file:
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/img"
     state: directory
     owner: www-data
     group: www-data
-    mode: 0755
+    mode: "0755"
 
-- name: copy images
-  copy:
+- name: Copy images
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/img/{{ item }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   with_items:
-  - Patreon_1600x400banner.jpg
-  - 2019-Gala-Banner.jpg
-  - gala-gear-bg.png
-  - nb-logo-131.png
+    - Patreon_1600x400banner.jpg
+    - 2019-Gala-Banner.jpg
+    - gala-gear-bg.png
+    - nb-logo-131.png
 
-- name: install static pages
-  template:
+- name: Install static pages
+  ansible.builtin.template:
     src: "{{ item }}"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/{{ item }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   with_items:
-  - index.html
-  - forever_home.html
-  - gala.html
+    - index.html
+    - forever_home.html
+    - gala.html

@@ -1,24 +1,24 @@
 ---
 collections:
-- name: community.general
-  type: galaxy
-  version: ">=12.3.0"
-- name: ansible.posix
-  type: galaxy
-  version: ">=2.1.0"
-- name: grafana.grafana
-  type: galaxy
-  version: ">=6.0.6"
-- name: prometheus.prometheus
-  type: galaxy
-  version: ">=0.29.0"
-- name: hifis.toolkit
-  type: galaxy
-  version: ">=6.3.2"
-- name: community.docker
-  type: galaxy
-  version: ">=5.0.0"
+  - name: community.general
+    type: galaxy
+    version: ">=12.3.0"
+  - name: ansible.posix
+    type: galaxy
+    version: ">=2.1.0"
+  - name: grafana.grafana
+    type: galaxy
+    version: ">=6.0.6"
+  - name: prometheus.prometheus
+    type: galaxy
+    version: ">=0.29.0"
+  - name: hifis.toolkit
+    type: galaxy
+    version: ">=6.3.2"
+  - name: community.docker
+    type: galaxy
+    version: ">=5.0.0"
 roles:
-- name: caddy-ansible.caddy-ansible
-  src: https://github.com/caddy-ansible/caddy-ansible.git
-  version: 989ef227034c5ae67112b8fd781605b368018d7e
+  - name: caddy-ansible.caddy-ansible
+    src: https://github.com/caddy-ansible/caddy-ansible.git
+    version: 989ef227034c5ae67112b8fd781605b368018d7e

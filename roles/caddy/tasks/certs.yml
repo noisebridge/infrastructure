@@ -5,7 +5,7 @@
     dest: /usr/local/sbin/copy_certs.sh
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   notify:
     - Restart caddy_certs.path
 
@@ -15,7 +15,7 @@
     state: directory
     owner: root
     group: ssl-cert
-    mode: 0750
+    mode: "0750"
 
 - name: Configure watch certs path
   ansible.builtin.template:
@@ -23,7 +23,7 @@
     dest: /etc/systemd/system/caddy_certs.path
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - Restart caddy_certs.path
 
@@ -33,7 +33,7 @@
     dest: /etc/systemd/system/caddy_certs.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - Restart caddy_certs.service
 

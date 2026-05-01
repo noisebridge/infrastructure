@@ -1,5 +1,5 @@
 ---
-cadvisor_listen_ip: '[::1]'
+cadvisor_listen_ip: "[::1]"
 cadvisor_port: 9106
 cadvisor_disable_metrics:
   - advtcp

@@ -1,12 +1,13 @@
 ---
-profile: min
+profile: basic
 exclude_paths:
-- collections
-- roles/caddy-ansible.caddy-ansible/
-- roles/cloudalchemy.coredns
-- roles/geerlingguy.mysql
-- roles/nickjj.docker
-- roles/podman
+  - collections
+  - roles/caddy-ansible.caddy-ansible/
+  - roles/cloudalchemy.coredns
+  - roles/geerlingguy.mysql
+  - roles/nickjj.docker
+  - roles/podman
 skip_list:
-- "701" # No 'galaxy_info' found, not needed.
-- "106" # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'
+  - var-naming[no-role-prefix]
+  - "701" # No 'galaxy_info' found, not needed.
+  - "106" # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'

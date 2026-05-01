@@ -1,3 +1,5 @@
 ---
-- name: restart mailman
-  service: name=mailman state=restarted
+- name: Restart mailman
+  service:
+    name: mailman
+    state: restarted

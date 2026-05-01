@@ -1,49 +1,51 @@
 ---
- - name: install tor debian repository
-   with_items:
-     - 'deb http://deb.torproject.org/torproject.org jessie main'
-     - 'deb-src http://deb.torproject.org/torproject.org jessie main'
-   apt_repository:
-     repo: '{{ item }}'
-     state: present
-     update_cache: yes
-   tags:
+- name: Install tor debian repository
+  with_items:
+    - "deb http://deb.torproject.org/torproject.org jessie main"
+    - "deb-src http://deb.torproject.org/torproject.org jessie main"
+  ansible.builtin.apt_repository:
+    repo: "{{ item }}"
+    state: present
+    update_cache: true
+  tags:
     - tor
     - apt
 
- - name: install tor gpg key
-   apt_key: keyserver=keys.gnupg.net id=A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89
-   tags:
-     - tor
-     - gnupg
+- name: Install tor gpg key
+  ansible.builtin.apt_key:
+    keyserver: keys.gnupg.net
+    id: A3C4F0F979CAA22CDBA8F512EE8CBC9E886DDD89
+  tags:
+    - tor
+    - gnupg
 
- - name: install tor
-   with_items:
-     - tor
-     - deb.torproject.org-keyring
-   apt:
-     update_cache: yes
-     cache_valid_time: 3600
-     force: yes
-     package:
-     - apt
-     - tor
+- name: Install tor
+  with_items:
+    - tor
+    - deb.torproject.org-keyring
+  ansible.builtin.apt:
+    update_cache: true
+    cache_valid_time: 3600
+    force: true
+    package:
+      - apt
+      - tor
 
- - name: install tor apt transport
-   apt:
-     package: apt-transport-tor
-     update_cache: yes
-     cache_valid_time: 3600
-   tags:
+- name: Install tor apt transport
+  ansible.builtin.apt:
+    package: apt-transport-tor
+    update_cache: true
+    cache_valid_time: 3600
+  tags:
     - tor
     - apt
 
- - name: configure apt transport
-   replace:
-     dest: /etc/apt/sources.list
-     regexp: 'deb http'
-     replace: 'deb tor+http'
-     mode: 0644
-   tags:
-     - tor
-     - apt
+- name: Configure apt transport
+  ansible.builtin.replace:
+    dest: /etc/apt/sources.list
+    regexp: "deb http"
+    replace: "deb tor+http"
+    mode: "0644"
+  tags:
+    - tor
+    - apt

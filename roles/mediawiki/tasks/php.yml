@@ -1,26 +1,26 @@
 ---
-- name: install php
+- name: Install php
   apt:
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
     package:
-    - imagemagick
-    - php7.4
-    - php7.4-mysql
-    - php7.4-imagick
-    - php7.4-fpm
-    - php7.4-mbstring
-    - php7.4-xml
-    - composer
+      - imagemagick
+      - php7.4
+      - php7.4-mysql
+      - php7.4-imagick
+      - php7.4-fpm
+      - php7.4-mbstring
+      - php7.4-xml
+      - composer
   tags:
-  - apt
-  - php
+    - apt
+    - php
 
 - name: Configure PHP FPM
   copy:
     src: php/www.conf
     dest: /etc/php/7.4/fpm/pool.d/www.conf
-    mode: 0644
+    mode: "0644"
   tags:
     - php
   notify:

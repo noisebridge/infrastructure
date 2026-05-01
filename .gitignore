@@ -2,6 +2,7 @@ site.retry
 .vault-password
 .DS_Store
 *.swp
+/.ansible
 /roles/*/.github
 /roles/*/Pipfile*
 /collections/ansible_collections/*/*/*.md

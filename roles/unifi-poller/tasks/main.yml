@@ -1,23 +1,23 @@
 ---
-- name: install key
-  apt_key:
+- name: Install key
+  ansible.builtin.apt_key:
     url: https://golift.io/gpgkey
 
-- name: setup repo
-  apt_repository:
+- name: Setup repo
+  ansible.builtin.apt_repository:
     repo: "deb https://dl.bintray.com/golift/{{ ansible_distribution | lower }} {{ ansible_lsb.codename }} {{ unifi_poller_apt_release }}"
     update_cache: true
 
-- name: install
-  apt:
+- name: Install
+  ansible.builtin.apt:
     name: "unifi-poller={{ unifi_poller_version }}"
 
-- name: configure
-  template:
+- name: Configure
+  ansible.builtin.template:
     src: up.conf.j2
     dest: /etc/unifi-poller/up.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
-  - restart unifi-poller
+    - Restart unifi-poller

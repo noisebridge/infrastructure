@@ -1,95 +1,95 @@
 ---
-- name: install postfix
+- name: Install postfix
   apt:
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 3600
     package:
-    - postfix
-    - postfix-pcre
-    - postgrey
-    - procmail
-    - opendkim
-    - opendkim-tools
+      - postfix
+      - postfix-pcre
+      - postgrey
+      - procmail
+      - opendkim
+      - opendkim-tools
   tags:
     - postfix
     - mail
 
-- name: install procmailrc
+- name: Install procmailrc
   copy:
     src: procmailrc
     dest: /etc/procmailrc
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   tags:
     - postfix
 
-- name: configure postgrey
+- name: Configure postgrey
   replace:
     dest: /etc/default/postgrey
     regexp: "POSTGREY_OPTS=.*"
     replace: "POSTGREY_OPTS=\"--inet=10023 --delay=60\""
-    mode: 0644
+    mode: "0644"
   tags:
     - postgrey
     - postfix
   notify:
     - restart postgrey
 
-- name: disable default configuration
+- name: Disable default configuration
   debconf:
-    name: 'postfix'
-    question: 'postfix/main_mailer_type'
-    vtype: 'select'
-    value: 'No configuration'
+    name: "postfix"
+    question: "postfix/main_mailer_type"
+    vtype: "select"
+    value: "No configuration"
   tags:
     - postfix
     - mail
 
-- name: configure mailname file
+- name: Configure mailname file
   copy:
     dest: /etc/mailname
     group: root
     owner: root
-    mode: 0644
+    mode: "0644"
     content: "{{ postfix_mailname | default(ansible_fqdn) }}\n"
   tags:
     - postfix
     - mail
 
-- name: install postfix configuration
+- name: Install postfix configuration
   template:
     src: main.cf
     dest: /etc/postfix/main.cf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - restart postfix
   tags:
     - postfix
     - mail
 
-- name: configure aliases
+- name: Configure aliases
   template:
     src: aliases.j2
     dest: /etc/aliases
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - reload-aliases
   tags:
     - postfix
     - mail
 
-- name: copy config files
+- name: Copy config files
   copy:
     src: "{{ item }}"
     dest: "/etc/postfix/{{ item }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   with_items:
     - header_checks.regexp
     - smtp_reply_filter
@@ -99,58 +99,58 @@
   notify:
     - restart postfix
 
-- name: setup opendkim postfix socket dir
+- name: Setup opendkim postfix socket dir
   file:
     path: /var/spool/postfix/opendkim
     state: directory
     owner: opendkim
     group: postfix
-    mode: 0755
+    mode: "0755"
 
-- name: copy dkim key
+- name: Copy dkim key
   copy:
     src: postfix/dkim.key
     dest: /etc/dkimkeys/dkim.key
     owner: opendkim
     group: opendkim
-    mode: 0400
+    mode: "0400"
   notify:
     - restart opendkim
 
-- name: install opendkim configuration
+- name: Install opendkim configuration
   template:
     src: opendkim.conf.j2
     dest: /etc/opendkim.conf
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - restart opendkim
 
-- name: install opendkim defaults
+- name: Install opendkim defaults
   template:
     src: opendkim-default.j2
     dest: /etc/default/opendkim
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - restart opendkim
 
-- name: add postfix user to opedkim group
+- name: Add postfix user to opedkim group
   user:
     name: postfix
     groups: opendkim
-    append: yes
+    append: true
   notify:
     - restart postfix
 
-- name: configure secure submission port
+- name: Configure secure submission port
   replace:
     regexp: "^#submission .*"
     replace: "submission inet n       -       -       -       -       smtpd"
     dest: /etc/postfix/master.cf
-    mode: 0644
+    mode: "0644"
   tags:
     - postfix
     - mail
@@ -163,7 +163,7 @@
     dest: "/etc/postfix/{{ item }}"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   register: postfix_hash_maps
   with_items:
     - client_access

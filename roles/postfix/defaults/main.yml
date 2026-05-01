@@ -1,7 +1,7 @@
 ---
 postfix_mailname: "{{ ansible_fqdn }}"
 postfix_destinations:
-- "{{ ansible_fqdn }}"
+  - "{{ ansible_fqdn }}"
 postfix_aliases:
   postmaster:
     alias: root
