@@ -101,7 +101,7 @@ $wgShellLocale = "en_US.utf8";
 # Site language code, should be one of the list in ./languages/data/Names.php
 $wgLanguageCode = "en";
 
-$wgLocaltimezone = "US/Pacific";
+$wgLocaltimezone = "America/Los_Angeles";
 date_default_timezone_set( $wgLocaltimezone );
 
 $wgSecretKey = "{{ mediawiki_secret_key }}";
@@ -278,7 +278,7 @@ wfLoadExtension( 'AdminLinks' );
 wfLoadExtension( 'QRLite' );
 
 #Set Default Timezone
-$wgLocaltimezone = "US/Pacific";
+$wgLocaltimezone = "America/Los_Angeles";
 date_default_timezone_set( $wgLocaltimezone );
 
 # https://www.mediawiki.org/wiki/Extension:Scribunto
