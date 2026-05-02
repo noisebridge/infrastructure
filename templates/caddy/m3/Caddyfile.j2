@@ -2,8 +2,6 @@
 # Global settings
 {
   order cgi last
-  order authenticate before respond
-  order authorize before basic_auth
 
   # TODO ratelimit incl somewhere here
 
@@ -11,17 +9,8 @@
   #order file_server before rate_limit
   #order rate_limit after file_server
 
-  security {
-    authorization policy noisebridge-github {
-      set auth url https://auth.noisebridge.net/auth
-      crypto key verify {{ noisebridge_jwt_token_secret }}
-      crypto key token name access_token
-      allow roles members rack
-    }
-  }
-  metrics {
-    per_host
-  }
+  {{ noisebridge_caddy_global_security | indent(width=2) }}
+  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
 }
 # Metrics server
 {{ ansible_fqdn }} {
@@ -262,7 +251,7 @@ www.noisebridge.net {
   }
   
   route /adminer* {
-    authorize with noisebridge-github
+    authorize with noisebridge-github-rack
     root * /srv/adminer
     try_files {path} adminer.php
   }

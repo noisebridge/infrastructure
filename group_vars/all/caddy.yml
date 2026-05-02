@@ -9,6 +9,24 @@ noisebridge_github_client_id: "{{ vault_noisebridge_github_client_id }}"
 noisebridge_github_client_secret: "{{ vault_noisebridge_github_client_secret }}"
 noisebridge_jwt_token_secret: "{{ vault_noisebridge_jwt_token_secret }}"
 
+noisebridge_caddy_global_security: |
+  order authenticate before respond
+  order authorize before basic_auth
+  security {
+    authorization policy noisebridge-github-rack {
+      set auth url https://auth.noisebridge.net/auth
+      crypto key verify {{ noisebridge_jwt_token_secret }}
+      crypto key token name access_token
+      allow roles members rack
+      inject headers with claims
+    }
+  }
+
+noisebridge_caddy_global_metrics: |
+  metrics {
+    per_host
+  }
+
 noisebridge_caddy_log_filter: |
   format filter {
     wrap json

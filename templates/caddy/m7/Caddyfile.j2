@@ -30,9 +30,7 @@
     }
   }
 
-  servers {
-      metrics
-  }
+  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
 }
 # Metrics server
 {{ ansible_fqdn }} {

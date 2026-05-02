@@ -1,17 +1,8 @@
 {{ ansible_managed | comment }}
 # Global config
 {
-  order authenticate before respond
-  order authorize before basic_auth
-  security {
-    authorization policy noisebridge-github {
-      set auth url https://auth.noisebridge.net/auth
-      crypto key verify {{ noisebridge_jwt_token_secret }}
-      crypto key token name access_token
-      allow roles members rack
-      inject headers with claims
-    }
-  }
+  {{ noisebridge_caddy_global_security | indent(width=2) }}
+  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
 }
 # Metrics server
 {{ ansible_fqdn }} {
@@ -53,14 +44,14 @@ donate.noisebridge.net {
 # Monitoring
 grafana.noisebridge.net {
   route {
-    authorize with noisebridge-github
+    authorize with noisebridge-github-rack
     reverse_proxy localhost:3001
   }
 }
 
 prometheus.noisebridge.net {
   route {
-    authorize with noisebridge-github
+    authorize with noisebridge-github-rack
     reverse_proxy localhost:9090
   }
 }
