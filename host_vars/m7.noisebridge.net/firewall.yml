@@ -1,0 +1,4 @@
+---
+noisebridge_host_firewall:
+  - rule: allow
+    name: DNS

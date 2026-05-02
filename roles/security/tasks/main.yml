@@ -1,6 +1,12 @@
 ---
 
-- import_tasks: users.yml
+- name: Include task users
+  ansible.builtin.include_tasks:
+    file: users.yml
+
+- name: Include task firewall
+  ansible.builtin.include_tasks:
+    file: firewall.yml
 
 - name: Create cert group
   ansible.builtin.group:

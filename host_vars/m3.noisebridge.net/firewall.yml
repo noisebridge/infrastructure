@@ -1,0 +1,8 @@
+---
+noisebridge_host_firewall:
+  - rule: allow
+    name: DNS
+  - rule: allow
+    name: SMTP
+  - rule: allow
+    name: Mail submission

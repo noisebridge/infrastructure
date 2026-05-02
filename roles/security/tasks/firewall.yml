@@ -1,0 +1,37 @@
+---
+
+- name: Allow ssh/mosh
+  community.general.ufw:
+    rule: allow
+    name: "{{ item }}"
+  with_items:
+    - OpenSSH
+    - mosh
+
+- name: Allow Prometheus exporters
+  community.general.ufw:
+    rule: allow
+    proto: tcp
+    to_port: "3903,9100:9299"
+    from_ip: "{{ item }}"
+  with_items: "{{ prometheus_server_allow }}"
+
+- name: Add per-host firewall rules
+  community.general.ufw:
+    comment: "{{ item.comment | default(omit) }}"
+    delete: "{{ item.delete | default(omit) }}"
+    direction: "{{ item.direction | default(omit) }}"
+    from_ip: "{{ item.from_ip | default(omit) }}"
+    from_port: "{{ item.from_port | default(omit) }}"
+    insert: "{{ item.insert | default(omit) }}"
+    interface: "{{ item.interface | default(omit) }}"
+    log: "{{ item.log | default(omit) }}"
+    logging: "{{ item.logging | default(omit) }}"
+    name: "{{ item.name | default(omit) }}"
+    policy: "{{ item.policy | default(omit) }}"
+    proto: "{{ item.proto | default(omit) }}"
+    route: "{{ item.route | default(omit) }}"
+    rule: "{{ item.rule | default(omit) }}"
+    to_ip: "{{ item.to_ip | default(omit) }}"
+    to_port: "{{ item.to_port | default(omit) }}"
+  with_items: "{{ noisebridge_host_firewall }}"
