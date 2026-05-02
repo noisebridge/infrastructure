@@ -1,11 +1,11 @@
 ---
-- name: reload pydonate service file
+- name: Reload pydonate service file
   systemd:
     name: pydonate
     state: started
-    enabled: yes
-    daemon_reload: yes
-- name: restart pydonate
+    enabled: true
+    daemon_reload: true
+- name: Restart pydonate
   systemd:
     name: pydonate
     state: restarted

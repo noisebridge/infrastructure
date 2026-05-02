@@ -1,8 +1,8 @@
 ---
 - name: Install packages
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
-    update_cache: yes
+    update_cache: true
     cache_valid_time: 86400
   vars:
     packages:
@@ -35,9 +35,9 @@
       - vim
 
 - name: Setup sudoers
-  lineinfile:
+  ansible.builtin.lineinfile:
     dest: /etc/sudoers
     regexp: "^%sudo"
-    line: "%sudo	ALL=(ALL:ALL) NOPASSWD: ALL" # noqa no-tabs
+    line: "%sudo\tALL=(ALL:ALL) NOPASSWD: ALL" # noqa no-tabs
     state: present
-    mode: 0440
+    mode: "0440"

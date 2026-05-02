@@ -1,5 +1,5 @@
 ---
-noisebridge_admins: []
-noisebridge_users: []
-users: []
+security_admins: "{{ noisebridge_admins | default([]) }}"
+security_users: "{{ noisebridge_users | default([]) }}"
+security_users_directory: "{{ users | default([]) }}"
 noisebridge_host_firewall: []

@@ -1,64 +1,64 @@
 ---
-
 - name: Version precheck
   hosts: all
-  gather_facts: False
+  gather_facts: false
   tags:
-  - always
+    - always
   pre_tasks:
-  - name: Verify Ansible meets version requirements.
-    assert:
-      that: "ansible_version.full is version_compare('2.8', '>=')"
-      msg: >
-        "You must update Ansible to at least 2.8."
+    - name: Verify Ansible meets version requirements.
+      assert:
+        that: "ansible_version.full is version_compare('2.8', '>=')"
+        msg: >
+          "You must update Ansible to at least 2.8."
 
 # Workaround for https://github.com/ansible/ansible/issues/57529
-- hosts: all
-
-- name: node defaults
+- name: Facts workaround
   hosts: all
-  become: yes
-  become_method: sudo
+
+- name: Node defaults
+  hosts: all
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [common]
   roles:
     - utils
     - security
-    - { role: hifis.toolkit.unattended_upgrades, tags: [ 'unattended_upgrades' ] }
-    - { role: prometheus.prometheus.cadvisor, tags: [ 'cgroup_monitoring' ] }
-    - { role: prometheus.prometheus.node_exporter, tags: [ 'node_exporter' ] }
-    - { role: motd, tags: [ 'motd' ] }
+    - { role: hifis.toolkit.unattended_upgrades, tags: ["unattended_upgrades"] }
+    - { role: prometheus.prometheus.cadvisor, tags: ["cgroup_monitoring"] }
+    - { role: prometheus.prometheus.node_exporter, tags: ["node_exporter"] }
+    - { role: motd, tags: ["motd"] }
 
-- name: noisebridge_net
+- name: Host m3
   hosts: noisebridge_net
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [noisebridge_net]
   roles:
-    - { role: mediawiki, tags: [ 'mediawiki' ] }
-    - { role: website, tags: [ 'website' ] }
-    - { role: safespace, tags: [ 'safespace' ] }
-    - { role: mydumper, tags: [ 'mydumper' ] }
-    - { role: prometheus.prometheus.mysqld_exporter, tags: [ 'mysqld_exporter' ] }
-    - { role: caddy, tags: [ 'caddy' ] }
-    - { role: oomadj, tags: [ 'oomadj' ] }
+    - { role: mediawiki, tags: ["mediawiki"] }
+    - { role: website, tags: ["website"] }
+    - { role: safespace, tags: ["safespace"] }
+    - { role: mydumper, tags: ["mydumper"] }
+    - { role: prometheus.prometheus.mysqld_exporter, tags: ["mysqld_exporter"] }
+    - { role: caddy, tags: ["caddy"] }
+    - { role: oomadj, tags: ["oomadj"] }
 
-- name: m5
+- name: Host m5
   hosts: m5_noisebridge_net
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [m5]
   roles:
-    - { role: cloudalchemy.coredns, tags: [ 'coredns' ] }
-    - { role: prometheus.prometheus.blackbox_exporter, tags: [ 'blackbox' ] }
-    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
-    - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
-    - { role: caddy, tags: [ 'caddy' ] }
-    - { role: oomadj, tags: [ 'oomadj' ] }
+    - { role: cloudalchemy.coredns, tags: ["coredns"] }
+    - { role: prometheus.prometheus.blackbox_exporter, tags: ["blackbox"] }
+    - { role: prometheus.prometheus.prometheus, tags: ["prometheus"] }
+    - { role: grafana.grafana.grafana, tags: ["grafana"] }
+    - { role: caddy, tags: ["caddy"] }
+    - { role: oomadj, tags: ["oomadj"] }
 
 - name: List server
   hosts: lists_noisebridge_net
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [lists_noisebridge_net]
   roles:
     - postfix
@@ -66,36 +66,36 @@
 
 - name: DNS Servers
   hosts: dns
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [dns]
   roles:
     - cloudalchemy.coredns
 
 - name: Space
   hosts: space_noisebridge_net
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [space_noisebridge_net]
   roles:
-    - { role: prometheus.prometheus.snmp_exporter, tags: [ 'snmp' ] }
-    - { role: unifi-poller, tags: [ 'unifi-poller' ] }
-    - { role: prometheus.prometheus.prometheus, tags: [ 'prometheus' ] }
-    - { role: grafana.grafana.grafana, tags: [ 'grafana' ] }
+    - { role: prometheus.prometheus.snmp_exporter, tags: ["snmp"] }
+    - { role: unifi-poller, tags: ["unifi-poller"] }
+    - { role: prometheus.prometheus.prometheus, tags: ["prometheus"] }
+    - { role: grafana.grafana.grafana, tags: ["grafana"] }
     - powerpanel
 
 - name: Nextcloud on debian box in space
   hosts: cloud
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [cloud]
   roles:
     - nextcloud-docker
 
 - name: Earl RFID Access
   hosts: earl
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [earl]
   roles:
     - earl
@@ -108,18 +108,18 @@
 
 - name: Misc server SCL
   hosts: m6_noisebridge_net
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [m6_noisebridge_net]
   roles:
-    - { role: caddy, tags: [ 'caddy' ] }
-    - { role: library-org, tags: [ 'library-org' ] }
-    - { role: stuff-org, tags: [ 'stuff-org' ] }
+    - { role: caddy, tags: ["caddy"] }
+    - { role: library-org, tags: ["library-org"] }
+    - { role: stuff-org, tags: ["stuff-org"] }
 
 - name: Seattle Linode
   hosts: m7_noisebridge_net
-  become: yes
-  become_method: sudo
+  become: true
+  become_method: ansible.builtin.sudo
   tags: [m7_noisebridge_net]
   roles:
-    - { role: caddy, tags: [ 'caddy' ] }
+    - { role: caddy, tags: ["caddy"] }

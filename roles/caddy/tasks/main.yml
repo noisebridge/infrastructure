@@ -17,4 +17,4 @@
   ansible.builtin.include_tasks:
     file: certs.yml
   tags:
-  - caddy_certs
+    - caddy_certs

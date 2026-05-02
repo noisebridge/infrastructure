@@ -9,7 +9,7 @@
 #     chdir: "{{ pydonate_base }}"
 #   command:
 #     "{{ pydonate_venv }}/bin/flask db migrate"
-# 
+#
 # - name: run initial db migration
 #   become: true
 #   become_user: "{{ pydonate_user }}"
@@ -20,7 +20,7 @@
 #     chdir: "{{ pydonate_base }}"
 #   command:
 #     "{{ pydonate_venv }}/bin/flask db upgrade"
-# 
+#
 # - name: run app init
 #   become: true
 #   become_user: "{{ pydonate_user }}"

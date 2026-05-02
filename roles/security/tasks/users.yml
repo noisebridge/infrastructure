@@ -1,44 +1,44 @@
 ---
 - name: Add user
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
-    comment: "{{ users[item].fullname }}"
-    shell: "{{ users[item].shell | default('/bin/bash') }}"
-  with_flattened:
-  - "{{ noisebridge_admins }}"
-  - "{{ noisebridge_users }}"
+    comment: "{{ security_users_directory[item].fullname }}"
+    shell: "{{ security_users_directory[item].shell | default('/bin/bash') }}"
+  loop:
+    - "{{ security_admins | flatten }}"
+    - "{{ security_users | flatten }}"
   tags:
-  - access
+    - access
 
 - name: Grant sudo
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     groups:
-    - "sudo"
-    append: yes
-  with_flattened:
-  - "{{ noisebridge_admins | default([]) }}"
+      - "sudo"
+    append: true
+  loop:
+    - "{{ security_admins | default([]) | flatten }}"
   tags:
-  - access
+    - access
 
-- name: github SSH key
-  authorized_key:
+- name: GitHub SSH key
+  ansible.builtin.authorized_key:
     user: "{{ item }}"
-    key: "https://github.com/{{ users[item].github_username }}.keys"
-  with_flattened:
-  - "{{ noisebridge_admins | default([]) }}"
-  - "{{ noisebridge_users | default([]) }}"
-  when: users[item].github_username is defined
+    key: "https://github.com/{{ security_users_directory[item].github_username }}.keys"
+  loop:
+    - "{{ security_admins | default([]) | flatten }}"
+    - "{{ security_users | default([]) | flatten }}"
+  when: security_users_directory[item].github_username is defined
   tags:
-  - access
+    - access
 
-- name: static SSH key
-  authorized_key:
+- name: Static SSH key
+  ansible.builtin.authorized_key:
     user: "{{ item }}"
-    key: "{{ users[item].ssh_key }}"
-  with_flattened:
-  - "{{ noisebridge_admins | default([]) }}"
-  - "{{ noisebridge_users | default([]) }}"
-  when: users[item].ssh_key is defined
+    key: "{{ security_users_directory[item].ssh_key }}"
+  loop:
+    - "{{ security_admins | default([]) | flatten }}"
+    - "{{ security_users | default([]) | flatten }}"
+  when: security_users_directory[item].ssh_key is defined
   tags:
-  - access
+    - access

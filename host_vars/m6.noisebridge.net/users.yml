@@ -1,10 +1,10 @@
 ---
 noisebridge_admins:
-- hzeller
-- superq
-- rizend
-- elimisteve
-- bfb
-- jof
-- mcint
-- elan
+  - hzeller
+  - superq
+  - rizend
+  - elimisteve
+  - bfb
+  - jof
+  - mcint
+  - elan

@@ -17,7 +17,7 @@
     src: "/tmp/earl-v{{ earl_version }}.{{ go_arch }}.tar.gz"
     dest: "/tmp"
     creates: "/tmp/earl-{{ go_arch }}"
-    mode: 0755
+    mode: "0755"
   delegate_to: localhost
   check_mode: false
 
@@ -25,27 +25,27 @@
   copy:
     src: "/tmp/earl-{{ go_arch }}"
     dest: "/usr/local/bin/earl"
-    mode: 0755
+    mode: "0755"
     owner: root
     group: root
   notify: restart earl
   when: not ansible_check_mode
 
-- name: create earl system group
+- name: Create earl system group
   group:
     name: earl
     system: true
     state: present
 
-- name: create earl system user
+- name: Create earl system user
   user:
     name: earl
     system: true
     shell: "/sbin/nologin"
     group: earl
     groups:
-    - gpio
-    - dialout
+      - gpio
+      - dialout
     createhome: false
     home: /var/lib/earl
 
@@ -55,24 +55,24 @@
     owner: earl
     group: earl
     state: directory
-    mode: 0755
+    mode: "0755"
   with_items:
-  - /etc/earl
-  - /var/log/earl
-  - /var/lib/earl
-  - /var/lib/earl/doorbell-sounds
+    - /etc/earl
+    - /var/log/earl
+    - /var/lib/earl
+    - /var/lib/earl/doorbell-sounds
 
 - name: Create service
   template:
-    src:  earl.service.j2
+    src: earl.service.j2
     dest: /etc/systemd/system/earl.service
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - restart earl
 
-- name: ensure earl service is started and enabled
+- name: Ensure earl service is started and enabled
   become: true
   systemd:
     daemon_reload: true

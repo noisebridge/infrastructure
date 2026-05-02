@@ -16,7 +16,7 @@
   group:
     name: "{{ pydonate_user }}"
     state: present
-    system: yes
+    system: true
 
 - name: Create user for pydonate
   user:
@@ -25,7 +25,7 @@
     home: "/srv/{{ pydonate_user }}"
     createhome: false
     shell: /sbin/nologin
-    system: yes
+    system: true
 
 - name: Create dirs
   file:
@@ -33,10 +33,10 @@
     owner: "{{ pydonate_user }}"
     group: "{{ pydonate_user }}"
     state: directory
-    mode: 0755
+    mode: "0755"
   with_items:
-  - "/srv/{{ pydonate_user }}"
-  - "{{ pydonate_base }}"
+    - "/srv/{{ pydonate_user }}"
+    - "{{ pydonate_base }}"
 
 - name: Checkout repository
   become: true
@@ -46,7 +46,7 @@
     dest: "{{ pydonate_base }}"
     version: "{{ pydonate_version }}"
   notify:
-  - restart pydonate
+    - restart pydonate
 
 - name: Setup venv
   become: true
@@ -71,9 +71,9 @@
     dest: /etc/systemd/system/pydonate.service
     owner: root
     group: root
-    mode: '0644'
+    mode: "0644"
   notify:
-  - reload pydonate service file
+    - Reload pydonate service file
 
 - name: Template out .env file
   template:
@@ -81,8 +81,8 @@
     dest: "{{ pydonate_base }}/.env"
     owner: root
     group: "{{ pydonate_user }}"
-    mode: '0640'
+    mode: "0640"
   notify:
-  - restart pydonate
+    - Restart pydonate
 
-  # - include: initialize_app.yml
+# - include: initialize_app.yml

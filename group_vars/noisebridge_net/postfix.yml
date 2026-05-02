@@ -1,41 +1,42 @@
+---
 postfix_aliases:
   # Root aliases
   blog-admin:
     alias:
-    - root
+      - root
   clamav:
     alias:
-    - root
+      - root
   hostmaster:
     alias:
-    - root
+      - root
   list:
     alias:
-    - root
+      - root
   monit:
     alias:
-    - root
+      - root
   planet:
     alias:
-    - root
+      - root
   postmaster:
     alias:
-    - root
+      - root
   ssladmin:
     alias:
-    - root
+      - root
   ssladministrator:
     alias:
-    - root
+      - root
   uplinks:
     alias:
-    - root
+      - root
   webmaster:
     alias:
-    - root
+      - root
   www-data:
     alias:
-    - root
+      - root
   root:
     alias: "{{ noisebridge_alias_root }}"
   # Noisebridge aliases
@@ -49,7 +50,7 @@ postfix_aliases:
     alias: "{{ noisebridge_alias_community_outreach }}"
   donations:
     alias:
-    - treasurer
+      - treasurer
   fundraising:
     comment: Fundraising alias
     alias: "{{ noisebridge_alias_fundraising }}"
@@ -57,14 +58,14 @@ postfix_aliases:
     alias: "{{ noisebridge_alias_lasercut }}"
   legal-demands:
     alias:
-    - root
-    - secretary
+      - root
+      - secretary
   media:
     alias:
-    - press
+      - press
   noiserat:
     alias:
-    - signal2noise@lists.noisebridge.net
+      - signal2noise@lists.noisebridge.net
   powerstation:
     alias: "{{ noisebridge_alias_powerstation }}"
   press:
@@ -77,9 +78,9 @@ postfix_aliases:
     alias: "{{ noisebridge_alias_treasurer }}"
   treasury:
     alias:
-    - treasurer
+      - treasurer
   mediation-request:
     alias:
-    - mediation-request@lists.noisebridge.net
-    - mediation-request-mai-aaaagpdjplmjkpwofzaa4pu7dy@noisebridge.slack.com
-    - noisebridge-discuss@lists.noisebridge.net
+      - mediation-request@lists.noisebridge.net
+      - mediation-request-mai-aaaagpdjplmjkpwofzaa4pu7dy@noisebridge.slack.com
+      - noisebridge-discuss@lists.noisebridge.net

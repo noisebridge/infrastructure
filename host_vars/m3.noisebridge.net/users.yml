@@ -1,7 +1,7 @@
 ---
 noisebridge_users:
-- yar
-- mcint
-- elan
-- jetpham
-- nthmost
+  - yar
+  - mcint
+  - elan
+  - jetpham
+  - nthmost

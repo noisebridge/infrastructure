@@ -1,24 +1,24 @@
 ---
-- name: configure mailman
+- name: Configure mailman
   template:
     src: mm_cfg.py.j2
     dest: /etc/mailman/mm_cfg.py
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
-  - restart mailman
+    - restart mailman
 
-- name: create mailman srv directory
+- name: Create mailman srv directory
   file:
     state: directory
     dest: /srv/mailman/lists.noisebridge.net
     owner: www-data
     group: www-data
-    mode: 0755
+    mode: "0755"
 
-- name: add the www-data user to the list group
+- name: Add the www-data user to the list group
   user:
     name: www-data
     groups: list
-    append: yes
+    append: true

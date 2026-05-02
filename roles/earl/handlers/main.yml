@@ -1,5 +1,5 @@
 ---
-- name: restart earl
+- name: Restart earl
   become: true
   systemd:
     daemon_reload: true

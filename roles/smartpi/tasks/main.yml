@@ -1,8 +1,8 @@
 ---
-- name: "Install packages"
+- name: Install packages
   apt:
     pkg: "{{ item }}"
-    install_recommends: no
+    install_recommends: false
   with_items:
     - sqlite3
     - git

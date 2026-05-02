@@ -25,4 +25,3 @@ pydonate_db:
   sock: "/var/run/mysqld/mysqld.sock"
 
 pydonate_test_uri: "{{ pydonate_db.connector }}+{{ pydonate_db.dialect }}://{{ pydonate_db.dbuser }}:{{ pydonate_config.secrets.db_pass }}@{{ pydonate_db.host }}/{{ pydonate_db.dbname }}?unix_socket={{ pydonate_db.sock }}"
-
