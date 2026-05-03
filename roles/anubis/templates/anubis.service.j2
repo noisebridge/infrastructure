@@ -1,0 +1,33 @@
+{{ ansible_managed | comment }}
+
+[Unit]
+Description=Anubis bot protection
+After=network.target
+
+[Service]
+Type=simple
+User=anubis
+Group=anubis
+RuntimeDirectory=anubis
+RuntimeDirectoryMode=0755
+
+Environment=BIND=unix//run/anubis/anubis.sock
+Environment=BIND_NETWORK=unix
+Environment=SOCKET_MODE=0660
+Environment=TARGET={{ anubis_target }}
+Environment=DIFFICULTY={{ anubis_difficulty }}
+Environment=METRICS_BIND=:9091
+Environment=POLICY_FNAME=/etc/anubis/policy.yaml
+{% if anubis_cookie_domain is defined %}
+Environment=COOKIE_DOMAIN={{ anubis_cookie_domain }}
+{% endif %}
+{% if anubis_webmaster_email is defined %}
+Environment=WEBMASTER_EMAIL={{ anubis_webmaster_email }}
+{% endif %}
+
+ExecStart=/usr/local/bin/anubis
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

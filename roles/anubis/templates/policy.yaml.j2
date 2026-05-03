@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+# Anubis Bot Policy Configuration
+
+bots:
+  # import default AI bot catchall rules
+  - import: "(data)/bots/ai-catchall.yaml"
+
+  # allow those physically at Noisebridge to browse without challenges
+  - name: noisebridge-building
+    remote_addresses:
+      - "192.195.83.128/29"
+    action: ALLOW
+
+  # allow legitimate search engines
+  - name: search-engines
+    user_agent_regex: "(?i)googlebot|bingbot|duckduckbot"
+    action: ALLOW
+
+  # allow Internet Archive
+  - name: internet-archive
+    user_agent_regex: "(?i)archive\\.org_bot|ia_archiver"
+    action: ALLOW
