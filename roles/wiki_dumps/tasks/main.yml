@@ -27,4 +27,5 @@
       LOCALSETTINGS={{ wiki_dumps_localsettings }}
       PUBLIC_DIR={{ wiki_dumps_public_dir }}
       PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
+      PHP=/usr/bin/php8.2
       /usr/local/sbin/wiki_dump >> /var/log/wiki_dump.log 2>&1

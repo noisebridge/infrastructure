@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Generates a public MediaWiki dump (current revisions, public pages only)
 # for bot/scraper consumption at dumps.noisebridge.net
 
@@ -7,6 +7,10 @@ set -euo pipefail
 MEDIAWIKI_PATH="${MEDIAWIKI_PATH:-/srv/mediawiki/noisebridge.net}"
 LOCALSETTINGS="${LOCALSETTINGS:-/srv/mediawiki/noisebridge.net/LocalSettings.php}"
 PUBLIC_DIR="${PUBLIC_DIR:-/var/www/dumps.noisebridge.net}"
+if [[ ! -d "${PUBLIC_DIR}" ]]; then
+  echo "ERROR: Missing directory: '${PUBLIC_DIR}'"
+  exit 1
+fi
 PUBLIC_KEEP_DAYS="${PUBLIC_KEEP_DAYS:-7}"
 
 PHP="${PHP:-php}"
