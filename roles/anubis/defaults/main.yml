@@ -1,3 +1,7 @@
 ---
 anubis_version: "1.25.0"
 anubis_checksum: "sha256:958d17e52e9445a0f60c2f35ab05b7464841e4714d8df6c5ec986800f06471f7"
+
+anubis_metrics_bind: ":9103"
+anubis_metrics_username: "prometheus"
+anubis_metrics_password: "Secret"
