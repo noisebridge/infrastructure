@@ -16,8 +16,7 @@ Environment=BIND_NETWORK=unix
 Environment=SOCKET_MODE=0660
 Environment=TARGET={{ anubis_target }}
 Environment=DIFFICULTY={{ anubis_difficulty }}
-Environment=METRICS_BIND=:9091
-Environment=POLICY_FNAME=/etc/anubis/policy.yaml
+Environment=METRICS_BIND=:9103
 {% if anubis_cookie_domain is defined %}
 Environment=COOKIE_DOMAIN={{ anubis_cookie_domain }}
 {% endif %}
@@ -25,7 +24,7 @@ Environment=COOKIE_DOMAIN={{ anubis_cookie_domain }}
 Environment=WEBMASTER_EMAIL={{ anubis_webmaster_email }}
 {% endif %}
 
-ExecStart=/usr/local/bin/anubis
+ExecStart=/usr/local/bin/anubis -policy-fname=/etc/anubis/policy.yaml
 Restart=always
 RestartSec=5
 

@@ -29,6 +29,12 @@
     groups: anubis
     append: true
 
+- name: Add anubis to ssl-cert group for TLS listening
+  ansible.builtin.user:
+    name: anubis
+    groups: ssl-cert
+    append: true
+
 - name: Download anubis tarball
   ansible.builtin.get_url:
     url: "https://github.com/TecharoHQ/anubis/releases/download/v{{ anubis_version }}/anubis-{{ anubis_version }}-linux-amd64.tar.gz"
