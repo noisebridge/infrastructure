@@ -15,13 +15,16 @@
     group: anubis
     createhome: false
 
-- name: Create anubis config directory
+- name: Create anubis directories
   ansible.builtin.file:
-    path: /etc/anubis
+    path: "{{ item }}"
     state: directory
     owner: anubis
     group: anubis
     mode: "0755"
+  loop:
+    - /etc/anubis
+    - /var/lib/anubis
 
 - name: Add www-data to anubis group for socket access
   ansible.builtin.user:
