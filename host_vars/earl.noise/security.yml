@@ -1,5 +1,5 @@
 ---
-noisebridge_admins:
+security_admins:
   - hzeller
   - r
   - superq

@@ -1,5 +1,5 @@
 ---
-noisebridge_users:
+security_users:
   - yar
   - mcint
   - elan

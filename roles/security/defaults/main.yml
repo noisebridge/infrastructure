@@ -1,5 +1,6 @@
 ---
-security_admins: "{{ noisebridge_admins | default([]) }}"
-security_users: "{{ noisebridge_users | default([]) }}"
-security_users_directory: "{{ users | default([]) }}"
-noisebridge_host_firewall: []
+security_admins: []
+security_users: []
+security_users_directory: []
+security_host_firewall: []
+security_prometheus_server_allow: []

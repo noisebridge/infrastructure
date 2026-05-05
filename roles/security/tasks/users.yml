@@ -4,9 +4,7 @@
     name: "{{ item }}"
     comment: "{{ security_users_directory[item].fullname }}"
     shell: "{{ security_users_directory[item].shell | default('/bin/bash') }}"
-  loop:
-    - "{{ security_admins | flatten }}"
-    - "{{ security_users | flatten }}"
+  loop: "{{ security_admins + security_users | flatten | unique }}"
   tags:
     - access
 
@@ -16,8 +14,7 @@
     groups:
       - "sudo"
     append: true
-  loop:
-    - "{{ security_admins | default([]) | flatten }}"
+  loop: "{{ security_admins | flatten | unique }}"
   tags:
     - access
 
@@ -25,9 +22,7 @@
   ansible.builtin.authorized_key:
     user: "{{ item }}"
     key: "https://github.com/{{ security_users_directory[item].github_username }}.keys"
-  loop:
-    - "{{ security_admins | default([]) | flatten }}"
-    - "{{ security_users | default([]) | flatten }}"
+  loop: "{{ security_admins + security_users | flatten | unique }}"
   when: security_users_directory[item].github_username is defined
   tags:
     - access
@@ -36,9 +31,7 @@
   ansible.builtin.authorized_key:
     user: "{{ item }}"
     key: "{{ security_users_directory[item].ssh_key }}"
-  loop:
-    - "{{ security_admins | default([]) | flatten }}"
-    - "{{ security_users | default([]) | flatten }}"
+  loop: "{{ security_admins + security_users | flatten | unique }}"
   when: security_users_directory[item].ssh_key is defined
   tags:
     - access
