@@ -34,6 +34,14 @@ prometheus_scrape_configs:
           - "m5.noisebridge.net:9100"
           - "m6.noisebridge.net:9100"
           - "m7.noisebridge.net:9100"
+  - job_name: anubis
+    # scheme: https
+    # basic_auth:
+    #   username: prometheus
+    #   password: "{{ noisebridge_prometheus_password }}"
+    static_configs:
+      - targets:
+          - "m3.noisebridge.net:9103"
   - job_name: "caddy"
     scheme: https
     basic_auth:
