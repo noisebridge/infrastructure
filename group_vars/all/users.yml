@@ -135,3 +135,5 @@ users:
     fullname: Yardena Cohen
     email: yardenack@gmail.com
     github_username: yardenac
+
+security_users_directory: "{{ users }}"

@@ -1,4 +1,8 @@
 ---
+- name: Install ufw
+  ansible.builtin.apt:
+    name: ufw
+    install_recommends: false
 
 - name: Allow ssh/mosh
   community.general.ufw:
@@ -14,7 +18,7 @@
     proto: tcp
     to_port: "3903,9100:9299"
     from_ip: "{{ item }}"
-  with_items: "{{ prometheus_server_allow }}"
+  with_items: "{{ security_prometheus_server_allow }}"
 
 - name: Add per-host firewall rules
   community.general.ufw:
@@ -34,4 +38,4 @@
     rule: "{{ item.rule | default(omit) }}"
     to_ip: "{{ item.to_ip | default(omit) }}"
     to_port: "{{ item.to_port | default(omit) }}"
-  with_items: "{{ noisebridge_host_firewall }}"
+  with_items: "{{ security_host_firewall }}"

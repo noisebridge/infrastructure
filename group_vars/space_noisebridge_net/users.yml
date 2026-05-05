@@ -1,5 +1,5 @@
 ---
-noisebridge_admins:
+security_admins:
   - beka
   - chaz
   - cole
@@ -22,5 +22,5 @@ noisebridge_admins:
   - tdfischer
   - teapot
 
-noisebridge_users:
+security_users:
   - eenblam

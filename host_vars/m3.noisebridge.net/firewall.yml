@@ -1,5 +1,5 @@
 ---
-noisebridge_host_firewall:
+security_host_firewall:
   - rule: allow
     name: DNS
   - rule: allow
