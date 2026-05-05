@@ -49,6 +49,7 @@
   rewrite / /index.php?title={path}
   redir / /wiki
 }
+
 # Metrics server
 {{ ansible_fqdn }} {
   handle_path /goaccess/* {
