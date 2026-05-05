@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026041000 ; Serial
+                                2026050500 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -165,6 +165,7 @@ pegasus         IN      AAAA    2607:f598:b0cf:200:250:c2ff:fe28:3070
 pegasus         IN      A       192.195.83.134
 
 ; Services hosted on m3
+dumps           IN      CNAME   m3
 safespace       IN      CNAME   m3
 
 ; Services hosted on m5
