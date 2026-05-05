@@ -12,6 +12,11 @@
 #     username: "{{ anubis_metrics_username }}"
 #     password: "{{ anubis_metrics_password }}"
 
+store:
+  backend: bbolt
+  parameters:
+    path: /var/lib/anubis/anubis.bdb
+
 bots:
   # allow those physically at Noisebridge to browse without challenges
   - name: noisebridge-building
