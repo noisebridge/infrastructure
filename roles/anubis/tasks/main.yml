@@ -1,0 +1,86 @@
+---
+# Anubis - bot protection for MediaWiki
+
+- name: Create anubis system group
+  ansible.builtin.group:
+    name: anubis
+    system: true
+    state: present
+
+- name: Create anubis system user
+  ansible.builtin.user:
+    name: anubis
+    system: true
+    shell: "/sbin/nologin"
+    group: anubis
+    createhome: false
+
+- name: Create anubis config directory
+  ansible.builtin.file:
+    path: /etc/anubis
+    state: directory
+    owner: anubis
+    group: anubis
+    mode: "0755"
+
+- name: Add www-data to anubis group for socket access
+  ansible.builtin.user:
+    name: www-data
+    groups: anubis
+    append: true
+
+- name: Download anubis tarball
+  ansible.builtin.get_url:
+    url: "https://github.com/TecharoHQ/anubis/releases/download/v{{ anubis_version }}/anubis-{{ anubis_version }}-linux-amd64.tar.gz"
+    dest: "/var/cache/anubis-{{ anubis_version }}.tar.gz"
+    checksum: "{{ anubis_checksum }}"
+    mode: "0644"
+
+- name: Extract anubis binary
+  ansible.builtin.unarchive:
+    src: "/var/cache/anubis-{{ anubis_version }}.tar.gz"
+    dest: /var/cache
+    remote_src: true
+    creates: "/var/cache/anubis-{{ anubis_version }}-linux-amd64/bin/anubis"
+
+- name: Install anubis binary
+  ansible.builtin.copy:
+    src: "/var/cache/anubis-{{ anubis_version }}-linux-amd64/bin/anubis"
+    dest: "/usr/local/bin/anubis-{{ anubis_version }}"
+    remote_src: true
+    mode: "0755"
+    owner: root
+    group: root
+  notify: Restart anubis
+
+- name: Symlink anubis binary
+  ansible.builtin.file:
+    src: "/usr/local/bin/anubis-{{ anubis_version }}"
+    dest: /usr/local/bin/anubis
+    state: link
+  notify: Restart anubis
+
+- name: Deploy anubis policy configuration
+  ansible.builtin.template:
+    src: policy.yaml.j2
+    dest: /etc/anubis/policy.yaml
+    owner: anubis
+    group: anubis
+    mode: "0644"
+  notify: Restart anubis
+
+- name: Create anubis systemd service
+  ansible.builtin.template:
+    src: anubis.service.j2
+    dest: /etc/systemd/system/anubis.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Restart anubis
+
+- name: Ensure anubis service is started and enabled
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: anubis
+    state: started
+    enabled: true
