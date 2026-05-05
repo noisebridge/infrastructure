@@ -1,0 +1,30 @@
+---
+- name: Create public dump directory
+  ansible.builtin.file:
+    path: "{{ wiki_dumps_public_dir }}"
+    state: directory
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: "0755"
+
+- name: Deploy dump script
+  ansible.builtin.copy:
+    src: wiki_dump.sh
+    dest: /usr/local/sbin/wiki_dump
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Install cron job
+  ansible.builtin.cron:
+    name: MediaWiki public dump
+    cron_file: wiki_dump
+    user: "{{ mediawiki.system_user }}"
+    hour: "{{ wiki_dumps_cron_hour }}"
+    minute: "{{ wiki_dumps_cron_minute }}"
+    job: >-
+      MEDIAWIKI_PATH={{ wiki_dumps_mediawiki_path }}
+      LOCALSETTINGS={{ wiki_dumps_localsettings }}
+      PUBLIC_DIR={{ wiki_dumps_public_dir }}
+      PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
+      /usr/local/sbin/wiki_dump >> /var/log/wiki_dump.log 2>&1
