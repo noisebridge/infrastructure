@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026032800 ; Serial
+                                2026041000 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -171,6 +171,7 @@ safespace       IN      CNAME   m3
 donate          IN      CNAME   donate-noisebridge-net.onrender.com.
 grafana         IN      CNAME   m5
 prometheus      IN      CNAME   m5
+test-safespace  IN      CNAME   m5
 
 ; donate.noisebridge.net email records (resend.com)
 resend._domainkey.donate  IN  TXT  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCoQWXGT4XLCErI5+ILqqMcSybWz1DxAqGyw9cxuaPN39YIyD6+SsvoP0p83iX3appGI4EXAVXe2YNPmNaa9UBnG7eio0tUe61L/J/82XEV/XbYTZpCGE5laIbQWZh77BBD9Ie6RpmYW2p1frnSUuz6BmnsT63fCToPfVU8K3jC/wIDAQAB"
