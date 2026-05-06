@@ -10,6 +10,11 @@ prometheus_global:
   scrape_timeout: 10s
   evaluation_interval: 30s
 
+prometheus_alertmanager_config:
+  - static_configs:
+      - targets:
+          - "[::1]:9093"
+
 prometheus_blackbox_relabel_configs:
   - source_labels: [__address__]
     target_label: __param_target
@@ -34,6 +39,10 @@ prometheus_scrape_configs:
           - "m5.noisebridge.net:9100"
           - "m6.noisebridge.net:9100"
           - "m7.noisebridge.net:9100"
+  - job_name: alertmanager
+    static_configs:
+      - targets:
+          - "[::1]:9093"
   - job_name: anubis
     # scheme: https
     # basic_auth:
