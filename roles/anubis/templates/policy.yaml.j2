@@ -18,12 +18,13 @@ store:
     path: /var/lib/anubis/anubis.bdb
 
 bots:
-  # allow those physically at Noisebridge to browse without challenges
+  # Allow those physically at Noisebridge to browse without challenges.
   - name: noisebridge-building
     remote_addresses:
       - "192.195.83.128/29"
     action: ALLOW
 
+  # Allow scrape / probe traffic from the monitoring host.
   - name: m5.noisebridge.net
     remote_addresses:
       - "216.252.162.195/32"
@@ -38,12 +39,16 @@ bots:
     import: (data)/bots/_deny-pathological.yaml
   - import: (data)/bots/aggressive-brazilian-scrapers.yaml
 
-  # Aggressively block AI/LLM related bots/agents by default
+  # Blocks all AI/LLM associated user agents, regardless of purpose or human agency
+  # Warning: To completely block some AI/LLM training, such as with Google, you _must_ place flags in robots.txt.
   # - import: (data)/meta/ai-block-aggressive.yaml
 
-  # Consider replacing the aggressive AI policy with more selective policies:
-  - import: (data)/meta/ai-block-moderate.yaml
-  # - import: (data)/meta/ai-block-permissive.yaml
+  # Blocks all AI/LLM bots used for training or unknown/undocumented purposes.
+  # Permits user agents with explicitly documented non-training use, and published IP allowlists.
+  # - import: (data)/meta/ai-block-moderate.yaml
+
+  # Permits all well documented AI/LLM user agents with published IP allowlists.
+  - import: (data)/meta/ai-block-permissive.yaml
 
   # Search engine crawlers to allow, defaults to:
   #   - Google (so they don't try to bypass Anubis)
