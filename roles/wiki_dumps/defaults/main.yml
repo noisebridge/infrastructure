@@ -1,0 +1,11 @@
+---
+wiki_dumps_mediawiki_path: "/srv/mediawiki/{{ mediawiki.domain }}"
+wiki_dumps_localsettings: "/srv/mediawiki/{{ mediawiki.domain }}/LocalSettings.php"
+
+# Public dump — current revisions of public pages only, served to bots
+wiki_dumps_public_dir: /var/www/dumps.noisebridge.net
+wiki_dumps_public_keep_days: 7
+
+# Cron schedule (default: 2AM daily)
+wiki_dumps_cron_hour: 2
+wiki_dumps_cron_minute: 0
