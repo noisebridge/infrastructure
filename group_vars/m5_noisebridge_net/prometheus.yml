@@ -10,6 +10,7 @@ prometheus_global:
   scrape_interval: 15s
   scrape_timeout: 10s
   evaluation_interval: 30s
+  scrape_native_histograms: true
 
 prometheus_alertmanager_config:
   - static_configs:
