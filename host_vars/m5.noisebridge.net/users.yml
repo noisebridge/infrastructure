@@ -1,9 +1,9 @@
 ---
-noisebridge_admins:
-- superq
-- elimisteve
-- rizend
-- bfb
-- jof
-- mcint
-- elan
+security_admins:
+  - superq
+  - elimisteve
+  - rizend
+  - bfb
+  - jof
+  - mcint
+  - elan

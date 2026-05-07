@@ -1,53 +1,53 @@
 ---
-#- name: debug
+# - name: debug
 #  debug:
 #    msg: "{{ nextcloud_docker_files_path }}"
 
-#nextcloud_docker_files_path: "/srv/docker/nextcloud"
+# nextcloud_docker_files_path: "/srv/docker/nextcloud"
 
-- name: make nextcloud directory
+- name: Make nextcloud directory
   file:
     dest: "{{ nextcloud_docker_files_path }}"
     state: directory
-    mode: 0755
+    mode: "0755"
 
-- name: make scripts dir
+- name: Make scripts dir
   file:
     dest: "{{ item }}/scripts"
     state: directory
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
-- name: make nextcloud backups directory
+- name: Make nextcloud backups directory
   file:
     dest: "{{ item }}/backups"
     state: directory
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
-- name: make nextcloud mariadb conf directory
+- name: Make nextcloud mariadb conf directory
   file:
     dest: "{{ item }}/mariadb"
     state: directory
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
-- name: docker-compose.yml
+- name: Docker-compose.yml
   template:
     src: files/nextcloud/docker-compose.yml
     dest: "{{ item }}/docker-compose.yml"
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
-- name: sample env file
+- name: Sample env file
   template:
     src: files/nextcloud/env
     dest: "{{ item }}/env"
-    mode: 0600
+    mode: "0600"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -55,7 +55,7 @@
   template:
     src: files/nextcloud/Makefile
     dest: "{{ item }}/Makefile"
-    mode: 0644
+    mode: "0644"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
@@ -63,22 +63,22 @@
   template:
     src: files/nextcloud/README.md
     dest: "{{ item }}/README.md"
-    mode: 0644
+    mode: "0644"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
-- name: docker volume list script
+- name: Docker volume list script
   copy:
     src: files/nextcloud/scripts/docker_get_data_volume_info.sh
     dest: "{{ item }}/scripts/docker_get_data_volume_info.sh"
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nextcloud_docker_files_path }}"
 
-- name: docker volume copy script
+- name: Docker volume copy script
   copy:
     src: files/nextcloud/scripts/docker_clone_volume.sh
     dest: "{{ item }}/scripts/docker_clone_volume.sh"
-    mode: 0755
+    mode: "0755"
   with_items:
     - "{{ nextcloud_docker_files_path }}"

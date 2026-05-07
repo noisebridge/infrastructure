@@ -1,3 +1,4 @@
+---
 mysqld_exporter_system_group: ssl-cert
 mysqld_exporter_username: mysqld_exporter
 mysqld_exporter_tls_server_config:

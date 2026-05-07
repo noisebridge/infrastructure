@@ -1,17 +1,8 @@
 {{ ansible_managed | comment }}
 # Global config
 {
-  order authenticate before respond
-  order authorize before basic_auth
-  security {
-    authorization policy noisebridge-github {
-      set auth url https://auth.noisebridge.net/auth
-      crypto key verify {{ noisebridge_jwt_token_secret }}
-      crypto key token name access_token
-      allow roles members rack
-      inject headers with claims
-    }
-  }
+  {{ noisebridge_caddy_global_security | indent(width=2) }}
+  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
 }
 # Metrics server
 {{ ansible_fqdn }} {
@@ -50,17 +41,36 @@ donate.noisebridge.net {
   respond "This donate endpoint is currently offline" 503
 }
 
+# Safespace site
+test-safespace.noisebridge.net {
+  log {
+    output file "{{ caddy_log_dir }}/test-safespace.noisebridge.net.log" {
+      {{ noisebridge_caddy_log_roll | indent(width=6) }}
+    }
+    {{ noisebridge_caddy_log_filter | indent(width=4) }}
+  }
+  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+  reverse_proxy localhost:5000
+}
+
 # Monitoring
+alertmanager.noisebridge.net {
+  route {
+    authorize with noisebridge-github-rack
+    reverse_proxy [::1]:9093
+  }
+}
+
 grafana.noisebridge.net {
   route {
-    authorize with noisebridge-github
+    authorize with noisebridge-github-rack
     reverse_proxy localhost:3001
   }
 }
 
 prometheus.noisebridge.net {
   route {
-    authorize with noisebridge-github
+    authorize with noisebridge-github-rack
     reverse_proxy localhost:9090
   }
 }

@@ -1,4 +1,6 @@
 ---
-noisebridge_admins: []
-noisebridge_users: []
-users: []
+security_admins: []
+security_users: []
+security_users_directory: []
+security_host_firewall: []
+security_prometheus_server_allow: []

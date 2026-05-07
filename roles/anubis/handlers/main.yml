@@ -1,0 +1,6 @@
+---
+- name: Restart anubis
+  ansible.builtin.systemd:
+    name: anubis
+    state: restarted
+    daemon_reload: true

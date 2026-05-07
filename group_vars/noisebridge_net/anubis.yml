@@ -1,0 +1,11 @@
+---
+# Anubis configuration for MediaWiki bot protection
+
+anubis_target: "http://127.0.0.1:8080"
+anubis_difficulty: 4
+
+anubis_cookie_domain: ".noisebridge.net"
+anubis_webmaster_email: "webmaster@noisebridge.net"
+
+anubis_metrics_username: "prometheus"
+anubis_metrics_password: "{{ noisebridge_prometheus_password }}"

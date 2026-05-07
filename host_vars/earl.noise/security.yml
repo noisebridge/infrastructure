@@ -1,7 +1,7 @@
 ---
-noisebridge_admins:
-- hzeller
-- r
-- superq
-- tdfischer
-- jof
+security_admins:
+  - hzeller
+  - r
+  - superq
+  - tdfischer
+  - jof

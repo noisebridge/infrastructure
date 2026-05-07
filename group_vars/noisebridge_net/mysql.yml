@@ -2,12 +2,12 @@
 percona_enable_ps80: true
 mysql_daemon: mysql
 mysql_packages:
-- percona-server-server
-- percona-server-client
-- libperconaserverclient21-dev
+  - percona-server-server
+  - percona-server-client
+  - libperconaserverclient21-dev
 mysql_bind_address: 127.0.0.1
 mysql_databases:
-- name: wiki
+  - name: wiki
 
 ## Tuning params
 

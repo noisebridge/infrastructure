@@ -1,0 +1,4 @@
+---
+oomadj_scores:
+  "caddy.service": -200
+  "mysql.service": -500

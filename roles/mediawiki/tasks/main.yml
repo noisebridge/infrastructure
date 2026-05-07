@@ -1,5 +1,7 @@
 ---
-- include_tasks: php.yml
+- name: Install PHP
+  ansible.builtin.include_tasks:
+    file: php.yml
 
 - name: Create group
   group:
@@ -16,30 +18,30 @@
     createhome: false
     home: "/srv/mediawiki/{{ mediawiki.domain }}"
 
-- name: fetch mediawiki LTS release
+- name: Fetch mediawiki LTS release
   get_url:
     dest: /tmp/
     url: "https://releases.wikimedia.org/mediawiki/{{ mediawiki_version | regex_search('\\d+.\\d+') }}/mediawiki-{{ mediawiki_version }}.tar.gz"
     checksum: "sha256:{{ mediawiki_version_checksum }}"
   check_mode: false
 
-- name: make wiki cache directory
+- name: Make wiki cache directory
   file:
     dest: "/var/cache/mediawiki"
     state: directory
     owner: "www-data"
     group: "www-data"
-    mode: 0755
+    mode: "0755"
 
-- name: make wiki directory
+- name: Make wiki directory
   file:
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
     state: directory
     owner: "{{ mediawiki.system_user }}"
     group: "{{ mediawiki.system_group }}"
-    mode: 0755
+    mode: "0755"
 
-- name: extract mediawiki
+- name: Extract mediawiki
   unarchive: # noqa risky-file-permissions
     src: "/tmp/mediawiki-{{ mediawiki_version }}.tar.gz"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}"
@@ -49,42 +51,42 @@
     extra_opts: ["--strip-components=1"]
   check_mode: false
 
-- name: install mwGoogleSheets extension
+- name: Install mwGoogleSheets extension
   git:
-    repo: 'https://github.com/marcidy/mwGoogleSheet.git'
+    repo: "https://github.com/marcidy/mwGoogleSheet.git"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/mwGoogleSheet"
     version: REL1_27
   when: not ansible_check_mode
 
-- name: install LastModified extension
-  git:
+- name: Install LastModified extension
+  ansible.builtin.git:
     repo: 'https://gerrit.wikimedia.org/r/mediawiki/extensions/LastModified'
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/LastModified"
     version: REL1_39
   when: not ansible_check_mode
 
-- name: install LocalSettings
+- name: Install LocalSettings
   template:
     src: LocalSettings.php
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/LocalSettings.php"
     owner: "{{ mediawiki.system_user }}"
     group: www-data
-    mode: 0640
+    mode: "0640"
   tags:
-  - mediawiki-localsettings
+    - mediawiki-localsettings
 
-- name: install Composer config
+- name: Install Composer config
   copy:
     content: "{{ mediawiki_composer | to_json }}"
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/composer.local.json"
     owner: "{{ mediawiki.system_user }}"
     group: "{{ mediawiki.system_group }}"
-    mode: 0640
+    mode: "0640"
 
 - name: Place robots.txt
   copy:
     src: robots.txt
     dest: "/srv/mediawiki/{{ mediawiki.domain }}/robots.txt"
-    mode: 0444
+    mode: "0444"
   tags:
     - robots_txt
