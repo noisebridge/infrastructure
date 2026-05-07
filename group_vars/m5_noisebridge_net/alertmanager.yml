@@ -4,6 +4,7 @@ noisebridge_zulip_url: "https://noisebridge.zulipchat.com/api/v1/external/alertm
 noisebridge_am_zulip_url: "{{ noisebridge_zulip_url }}?api_key={{ noisebridge_zulip_api_key }}&stream=558694&topic=alerts"
 
 alertmanager_web_listen_address: "[::1]:9093"
+alertmanager_web_external_url: "https://alertmanager.noisebridge.net"
 
 alertmanager_receivers:
   - name: zulip
