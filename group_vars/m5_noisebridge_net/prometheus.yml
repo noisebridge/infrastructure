@@ -58,6 +58,7 @@ prometheus_scrape_configs:
     basic_auth:
       username: prometheus
       password: "{{ noisebridge_prometheus_password }}"
+    convert_classic_histograms_to_nhcb: true
     static_configs:
       - targets:
           - "m3.noisebridge.net:443"
