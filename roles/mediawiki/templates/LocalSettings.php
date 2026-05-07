@@ -336,5 +336,4 @@ wfLoadExtension( 'ImageMap' );
 # https://www.mediawiki.org/wiki/Extension:LastModified
 wfLoadExtension( 'LastModified' );
 
-
 #$wgReadOnly = '[issue] [timeframe] -User:[admin]';
