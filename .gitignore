@@ -5,6 +5,8 @@ site.retry
 /.ansible
 /roles/*/.github
 /roles/*/Pipfile*
+/collections/ansible_collections/**/requirements.txt
+/collections/ansible_collections/**/test-requirements.txt
 /collections/ansible_collections/*/*/*.md
 /collections/ansible_collections/*/*/*.rst
 /collections/ansible_collections/*/*/.azure-pipelines/**
