@@ -1,8 +1,0 @@
-download_url: https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/grafana-grafana-6.0.6.tar.gz
-format_version: 1.0.0
-name: grafana
-namespace: grafana
-server: https://galaxy.ansible.com/api/
-signatures: []
-version: 6.0.6
-version_url: /api/v3/plugin/ansible/content/published/collections/index/grafana/grafana/versions/6.0.6/

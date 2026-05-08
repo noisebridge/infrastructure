@@ -291,7 +291,7 @@
    "name": "roles/memcached_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "cbc7fa0080abcdaad910472df7c1cc6893860d6aa66fe2dd8f5ea2eb79adf2bc",
+   "chksum_sha256": "0466a6199d6c1b143fb789a2e5f44cb2cb9d057e6741dabe7ffe12f321c29a84",
    "format": 1
   },
   {
@@ -403,7 +403,7 @@
    "name": "roles/pushgateway/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ea170a24521375ac8298743dd90e326330451007dd7b7a0dce24754011989b3f",
+   "chksum_sha256": "69f1152809c3a67ab3b368341609ad5e8858abc64018149aee9454684a9466c3",
    "format": 1
   },
   {
@@ -522,7 +522,7 @@
    "name": "roles/bind_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "ad40001b0f526d1af9f63dd4c6d2c93bb5d9a125f4d994919d2dfed337f08608",
+   "chksum_sha256": "3d624fe32ed96abc4ef12f5bd41cfd8d195303b6fd3bb869b8c6d7ff6ed34c73",
    "format": 1
   },
   {
@@ -718,7 +718,7 @@
    "name": "roles/redis_exporter/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "90a9e3ab9d495c70729ec169c19c0a8aa1c65b070fc0868aa5a5637dee00629c",
+   "chksum_sha256": "6b6ec4b94fbd6d86f2e6a716a730f1f8bf297151a195a17bb8f4a93bf007d100",
    "format": 1
   },
   {
@@ -732,7 +732,7 @@
    "name": "roles/redis_exporter/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "aebc12d7eb65de96996ef277f6b3e737cab6460854aa45980b6fa193227a5d8a",
+   "chksum_sha256": "9e06b9748df473e54afc2633b5ea572c54c75d0763518dee6cb800308a9945d4",
    "format": 1
   },
   {
@@ -851,7 +851,7 @@
    "name": "roles/alertmanager/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2996f003f3e4e71fb4227989c2cc4178353fb285e7187aefea3fdf77f5d95e95",
+   "chksum_sha256": "2532cafb4e9a5ce39b4296a2c3628f3ad0ff13ff4889a4091ae86485925af635",
    "format": 1
   },
   {
@@ -865,7 +865,7 @@
    "name": "roles/alertmanager/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "df8527f7ce76b8b6b1019fdc460d81a13f5d9268bc688d9101dd33b8cc134c97",
+   "chksum_sha256": "ed91a867a23eeb91d33d331e2c93025b6edc02edfaaa632eeb96ae109175953e",
    "format": 1
   },
   {
@@ -1012,7 +1012,7 @@
    "name": "roles/apache_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "43edf1c12b9dd900e0a8eec83a576f41e34f729ec4c8bc5d4b2e4072fce090c6",
+   "chksum_sha256": "84d5fd69a1d8b2faba811c9441c191d1335b54fb5b36684ea974b7fc30e76ce0",
    "format": 1
   },
   {
@@ -1124,7 +1124,7 @@
    "name": "roles/smokeping_prober/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "3417c918c4b70bde11222d3ae495564ee1318674cc8302ef881104a9ac590d18",
+   "chksum_sha256": "361abc3da6195213ba22ffa2712fa0df02344a97cf8ade5c5a8c519bddfbcceb",
    "format": 1
   },
   {
@@ -1257,7 +1257,7 @@
    "name": "roles/cadvisor/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "5c1cfb424bd7fe06a5d3f3f2cd554b38cb8a2a1fc599fabcaeecc7ca596dd189",
+   "chksum_sha256": "06b24f7fa7880aa6acd5d750728d1bac282dab653617b5f29f2df1582c0de5d8",
    "format": 1
   },
   {
@@ -1376,7 +1376,7 @@
    "name": "roles/mongodb_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "35ac4ce85c26832003f19cd8b26a516c3d94e0cbf4b14349716b0602e5a88103",
+   "chksum_sha256": "9889327e37948770b8552fac090f4bd3c97e1c8aa37e95dc25d80f55d4a76e8a",
    "format": 1
   },
   {
@@ -1446,7 +1446,7 @@
    "name": "roles/mongodb_exporter/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "bec989764892842b53a8d00e5baea7ad3f169e72cf126d09e3bcb95ae99d6e72",
+   "chksum_sha256": "ba18e53cebb07f61e3dc1c3ffb5d34253d7142c00daf987d36c1856122e79515",
    "format": 1
   },
   {
@@ -1460,7 +1460,7 @@
    "name": "roles/mongodb_exporter/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9c9c7e47759227612fde5efd920ba0f9c660762e3aeefab9b50c94a68ecc06a8",
+   "chksum_sha256": "6fd70a2a6017ddbca6e093abf872eb7a58bc31741ff94e33beaf230396ee439f",
    "format": 1
   },
   {
@@ -1488,7 +1488,7 @@
    "name": "roles/smartctl_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9802cff82e4c5de00128617a6c3b7c22fe64b6de116250d31730f5d892a045c4",
+   "chksum_sha256": "83ae35aa110c2b8839aabee7d976daeb9e55cc040b962f22dbfcea080b01495e",
    "format": 1
   },
   {
@@ -1712,7 +1712,7 @@
    "name": "roles/postgres_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9043f4c5d6e4e9457d20f24c1f4c730c19c9cf19b5f8efff2529e91ffd59281d",
+   "chksum_sha256": "0acac3468c26fcfda157fa2e8c935ad3c7cfd4ff8b3185f5ba3def8f6fd98780",
    "format": 1
   },
   {
@@ -1845,7 +1845,7 @@
    "name": "roles/ipmi_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "2aca67560edbf58bc1ff9e763e4c477d1384b027ec690b2d6dbd0b5d630afb19",
+   "chksum_sha256": "746dad973e25fc57e46a63c77fe57d491ed953a72006242798447c46ed248383",
    "format": 1
   },
   {
@@ -2083,7 +2083,7 @@
    "name": "roles/consul_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "d642f9c634aa77f2530035c6650b94c13c3b09c1cf61762cc430d0715901efe3",
+   "chksum_sha256": "005f6d1b997d03f6e2ad18da128a87afe8ea6eee41a40a6bf9195326518c37e5",
    "format": 1
   },
   {
@@ -2202,7 +2202,7 @@
    "name": "roles/nginx_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "070150ba80f5de50124d57aa66c465a51fc464e35f7fa1f5cdb5e00ad49d84c6",
+   "chksum_sha256": "a91ec1ca5ac5b51591a4268fdc384d3b777bb05bd0115d166762ea91a9855bbf",
    "format": 1
   },
   {
@@ -2314,7 +2314,7 @@
    "name": "roles/chrony_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a4a0d266a2d59c54f57fc02f7807db63dad201fc94953e217ae625ad59818bf9",
+   "chksum_sha256": "4262680bc926f26c74ba45fd90515a5e3487e830f2aad14f30f2198f3e53b8d5",
    "format": 1
   },
   {
@@ -2433,7 +2433,7 @@
    "name": "roles/node_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "62f547a49801d267e00a98a1cf5af402b3c2a0598c2e750b135c4bf1ff41a985",
+   "chksum_sha256": "2bf0aef3932d155e240255cb6cb98046a9622740e0e51d5670bd43fa98f1fbfb",
    "format": 1
   },
   {
@@ -2559,7 +2559,7 @@
    "name": "roles/mysqld_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "74afff18a5bdba99c94c47f3d53da14426351a8e07ba7b7587c1e4998aee02a6",
+   "chksum_sha256": "d69b8e5ad663dd3736aaee0d12f01201a5c488f0aef2da321d8e057d3106aafa",
    "format": 1
   },
   {
@@ -2692,7 +2692,7 @@
    "name": "roles/nvidia_gpu_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "e2cbd7c9caf3ff00d9a5bb4640438f3f305050e3a418a04afb6102b091c27426",
+   "chksum_sha256": "ea84a87b59a434293301885825bfd2a2856a63cb980946286693a4ae8edd35d3",
    "format": 1
   },
   {
@@ -2895,7 +2895,7 @@
    "name": "roles/prometheus/meta/argument_specs.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b74ec4dfeb5a57a5c4ff21a653080e9f7d80b9a1769402af8c1a19788ab0ad64",
+   "chksum_sha256": "7fdd8ef1b376c86a50e2144753b815d6f30ea8b9bc021016d5f168b526d12228",
    "format": 1
   },
   {
@@ -2909,7 +2909,7 @@
    "name": "roles/prometheus/defaults/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "dace87a3c7d4d05eee36cea7922d392f7ae376a108bf9a47c2045ef95605d389",
+   "chksum_sha256": "fd3724eee13fe2ac760b1b965e79d5b656d119b3fbe6a90ded1c3f4a13be3265",
    "format": 1
   },
   {
@@ -3063,7 +3063,7 @@
    "name": "roles/fail2ban_exporter/README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "521825dcfb8b5ad35081dc1b61c9a1717e596fdc4089a5cbb81356407c279fbe",
+   "chksum_sha256": "97e0bdf11b5f0e2b9abc6471774c4d80699dc0bc8de7a07423560a58db172633",
    "format": 1
   },
   {
@@ -3210,7 +3210,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "a51ddd25700483768d755c2d994ffa360a81e77fbbb3423e50b2223ddb990699",
+   "chksum_sha256": "0b9158d69596287698453989c8a632fe91fa10c2834c1dd94fe4ed982bd55689",
    "format": 1
   },
   {

@@ -60,6 +60,11 @@ EXAMPLES = r"""
   become: true
   community.general.timezone:
     name: Asia/Tokyo
+
+- name: Set timezone and hardware clock to UTC
+  community.general.timezone:
+    name: UTC
+    hwclock: UTC
 """
 
 import errno
@@ -858,6 +863,7 @@ def main():
         required_one_of=[["hwclock", "name"]],
         supports_check_mode=True,
     )
+    module.run_command_environ_update = {"LANGUAGE": "C", "LC_ALL": "C"}
     tz = Timezone(module)
 
     # Check the current state

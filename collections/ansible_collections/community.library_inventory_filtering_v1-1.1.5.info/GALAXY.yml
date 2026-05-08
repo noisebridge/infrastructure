@@ -1,0 +1,8 @@
+download_url: https://galaxy.ansible.com/api/v3/plugin/ansible/content/published/collections/artifacts/community-library_inventory_filtering_v1-1.1.5.tar.gz
+format_version: 1.0.0
+name: library_inventory_filtering_v1
+namespace: community
+server: https://galaxy.ansible.com/api/
+signatures: []
+version: 1.1.5
+version_url: /api/v3/plugin/ansible/content/published/collections/index/community/library_inventory_filtering_v1/versions/1.1.5/
