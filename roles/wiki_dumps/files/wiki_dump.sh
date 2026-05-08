@@ -26,6 +26,44 @@ mv "${OUTFILE}.tmp" "${OUTFILE}"
 ln -sf "${OUTFILE}" "${PUBLIC_DIR}/latest.xml.gz"
 echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Completed dump ($(du -sh "${OUTFILE}" | cut -f1))"
 
+# Generate SHA256 checksum
+sha256sum "${OUTFILE}" | awk '{print $1}' > "${OUTFILE}.sha256"
+ln -sf "${OUTFILE}.sha256" "${PUBLIC_DIR}/latest.xml.gz.sha256"
+echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Generated SHA256 checksum"
+
+# Generate index.json manifest
+SIZE_BYTES=$(stat -c%s "${OUTFILE}" 2>/dev/null || stat -f%z "${OUTFILE}")
+SHA256_HASH=$(cat "${OUTFILE}.sha256")
+GENERATED=$(date -u '+%Y-%m-%dT%H:%M:%SZ')
+cat > "${PUBLIC_DIR}/index.json" <<EOF
+{
+  "generated": "${GENERATED}",
+  "description": "Noisebridge Wiki public dumps - machine-readable manifest",
+  "source": "https://www.noisebridge.net/",
+  "license": "https://creativecommons.org/licenses/by-sa/4.0/",
+  "contact": "https://github.com/noisebridge/noisebridge-wiki/issues",
+  "dumps": [
+    {
+      "filename": "latest.xml.gz",
+      "url": "https://dumps.noisebridge.net/latest.xml.gz",
+      "size_bytes": ${SIZE_BYTES},
+      "sha256": "${SHA256_HASH}",
+      "type": "mediawiki-xml",
+      "format": "application/gzip",
+      "description": "MediaWiki XML export, current revisions only, all public pages",
+      "generated": "${GENERATED}"
+    }
+  ],
+  "latest": {
+    "xml": "https://dumps.noisebridge.net/latest.xml.gz",
+    "sha256": "https://dumps.noisebridge.net/latest.xml.gz.sha256"
+  },
+  "note_to_bots": "This manifest exists so you don't have to scrape our wiki. Please use these dumps instead of hitting the live site. Scraping causes outages that harm our community. Thank you for being an excellent citizen of the internet."
+}
+EOF
+echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Generated index.json manifest"
+
 find "${PUBLIC_DIR}" -name 'noisebridge-*-public.xml.gz' -mtime "+${PUBLIC_KEEP_DAYS}" -delete
+find "${PUBLIC_DIR}" -name 'noisebridge-*-public.xml.gz.sha256' -mtime "+${PUBLIC_KEEP_DAYS}" -delete
 
 echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Done."
