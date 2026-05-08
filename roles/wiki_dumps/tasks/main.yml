@@ -7,6 +7,38 @@
     group: "{{ mediawiki.system_group }}"
     mode: "0755"
 
+- name: Create assets directory
+  ansible.builtin.file:
+    path: "{{ wiki_dumps_public_dir }}/assets"
+    state: directory
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: "0755"
+
+- name: Deploy landing page
+  ansible.builtin.copy:
+    src: site/index.html
+    dest: "{{ wiki_dumps_public_dir }}/index.html"
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: "0644"
+
+- name: Deploy favicon
+  ansible.builtin.copy:
+    src: site/favicon.png
+    dest: "{{ wiki_dumps_public_dir }}/favicon.png"
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: "0644"
+
+- name: Deploy site assets
+  ansible.builtin.copy:
+    src: "site/assets/"
+    dest: "{{ wiki_dumps_public_dir }}/assets/"
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: "0644"
+
 - name: Deploy dump script
   ansible.builtin.copy:
     src: wiki_dump.sh
