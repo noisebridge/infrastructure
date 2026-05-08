@@ -36,6 +36,19 @@
   notify:
     - restart postgrey
 
+- name: Configure postgrey whitelist_clients
+  ansible.builtin.template:
+    src: whitelist_clients.j2
+    dest: /etc/postgrey/whitelist_clients
+    owner: root
+    group: root
+    mode: "0644"
+  tags:
+    - postgrey
+    - mail
+  notify:
+    - restart postgrey
+
 - name: Disable default configuration
   debconf:
     name: "postfix"
