@@ -1,6 +1,6 @@
 ---
 - name: Install postfix
-  apt:
+  ansible.builtin.apt:
     update_cache: true
     cache_valid_time: 3600
     package:
@@ -15,7 +15,7 @@
     - mail
 
 - name: Install procmailrc
-  copy:
+  ansible.builtin.copy:
     src: procmailrc
     dest: /etc/procmailrc
     owner: root
@@ -25,7 +25,7 @@
     - postfix
 
 - name: Configure postgrey
-  replace:
+  ansible.builtin.replace:
     dest: /etc/default/postgrey
     regexp: "POSTGREY_OPTS=.*"
     replace: "POSTGREY_OPTS=\"--inet=10023 --delay=60\""
@@ -34,7 +34,7 @@
     - postgrey
     - postfix
   notify:
-    - restart postgrey
+    - Restart postgrey
 
 - name: Configure postgrey whitelist_clients
   ansible.builtin.template:
@@ -47,10 +47,10 @@
     - postgrey
     - mail
   notify:
-    - restart postgrey
+    - Restart postgrey
 
 - name: Disable default configuration
-  debconf:
+  ansible.builtin.debconf:
     name: "postfix"
     question: "postfix/main_mailer_type"
     vtype: "select"
@@ -60,7 +60,7 @@
     - mail
 
 - name: Configure mailname file
-  copy:
+  ansible.builtin.copy:
     dest: /etc/mailname
     group: root
     owner: root
@@ -71,20 +71,20 @@
     - mail
 
 - name: Install postfix configuration
-  template:
+  ansible.builtin.template:
     src: main.cf
     dest: /etc/postfix/main.cf
     owner: root
     group: root
     mode: "0644"
   notify:
-    - restart postfix
+    - Restart postfix
   tags:
     - postfix
     - mail
 
 - name: Configure aliases
-  template:
+  ansible.builtin.template:
     src: aliases.j2
     dest: /etc/aliases
     owner: root
@@ -97,7 +97,7 @@
     - mail
 
 - name: Copy config files
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/postfix/{{ item }}"
     owner: root
@@ -110,10 +110,10 @@
     - postfix
     - mail
   notify:
-    - restart postfix
+    - Restart postfix
 
 - name: Setup opendkim postfix socket dir
-  file:
+  ansible.builtin.file:
     path: /var/spool/postfix/opendkim
     state: directory
     owner: opendkim
@@ -121,7 +121,7 @@
     mode: "0755"
 
 - name: Copy dkim key
-  copy:
+  ansible.builtin.copy:
     src: postfix/dkim.key
     dest: /etc/dkimkeys/dkim.key
     owner: opendkim
@@ -131,7 +131,7 @@
     - restart opendkim
 
 - name: Install opendkim configuration
-  template:
+  ansible.builtin.template:
     src: opendkim.conf.j2
     dest: /etc/opendkim.conf
     owner: root
@@ -141,7 +141,7 @@
     - restart opendkim
 
 - name: Install opendkim defaults
-  template:
+  ansible.builtin.template:
     src: opendkim-default.j2
     dest: /etc/default/opendkim
     owner: root
@@ -151,15 +151,15 @@
     - restart opendkim
 
 - name: Add postfix user to opedkim group
-  user:
+  ansible.builtin.user:
     name: postfix
     groups: opendkim
     append: true
   notify:
-    - restart postfix
+    - Restart postfix
 
 - name: Configure secure submission port
-  replace:
+  ansible.builtin.replace:
     regexp: "^#submission .*"
     replace: "submission inet n       -       -       -       -       smtpd"
     dest: /etc/postfix/master.cf
@@ -168,10 +168,10 @@
     - postfix
     - mail
   notify:
-    - restart postfix
+    - Restart postfix
 
 - name: Deploy hash map files
-  copy:
+  ansible.builtin.copy:
     src: "maps/{{ item }}"
     dest: "/etc/postfix/{{ item }}"
     owner: root
