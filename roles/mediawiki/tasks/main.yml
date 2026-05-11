@@ -58,6 +58,13 @@
     version: REL1_27
   when: not ansible_check_mode
 
+- name: Install LastModified extension
+  ansible.builtin.git:
+    repo: 'https://gerrit.wikimedia.org/r/mediawiki/extensions/LastModified'
+    dest: "/srv/mediawiki/{{ mediawiki.domain }}/extensions/LastModified"
+    version: REL1_39
+  when: not ansible_check_mode
+
 - name: Install LocalSettings
   template:
     src: LocalSettings.php
