@@ -8,6 +8,11 @@
   ansible.builtin.include_role:
     name: caddy-ansible.caddy-ansible
 
+- name: Format Caddyfile
+  ansible.builtin.command:
+    cmd: caddy fmt --overwrite /etc/caddy/Caddyfile
+  changed_when: false
+
 - name: Install jq
   become: true
   ansible.builtin.package:
