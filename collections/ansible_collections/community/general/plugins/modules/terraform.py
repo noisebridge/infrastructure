@@ -528,6 +528,8 @@ def main():
         supports_check_mode=True,
     )
 
+    module.run_command_environ_update = {"LANGUAGE": "C", "LC_ALL": "C"}
+
     project_path = module.params.get("project_path")
     bin_path = module.params.get("binary_path")
     plugin_paths = module.params.get("plugin_paths")
@@ -603,7 +605,8 @@ def main():
         if vars is None:
             return "null"
         elif isinstance(vars, str):
-            return '"{string}"'.format(string=vars.replace("\\", "\\\\").replace('"', '\\"')).replace("\n", "\\n")
+            escaped = vars.replace("\\", "\\\\").replace('"', '\\"')
+            return f'"{escaped}"'.replace("\n", "\\n")
         elif isinstance(vars, bool):
             if vars:
                 return "true"

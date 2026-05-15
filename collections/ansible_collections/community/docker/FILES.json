@@ -109,7 +109,7 @@
    "name": ".azure-pipelines/azure-pipelines.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9a76ea069382f39b0c07cbe826520faa57e26f9c1e4db953be9de9d6523ebacb",
+   "chksum_sha256": "f43b5d3c51b03ca3d25853a5a418854b7dcb936f7c2ae3b1b760332b8137579b",
    "format": 1
   },
   {
@@ -214,7 +214,7 @@
    "name": "changelogs/changelog.yaml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "291ba477ee344789647512e25dcd2230322b73aef56d7105bd16bec1466338f2",
+   "chksum_sha256": "dd1504d5482cf19edc3f0f9817263c2accddc775738a1a3266f2d307a01d80af",
    "format": 1
   },
   {
@@ -445,7 +445,7 @@
    "name": "plugins/module_utils/_api/api/client.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "568538c57ebed96ac54890d415091bad7745abceb403c7028458192bf04ace94",
+   "chksum_sha256": "8c097548d61a52caeeca70198c55292904851fb257c5792bfd357557b0e50f71",
    "format": 1
   },
   {
@@ -921,7 +921,7 @@
    "name": "plugins/modules/docker_image_export.py",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "0112055bef6a06943acc192b28882d95c87803f8f86af6f1c96bb179bf0a8eee",
+   "chksum_sha256": "26538c530709f701f19bf0ef478de60c0b384115dda65bc2c86318f1c11aa5cf",
    "format": 1
   },
   {
@@ -1159,7 +1159,7 @@
    "name": "tests/ee/roles/current_container_facts/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "61f7f613b2c9f13fab6dac649654ca4db223dc94d09f475474c8dcc9ecf4cd14",
+   "chksum_sha256": "f2c3ba190f837f669c76aafdf5eee2666361ac1e928d940e160a582d322b00ee",
    "format": 1
   },
   {
@@ -1558,7 +1558,7 @@
    "name": "tests/integration/targets/current_container_facts/tasks/main.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "f8f3a5ae6606ca6afa387d6311d5bb91d4922f9b250c93072c76c365a6129a55",
+   "chksum_sha256": "8fabd52f6865f0e17cff4444e7e3c94e7df1d134694958861a1307451f169197",
    "format": 1
   },
   {
@@ -2006,7 +2006,7 @@
    "name": "tests/integration/targets/docker_container/tasks/tests/options.yml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9b9c12e4050d6e729a2311f870a979e390ff1bbc0153a16531f00e063d68e5f4",
+   "chksum_sha256": "d512e97807a695e9b178d9933e97a7e46ff37a05e2c651f5e207dc7d537a113f",
    "format": 1
   },
   {
@@ -2616,6 +2616,13 @@
    "ftype": "file",
    "chksum_type": "sha256",
    "chksum_sha256": "244f501598c4edf13229dfd5b4c6385e324093ed125decee2c395ee836fadeb9",
+   "format": 1
+  },
+  {
+   "name": "tests/integration/targets/docker_image_export/tasks/tests/platform.yml",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "71f18a24c31e4d927261ba99359590d0bc93ca6fd13888cf7a83d53882128374",
    "format": 1
   },
   {
@@ -6007,6 +6014,20 @@
    "format": 1
   },
   {
+   "name": "tests/sanity/ignore-2.22.txt",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "cbe0e493827e4129fb03e9cea92696138eed75a15365ff0ed7f3964e6db35d9c",
+   "format": 1
+  },
+  {
+   "name": "tests/sanity/ignore-2.22.txt.license",
+   "ftype": "file",
+   "chksum_type": "sha256",
+   "chksum_sha256": "6eb915239f9f35407fa68fdc41ed6522f1fdcce11badbdcd6057548023179ac1",
+   "format": 1
+  },
+  {
    "name": "tests/unit",
    "ftype": "dir",
    "chksum_type": null,
@@ -6528,7 +6549,7 @@
    "name": "CHANGELOG.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "54e51593ce4dde8e4e7e2bcadcfa90aac14bf5d304c4ee121201bf7c8751af0a",
+   "chksum_sha256": "d5a39ccca7db12446c54ba74dbb385cc650abe79603329d272fd944dccf4eb08",
    "format": 1
   },
   {
@@ -6542,7 +6563,7 @@
    "name": "CHANGELOG.rst",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "9d2bc3cc7916fc6ef3e85b685d6fa37c7d457aa339891cb13d55314bdaa54126",
+   "chksum_sha256": "08bf32db3966288f98a423fec9f1e55ade8e51256b26185e2e78f036913b37d7",
    "format": 1
   },
   {
@@ -6563,7 +6584,7 @@
    "name": "README.md",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "b8fbf7dbb054aac6b210a9553733532f1f17fdb90459e91f4143382c42249afd",
+   "chksum_sha256": "f711f95e2c8802881b2ff52c9a425068ee6ec4e976b2cadda577289f8feb6fa8",
    "format": 1
   },
   {
@@ -6577,7 +6598,7 @@
    "name": "antsibull-nox.toml",
    "ftype": "file",
    "chksum_type": "sha256",
-   "chksum_sha256": "86ccb39a84138ef3bb60c1a81482df4a2d85ecb1c65da9ee6bafc615ffbb8016",
+   "chksum_sha256": "fb6ec53ef02154187fa148971f85ccc871c0459d427163d20894339f2a364060",
    "format": 1
   },
   {
