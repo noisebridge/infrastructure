@@ -1,76 +1,72 @@
 {{ ansible_managed | comment }}
 # Global config
 {
-  {{ noisebridge_caddy_global_security | indent(width=2) }}
-  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
+	{{ noisebridge_caddy_global_security }}
+	{{ noisebridge_caddy_global_metrics }}
 }
 # Metrics server
 {{ ansible_fqdn }} {
-  route /metrics {
-    basic_auth {
-      prometheus {{ noisebridge_prometheus_password_hash }}
-    }
-    metrics
-  }
-    {{ noisebridge_caddy_cadvisor_route | indent(width=2) }}
-  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+	{{ noisebridge_caddy_metrics_route }}
+	{{ noisebridge_caddy_cadvisor_route }}
+	{{ noisebridge_caddy_coredns_route }}
+	respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
 # Donation site
 test-donate.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/test-donate.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-    {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  # root * /var/www/donate.noisebridge.net
-  # file_server
-  respond "This donate endpoint is currently offline" 503
+	log {
+		output file "{{ caddy_log_dir }}/test-donate.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+		{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
+	# root * /var/www/donate.noisebridge.net
+	# file_server
+	respond "This donate endpoint is currently offline" 503
 }
 
 donate.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/donate.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-    {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  respond "This donate endpoint is currently offline" 503
+	log {
+		output file "{{ caddy_log_dir }}/donate.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+		{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
+	respond "This donate endpoint is currently offline" 503
 }
 
 # Safespace site
 test-safespace.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/test-safespace.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-    {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  reverse_proxy localhost:5000
+	log {
+		output file "{{ caddy_log_dir }}/test-safespace.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+		{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
+	reverse_proxy localhost:5000
 }
 
 # Monitoring
 alertmanager.noisebridge.net {
-  route {
-    authorize with noisebridge-github-rack
-    reverse_proxy [::1]:9093
-  }
+	route {
+		authorize with noisebridge-github-rack
+		reverse_proxy [::1]:9093
+	}
 }
 
 grafana.noisebridge.net {
-  route {
-    authorize with noisebridge-github-rack
-    reverse_proxy localhost:3001
-  }
+	route {
+		authorize with noisebridge-github-rack
+		reverse_proxy localhost:3001
+	}
 }
 
 prometheus.noisebridge.net {
-  route {
-    authorize with noisebridge-github-rack
-    reverse_proxy localhost:9090
-  }
+	route {
+		authorize with noisebridge-github-rack
+		reverse_proxy localhost:9090
+	}
 }

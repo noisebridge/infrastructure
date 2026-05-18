@@ -1,240 +1,229 @@
 {{ ansible_managed | comment }}
 # Global settings
 {
-  order cgi last
+	order cgi last
 
-  {{ noisebridge_caddy_global_security | indent(width=2) }}
-  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
+	{{ noisebridge_caddy_global_security }}
+	{{ noisebridge_caddy_global_metrics }}
 }
 
 # Internal MediaWiki backend (used by Anubis)
 # This serves MediaWiki via PHP-FPM on localhost only
 :8080 {
-  bind 127.0.0.1
+	bind 127.0.0.1
 
-  root * /srv/mediawiki/noisebridge.net-1.39.13
+	root * /srv/mediawiki/noisebridge.net-1.39.13
 
-  @images {
-    file
-    path *.jpg *.jpeg *.png *.gif *.webp *.svg
-  }
-  header @images Cache-Control "public, max-age=600, must-revalidate"
+	@images {
+		file
+		path *.jpg *.jpeg *.png *.gif *.webp *.svg
+	}
+	header @images Cache-Control "public, max-age=600, must-revalidate"
 
-  route /images* {
-    uri strip_prefix /images
-    file_server {
-      root /srv/mediawiki/noisebridge.net/images
-    }
-  }
-  route /img* {
-    uri strip_prefix /images
-    file_server {
-      root /srv/mediawiki/noisebridge.net/img
-    }
-  }
+	route /images* {
+		uri strip_prefix /images
+		file_server {
+			root /srv/mediawiki/noisebridge.net/images
+		}
+	}
+	route /img* {
+		uri strip_prefix /images
+		file_server {
+			root /srv/mediawiki/noisebridge.net/img
+		}
+	}
 
-  @favicon path /favicon.ico
-  handle @favicon {
-    file_server {
-      root /srv/mediawiki/noisebridge.net/img
-    }
-  }
+	@favicon path /favicon.ico
+	handle @favicon {
+		file_server {
+			root /srv/mediawiki/noisebridge.net/img
+		}
+	}
 
-  php_fastcgi unix//run/php/php8.2-fpm.sock
-  file_server {
-    hide *.php
-  }
+	php_fastcgi unix//run/php/php8.2-fpm.sock
+	file_server {
+		hide *.php
+	}
 
-  # MediaWiki URL rewriting - converts /wiki/Page_Name to index.php
-  rewrite / /index.php?title={path}
-  redir / /wiki
+	# MediaWiki URL rewriting - converts /wiki/Page_Name to index.php
+	rewrite / /index.php?title={path}
+	redir / /wiki
 }
 
 # Metrics server
 {{ ansible_fqdn }} {
-  handle_path /goaccess/* {
-    basic_auth {
-      nb {{ noisebridge_goaccess_basic_auth }}
-    }
-    root * /var/www/goaccess
-    file_server # /var/www/goaccess/live.html
-  }
-
-  route /metrics {
-    basic_auth {
-      prometheus {{ noisebridge_prometheus_password_hash }}
-    }
-    metrics
-  }
-  handle_path /coredns/* {
-    basic_auth {
-      prometheus {{ noisebridge_prometheus_password_hash }}
-    }
-    reverse_proxy localhost:9153
-  }
-  {{ noisebridge_caddy_cadvisor_route | indent(width=2) }}
-  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+	{{ noisebridge_caddy_metrics_route }}
+	{{ noisebridge_caddy_cadvisor_route }}
+	{{ noisebridge_caddy_coredns_route }}
+	handle_path /goaccess/* {
+		basic_auth {
+			nb {{ noisebridge_goaccess_basic_auth }}
+		}
+		root * /var/www/goaccess
+		file_server # /var/www/goaccess/live.html
+	}
+	respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
 noisebridge.io, www.noisebridge.io {
-  log {
-    output file "{{ caddy_log_dir }}/noisebridge.io.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  redir https://www.noisebridge.net{uri}
+	log {
+		output file "{{ caddy_log_dir }}/noisebridge.io.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	redir https://www.noisebridge.net{uri}
 }
 
 noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  handle /.well-known/atproto-did {
-    respond "{{ noisebridge_atproto_did }}" 200
-  }
-  redir https://www.noisebridge.net{uri}
+	log {
+		output file "{{ caddy_log_dir }}/noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	handle /.well-known/atproto-did {
+		respond "{{ noisebridge_atproto_did }}" 200
+	}
+	redir https://www.noisebridge.net{uri}
 }
 
 noisebridge.org, www.noisebridge.org {
-  log {
-    output file "{{ caddy_log_dir }}/noisebridge.org.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  redir https://www.noisebridge.net{uri}
+	log {
+		output file "{{ caddy_log_dir }}/noisebridge.org.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	redir https://www.noisebridge.net{uri}
 }
 
 # Mediawiki - proxied through Anubis for bot/scraper protection
 www.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/www.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+	log {
+		output file "{{ caddy_log_dir }}/www.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
 
-  # Anubis challenge assets (served directly from Anubis)
-  handle /.within.website/* {
-    reverse_proxy unix//run/anubis/anubis.sock {
-      header_up X-Real-IP {remote_host}
-      header_up X-Forwarded-For {remote_host}
-      header_up X-Forwarded-Proto {scheme}
-    }
-  }
+	# Anubis challenge assets (served directly from Anubis)
+	handle /.within.website/* {
+		reverse_proxy unix//run/anubis/anubis.sock {
+			header_up X-Real-IP {remote_host}
+			header_up X-Forwarded-For {remote_host}
+			header_up X-Forwarded-Proto {scheme}
+		}
+	}
 
-  # Adminer - bypass Anubis, requires GitHub auth
-  route /adminer* {
-    authorize with noisebridge-github-rack
-    root * /srv/adminer
-    try_files {path} adminer.php
-    php_fastcgi unix//run/php/php8.2-fpm.sock
-  }
+	# Adminer - bypass Anubis, requires GitHub auth
+	route /adminer* {
+		authorize with noisebridge-github-rack
+		root * /srv/adminer
+		try_files {path} adminer.php
+		php_fastcgi unix//run/php/php8.2-fpm.sock
+	}
 
-  # Legacy mailman redirects
-  redir /pipermail https://lists.noisebridge.net{uri}
-  redir /mailman https://lists.noisebridge.net{uri}
+	# Legacy mailman redirects
+	redir /pipermail https://lists.noisebridge.net{uri}
+	redir /mailman https://lists.noisebridge.net{uri}
 
-  # All other traffic goes through Anubis
-  reverse_proxy unix//run/anubis/anubis.sock {
-    header_up X-Real-IP {remote_host}
-    header_up X-Forwarded-For {remote_host}
-    header_up X-Forwarded-Proto {scheme}
-    header_up Host {host}
-  }
+	# All other traffic goes through Anubis
+	reverse_proxy unix//run/anubis/anubis.sock {
+		header_up X-Real-IP {remote_host}
+		header_up X-Forwarded-For {remote_host}
+		header_up X-Forwarded-Proto {scheme}
+		header_up Host {host}
+	}
 }
 
 # Mailman
 lists.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/lists.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
+	log {
+		output file "{{ caddy_log_dir }}/lists.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
 
-  # superq - 2026-04-13 mailman cgi is broken, disable for now.
-  # cgi /admin* /var/lib/mailman/cgi-bin/admin {
-  #   script_name /admin
-  # }
-  # cgi /admindb* /var/lib/mailman/cgi-bin/admindb {
-  #   script_name /admindb
-  # }
-  # cgi /confirm* /var/lib/mailman/cgi-bin/confirm {
-  #   script_name /confirm
-  # }
-  # cgi /create* /var/lib/mailman/cgi-bin/create {
-  #   script_name /create
-  # }
-  # cgi /edithtml* /var/lib/mailman/cgi-bin/edithtml {
-  #   script_name /edithtml
-  # }
-  # cgi /listinfo* /var/lib/mailman/cgi-bin/listinfo {
-  #   script_name /listinfo
-  # }
-  # cgi /options* /var/lib/mailman/cgi-bin/options {
-  #   script_name /options
-  # }
-  # cgi /private* /var/lib/mailman/cgi-bin/private {
-  #   script_name /private
-  # }
-  # cgi /rmlist* /var/lib/mailman/cgi-bin/rmlist {
-  #   script_name /rmlist
-  # }
-  # cgi /roster* /var/lib/mailman/cgi-bin/roster {
-  #   script_name /roster
-  # }
-  # cgi /subscribe* /var/lib/mailman/cgi-bin/subscribe {
-  #   script_name /subscribe
-  # }
+	# superq - 2026-04-13 mailman cgi is broken, disable for now.
+	# cgi /admin* /var/lib/mailman/cgi-bin/admin {
+	#   script_name /admin
+	# }
+	# cgi /admindb* /var/lib/mailman/cgi-bin/admindb {
+	#   script_name /admindb
+	# }
+	# cgi /confirm* /var/lib/mailman/cgi-bin/confirm {
+	#   script_name /confirm
+	# }
+	# cgi /create* /var/lib/mailman/cgi-bin/create {
+	#   script_name /create
+	# }
+	# cgi /edithtml* /var/lib/mailman/cgi-bin/edithtml {
+	#   script_name /edithtml
+	# }
+	# cgi /listinfo* /var/lib/mailman/cgi-bin/listinfo {
+	#   script_name /listinfo
+	# }
+	# cgi /options* /var/lib/mailman/cgi-bin/options {
+	#   script_name /options
+	# }
+	# cgi /private* /var/lib/mailman/cgi-bin/private {
+	#   script_name /private
+	# }
+	# cgi /rmlist* /var/lib/mailman/cgi-bin/rmlist {
+	#   script_name /rmlist
+	# }
+	# cgi /roster* /var/lib/mailman/cgi-bin/roster {
+	#   script_name /roster
+	# }
+	# cgi /subscribe* /var/lib/mailman/cgi-bin/subscribe {
+	#   script_name /subscribe
+	# }
 
-  route /images/mailman* {
-    uri strip_prefix /images/mailman
-    file_server {
-      root /usr/share/images/mailman
-    }
-  }
-  route /pipermail* {
-    uri strip_prefix /pipermail
-    file_server {
-      root /var/lib/mailman/archives/public
-    }
-  }
+	route /images/mailman* {
+		uri strip_prefix /images/mailman
+		file_server {
+			root /usr/share/images/mailman
+		}
+	}
+	route /pipermail* {
+		uri strip_prefix /pipermail
+		file_server {
+			root /var/lib/mailman/archives/public
+		}
+	}
 
-  redir / /listinfo
-  rewrite /mailman /{uri}
+	redir / /listinfo
+	rewrite /mailman /{uri}
 
-  respond "Mailman list archives currently offline"
+	respond "Mailman list archives currently offline"
 }
 
 # Safespace
 safespace.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/safespace.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  root * /var/www/safespace.noisebridge.net
-  php_fastcgi unix//run/php/php8.2-fpm.sock
+	log {
+		output file "{{ caddy_log_dir }}/safespace.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
+	root * /var/www/safespace.noisebridge.net
+	php_fastcgi unix//run/php/php8.2-fpm.sock
 }
 
 # Wiki dumps (public, for bot consumption)
 dumps.noisebridge.net {
-  log {
-    output file "{{ caddy_log_dir }}/dumps.noisebridge.net.log" {
-      {{ noisebridge_caddy_log_roll | indent(width=6) }}
-    }
-  {{ noisebridge_caddy_log_filter | indent(width=4) }}
-  }
-  {{ noisebridge_caddy_secure_header | indent(width=2) }}
-  root * {{ wiki_dumps_public_dir }}
-  file_server browse
+	log {
+		output file "{{ caddy_log_dir }}/dumps.noisebridge.net.log" {
+			{{ noisebridge_caddy_log_roll }}
+		}
+	{{ noisebridge_caddy_log_filter }}
+	}
+	{{ noisebridge_caddy_secure_header }}
+	root * {{ wiki_dumps_public_dir }}
+	file_server browse
 }

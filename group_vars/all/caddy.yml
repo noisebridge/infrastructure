@@ -55,3 +55,12 @@ noisebridge_caddy_log_roll: |-
   roll_keep 520
   			roll_keep_for 7d
   			roll_size 50MiB
+
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_metrics_route: |-
+  handle_path /metrics {
+  		basic_auth {
+  			prometheus {{ noisebridge_prometheus_password_hash }}
+  		}
+  		metrics
+  	}

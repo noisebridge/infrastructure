@@ -2,3 +2,12 @@
 coredns_config_file: coredns/Corefile.cache.j2
 coredns_zone_files_paths: []
 coredns_key_files_paths: []
+
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_coredns_route: |-
+  handle_path /coredns/* {
+  		basic_auth {
+  			prometheus {{ noisebridge_prometheus_password_hash }}
+  		}
+  		reverse_proxy localhost:9153
+  	}
