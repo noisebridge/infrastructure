@@ -9,44 +9,49 @@ noisebridge_github_client_id: "{{ vault_noisebridge_github_client_id }}"
 noisebridge_github_client_secret: "{{ vault_noisebridge_github_client_secret }}"
 noisebridge_jwt_token_secret: "{{ vault_noisebridge_jwt_token_secret }}"
 
-noisebridge_caddy_global_security: |
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_global_security: |-
   order authenticate before respond
-  order authorize before basic_auth
-  security {
-    authorization policy noisebridge-github-rack {
-      set auth url https://auth.noisebridge.net/auth
-      crypto key verify {{ noisebridge_jwt_token_secret }}
-      crypto key token name access_token
-      allow roles members rack
-      inject headers with claims
-    }
-  }
+  	order authorize before basic_auth
+  	security {
+  		authorization policy noisebridge-github-rack {
+  			set auth url https://auth.noisebridge.net/auth
+  			crypto key verify {{ noisebridge_jwt_token_secret }}
+  			crypto key token name access_token
+  			allow roles members rack
+  			inject headers with claims
+  		}
+  	}
 
-noisebridge_caddy_global_metrics: |
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_global_metrics: |-
   metrics {
-    per_host
-  }
+  		per_host
+  	}
 
-noisebridge_caddy_log_filter: |
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_log_filter: |-
   format filter {
-    wrap json
-    fields {
-      common_log delete
-      request>remote_addr ip_mask {
-        ipv4 16
-        ipv6 64
-      }
-    }
-  }
+  			wrap json
+  			fields {
+  				common_log delete
+  				request>remote_addr ip_mask {
+  					ipv4 16
+  					ipv6 64
+  				}
+  			}
+  		}
 
-noisebridge_caddy_secure_header: |
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_secure_header: |-
   header {
-    Strict-Transport-Security "max-age=31536000;includeSubdomains"
-    X-XSS-Protection "1; mode=block"
-    X-Content-Type-Options "nosniff"
-  }
+  		Strict-Transport-Security "max-age=31536000;includeSubdomains"
+  		X-XSS-Protection "1; mode=block"
+  		X-Content-Type-Options "nosniff"
+  	}
 
-noisebridge_caddy_log_roll: |
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_log_roll: |-
   roll_keep 520
-  roll_keep_for 7d
-  roll_size 50MiB
+  			roll_keep_for 7d
+  			roll_size 50MiB

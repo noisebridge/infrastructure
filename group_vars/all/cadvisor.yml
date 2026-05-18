@@ -10,10 +10,11 @@ cadvisor_disable_metrics:
   - tcp
   - udp
 
-noisebridge_caddy_cadvisor_route: |
+# Note the use of tabs in this var to make Caddyfile formatting happy.
+noisebridge_caddy_cadvisor_route: |-
   handle_path /cadvisor/* {
-    basic_auth {
-      prometheus {{ noisebridge_prometheus_password_hash }}
-    }
-    reverse_proxy [::1]:9106
-  }
+  		basic_auth {
+  			prometheus {{ noisebridge_prometheus_password_hash }}
+  		}
+  		reverse_proxy [::1]:9106
+  	}
