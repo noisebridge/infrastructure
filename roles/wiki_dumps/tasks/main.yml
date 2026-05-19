@@ -65,5 +65,6 @@
     PUBLIC_DIR: "{{ wiki_dumps_public_dir }}"
     PUBLIC_KEEP_DAYS: "{{ wiki_dumps_public_keep_days }}"
     PHP: /usr/bin/php8.2
+  become: true
   become_user: "{{ mediawiki.system_user }}"
   when: not latest_dump.stat.exists
