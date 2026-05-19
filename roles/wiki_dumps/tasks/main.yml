@@ -16,9 +16,16 @@
     directory_mode: "0755"
     mode: "0644"
   loop:
-    - index.html
     - favicon.png
     - assets/
+
+- name: Deploy index
+  ansible.builtin.template:
+    src: index.html.j2
+    dest: "{{ wiki_dumps_public_dir }}/index.html"
+    owner: "{{ mediawiki.system_user }}"
+    group: "{{ mediawiki.system_group }}"
+    mode: "0644"
 
 - name: Deploy dump script
   ansible.builtin.copy:
