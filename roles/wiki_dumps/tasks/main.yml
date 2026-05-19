@@ -28,13 +28,13 @@
     owner: root
     group: root
 
-- name: Create dump log file with correct ownership
+- name: Create mediawiki log directory
   ansible.builtin.file:
-    path: /var/log/wiki_dump.log
-    state: touch
+    path: /var/log/mediawiki
+    state: directory
     owner: "{{ mediawiki.system_user }}"
     group: "{{ mediawiki.system_group }}"
-    mode: "0644"
+    mode: "0755"
 
 - name: Install cron job
   ansible.builtin.cron:
@@ -49,7 +49,7 @@
       PUBLIC_DIR={{ wiki_dumps_public_dir }}
       PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
       PHP=/usr/bin/php8.2
-      /usr/local/sbin/wiki_dump >> /var/log/wiki_dump.log 2>&1
+      /usr/local/sbin/wiki_dump >> /var/log/mediawiki/wiki_dump.log 2>&1
 
 - name: Check if latest dump exists
   ansible.builtin.stat:
