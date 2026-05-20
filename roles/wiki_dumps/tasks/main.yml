@@ -35,17 +35,38 @@
     owner: root
     group: root
 
-- name: Install cron job
-  ansible.builtin.cron:
-    name: MediaWiki public dump
-    cron_file: wiki_dump
-    user: "{{ mediawiki.system_user }}"
-    hour: "{{ wiki_dumps_cron_hour }}"
-    minute: "{{ wiki_dumps_cron_minute }}"
-    job: >-
-      MEDIAWIKI_PATH={{ wiki_dumps_mediawiki_path }}
-      LOCALSETTINGS={{ wiki_dumps_localsettings }}
-      PUBLIC_DIR={{ wiki_dumps_public_dir }}
-      PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
-      PHP=/usr/bin/php8.2
-      /usr/local/sbin/wiki_dump >> /var/log/wiki_dump.log 2>&1
+- name: Deploy systemd service unit
+  ansible.builtin.template:
+    src: wiki_dump.service.j2
+    dest: /etc/systemd/system/wiki_dump.service
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
+- name: Deploy systemd timer unit
+  ansible.builtin.template:
+    src: wiki_dump.timer.j2
+    dest: /etc/systemd/system/wiki_dump.timer
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload systemd
+
+- name: Enable and start timer
+  ansible.builtin.systemd:
+    name: wiki_dump.timer
+    enabled: true
+    state: started
+    daemon_reload: true
+
+- name: Check if latest dump exists
+  ansible.builtin.stat:
+    path: "{{ wiki_dumps_public_dir }}/latest.xml.gz"
+  register: latest_dump
+
+- name: Run initial dump if latest.xml.gz does not exist
+  ansible.builtin.systemd:
+    name: wiki_dump.service
+    state: started
+  when: not latest_dump.stat.exists

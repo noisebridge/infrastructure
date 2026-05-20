@@ -1,0 +1,9 @@
+[Unit]
+Description=MediaWiki public dump timer
+
+[Timer]
+OnCalendar=*-*-* {{ wiki_dumps_cron_hour | int }}:{{ wiki_dumps_cron_minute | int }}:00
+Persistent=true
+
+[Install]
+WantedBy=timers.target

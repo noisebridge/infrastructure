@@ -6,6 +6,6 @@ wiki_dumps_localsettings: "/srv/mediawiki/{{ mediawiki.domain }}/LocalSettings.p
 wiki_dumps_public_dir: /var/www/dumps.noisebridge.net
 wiki_dumps_public_keep_days: 7
 
-# Cron schedule (default: 2AM daily)
+# Timer schedule (default: 2AM daily)
 wiki_dumps_cron_hour: 2
 wiki_dumps_cron_minute: 0
