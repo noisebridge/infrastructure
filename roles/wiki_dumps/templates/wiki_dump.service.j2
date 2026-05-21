@@ -1,0 +1,14 @@
+[Unit]
+Description=MediaWiki public dump
+After=network.target mysql.service
+
+[Service]
+Type=oneshot
+User={{ mediawiki.system_user }}
+Group={{ mediawiki.system_group }}
+Environment=MEDIAWIKI_PATH={{ wiki_dumps_mediawiki_path }}
+Environment=LOCALSETTINGS={{ wiki_dumps_localsettings }}
+Environment=PUBLIC_DIR={{ wiki_dumps_public_dir }}
+Environment=PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
+Environment=PHP=/usr/bin/php8.2
+ExecStart=/usr/local/sbin/wiki_dump
