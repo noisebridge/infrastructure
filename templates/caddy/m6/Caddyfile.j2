@@ -6,12 +6,7 @@
 
 # Metrics server
 {{ ansible_fqdn }} {
-	route /metrics {
-		basic_auth {
-			prometheus {{ noisebridge_prometheus_password_hash }}
-		}
-		metrics
-	}
+	{{ noisebridge_caddy_metrics_route }}
 	{{ noisebridge_caddy_cadvisor_route }}
 	respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }

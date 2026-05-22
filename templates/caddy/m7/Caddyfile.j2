@@ -1,56 +1,46 @@
 {{ ansible_managed | comment }}
 # Global config
 {
-  order authenticate before respond
-  order authorize before basic_auth
-  security {
-    oauth identity provider github {
-      realm github
-      driver github
-      client_id {{ noisebridge_github_client_id }}
-      client_secret {{ noisebridge_github_client_secret }}
-      scopes openid email profile
-    }
+	order authenticate before respond
+	order authorize before basic_auth
+	security {
+		oauth identity provider github {
+			realm github
+			driver github
+			client_id {{ noisebridge_github_client_id }}
+			client_secret {{ noisebridge_github_client_secret }}
+			scopes openid email profile
+		}
 
-    authentication portal noisebridge-github {
-      crypto default token lifetime 86400
-      crypto key sign-verify {{ noisebridge_jwt_token_secret }}
-      crypto key token name access_token
-      enable identity provider github
-      cookie domain noisebridge.net
+		authentication portal noisebridge-github {
+			crypto default token lifetime 86400
+			crypto key sign-verify {{ noisebridge_jwt_token_secret }}
+			crypto key token name access_token
+			enable identity provider github
+			cookie domain noisebridge.net
 
-      # Rack users
+			# Rack users
 {% for user, user_value in users.items() if user_value.github_username is defined  %}
-      transform user {
-        match realm github
-        match sub github.com/{{ user_value.github_username }}
-        action add role rack
-      }
+			transform user {
+				match realm github
+				match sub github.com/{{ user_value.github_username }}
+				action add role rack
+			}
 {% endfor %}
-    }
-  }
+		}
+	}
 
-  {{ noisebridge_caddy_global_metrics | indent(width=2) }}
+	{{ noisebridge_caddy_global_metrics }}
 }
 # Metrics server
 {{ ansible_fqdn }} {
-  route /metrics {
-    basic_auth {
-      prometheus {{ noisebridge_prometheus_password_hash }}
-    }
-    metrics
-  }
-  handle_path /coredns/* {
-    basic_auth {
-      prometheus {{ noisebridge_prometheus_password_hash }}
-    }
-    reverse_proxy localhost:9153
-  }
-  {{ noisebridge_caddy_cadvisor_route | indent(width=2) }}
-  respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+	{{ noisebridge_caddy_metrics_route }}
+	{{ noisebridge_caddy_cadvisor_route }}
+	{{ noisebridge_caddy_coredns_route }}
+	respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
 }
 
 # Authentication portal
 auth.noisebridge.net {
-  authenticate with noisebridge-github
+	authenticate with noisebridge-github
 }
