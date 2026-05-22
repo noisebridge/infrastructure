@@ -141,8 +141,8 @@ prometheus_scrape_configs:
       module: [smtp_starttls_v4]
     static_configs:
       - targets:
-          - noisebridge.net:25
-          - noisebridge.net:587
+          - m3.noisebridge.net:25
+          - m3.noisebridge.net:587
     relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_smtp_v6
     metrics_path: /probe
@@ -150,8 +150,8 @@ prometheus_scrape_configs:
       module: [smtp_starttls_v6]
     static_configs:
       - targets:
-          - noisebridge.net:25
-          - noisebridge.net:587
+          - m3.noisebridge.net:25
+          - m3.noisebridge.net:587
     relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: grafana
     static_configs:

@@ -188,3 +188,9 @@
     - hashmaps
   notify:
     - postmap-hash
+
+- name: Add postfix to ssl-cert group for TLS listening
+  ansible.builtin.user:
+    name: postfix
+    groups: ssl-cert
+    append: true
