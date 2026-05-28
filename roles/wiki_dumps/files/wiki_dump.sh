@@ -20,7 +20,7 @@ OUTFILE="${PUBLIC_DIR}/noisebridge-${TS}-public.xml.gz"
 echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Starting public dump -> ${OUTFILE}"
 "${PHP}" "${MEDIAWIKI_PATH}/maintenance/dumpBackup.php" \
   --conf "${LOCALSETTINGS}" \
-  --current --public \
+  --current \
   --output "gzip:${OUTFILE}.tmp"
 mv "${OUTFILE}.tmp" "${OUTFILE}"
 ln -sf "${OUTFILE}" "${PUBLIC_DIR}/latest.xml.gz"
