@@ -119,43 +119,6 @@ www.noisebridge.net {
   }
   {{ noisebridge_caddy_secure_header | indent(width=2) }}
 
-  # Named AI/bulk crawlers: redirect to wiki dumps before they hit Anubis.
-  # These UAs are identifiable bulk scrapers — better to route them to the
-  # structured dump than wall them off with a challenge they can't solve.
-  # Source: https://github.com/noisebridge/noisebridge-wiki/issues/10
-  @dump_crawlers {
-    header User-Agent *GPTBot*
-    header User-Agent *OAI-SearchBot*
-    header User-Agent *ChatGPT-User*
-    header User-Agent *ClaudeBot*
-    header User-Agent *Claude-SearchBot*
-    header User-Agent *Claude-User*
-    header User-Agent *Claude-Web*
-    header User-Agent *anthropic-ai*
-    header User-Agent *CCBot*
-    header User-Agent *Bytespider*
-    header User-Agent *Amazonbot*
-    header User-Agent *cohere-ai*
-    header User-Agent *cohere-training-data-crawler*
-    header User-Agent *PerplexityBot*
-    header User-Agent *Perplexity-User*
-    header User-Agent *FacebookBot*
-    header User-Agent *meta-externalagent*
-    header User-Agent *Meta-ExternalAgent*
-    header User-Agent *meta-externalfetcher*
-    header User-Agent *Meta-ExternalFetcher*
-    header User-Agent *Diffbot*
-    header User-Agent *AI2Bot*
-    header User-Agent *Ai2Bot-Dolma*
-    header User-Agent *ImagesiftBot*
-    header User-Agent *DuckAssistBot*
-    header User-Agent *FriendlyCrawler*
-    header User-Agent *YouBot*
-    header User-Agent *TikTokSpider*
-    header User-Agent *PetalBot*
-  }
-  redir @dump_crawlers https://dumps.noisebridge.net 302
-
   # Anubis challenge assets (served directly from Anubis)
   handle /.within.website/* {
     reverse_proxy unix//run/anubis/anubis.sock {
