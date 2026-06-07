@@ -12,6 +12,25 @@
 #     username: "{{ anubis_metrics_username }}"
 #     password: "{{ anubis_metrics_password }}"
 
+impressum:
+  # Footer shown on every Anubis challenge/deny page — points bots to the dump.
+  footer: >-
+    Looking for bulk wiki content?
+    <a href="https://dumps.noisebridge.net">Download the full wiki dump</a> instead of scraping.
+  page:
+    title: "Noisebridge Wiki — Bot & Scraper Policy"
+    body: >-
+      <p>The <a href="https://www.noisebridge.net">Noisebridge wiki</a> is protected
+      by <a href="https://anubis.techaro.lol">Anubis</a> to prevent scraper bots
+      from overloading the server.</p>
+
+      <p>If you are a bulk data consumer or AI training pipeline, please use the
+      <a href="https://dumps.noisebridge.net">public wiki dump</a> instead of
+      scraping live pages. The dump is updated daily and is free to use.</p>
+
+      <p>If you believe you have been incorrectly challenged, contact
+      <a href="mailto:{{ anubis_webmaster_email }}">{{ anubis_webmaster_email }}</a>.</p>
+
 store:
   backend: bbolt
   parameters:
