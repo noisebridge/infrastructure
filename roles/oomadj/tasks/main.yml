@@ -18,7 +18,7 @@
     dest: "/etc/systemd/system/{{ item.key }}.d/oomscoreadjust.conf"
     owner: root
     group: root
-    mode: "0755"
+    mode: "0644"
   when: "ansible_facts['services'][item.key]['status'] | default('not-found') == 'enabled'"
   notify: restart {{ item.key }}
   loop: "{{ oomadj_scores | dict2items }}"
