@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.io. IN SOA helium.ns.hetzner.de. hostmaster.noisebridge.io. (
-        2026033000 ; Serial
+        2026060900 ; Serial
         3600 ; Refresh
         300 ; Retry
         604800 ; Expire
