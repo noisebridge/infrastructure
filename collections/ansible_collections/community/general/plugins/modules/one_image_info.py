@@ -14,9 +14,9 @@ description:
 requirements:
   - pyone
 extends_documentation_fragment:
-  - community.general.opennebula
-  - community.general.attributes
-  - community.general.attributes.info_module
+  - community.general._opennebula
+  - community.general._attributes
+  - community.general._attributes.info_module
 options:
   ids:
     description:
@@ -78,7 +78,8 @@ EXAMPLES = r"""
 RETURN = r"""
 images:
   description: A list of images info.
-  type: complex
+  type: list
+  elements: dict
   returned: success
   contains:
     id:
@@ -271,7 +272,7 @@ images:
 
 import re
 
-from ansible_collections.community.general.plugins.module_utils.opennebula import OpenNebulaModule
+from ansible_collections.community.general.plugins.module_utils._opennebula import OpenNebulaModule
 
 IMAGE_STATES = [
     "INIT",

@@ -8,10 +8,6 @@
 "community.docker" = "git+https://github.com/ansible-collections/community.docker.git,main"
 "community.internal_test_tools" = "git+https://github.com/ansible-collections/community.internal_test_tools.git,main"
 
-[collection_sources_per_ansible.'2.16']
-# community.crypto's main branch needs ansible-core >= 2.17
-"community.crypto" = "git+https://github.com/ansible-collections/community.crypto.git,stable-2"
-
 [vcs]
 vcs = "git"
 development_branch = "main"
@@ -87,6 +83,7 @@ no_trailing_whitespace_skip_paths = [
     "tests/integration/targets/setup_flatpak_remote/files/repo.tar.xz",
 ]
 no_trailing_whitespace_skip_directories = [
+    "tests/unit/plugins/modules/dnf_config_manager/fixtures/",
     "tests/unit/plugins/modules/interfaces_file/interfaces_file_fixtures/golden_output/",
     "tests/unit/plugins/modules/interfaces_file/interfaces_file_fixtures/input/",
 ]
@@ -98,7 +95,7 @@ exclusions = [
     "consul_acl_bootstrap",
     "consul_kv",
 ]
-doc_fragment = "community.general.consul.actiongroup_consul"
+doc_fragment = "community.general._consul.actiongroup_consul"
 
 [[sessions.extra_checks.action_groups_config]]
 name = "keycloak"
@@ -106,12 +103,12 @@ pattern = "^keycloak_.*$"
 exclusions = [
     "keycloak_realm_info",
 ]
-doc_fragment = "community.general.keycloak.actiongroup_keycloak"
+doc_fragment = "community.general._keycloak.actiongroup_keycloak"
 
 [[sessions.extra_checks.action_groups_config]]
 name = "scaleway"
 pattern = "^scaleway_.*$"
-doc_fragment = "community.general.scaleway.actiongroup_scaleway"
+doc_fragment = "community.general._scaleway.actiongroup_scaleway"
 
 [sessions.build_import_check]
 run_galaxy_importer = true
@@ -121,3 +118,10 @@ include_devel = true
 
 [sessions.ansible_test_units]
 include_devel = true
+split_by_python_version = true
+
+[sessions.ansible_test_units.core_python_versions]
+"2.18" = ["3.8", "3.11", "3.13"]
+"2.19" = ["3.8", "3.11", "3.13"]
+"2.20" = ["3.9", "3.12", "3.14"]
+"2.21" = ["3.9", "3.12", "3.14"]

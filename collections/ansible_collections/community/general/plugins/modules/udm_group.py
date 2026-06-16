@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright (c) 2016, Adfinis SyGroup AG
-# Tobias Rueetschi <tobias.ruetschi@adfinis-sygroup.ch>
+# @keachi
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,13 +10,13 @@ from __future__ import annotations
 DOCUMENTATION = r"""
 module: udm_group
 author:
-  - Tobias Rüetschi (@keachi)
+  - keachi (@keachi)
 short_description: Manage of the posix group
 description:
   - This module allows to manage user groups on a univention corporate server (UCS). It uses the Python API of the UCS to
     create a new object or edit it.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -81,7 +81,7 @@ RETURN = """#"""
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils.univention_umc import (
+from ansible_collections.community.general.plugins.module_utils._univention_umc import (
     base_dn,
     ldap_search,
     umc_module_for_add,

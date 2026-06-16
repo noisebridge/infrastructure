@@ -17,8 +17,8 @@ description:
   - Get inventory hosts from a Xen Orchestra deployment.
   - Uses a configuration file as an inventory source, it must end in C(.xen_orchestra.yml) or C(.xen_orchestra.yaml).
 extends_documentation_fragment:
-  - constructed
-  - inventory_cache
+  - ansible.builtin.constructed
+  - ansible.builtin.inventory_cache
 options:
   plugin:
     description: The name of this plugin, it should always be set to V(community.general.xen_orchestra) for this plugin to
@@ -101,8 +101,8 @@ from time import sleep
 from ansible.errors import AnsibleError
 from ansible.plugins.inventory import BaseInventoryPlugin, Cacheable, Constructable
 
-from ansible_collections.community.general.plugins.module_utils.version import LooseVersion
-from ansible_collections.community.general.plugins.plugin_utils.unsafe import make_unsafe
+from ansible_collections.community.general.plugins.module_utils._version import LooseVersion
+from ansible_collections.community.general.plugins.plugin_utils._unsafe import make_unsafe
 
 # 3rd party imports
 try:

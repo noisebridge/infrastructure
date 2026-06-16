@@ -16,6 +16,12 @@ options:
     description: The dictionary that should be converted to the INI format.
     type: dictionary
     required: true
+  no_extra_spaces:
+    description:
+      - Do not insert spaces before and after V(=) symbol.
+    type: bool
+    default: false
+    version_added: 13.0.0
 seealso:
   - plugin: ansible.builtin.ini
     plugin_type: lookup
@@ -68,11 +74,13 @@ class IniParser(ConfigParser):
         self.optionxform = str
 
 
-def to_ini(obj):
+def to_ini(obj, *, no_extra_spaces=False):
     """Read the given dict and return an INI formatted string"""
 
     if not isinstance(obj, Mapping):
         raise AnsibleFilterError(f"to_ini requires a dict, got {type(obj)}")
+    if not isinstance(no_extra_spaces, bool):
+        raise AnsibleFilterError(f"no_extra_spaces must be a boolean, got {type(no_extra_spaces)}")
 
     ini_parser = IniParser()
 
@@ -86,7 +94,7 @@ def to_ini(obj):
         raise AnsibleFilterError("to_ini received an empty dict. An empty dict cannot be converted.")
 
     config = StringIO()
-    ini_parser.write(config)
+    ini_parser.write(config, space_around_delimiters=not no_extra_spaces)
 
     # config.getvalue() returns two \n at the end
     # with the below insanity, we remove the very last character of

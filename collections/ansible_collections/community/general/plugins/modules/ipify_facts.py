@@ -14,9 +14,9 @@ description:
 author:
   - René Moser (@resmo)
 extends_documentation_fragment:
-  - community.general.attributes
-  - community.general.attributes.facts
-  - community.general.attributes.facts_module
+  - community.general._attributes
+  - community.general._attributes.facts
+  - community.general._attributes.facts_module
 options:
   api_url:
     description:
@@ -51,11 +51,16 @@ EXAMPLES = r"""
 """
 
 RETURN = r"""
-ipify_public_ip:
-  description: Public IP of the internet gateway.
+ansible_facts:
+  description: The returned facts.
   returned: success
-  type: str
-  sample: 1.2.3.4
+  type: dict
+  contains:
+    ipify_public_ip:
+      description: Public IP of the internet gateway.
+      returned: success
+      type: str
+      sample: 1.2.3.4
 """
 
 import json

@@ -12,7 +12,7 @@ short_description: Manage system objects in Cobbler
 description:
   - Add, modify or remove systems in Cobbler.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -152,7 +152,7 @@ import xmlrpc.client as xmlrpc_client
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils.datetime import (
+from ansible_collections.community.general.plugins.module_utils._datetime import (
     now,
 )
 
@@ -298,7 +298,8 @@ def main():
                         continue
                     if key not in IFPROPS_MAPPING:
                         module.warn(f"Property '{key}' is not a valid system property.")
-                    if not system or system["interfaces"][device][IFPROPS_MAPPING[key]] != value:
+                        continue
+                    if not system or system["interfaces"].get(device, {}).get(IFPROPS_MAPPING[key]) != value:
                         result["changed"] = True
                     interface_properties[f"{key}-{device}"] = value
 

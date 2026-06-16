@@ -16,8 +16,8 @@ description:
   - A separate parameter, O(enable_advanced_group_parsing) is exposed to change grouping behaviour. See the parameter documentation
     for details.
 extends_documentation_fragment:
-  - constructed
-  - inventory_cache
+  - ansible.builtin.constructed
+  - ansible.builtin.inventory_cache
 options:
   plugin:
     description: Token that ensures this is a source file for the P(community.general.virtualbox#inventory) plugin.
@@ -80,7 +80,7 @@ from ansible.module_utils.common.process import get_bin_path
 from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible.plugins.inventory import BaseInventoryPlugin, Cacheable, Constructable
 
-from ansible_collections.community.general.plugins.plugin_utils.unsafe import make_unsafe
+from ansible_collections.community.general.plugins.plugin_utils._unsafe import make_unsafe
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable, Cacheable):

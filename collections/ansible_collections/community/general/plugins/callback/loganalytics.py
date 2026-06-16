@@ -35,6 +35,10 @@ options:
     ini:
       - section: callback_loganalytics
         key: shared_key
+deprecated:
+  removed_in: 14.0.0
+  why: The "HTTP Data Collector API" used by the plugin has been deprecated in Azure Monitor and replaced with the "Logs Ingestion API".
+  alternative: Please migrate to the P(community.general.loganalytics_ingestion#callback) plugin.
 """
 
 EXAMPLES = r"""
@@ -65,7 +69,7 @@ from ansible.module_utils.urls import open_url
 from ansible.parsing.ajson import AnsibleJSONEncoder
 from ansible.plugins.callback import CallbackBase
 
-from ansible_collections.community.general.plugins.module_utils.datetime import (
+from ansible_collections.community.general.plugins.module_utils._datetime import (
     now,
 )
 

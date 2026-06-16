@@ -12,8 +12,6 @@ author:
   - Scott Buchanan (@scottsb)
   - Andrew Zenk (@azenk)
   - Sam Doran (@samdoran)
-requirements:
-  - C(op) 1Password command line utility
 short_description: Fetch an entire item from 1Password
 description:
   - P(community.general.onepassword_raw#lookup) wraps C(op) command line utility to fetch an entire item from 1Password.
@@ -30,8 +28,8 @@ options:
   service_account_token:
     version_added: 7.1.0
 extends_documentation_fragment:
-  - community.general.onepassword
-  - community.general.onepassword.lookup
+  - community.general._onepassword
+  - community.general._onepassword.lookup
 """
 
 EXAMPLES = r"""
@@ -57,11 +55,13 @@ import json
 from ansible.plugins.lookup import LookupBase
 
 from ansible_collections.community.general.plugins.lookup.onepassword import OnePass
+from ansible_collections.community.general.plugins.plugin_utils._lookup import check_for_wrong_terms
 
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        check_for_wrong_terms(self, direct=kwargs)
 
         vault = self.get_option("vault")
         subdomain = self.get_option("subdomain")

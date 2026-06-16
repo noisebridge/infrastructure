@@ -16,7 +16,7 @@ description:
   - Source file can be deleted after decompression.
 extends_documentation_fragment:
   - ansible.builtin.files
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -94,8 +94,8 @@ import tempfile
 
 from ansible.module_utils.common.text.converters import to_bytes
 
-from ansible_collections.community.general.plugins.module_utils import deps
-from ansible_collections.community.general.plugins.module_utils.mh.module_helper import ModuleHelper
+from ansible_collections.community.general.plugins.module_utils import _deps as deps
+from ansible_collections.community.general.plugins.module_utils._mh.module_helper import ModuleHelper
 
 with deps.declare("lzma"):
     import lzma
@@ -120,7 +120,6 @@ def decompress(b_src, b_dest, handler):
 
 
 class Decompress(ModuleHelper):
-    destination_filename_template = "%s_decompressed"
     output_params = "dest"
 
     module = dict(
@@ -189,7 +188,7 @@ class Decompress(ModuleHelper):
         if src.endswith(fmt_extension) and len(src) > len(fmt_extension):
             filename = src[: -len(fmt_extension)]
         else:
-            filename = Decompress.destination_filename_template % src
+            filename = f"{src}_decompressed"
         return filename
 
 

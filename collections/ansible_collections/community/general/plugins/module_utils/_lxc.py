@@ -3,6 +3,9 @@
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+# Note that this module util is **PRIVATE** to the collection. It can have breaking changes at any time.
+# Do not use this from other collections or standalone plugins/modules!
+
 from __future__ import annotations
 
 import os
@@ -30,16 +33,19 @@ popd
 """
 
 
-def create_script(command: str, module: AnsibleModule) -> None:
+def create_script(arg_tuple: tuple[str, AnsibleModule]) -> None:
     """Write out a script onto a target.
 
     This method should be backward compatible with Python when executing
     from within the container.
 
-    :param command: command to run, this can be a script and can use spacing
-                    with newlines as separation.
-    :param module: AnsibleModule to run commands with.
+    :param arg_tuple: a tuple of (command, module) where command is the command
+                      to run (this can be a script and can use spacing with
+                      newlines as separation) and module is the AnsibleModule
+                      to run commands with.
     """
+
+    command, module = arg_tuple
 
     script_file = ""
     try:

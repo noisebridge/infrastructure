@@ -13,7 +13,7 @@ short_description: Fetch data from LMDB
 description:
   - This lookup returns a list of results from an LMDB DB corresponding to a list of items given to it.
 requirements:
-  - lmdb (Python library U(https://lmdb.readthedocs.io/en/release/))
+  - lmdb (Python library U(https://lmdb.readthedocs.io/en/latest/))
 options:
   _terms:
     description: List of keys to query.
@@ -36,7 +36,7 @@ EXAMPLES = r"""
   ansible.builtin.debug:
     msg: "Hello from {{ item.0 }} a.k.a. {{ item.1 }}"
   vars:
-    - lmdb_kv_db: jp.mdb
+    lmdb_kv_db: jp.mdb
   with_community.general.lmdb_kv:
     - "n*"
 
@@ -44,8 +44,8 @@ EXAMPLES = r"""
   ansible.builtin.assert:
     that:
       - item == 'Belgium'
-    vars:
-      - lmdb_kv_db: jp.mdb
+  vars:
+    lmdb_kv_db: jp.mdb
   with_community.general.lmdb_kv:
     - be
 """
@@ -61,6 +61,8 @@ _raw:
 from ansible.errors import AnsibleError
 from ansible.module_utils.common.text.converters import to_native, to_text
 from ansible.plugins.lookup import LookupBase
+
+from ansible_collections.community.general.plugins.plugin_utils._lookup import check_for_wrong_terms
 
 HAVE_LMDB = True
 try:
@@ -81,12 +83,13 @@ class LookupModule(LookupBase):
         variable 'lmdb_kv_db' is not set:
 
               vars:
-                - lmdb_kv_db: "jp.mdb"
+                lmdb_kv_db: "jp.mdb"
         """
         if HAVE_LMDB is False:
             raise AnsibleError("Can't LOOKUP(lmdb_kv): this module requires lmdb to be installed")
 
         self.set_options(var_options=variables, direct=kwargs)
+        check_for_wrong_terms(self, direct=kwargs)
 
         db = self.get_option("db")
 

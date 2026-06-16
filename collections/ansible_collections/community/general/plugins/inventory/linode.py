@@ -17,8 +17,8 @@ description:
   - Linode labels are used by default as the hostnames.
   - The default inventory groups are built from groups (deprecated by Linode) and not tags.
 extends_documentation_fragment:
-  - constructed
-  - inventory_cache
+  - ansible.builtin.constructed
+  - ansible.builtin.inventory_cache
 options:
   cache:
     version_added: 4.5.0
@@ -127,7 +127,7 @@ compose:
 from ansible.errors import AnsibleError
 from ansible.plugins.inventory import BaseInventoryPlugin, Cacheable, Constructable
 
-from ansible_collections.community.general.plugins.plugin_utils.unsafe import make_unsafe
+from ansible_collections.community.general.plugins.plugin_utils._unsafe import make_unsafe
 
 try:
     from linode_api4 import LinodeClient

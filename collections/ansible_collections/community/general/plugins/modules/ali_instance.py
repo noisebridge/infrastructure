@@ -246,8 +246,8 @@ requirements:
   - "Python >= 3.6"
   - "footmark >= 1.19.0"
 extends_documentation_fragment:
-  - community.general.alicloud
-  - community.general.attributes
+  - community.general._alicloud
+  - community.general._attributes
 """
 
 EXAMPLES = r"""
@@ -344,7 +344,8 @@ RETURN = r"""
 instances:
   description: List of ECS instances.
   returned: always
-  type: complex
+  type: list
+  elements: dict
   contains:
     availability_zone:
       description: The availability zone of the instance is in.
@@ -616,7 +617,7 @@ import time
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 
-from ansible_collections.community.general.plugins.module_utils.alicloud_ecs import (
+from ansible_collections.community.general.plugins.module_utils._alicloud_ecs import (
     FOOTMARK_IMP_ERR,
     HAS_FOOTMARK,
     ecs_argument_spec,

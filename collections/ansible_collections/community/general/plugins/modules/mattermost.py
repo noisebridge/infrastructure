@@ -19,7 +19,7 @@ description:
   - Sends notifications to U(http://your.mattermost.url) using the Incoming WebHook integration.
 author: "Benjamin Jolivot (@bjolivot)"
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -63,7 +63,7 @@ options:
     type: str
     description:
       - URL for the message sender's icon.
-    default: https://docs.ansible.com/favicon.ico
+    default: https://docs.ansible.com/favicon/favicon.ico
   priority:
     type: str
     description:
@@ -136,7 +136,7 @@ def main():
             text=dict(type="str"),
             channel=dict(type="str"),
             username=dict(type="str", default="Ansible"),
-            icon_url=dict(type="str", default="https://docs.ansible.com/favicon.ico"),
+            icon_url=dict(type="str", default="https://docs.ansible.com/favicon/favicon.ico"),
             priority=dict(type="str", choices=["important", "urgent"]),
             validate_certs=dict(default=True, type="bool"),
             attachments=dict(type="list", elements="dict"),

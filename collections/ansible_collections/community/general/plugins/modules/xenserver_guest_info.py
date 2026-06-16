@@ -41,9 +41,9 @@ options:
       - It is required if name is not unique.
     type: str
 extends_documentation_fragment:
-  - community.general.xenserver.documentation
-  - community.general.attributes
-  - community.general.attributes.info_module
+  - community.general._xenserver.documentation
+  - community.general._attributes
+  - community.general._attributes.info_module
 """
 
 EXAMPLES = r"""
@@ -76,7 +76,9 @@ instance:
           "size": 42949672960,
           "sr": "Local storage",
           "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
-          "vbd_userdevice": "0"
+          "uuid": "3f98b388-b2c0-4355-9a01-15c0e61b5a76",
+          "vbd_userdevice": "0",
+          "vdi_type": "vhd"
         },
         {
           "name": "testvm_11-1",
@@ -85,7 +87,9 @@ instance:
           "size": 42949672960,
           "sr": "Local storage",
           "sr_uuid": "0af1245e-bdb0-ba33-1446-57a962ec4075",
-          "vbd_userdevice": "1"
+          "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+          "vbd_userdevice": "1",
+          "vdi_type": "vhd"
         }
       ],
       "domid": "56",
@@ -150,7 +154,7 @@ instance:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils.xenserver import (
+from ansible_collections.community.general.plugins.module_utils._xenserver import (
     XenServerObject,
     gather_vm_facts,
     gather_vm_params,

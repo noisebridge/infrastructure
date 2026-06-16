@@ -17,7 +17,7 @@ description:
     The primary IP address is defined as the management interface if defined, or the interface who's DNS name matches the
     hostname of the system, or else the first interface found.
 extends_documentation_fragment:
-  - inventory_cache
+  - ansible.builtin.inventory_cache
 options:
   plugin:
     description: The name of this plugin, it should always be set to V(community.general.cobbler) for this plugin to recognize
@@ -135,7 +135,7 @@ import socket
 from ansible.errors import AnsibleError
 from ansible.plugins.inventory import BaseInventoryPlugin, Cacheable, to_safe_group_name
 
-from ansible_collections.community.general.plugins.plugin_utils.unsafe import make_unsafe
+from ansible_collections.community.general.plugins.plugin_utils._unsafe import make_unsafe
 
 # xmlrpc
 try:

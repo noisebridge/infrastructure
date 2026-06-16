@@ -15,7 +15,7 @@ description:
 requirements:
   - 'py-consul python library U(https://github.com/criteo/py-consul?tab=readme-ov-file#installation)'
 options:
-  _raw:
+  _terms:
     description: List of key(s) to retrieve.
     type: list
     elements: string
@@ -94,6 +94,16 @@ options:
     ini:
       - section: lookup_consul
         key: url
+  empty_value:
+    description:
+      - Controls what is returned when a Consul value is null.
+    type: str
+    default: 'textual_none'
+    choices:
+      textual_none: Return the string V(None). This is the legacy behavior.
+      python_none: Return a Python V(null)/V(None) value.
+      empty_string: Return an empty string.
+    version_added: 13.1.0
 """
 
 EXAMPLES = r"""
@@ -126,12 +136,21 @@ from ansible.errors import AnsibleAssertionError, AnsibleError
 from ansible.module_utils.common.text.converters import to_text
 from ansible.plugins.lookup import LookupBase
 
+from ansible_collections.community.general.plugins.plugin_utils._lookup import check_for_wrong_terms
+
 try:
     import consul
 
     HAS_CONSUL = True
 except ImportError:
     HAS_CONSUL = False
+
+
+_EMPTY_VALUE_MAP = {
+    "textual_none": "None",
+    "python_none": None,
+    "empty_string": "",
+}
 
 
 class LookupModule(LookupBase):
@@ -143,6 +162,7 @@ class LookupModule(LookupBase):
 
         # get options
         self.set_options(direct=kwargs)
+        check_for_wrong_terms(self, direct=kwargs)
 
         scheme = self.get_option("scheme")
         host = self.get_option("host")
@@ -162,6 +182,7 @@ class LookupModule(LookupBase):
 
         verify = (ca_path or validate_certs) if validate_certs else False
 
+        empty_value = _EMPTY_VALUE_MAP[self.get_option("empty_value")]
         values = []
         try:
             for term in terms:
@@ -179,9 +200,11 @@ class LookupModule(LookupBase):
                     # responds with a single or list of result maps
                     if isinstance(results[1], list):
                         for r in results[1]:
-                            values.append(to_text(r["Value"]))
+                            v = r["Value"]
+                            values.append(to_text(v) if v is not None else empty_value)
                     else:
-                        values.append(to_text(results[1]["Value"]))
+                        v = results[1]["Value"]
+                        values.append(to_text(v) if v is not None else empty_value)
         except Exception as e:
             raise AnsibleError(f"Error locating '{term}' in kv store. Error was {e}") from e
 

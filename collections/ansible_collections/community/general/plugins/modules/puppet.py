@@ -12,7 +12,7 @@ short_description: Runs puppet
 description:
   - Runs C(puppet) agent or apply in a reliable manner.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -193,7 +193,7 @@ import stat
 
 from ansible.module_utils.basic import AnsibleModule
 
-import ansible_collections.community.general.plugins.module_utils.puppet as puppet_utils
+import ansible_collections.community.general.plugins.module_utils._puppet as puppet_utils
 
 
 def _write_structured_data(basedir, basename, data):
@@ -204,7 +204,7 @@ def _write_structured_data(basedir, basename, data):
     # open the file with only u+rw set. Also, we use the stat constants
     # because ansible still supports python 2.4 and the octal syntax changed
     out_file = os.fdopen(os.open(file_path, os.O_CREAT | os.O_WRONLY, stat.S_IRUSR | stat.S_IWUSR), "w")
-    out_file.write(json.dumps(data).encode("utf8"))
+    out_file.write(json.dumps(data))
     out_file.close()
 
 

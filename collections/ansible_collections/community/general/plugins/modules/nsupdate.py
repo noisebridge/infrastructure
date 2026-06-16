@@ -22,7 +22,7 @@ requirements:
   - gssapi (when using GSS-TSIG authentication)
 author: "Loic Blot (@nerzhul)"
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -95,6 +95,12 @@ options:
     default: 'tcp'
     choices: ['tcp', 'udp']
     type: str
+  timeout:
+    description:
+      - Timeout in seconds for each DNS query sent to O(server).
+    default: 10
+    type: float
+    version_added: 13.0.0
 """
 
 EXAMPLES = r"""
@@ -209,7 +215,7 @@ from contextlib import suppress
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils import deps
+from ansible_collections.community.general.plugins.module_utils import _deps as deps
 
 with deps.declare("dnspython", url="https://github.com/rthalley/dnspython"):
     import dns.message
@@ -308,8 +314,9 @@ class RecordManager:
         except dns.exception.DNSException as e:
             self.module.fail_json(msg=f"DNS resolution error for server '{server}': {e}")
 
-    def query(self, query, timeout=10):
+    def query(self, query):
         last_exception = None
+        timeout = self.module.params["timeout"]
         for server_ip in self.server_ips:
             try:
                 if self.module.params["protocol"] == "tcp":
@@ -605,6 +612,7 @@ def main():
             ttl=dict(default=3600, type="int"),
             value=dict(type="list", elements="str"),
             protocol=dict(default="tcp", choices=["tcp", "udp"], type="str"),
+            timeout=dict(default=10, type="float"),
         ),
         supports_check_mode=True,
     )

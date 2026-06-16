@@ -53,8 +53,8 @@ options:
       - Specifies the resource ID of the VPC to which the security group belongs.
     type: str
 extends_documentation_fragment:
-  - community.general.hwc
-  - community.general.attributes
+  - community.general._hwc
+  - community.general._attributes
 """
 
 EXAMPLES = r"""
@@ -85,7 +85,8 @@ vpc_id:
 rules:
   description:
     - Specifies the security group rule, which ensures that resources in the security group can communicate with one another.
-  type: complex
+  type: list
+  elements: dict
   returned: success
   contains:
     description:
@@ -144,7 +145,7 @@ rules:
       returned: success
 """
 
-from ansible_collections.community.general.plugins.module_utils.hwc_utils import (
+from ansible_collections.community.general.plugins.module_utils._hwc_utils import (
     Config,
     HwcClientException,
     HwcModule,

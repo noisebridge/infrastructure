@@ -14,7 +14,7 @@ short_description: Manage Cloudflare DNS records
 description:
   - 'Manages DNS records using the Cloudflare API, see the docs: U(https://api.cloudflare.com/).'
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -327,7 +327,7 @@ RETURN = r"""
 record:
   description: A dictionary containing the record data.
   returned: success, except on record deletion
-  type: complex
+  type: dict
   contains:
     comment:
       description: Comments or notes about the DNS record.

@@ -210,7 +210,7 @@ firewalld_info:
 '''
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
-from ansible.module_utils._text import to_native
+from ansible.module_utils.common.text.converters import to_native
 from ansible_collections.ansible.posix.plugins.module_utils._respawn import respawn_module, HAS_RESPAWN_UTIL
 from ansible_collections.ansible.posix.plugins.module_utils.version import StrictVersion
 
@@ -319,7 +319,6 @@ def main():
         active_zones=module.params['active_zones'],
         collected_zones=list(),
         undefined_zones=list(),
-        warnings=list(),
     )
 
     # Exit with failure message if requirements modules are not installed.
@@ -333,10 +332,6 @@ def main():
         module.fail_json(msg=missing_required_lib('python-dbus'))
     if not HAS_FIREWALLD:
         module.fail_json(msg=missing_required_lib('python-firewall'))
-
-    # If you want to show warning messages in the task running process,
-    # you can append the message to the 'warn' list.
-    warn = list()
 
     try:
         client = fw_client.FirewallClient()
@@ -357,8 +352,7 @@ def main():
             collect_zones = list(set(specified_zones) & set(all_zones))
             ignore_zones = list(set(specified_zones) - set(collect_zones))
             if ignore_zones:
-                warn.append(
-                    'Please note: zone:(%s) have been ignored in the gathering process.' % ','.join(ignore_zones))
+                module.warn('Please note: zone:(%s) have been ignored in the gathering process.' % ", ".join(ignore_zones))
         else:
             collect_zones = get_all_zones(client)
 
@@ -397,7 +391,6 @@ def main():
     result['collected_zones'] = collect_zones
     result['undefined_zones'] = ignore_zones
     result['firewalld_info'] = firewalld_info
-    result['warnings'] = warn
     module.exit_json(**result)
 
 
