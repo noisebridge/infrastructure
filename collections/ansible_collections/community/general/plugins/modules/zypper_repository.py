@@ -15,7 +15,7 @@ short_description: Add and remove Zypper repositories
 description:
   - Add or remove Zypper repositories on SUSE and openSUSE.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: none
@@ -45,13 +45,13 @@ options:
     description:
       - Whether to disable GPG signature checking of all packages. Has an effect only if O(state=present).
       - Needs C(zypper) version >= 1.6.2.
+      - When not specified, the value from the C(.repo) file is used if available, otherwise it defaults to V(false).
     type: bool
-    default: false
   autorefresh:
     description:
       - Enable autorefresh of the repository.
+      - When not specified, the value from the C(.repo) file is used if available, otherwise it defaults to V(true).
     type: bool
-    default: true
     aliases: ["refresh"]
   priority:
     description:
@@ -81,8 +81,8 @@ options:
   enabled:
     description:
       - Set repository to enabled (or disabled).
+      - When not specified, the value from the C(.repo) file is used if available, otherwise it defaults to V(true).
     type: bool
-    default: true
 
 
 requirements:
@@ -143,7 +143,7 @@ from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 from ansible.module_utils.common.text.converters import to_text
 from ansible.module_utils.urls import fetch_url
 
-from ansible_collections.community.general.plugins.module_utils.version import LooseVersion
+from ansible_collections.community.general.plugins.module_utils._version import LooseVersion
 
 REPO_OPTS = ["alias", "name", "priority", "enabled", "autorefresh", "gpgcheck"]
 
@@ -328,10 +328,10 @@ def main():
             state=dict(choices=["present", "absent"], default="present"),
             runrefresh=dict(default=False, type="bool"),
             description=dict(),
-            disable_gpg_check=dict(default=False, type="bool"),
-            autorefresh=dict(default=True, type="bool", aliases=["refresh"]),
+            disable_gpg_check=dict(type="bool"),
+            autorefresh=dict(type="bool", aliases=["refresh"]),
             priority=dict(type="int"),
-            enabled=dict(default=True, type="bool"),
+            enabled=dict(type="bool"),
             overwrite_multiple=dict(default=False, type="bool"),
             auto_import_keys=dict(default=False, type="bool"),
         ),
@@ -356,18 +356,13 @@ def main():
         "priority": module.params["priority"],
     }
     # rewrite bools in the language that zypper lr -x provides for easier comparison
-    if module.params["enabled"]:
-        repodata["enabled"] = "1"
-    else:
-        repodata["enabled"] = "0"
-    if module.params["disable_gpg_check"]:
-        repodata["gpgcheck"] = "0"
-    else:
-        repodata["gpgcheck"] = "1"
-    if module.params["autorefresh"]:
-        repodata["autorefresh"] = "1"
-    else:
-        repodata["autorefresh"] = "0"
+    # only set if the user explicitly provided the parameter (None means unset)
+    if module.params["enabled"] is not None:
+        repodata["enabled"] = "1" if module.params["enabled"] else "0"
+    if module.params["disable_gpg_check"] is not None:
+        repodata["gpgcheck"] = "0" if module.params["disable_gpg_check"] else "1"
+    if module.params["autorefresh"] is not None:
+        repodata["autorefresh"] = "1" if module.params["autorefresh"] else "0"
 
     def exit_unchanged():
         module.exit_json(changed=False, repodata=repodata, state=state)
@@ -394,53 +389,72 @@ def main():
 
     # Download / Open and parse .repo file to ensure idempotency
     if repo and repo.endswith(".repo"):
+        repofile_text = None
         if repo.startswith(("http://", "https://")):
             response, info = fetch_url(module=module, url=repo, force=True)
             if not response or info["status"] != 200:
-                module.fail_json(msg="Error downloading .repo file from provided URL")
-            repofile_text = to_text(response.read(), errors="surrogate_or_strict")
+                if state == "absent":
+                    # Fall back to alias derived from URL filename (convention: section == basename)
+                    module.warn(
+                        f"Could not download .repo file from '{repo}'; will try to identify repository by alias"
+                    )
+                    alias = alias or repo.rsplit("/", 1)[-1][:-5]
+                    repodata["alias"] = alias
+                else:
+                    module.fail_json(msg="Error downloading .repo file from provided URL")
+            else:
+                repofile_text = to_text(response.read(), errors="surrogate_or_strict")
         else:
             try:
                 with open(repo, encoding="utf-8") as file:
                     repofile_text = file.read()
             except OSError:
-                module.fail_json(msg="Error opening .repo file from provided path")
+                if state == "absent":
+                    module.warn(f"Could not open .repo file at '{repo}'; will try to identify repository by alias")
+                    alias = alias or repo.rsplit("/", 1)[-1][:-5]
+                    repodata["alias"] = alias
+                else:
+                    module.fail_json(msg="Error opening .repo file from provided path")
 
-        repofile = configparser.ConfigParser()
-        try:
-            repofile.read_file(StringIO(repofile_text))
-        except configparser.Error:
-            module.fail_json(msg="Invalid format, .repo file could not be parsed")
+        if repofile_text is not None:
+            repofile = configparser.ConfigParser()
+            try:
+                repofile.read_file(StringIO(repofile_text))
+            except configparser.Error:
+                module.fail_json(msg="Invalid format, .repo file could not be parsed")
 
-        # No support for .repo file with zero or more than one repository
-        if len(repofile.sections()) != 1:
-            err = f"Invalid format, .repo file contains {len(repofile.sections())} repositories, expected 1"
-            module.fail_json(msg=err)
+            # No support for .repo file with zero or more than one repository
+            if len(repofile.sections()) != 1:
+                err = f"Invalid format, .repo file contains {len(repofile.sections())} repositories, expected 1"
+                module.fail_json(msg=err)
 
-        section = repofile.sections()[0]
-        repofile_items = dict(repofile.items(section))
-        # Only proceed if at least baseurl is available
-        if "baseurl" not in repofile_items:
-            module.fail_json(msg="No baseurl found in .repo file")
+            section = repofile.sections()[0]
+            repofile_items = dict(repofile.items(section))
+            # Only proceed if at least baseurl is available
+            if "baseurl" not in repofile_items:
+                module.fail_json(msg="No baseurl found in .repo file")
 
-        # Set alias (name) and url based on values from .repo file
-        alias = section
-        repodata["alias"] = section
-        repodata["url"] = repofile_items["baseurl"]
+            # Set alias (name) and url based on values from .repo file
+            alias = section
+            repodata["alias"] = section
+            repodata["url"] = repofile_items["baseurl"]
 
-        # If gpgkey is part of the .repo file, auto import key
-        if "gpgkey" in repofile_items:
-            auto_import_keys = True
+            # If gpgkey is part of the .repo file, auto import key
+            if "gpgkey" in repofile_items:
+                auto_import_keys = True
 
-        # Map additional values, if available
-        if "name" in repofile_items:
-            repodata["name"] = repofile_items["name"]
-        if "enabled" in repofile_items:
-            repodata["enabled"] = repofile_items["enabled"]
-        if "autorefresh" in repofile_items:
-            repodata["autorefresh"] = repofile_items["autorefresh"]
-        if "gpgcheck" in repofile_items:
-            repodata["gpgcheck"] = repofile_items["gpgcheck"]
+            # Map additional values, if available
+            if "name" in repofile_items:
+                repodata["name"] = repofile_items["name"]
+            # Use .repo file values only for settings the user did not explicitly provide
+            for key in ("enabled", "autorefresh", "gpgcheck"):
+                if key not in repodata and key in repofile_items:
+                    repodata[key] = repofile_items[key]
+
+    # Apply defaults for any settings not provided by the user or the .repo file
+    repodata.setdefault("enabled", "1")
+    repodata.setdefault("gpgcheck", "1")
+    repodata.setdefault("autorefresh", "1")
 
     exists, mod, old_repos = repo_exists(module, repodata, overwrite_multiple)
 

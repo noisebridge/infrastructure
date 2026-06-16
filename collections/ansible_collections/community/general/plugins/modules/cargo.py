@@ -14,7 +14,7 @@ description:
   - Manage Rust packages with cargo.
 author: "Radek Sprta (@radek-sprta)"
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -196,7 +196,7 @@ class Cargo:
         cmd = ["search", name, "--limit", "1"]
         data, dummy = self._exec(cmd, True, False, False)
 
-        match = re.search(r'"(.+)"', data)
+        match = re.search(r"^" + re.escape(name) + r'\s*=\s*"([^"]+)"', data, re.MULTILINE)
         if not match:
             self.module.fail_json(msg=f"No published version for package {name} found")
         return match.group(1)

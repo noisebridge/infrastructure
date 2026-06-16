@@ -15,7 +15,7 @@ version_added: 1.0.0
 description:
   - Manage launchd services on target macOS hosts.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -507,14 +507,15 @@ def main():
     result["status"]["status_code"] = status_code
     result["status"]["error"] = err
 
+    # restarted and reloaded always perform commands unconditionally, so they always change state
     if (
-        result["status"]["current_state"] != result["status"]["previous_state"]
+        action in ("restarted", "reloaded")
+        or result["status"]["current_state"] != result["status"]["previous_state"]
         or result["status"]["current_pid"] != result["status"]["previous_pid"]
     ):
         result["changed"] = True
-    if module.check_mode:
-        if result["status"]["current_state"] != action:
-            result["changed"] = True
+    elif module.check_mode and result["status"]["current_state"] != action:
+        result["changed"] = True
     module.exit_json(**result)
 
 

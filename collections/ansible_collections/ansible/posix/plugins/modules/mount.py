@@ -225,8 +225,7 @@ import platform
 
 from ansible.module_utils.basic import AnsibleModule
 from ansible_collections.ansible.posix.plugins.module_utils.mount import ismount
-from ansible.module_utils.six import iteritems
-from ansible.module_utils._text import to_bytes, to_native
+from ansible.module_utils.common.text.converters import to_bytes, to_native
 from ansible.module_utils.parsing.convert_bool import boolean
 
 
@@ -279,7 +278,7 @@ def _set_mount_save_old(module, args):
     old_lines = []
     exists = False
     changed = False
-    escaped_args = dict([(k, _escape_fstab(v)) for k, v in iteritems(args) if k != 'warnings'])
+    escaped_args = dict([(k, _escape_fstab(v)) for k, v in args.items()])
     new_line = '%(src)s %(name)s %(fstype)s %(opts)s %(dump)s %(passno)s\n'
 
     if platform.system() == 'SunOS':
@@ -804,7 +803,6 @@ def main():
             passno='-',
             fstab=module.params['fstab'],
             boot='yes' if module.params['boot'] else 'no',
-            warnings=[]
         )
         if args['fstab'] is None:
             args['fstab'] = '/etc/vfstab'
@@ -816,7 +814,6 @@ def main():
             passno='0',
             fstab=module.params['fstab'],
             boot='yes',
-            warnings=[]
         )
         if args['fstab'] is None:
             args['fstab'] = '/etc/fstab'
@@ -834,8 +831,7 @@ def main():
         linux_mounts = get_linux_mounts(module)
 
         if linux_mounts is None:
-            args['warnings'].append('Cannot open file /proc/self/mountinfo.'
-                                    ' Bind mounts might be misinterpreted.')
+            module.warn('Cannot open file /proc/self/mountinfo. Bind mounts might be misinterpreted.')
 
     # Override defaults with user specified params
     for key in ('src', 'fstype', 'passno', 'opts', 'dump', 'fstab'):
@@ -847,7 +843,7 @@ def main():
         # specified in 'opts',  mount module will ignore 'boot'.
         opts = args['opts'].split(',')
         if module.params['boot'] and 'noauto' in opts:
-            args['warnings'].append("Ignore the 'boot' due to 'opts' contains 'noauto'.")
+            module.warn("Ignore the 'boot' due to 'opts' contains 'noauto'.")
         elif not module.params['boot']:
             args['boot'] = 'no'
             opts.append('noauto')

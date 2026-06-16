@@ -8,13 +8,17 @@ from __future__ import annotations
 DOCUMENTATION = r"""
 module: uptimerobot
 short_description: Pause and start Uptime Robot monitoring
+deprecated:
+  removed_in: 15.0.0
+  why: The module uses the Uptime Robot API v1, which was retired and is no longer available.
+  alternative: Use the Uptime Robot API v3 directly with the M(ansible.builtin.uri) module.
 description:
   - This module lets you start and pause Uptime Robot Monitoring.
 author: "Nate Kingsley (@nate-kingsley)"
 requirements:
   - Valid Uptime Robot API Key
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: none

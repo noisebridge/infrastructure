@@ -15,11 +15,11 @@ author:
 short_description: Fetch field values from 1Password
 description:
   - P(community.general.onepassword#lookup) wraps the C(op) command line utility to fetch specific field values from 1Password.
-requirements:
-  - C(op) 1Password command line utility
 options:
   _terms:
-    description: Identifier(s) (case-insensitive UUID or name) of item(s) to retrieve.
+    description:
+      - Identifier(s) (case-insensitive UUID or name or secret reference) of item(s) to retrieve.
+      - Secret references start with V(op://) and are supported since community.general 13.0.0.
     required: true
     type: list
     elements: string
@@ -28,14 +28,16 @@ options:
   domain:
     version_added: 3.2.0
   field:
-    description: Field to return from each matching item (case-insensitive).
+    description:
+      - Field to return from each matching item (case-insensitive).
+      - Ignored when using a secret reference, as the field is included in the secret reference.
     default: 'password'
     type: str
   service_account_token:
     version_added: 7.1.0
 extends_documentation_fragment:
-  - community.general.onepassword
-  - community.general.onepassword.lookup
+  - community.general._onepassword
+  - community.general._onepassword.lookup
 """
 
 EXAMPLES = r"""
@@ -84,7 +86,8 @@ from ansible.module_utils.common.process import get_bin_path
 from ansible.module_utils.common.text.converters import to_bytes, to_text
 from ansible.plugins.lookup import LookupBase
 
-from ansible_collections.community.general.plugins.module_utils.onepassword import OnePasswordConfig
+from ansible_collections.community.general.plugins.module_utils._onepassword import OnePasswordConfig
+from ansible_collections.community.general.plugins.plugin_utils._lookup import check_for_wrong_terms
 
 
 def _lower_if_possible(value):
@@ -207,146 +210,6 @@ class OnePassCLIBase(metaclass=abc.ABCMeta):
             raise AnsibleLookupError(f"Unable to get the op version: {cpe}") from cpe
 
         return to_text(b_out).strip()
-
-
-class OnePassCLIv1(OnePassCLIBase):
-    supports_version = "1"
-
-    def _parse_field(self, data_json, field_name, section_title):
-        """
-        Retrieves the desired field from the `op` response payload
-
-        When the item is a `password` type, the password is a key within the `details` key:
-
-        $ op get item 'test item' | jq
-        {
-          [...]
-          "templateUuid": "005",
-          "details": {
-            "notesPlain": "",
-            "password": "foobar",
-            "passwordHistory": [],
-            "sections": [
-              {
-                "name": "linked items",
-                "title": "Related Items"
-              }
-            ]
-          },
-          [...]
-        }
-
-        However, when the item is a `login` type, the password is within a fields array:
-
-        $ op get item 'test item' | jq
-        {
-          [...]
-          "details": {
-            "fields": [
-              {
-                "designation": "username",
-                "name": "username",
-                "type": "T",
-                "value": "foo"
-              },
-              {
-                "designation": "password",
-                "name": "password",
-                "type": "P",
-                "value": "bar"
-              }
-            ],
-            [...]
-          },
-          [...]
-        """
-        data = json.loads(data_json)
-        if section_title is None:
-            # https://github.com/ansible-collections/community.general/pull/1610:
-            # check the details dictionary for `field_name` and return it immediately if it exists
-            # when the entry is a "password" instead of a "login" item, the password field is a key
-            # in the `details` dictionary:
-            if field_name in data["details"]:
-                return data["details"][field_name]
-
-            # when the field is not found above, iterate through the fields list in the object details
-            for field_data in data["details"].get("fields", []):
-                if field_data.get("name", "").lower() == field_name.lower():
-                    return field_data.get("value", "")
-
-        for section_data in data["details"].get("sections", []):
-            if section_title is not None and section_title.lower() != section_data["title"].lower():
-                continue
-
-            for field_data in section_data.get("fields", []):
-                if field_data.get("t", "").lower() == field_name.lower():
-                    return field_data.get("v", "")
-
-        return ""
-
-    def assert_logged_in(self):
-        args = ["get", "account"]
-        if self.account_id:
-            args.extend(["--account", self.account_id])
-        elif self.subdomain:
-            account = f"{self.subdomain}.{self.domain}"
-            args.extend(["--account", account])
-
-        rc, out, err = self._run(args, ignore_errors=True)
-
-        return not bool(rc)
-
-    def full_signin(self):
-        if self.connect_host or self.connect_token:
-            raise AnsibleLookupError(
-                "1Password Connect is not available with 1Password CLI version 1. Please use version 2 or later."
-            )
-
-        if self.service_account_token:
-            raise AnsibleLookupError(
-                "1Password CLI version 1 does not support Service Accounts. Please use version 2 or later."
-            )
-
-        required_params = [
-            "subdomain",
-            "username",
-            "secret_key",
-            "master_password",
-        ]
-        self._check_required_params(required_params)
-
-        args = [
-            "signin",
-            f"{self.subdomain}.{self.domain}",
-            to_bytes(self.username),
-            to_bytes(self.secret_key),
-            "--raw",
-        ]
-
-        return self._run(args, command_input=to_bytes(self.master_password))
-
-    def get_raw(self, item_id, vault=None, token=None):
-        args = ["get", "item", item_id]
-
-        if self.account_id:
-            args.extend(["--account", self.account_id])
-
-        if vault is not None:
-            args += [f"--vault={vault}"]
-
-        if token is not None:
-            args += [to_bytes("--session=") + token]
-
-        return self._run(args)
-
-    def signin(self):
-        self._check_required_params(["master_password"])
-
-        args = ["signin", "--raw"]
-        if self.subdomain:
-            args.append(self.subdomain)
-
-        return self._run(args, command_input=to_bytes(self.master_password))
 
 
 class OnePassCLIv2(OnePassCLIBase):
@@ -580,6 +443,10 @@ class OnePassCLIv2(OnePassCLIBase):
         args = ["item", "get", item_id, "--format", "json"]
         return self._add_parameters_and_run(args, vault=vault, token=token)
 
+    def get_secret_reference(self, reference, token=None):
+        args = ["read", reference]
+        return self._add_parameters_and_run(args, token=token)
+
     def signin(self):
         self._check_required_params(["master_password"])
 
@@ -700,10 +567,25 @@ class OnePass:
 
         return ""
 
+    def get_secret_reference(self, reference):
+        path = reference[5:]
+        if not path:
+            raise AnsibleLookupError("Secret references must have a path")
+        # Split into parts, to check length in a second
+        path_parts = [part for part in path.split("/") if part]
+
+        # Must be 3 parts (vault,item,field) or 4 (vault,item,section,field)
+        if len(path_parts) not in (3, 4):
+            raise AnsibleLookupError("Not a valid secret reference")
+
+        rc, out, err = self._cli.get_secret_reference(reference, self.token)
+        return out.strip()
+
 
 class LookupModule(LookupBase):
     def run(self, terms, variables=None, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        check_for_wrong_terms(self, direct=kwargs)
 
         field = self.get_option("field")
         section = self.get_option("section")
@@ -733,6 +615,9 @@ class LookupModule(LookupBase):
 
         values = []
         for term in terms:
-            values.append(op.get_field(term, field, section, vault))
+            if term.startswith("op://"):
+                values.append(op.get_secret_reference(term))
+            else:
+                values.append(op.get_field(term, field, section, vault))
 
         return values

@@ -20,9 +20,12 @@ notes:
   - C(ss) returns all processes for each listen address and port.
   - This plugin returns each of them, so multiple entries for the same listen address and port are likely in results.
 extends_documentation_fragment:
-  - community.general.attributes
-  - community.general.attributes.facts
-  - community.general.attributes.facts_module
+  - community.general._attributes
+  - community.general._attributes.facts
+  - community.general._attributes.facts_module
+attributes:
+  check_mode:
+    version_added: 13.0.0
 options:
   command:
     description:
@@ -78,13 +81,14 @@ EXAMPLES = r"""
 RETURN = r"""
 ansible_facts:
   description: Dictionary containing details of TCP and UDP ports with listening servers.
-  returned: always
-  type: complex
+  returned: success
+  type: dict
   contains:
     tcp_listen:
       description: A list of processes that are listening on a TCP port.
-      returned: if TCP servers were found
+      returned: success
       type: list
+      elements: dict
       contains:
         address:
           description: The address the server is listening on.
@@ -135,8 +139,9 @@ ansible_facts:
           sample: "mysql"
     udp_listen:
       description: A list of processes that are listening on a UDP port.
-      returned: if UDP servers were found
+      returned: success
       type: list
+      elements: dict
       contains:
         address:
           description: The address the server is listening on.

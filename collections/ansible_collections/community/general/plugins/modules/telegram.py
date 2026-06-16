@@ -20,7 +20,7 @@ description:
 notes:
   - You need a telegram account and create telegram bot to use this module.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -32,6 +32,12 @@ options:
     description:
       - Token identifying your telegram bot.
     required: true
+  api_host:
+    type: str
+    description:
+      - Custom telegram API host.
+    default: api.telegram.org
+    version_added: 13.0.0
   api_method:
     type: str
     description:
@@ -67,6 +73,17 @@ EXAMPLES = r"""
       from_chat_id: 111111
       disable_notification: true
       message_id: '{{ saved_msg_id }}'
+
+- name: Send notify to custom telegram API host
+  community.general.telegram:
+    token: '9999999:XXXXXXXXXXXXXXXXXXXXXXX'
+    api_host: "telegram.example.com"
+    api_args:
+      chat_id: "000000"
+      parse_mode: "markdown"
+      text: "Your precious application has been deployed: https://example.com"
+      disable_web_page_preview: true
+      disable_notification: true
 """
 
 RETURN = r"""
@@ -95,15 +112,17 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
             token=dict(type="str", required=True, no_log=True),
+            api_host=dict(type="str", default="api.telegram.org"),
             api_args=dict(type="dict"),
             api_method=dict(type="str", default="SendMessage"),
         ),
         supports_check_mode=True,
     )
 
-    token = quote(module.params.get("token"))
-    api_args = module.params.get("api_args") or {}
-    api_method = module.params.get("api_method")
+    token = quote(module.params["token"])
+    api_host = module.params["api_host"]
+    api_args = module.params["api_args"] or {}
+    api_method = module.params["api_method"]
     # filling backward compatibility args
     api_args["chat_id"] = api_args.get("chat_id")
     api_args["parse_mode"] = api_args.get("parse_mode")
@@ -112,7 +131,7 @@ def main():
     if api_args["parse_mode"] == "plain":
         del api_args["parse_mode"]
 
-    url = f"https://api.telegram.org/bot{token}/{api_method}"
+    url = f"https://{api_host}/bot{token}/{api_method}"
 
     if module.check_mode:
         module.exit_json(changed=False)

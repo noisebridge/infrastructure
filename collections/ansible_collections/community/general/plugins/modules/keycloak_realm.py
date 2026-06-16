@@ -329,6 +329,13 @@ options:
     aliases:
       - maxFailureWaitSeconds
     type: int
+  max_secondary_auth_failures:
+    description:
+      - The realm max secondary authentication failures (used with brute force detection for secondary auth mechanisms).
+    aliases:
+      - maxSecondaryAuthFailures
+    type: int
+    version_added: 13.1.0
   max_temporary_lockouts:
     description:
       - The realm max temporary lockouts.
@@ -755,9 +762,9 @@ options:
     version_added: 12.1.0
 
 extends_documentation_fragment:
-  - community.general.keycloak
-  - community.general.keycloak.actiongroup_keycloak
-  - community.general.attributes
+  - community.general._keycloak
+  - community.general._keycloak.actiongroup_keycloak
+  - community.general._attributes
 
 author:
   - Christophe Gilles (@kris2kris)
@@ -825,7 +832,7 @@ end_state:
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils.identity.keycloak.keycloak import (
+from ansible_collections.community.general.plugins.module_utils._keycloak import (
     KeycloakAPI,
     KeycloakError,
     camel,
@@ -937,6 +944,7 @@ def main():
         login_with_email_allowed=dict(type="bool", aliases=["loginWithEmailAllowed"]),
         max_delta_time_seconds=dict(type="int", aliases=["maxDeltaTimeSeconds"]),
         max_failure_wait_seconds=dict(type="int", aliases=["maxFailureWaitSeconds"]),
+        max_secondary_auth_failures=dict(type="int", aliases=["maxSecondaryAuthFailures"]),
         max_temporary_lockouts=dict(type="int", aliases=["maxTemporaryLockouts"]),
         minimum_quick_login_wait_seconds=dict(type="int", aliases=["minimumQuickLoginWaitSeconds"]),
         not_before=dict(type="int", aliases=["notBefore"]),

@@ -20,7 +20,7 @@ deprecated:
     Use C(ibm.power_aix.devices) instead.
     See U(https://ibm.github.io/ansible-power-aix/modules/devices.html) for details.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -235,7 +235,7 @@ def change_device_attr(module, attributes, device, force):
             if not module.check_mode:
                 rc, chdev_out, err = module.run_command(cmd)
                 if rc != 0:
-                    module.exit_json(msg="Failed to run chdev.", rc=rc, err=err)
+                    module.fail_json(msg="Failed to run chdev.", rc=rc, err=err)
 
             attr_changed.append(attributes[attr])
         else:

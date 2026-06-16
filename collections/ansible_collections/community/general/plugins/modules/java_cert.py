@@ -14,7 +14,7 @@ description:
   - This is a wrapper module around keytool, which can be used to import certificates and optionally private keys to a given
     java keystore, or remove them from it.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
   - ansible.builtin.files
 attributes:
   check_mode:
@@ -279,7 +279,7 @@ def _get_digest_from_x509_file(module, pem_certificate_file, openssl_bin):
 
 def _export_public_cert_from_pkcs12(module, executable, pkcs_file, alias, password, dest):
     """Runs keytools to extract the public cert from a PKCS12 archive and write it to a file."""
-    export_cmd = [executable, "-list", "-noprompt", "-keystore", pkcs_file, "-storetype", "pkcs12", "-rfc"]
+    export_cmd = [executable, "-list", "-keystore", pkcs_file, "-storetype", "pkcs12", "-rfc"]
     # Append optional alias
     if alias:
         export_cmd.extend(["-alias", alias])
@@ -411,6 +411,14 @@ def import_pkcs12_path(
     if import_rc != 0 or not os.path.exists(keystore_path):
         module.fail_json(msg=import_out, rc=import_rc, cmd=import_cmd, error=import_err)
 
+    check_alias = keystore_alias or pkcs12_alias
+    if check_alias:
+        alias_exists, dummy = _check_cert_present(
+            module, executable, keystore_path, keystore_pass, check_alias, keystore_type
+        )
+        if not alias_exists:
+            module.fail_json(msg=import_out, rc=import_rc, cmd=import_cmd, error=import_err)
+
     return dict(
         changed=True, msg=import_out, rc=import_rc, cmd=import_cmd, stdout=import_out, error=import_err, diff=diff
     )
@@ -431,7 +439,11 @@ def import_cert_path(module, executable, path, keystore_path, keystore_pass, ali
     )
     diff = {"before": "\n", "after": f"{alias}\n"}
 
-    if import_rc != 0:
+    if import_rc != 0 or not os.path.exists(keystore_path):
+        module.fail_json(msg=import_out, rc=import_rc, cmd=import_cmd, error=import_err)
+
+    alias_exists, dummy = _check_cert_present(module, executable, keystore_path, keystore_pass, alias, keystore_type)
+    if not alias_exists:
         module.fail_json(msg=import_out, rc=import_rc, cmd=import_cmd, error=import_err)
 
     return dict(

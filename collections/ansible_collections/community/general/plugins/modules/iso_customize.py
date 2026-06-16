@@ -20,7 +20,7 @@ requirements:
 version_added: '5.8.0'
 
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 
 attributes:
   check_mode:
@@ -64,7 +64,6 @@ options:
         type: str
         required: true
 notes:
-  - The C(pycdlib) library states it supports Python 2.7 and 3.4+.
   - The function C(add_file) in pycdlib is designed to overwrite the existing file in ISO with type ISO9660 / Rock Ridge 1.12
     / Joliet / UDF. But it does not overwrite the existing file in ISO with Rock Ridge 1.09 / 1.10. So we take workaround
     "delete the existing file and then add file for ISO with Rock Ridge".
@@ -102,7 +101,7 @@ import os
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils import deps
+from ansible_collections.community.general.plugins.module_utils import _deps as deps
 
 with deps.declare("pycdlib"):
     import pycdlib

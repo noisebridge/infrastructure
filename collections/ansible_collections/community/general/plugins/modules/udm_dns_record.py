@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright (c) 2016, Adfinis SyGroup AG
-# Tobias Rueetschi <tobias.ruetschi@adfinis-sygroup.ch>
+# @keachi
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,7 +10,7 @@ from __future__ import annotations
 DOCUMENTATION = r"""
 module: udm_dns_record
 author:
-  - Tobias Rüetschi (@keachi)
+  - keachi (@keachi)
 short_description: Manage DNS entries on a univention corporate server
 description:
   - This module allows to manage DNS records on a univention corporate server (UCS). It uses the Python API of the UCS to
@@ -19,7 +19,7 @@ requirements:
   - Univention
   - ipaddress (for O(type=ptr_record))
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -94,8 +94,8 @@ RETURN = """#"""
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils import deps
-from ansible_collections.community.general.plugins.module_utils.univention_umc import (
+from ansible_collections.community.general.plugins.module_utils import _deps as deps
+from ansible_collections.community.general.plugins.module_utils._univention_umc import (
     base_dn,
     config,
     ldap_search,
@@ -112,6 +112,28 @@ with deps.declare("univention", msg="This module requires univention python bind
 
 with deps.declare("ipaddress"):
     import ipaddress
+
+
+def _normalize_ip(value: str) -> str:
+    try:
+        addr = ipaddress.ip_address(value)
+        if isinstance(addr, ipaddress.IPv6Address):
+            return addr.exploded
+    except ValueError:
+        pass
+    return value
+
+
+def _normalize_data_ips(data: dict) -> dict:
+    result: dict = {}
+    for key, value in data.items():
+        if isinstance(value, list):
+            result[key] = [_normalize_ip(v) if isinstance(v, str) else v for v in value]
+        elif isinstance(value, str):
+            result[key] = _normalize_ip(value)
+        else:
+            result[key] = value
+    return result
 
 
 def main():
@@ -185,7 +207,7 @@ def main():
             else:
                 obj["name"] = name
 
-            obj.update(data)
+            obj.update(_normalize_data_ips(data))
             diff = obj.diff()
             changed = obj.diff() != []
             if not module.check_mode:

@@ -17,7 +17,7 @@ short_description: Manages snaps
 description:
   - Manages snaps packages.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -29,6 +29,10 @@ options:
       - Name of the snaps to be installed.
       - Any named snap accepted by the C(snap) command is valid.
       - O(dangerous=true) may be necessary when installing C(.snap) files. See O(dangerous) for more details.
+      - The special name V(system) refers to the snapd system-wide configuration namespace.
+        When used with O(options), it runs C(snap set system <key=value>).
+        It is always considered present and only V(state=present) and O(options) are meaningful for it.
+        Support for V(system) was added in community.general 13.0.0.
     required: true
     type: list
     elements: str
@@ -77,6 +81,26 @@ options:
     type: bool
     default: false
     version_added: 7.2.0
+  devmode:
+    description:
+      - Install the snap in developer mode, granting the snap full system access and disabling security confinement.
+      - See U(https://snapcraft.io/docs/install-modes) for more details about installation modes.
+    type: bool
+    default: false
+    version_added: 13.0.0
+  revision:
+    description:
+      - Install a specific revision of the snap.
+      - This option can only be specified if there is a single snap in the task.
+      - Mutually exclusive with O(channel).
+      - When a specific revision is set, the snap is held (C(snap refresh --hold)) to prevent automatic updates from
+        overriding the pinned revision.
+      - "B(Note:) running C(snap refresh <name>) manually bypasses the hold and will update the snap regardless.
+        The hold only prevents snapd's automatic background refreshes.
+        See U(https://snapcraft.io/docs/how-to-guides/manage-snaps/manage-updates/) for details."
+      - See U(https://snapcraft.io/docs/revisions) for more details about snap revisions.
+    type: int
+    version_added: 13.0.0
 notes:
   - Privileged operations, such as installing and configuring snaps, require root priviledges. This is only the case if the
     user has not logged in to the Snap Store.
@@ -133,6 +157,21 @@ EXAMPLES = r"""
   community.general.snap:
     name: foo
     channel: latest/edge
+
+# Install a specific revision of a snap (automatically held to prevent auto-updates)
+- name: Install revision 481 of "helm"
+  community.general.snap:
+    name: helm
+    classic: true
+    revision: 481
+
+# Set snap system-wide configuration
+- name: Configure snapd proxy
+  community.general.snap:
+    name: system
+    options:
+      - proxy.http=http://proxy.example.com:3128/
+      - proxy.https=http://proxy.example.com:3128/
 """
 
 RETURN = r"""
@@ -161,6 +200,11 @@ options_changed:
   type: list
   returned: When any options have been changed/set
   version_added: 4.4.0
+revision:
+  description: The revision of the snap that was installed.
+  type: int
+  returned: When snaps are installed with a specific revision
+  version_added: 13.0.0
 version:
   description: Versions of snap components as reported by C(snap version).
   type: dict
@@ -174,18 +218,22 @@ import re
 
 from ansible.module_utils.common.text.converters import to_native
 
-from ansible_collections.community.general.plugins.module_utils.module_helper import StateModuleHelper
-from ansible_collections.community.general.plugins.module_utils.snap import get_version, snap_runner
+_VIRTUAL_SNAPS = frozenset({"system"})
+
+from ansible_collections.community.general.plugins.module_utils._module_helper import StateModuleHelper
+from ansible_collections.community.general.plugins.module_utils._snap import get_version, snap_runner
 
 
 class Snap(StateModuleHelper):
     NOT_INSTALLED = 0
     CHANNEL_MISMATCH = 1
     INSTALLED = 2
+    REVISION_MISMATCH = 3
+    HOLD_MISMATCH = 4
 
     __disable_re = re.compile(r"(?:\S+\s+){5}(?P<notes>\S+)")
     __set_param_re = re.compile(r"(?P<snap_prefix>\S+:)?(?P<key>\S+)\s*=\s*(?P<value>.+)")
-    __list_re = re.compile(r"^(?P<name>\S+)\s+\S+\s+\S+\s+(?P<channel>\S+)")
+    __list_re = re.compile(r"^(?P<name>\S+)\s+\S+\s+(?P<rev>\S+)\s+(?P<channel>\S+)\s+\S+\s+(?P<notes>\S+)")
     module = dict(
         argument_spec={
             "name": dict(type="list", elements="str", required=True),
@@ -194,7 +242,10 @@ class Snap(StateModuleHelper):
             "channel": dict(type="str"),
             "options": dict(type="list", elements="str"),
             "dangerous": dict(type="bool", default=False),
+            "devmode": dict(type="bool", default=False),
+            "revision": dict(type="int"),
         },
+        mutually_exclusive=[["channel", "revision"]],
         supports_check_mode=True,
     )
 
@@ -225,14 +276,14 @@ class Snap(StateModuleHelper):
         self.vars.set("status_var", status_var, output=False)
         self.vars.set(
             "snap_status",
-            self.snap_status(self.vars[self.vars.status_var], self.vars.channel),
+            self.snap_status(self.vars[self.vars.status_var], self.vars.channel, self.vars.revision),
             output=False,
             change=True,
         )
         self.vars.set("snap_status_map", dict(zip(self.vars.name, self.vars.snap_status)), output=False, change=True)
 
     def __quit_module__(self):
-        self.vars.snap_status = self.snap_status(self.vars[self.vars.status_var], self.vars.channel)
+        self.vars.snap_status = self.snap_status(self.vars[self.vars.status_var], self.vars.channel, self.vars.revision)
         if self.vars.channel is None:
             self.vars.channel = "stable"
 
@@ -314,6 +365,11 @@ class Snap(StateModuleHelper):
             )
 
     def names_from_snaps(self, snaps):
+        real_snaps = [s for s in snaps if s not in _VIRTUAL_SNAPS]
+
+        if not real_snaps:
+            return list(snaps)
+
         def process_one(rc, out, err):
             res = [line for line in out.split("\n") if line.startswith("name:")]
             name = res[0].split()[1]
@@ -330,7 +386,7 @@ class Snap(StateModuleHelper):
             return res
 
         def process(rc, out, err):
-            if len(snaps) == 1:
+            if len(real_snaps) == 1:
                 check_error = err
                 process_ = process_one
             else:
@@ -342,34 +398,45 @@ class Snap(StateModuleHelper):
                 self.do_raise(f"Snaps not found: {snaps_not_found}.")
             return process_(rc, out, err)
 
-        names = []
-        if snaps:
-            with self.runner("info name", output_process=process) as ctx:
-                try:
-                    names = ctx.run(name=snaps)
-                finally:
-                    self.vars.snapinfo_run_info.append(ctx.run_info)
-        return names
+        real_names = []
+        with self.runner("info name", output_process=process) as ctx:
+            try:
+                real_names = ctx.run(name=real_snaps)
+            finally:
+                self.vars.snapinfo_run_info.append(ctx.run_info)
 
-    def snap_status(self, snap_name, channel):
-        def _status_check(name, channel, installed):
-            match = [c for n, c in installed if n == name]
+        real_name_iter = iter(real_names)
+        return [s if s in _VIRTUAL_SNAPS else next(real_name_iter) for s in snaps]
+
+    def snap_status(self, snap_name, channel, revision=None):
+        should_be_held = revision is not None
+
+        def _status_check(name, channel, revision, installed):
+            if name in _VIRTUAL_SNAPS:
+                return Snap.INSTALLED
+            match = [(r, c, notes) for n, r, c, notes in installed if n == name]
             if not match:
                 return Snap.NOT_INSTALLED
-            if channel and match[0] not in (channel, f"latest/{channel}"):
+            installed_rev, installed_channel, installed_notes = match[0]
+            if revision is not None and str(revision) != installed_rev:
+                return Snap.REVISION_MISMATCH
+            if channel and installed_channel not in (channel, f"latest/{channel}"):
                 return Snap.CHANNEL_MISMATCH
-            else:
-                return Snap.INSTALLED
+            if should_be_held:
+                is_held = "held" in installed_notes.split(",")
+                if not is_held:
+                    return Snap.HOLD_MISMATCH
+            return Snap.INSTALLED
 
         with self.runner("_list") as ctx:
             rc, out, err = ctx.run(check_rc=True)
         list_out = out.split("\n")[1:]
         list_out = [self.__list_re.match(x) for x in list_out]
-        list_out = [(m.group("name"), m.group("channel")) for m in list_out if m]
+        list_out = [(m.group("name"), m.group("rev"), m.group("channel"), m.group("notes")) for m in list_out if m]
         self.vars.status_out = list_out
         self.vars.status_run_info = ctx.run_info
 
-        return [_status_check(n, channel, list_out) for n in snap_name]
+        return [_status_check(n, channel, revision, list_out) for n in snap_name]
 
     def is_snap_enabled(self, snap_name):
         with self.runner("_list name") as ctx:
@@ -390,8 +457,8 @@ class Snap(StateModuleHelper):
         if self.check_mode:
             return
 
-        params = ["state", "classic", "channel", "dangerous"]  # get base cmd parts
-        has_one_pkg_params = bool(self.vars.classic) or self.vars.channel != "stable"
+        params = ["state", "classic", "channel", "revision", "dangerous", "devmode"]  # get base cmd parts
+        has_one_pkg_params = bool(self.vars.classic) or self.vars.channel != "stable" or self.vars.revision is not None
         has_multiple_snaps = len(actionable_snaps) > 1
 
         if has_one_pkg_params and has_multiple_snaps:
@@ -419,18 +486,37 @@ class Snap(StateModuleHelper):
             msg = f"Ooops! Snap installation failed while executing '{self.vars.cmd}', please examine logs and error output for more details."
         self.do_raise(msg=msg)
 
+    def _apply_hold(self, snaps):
+        if not snaps:
+            return
+        self.changed = True
+        if self.check_mode:
+            return
+        for snap_name in snaps:
+            with self.runner("state hold name") as ctx:
+                rc, out, err = ctx.run(state="refresh", hold=True, name=snap_name)
+            if rc != 0:
+                self.do_raise(msg=f"Snap hold failed for '{snap_name}': {err}")
+
     def state_present(self):
         self.vars.set_meta("classic", output=True)
         self.vars.set_meta("channel", output=True)
+        self.vars.set_meta("revision", output=True)
 
         actionable_refresh = [
-            snap for snap in self.vars.name if self.vars.snap_status_map[snap] == Snap.CHANNEL_MISMATCH
+            snap
+            for snap in self.vars.name
+            if self.vars.snap_status_map[snap] in (Snap.CHANNEL_MISMATCH, Snap.REVISION_MISMATCH)
         ]
         if actionable_refresh:
             self._present(actionable_refresh, refresh=True)
         actionable_install = [snap for snap in self.vars.name if self.vars.snap_status_map[snap] == Snap.NOT_INSTALLED]
         if actionable_install:
             self._present(actionable_install)
+
+        if self.vars.revision is not None:
+            hold_mismatch = [snap for snap in self.vars.name if self.vars.snap_status_map[snap] == Snap.HOLD_MISMATCH]
+            self._apply_hold(actionable_install + actionable_refresh + hold_mismatch)
 
         self.set_options()
 

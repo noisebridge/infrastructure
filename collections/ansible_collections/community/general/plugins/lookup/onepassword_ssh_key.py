@@ -8,8 +8,6 @@ DOCUMENTATION = r"""
 name: onepassword_ssh_key
 author:
   - Mohammed Babelly (@mohammedbabelly20)
-requirements:
-  - C(op) 1Password command line utility version 2 or later.
 short_description: Fetch SSH keys stored in 1Password
 version_added: "10.3.0"
 description:
@@ -17,7 +15,6 @@ description:
 notes:
   - By default, it returns the private key value in PKCS#8 format, unless O(ssh_format=true) is passed.
   - The pluging works only for C(SSHKEY) type items.
-  - This plugin requires C(op) version 2 or later.
 options:
   _terms:
     description: Identifier(s) (case-insensitive UUID or name) of item(s) to retrieve.
@@ -30,8 +27,8 @@ options:
     type: bool
 
 extends_documentation_fragment:
-  - community.general.onepassword
-  - community.general.onepassword.lookup
+  - community.general._onepassword
+  - community.general._onepassword.lookup
 """
 
 EXAMPLES = r"""
@@ -56,6 +53,7 @@ from ansible_collections.community.general.plugins.lookup.onepassword import (
     OnePass,
     OnePassCLIv2,
 )
+from ansible_collections.community.general.plugins.plugin_utils._lookup import check_for_wrong_terms
 
 
 class LookupModule(LookupBase):
@@ -82,6 +80,7 @@ class LookupModule(LookupBase):
 
     def run(self, terms, variables=None, **kwargs):
         self.set_options(var_options=variables, direct=kwargs)
+        check_for_wrong_terms(self, direct=kwargs)
 
         ssh_format = self.get_option("ssh_format")
         vault = self.get_option("vault")

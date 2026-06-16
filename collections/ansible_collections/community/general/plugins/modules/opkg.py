@@ -15,7 +15,7 @@ short_description: Package manager for OpenWrt and Openembedded/Yocto based Linu
 description:
   - Manages ipk packages for OpenWrt and Openembedded/Yocto based Linux distributions.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: none
@@ -114,8 +114,8 @@ version:
 
 import os
 
-from ansible_collections.community.general.plugins.module_utils.cmd_runner import CmdRunner, cmd_runner_fmt
-from ansible_collections.community.general.plugins.module_utils.module_helper import StateModuleHelper
+from ansible_collections.community.general.plugins.module_utils._cmd_runner import CmdRunner, cmd_runner_fmt
+from ansible_collections.community.general.plugins.module_utils._module_helper import StateModuleHelper
 
 
 class Opkg(StateModuleHelper):
@@ -166,7 +166,7 @@ class Opkg(StateModuleHelper):
                 update_cache=cmd_runner_fmt.as_bool("update"),
                 version=cmd_runner_fmt.as_fixed("--version"),
             ),
-            path_prefix=dir,
+            path_prefix=[dir],
         )
 
         with self.runner("version") as ctx:

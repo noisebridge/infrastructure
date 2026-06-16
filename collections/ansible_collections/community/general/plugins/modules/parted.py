@@ -20,7 +20,7 @@ requirements:
   - If the version of C(parted) is below 3.1, it requires a Linux version running the C(sysfs) file system C(/sys/).
   - Requires the C(resizepart) command when using the O(resize) parameter.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -135,45 +135,43 @@ notes:
 """
 
 RETURN = r"""
-partition_info:
-  description: Current partition information.
+disk:
+  description: Generic device information.
+  type: dict
   returned: success
-  type: complex
-  contains:
-    disk:
-      description: Generic device information.
-      type: dict
-    partitions:
-      description: List of device partitions.
-      type: list
-    script:
-      description: Parted script executed by module.
-      type: str
   sample:
-    "disk":
-      "dev": "/dev/sdb"
-      "logical_block": 512
-      "model": "VMware Virtual disk"
-      "physical_block": 512
-      "size": 5.0
-      "table": "msdos"
-      "unit": "GiB"
-    "partitions":
-      - "begin": 0.0
-        "end": 1.0
-        "flags": ["boot", "lvm"]
-        "fstype": ""
-        "name": ""
-        "num": 1
-        "size": 1.0
-      - "begin": 1.0
-        "end": 5.0
-        "flags": []
-        "fstype": ""
-        "name": ""
-        "num": 2
-        "size": 4.0
-    "script": "unit KiB print "
+    "dev": "/dev/sdb"
+    "logical_block": 512
+    "model": "VMware Virtual disk"
+    "physical_block": 512
+    "size": 5.0
+    "table": "msdos"
+    "unit": "GiB"
+partitions:
+  description: List of device partitions.
+  type: list
+  elements: dict
+  returned: success
+  sample:
+    - "begin": 0.0
+      "end": 1.0
+      "flags": ["boot", "lvm"]
+      "fstype": ""
+      "name": ""
+      "num": 1
+      "size": 1.0
+    - "begin": 1.0
+      "end": 5.0
+      "flags": []
+      "fstype": ""
+      "name": ""
+      "num": 2
+      "size": 4.0
+script:
+  description: Parted script executed by module.
+  type: str
+  returned: success
+  sample: "unit KiB print "
 """
 
 EXAMPLES = r"""
@@ -767,9 +765,12 @@ def main():
                 if "esp" in flags and "boot" not in flags:
                     flags.append("boot")
 
-                # Compute only the changes in flags status
-                flags_off = list(set(partition["flags"]) - set(flags))
-                flags_on = list(set(flags) - set(partition["flags"]))
+                # Compute only the changes in flags status.
+                # Some parted builds (e.g., SUSE) include MBR partition type codes (e.g.,
+                # type=8e) in the flags output; these cannot be managed via the 'set' command.
+                current_flags = [f for f in partition["flags"] if not re.match(r"^type=[0-9a-fA-F]+$", f)]
+                flags_off = list(set(current_flags) - set(flags))
+                flags_on = list(set(flags) - set(current_flags))
 
                 for f in flags_on:
                     script += ["set", str(number), f, "on"]

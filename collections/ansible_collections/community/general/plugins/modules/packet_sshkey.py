@@ -13,7 +13,7 @@ description:
   - API is documented at U(https://www.packet.net/help/api/#page:ssh-keys,header:ssh-keys-ssh-keys-post).
 author: "Tomas Karasek (@t0mk) <tom.to.the.k@gmail.com>"
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: none
@@ -63,22 +63,22 @@ EXAMPLES = r"""
 - name: Create sshkey from string
   hosts: localhost
   tasks:
-    community.general.packet_sshkey:
-      key: "{{ lookup('file', 'my_packet_sshkey.pub') }}"
+    - community.general.packet_sshkey:
+        key: "{{ lookup('file', 'my_packet_sshkey.pub') }}"
 
 - name: Create sshkey from file
   hosts: localhost
   tasks:
-    community.general.packet_sshkey:
-      label: key from file
-      key_file: ~/ff.pub
+    - community.general.packet_sshkey:
+        label: key from file
+        key_file: ~/ff.pub
 
 - name: Remove sshkey by id
   hosts: localhost
   tasks:
-    community.general.packet_sshkey:
-      state: absent
-      id: eef49903-7a09-4ca1-af67-4087c29ab5b6
+    - community.general.packet_sshkey:
+        state: absent
+        id: eef49903-7a09-4ca1-af67-4087c29ab5b6
 """
 
 RETURN = r"""

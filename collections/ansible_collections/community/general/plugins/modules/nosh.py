@@ -15,7 +15,7 @@ description:
   - Control running and enabled state for system-wide or user services.
   - BSD and Linux systems are supported.
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -141,7 +141,7 @@ status:
   description: A dictionary with the key=value pairs returned by C(system-control show-json) or V(none) if the service is
     not loaded.
   returned: success
-  type: complex
+  type: dict
   contains:
     After:
       description: []        # FIXME

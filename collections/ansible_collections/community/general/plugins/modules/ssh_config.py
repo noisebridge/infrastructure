@@ -18,7 +18,7 @@ author:
   - Björn Andersson (@gaqzi)
   - Abhijeet Kasurde (@Akasurde)
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -143,6 +143,12 @@ options:
       - The values must be strings. Other values are rejected.
     type: dict
     version_added: 10.4.0
+  address_family:
+    description:
+      - Sets the C(AddressFamily) option.
+    choices: ['any', 'inet', 'inet6']
+    type: str
+    version_added: 13.0.0
 requirements:
   - paramiko
 """
@@ -223,12 +229,12 @@ from copy import deepcopy
 
 from ansible.module_utils.basic import AnsibleModule, missing_required_lib
 
+from ansible_collections.community.general.plugins.module_utils._ssh import determine_config_file
 from ansible_collections.community.general.plugins.module_utils._stormssh import (
     HAS_PARAMIKO,
     PARAMIKO_IMPORT_ERROR,
     ConfigParser,
 )
-from ansible_collections.community.general.plugins.module_utils.ssh import determine_config_file
 
 
 def convert_bool(value):
@@ -296,6 +302,7 @@ class SSHConfig:
             controlpath=self.params.get("controlpath"),
             controlpersist=fix_bool_str(self.params.get("controlpersist")),
             dynamicforward=self.params.get("dynamicforward"),
+            address_family=self.params.get("address_family"),
         )
         if self.params.get("other_options"):
             for key, value in self.params.get("other_options").items():
@@ -415,6 +422,7 @@ def main():
             dynamicforward=dict(type="str"),
             user=dict(type="str"),
             user_known_hosts_file=dict(type="str"),
+            address_family=dict(type="str", choices=["any", "inet", "inet6"]),
         ),
         supports_check_mode=True,
         mutually_exclusive=[

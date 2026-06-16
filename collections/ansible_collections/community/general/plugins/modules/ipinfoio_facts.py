@@ -13,9 +13,9 @@ description:
   - Gather IP geolocation facts of a host's IP address using ipinfo.io API.
 author: "Aleksei Kostiuk (@akostyuk)"
 extends_documentation_fragment:
-  - community.general.attributes
-  - community.general.attributes.facts
-  - community.general.attributes.facts_module
+  - community.general._attributes
+  - community.general._attributes.facts
+  - community.general._attributes.facts_module
 options:
   timeout:
     description:
@@ -40,8 +40,8 @@ EXAMPLES = r"""
 RETURN = r"""
 ansible_facts:
   description: "Dictionary of IP geolocation facts for a host's IP address."
-  returned: changed
-  type: complex
+  returned: success
+  type: dict
   contains:
     ip:
       description: "Public IP address of a host."

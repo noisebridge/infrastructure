@@ -13,9 +13,9 @@ version_added: 5.6.0
 description:
   - Retrieve details about Python applications installed in isolated virtualenvs using pipx.
 extends_documentation_fragment:
-  - community.general.attributes
-  - community.general.attributes.info_module
-  - community.general.pipx
+  - community.general._attributes
+  - community.general._attributes.info_module
+  - community.general._pipx
 options:
   name:
     description:
@@ -130,15 +130,13 @@ version:
   version_added: 10.1.0
 """
 
-from ansible.module_utils.facts.compat import ansible_facts
-
-from ansible_collections.community.general.plugins.module_utils.module_helper import ModuleHelper
-from ansible_collections.community.general.plugins.module_utils.pipx import (
+from ansible_collections.community.general.plugins.module_utils._module_helper import ModuleHelper
+from ansible_collections.community.general.plugins.module_utils._pipx import (
     make_process_dict,
     pipx_common_argspec,
     pipx_runner,
 )
-from ansible_collections.community.general.plugins.module_utils.version import LooseVersion
+from ansible_collections.community.general.plugins.module_utils._version import LooseVersion
 
 
 class PipXInfo(ModuleHelper):
@@ -156,12 +154,7 @@ class PipXInfo(ModuleHelper):
     )
 
     def __init_module__(self):
-        if self.vars.executable:
-            self.command = [self.vars.executable]
-        else:
-            facts = ansible_facts(self.module, gather_subset=["python"])
-            self.command = [facts["python"]["executable"], "-m", "pipx"]
-        self.runner = pipx_runner(self.module, self.command)
+        self.runner = pipx_runner(self.module, self.vars.executable)
         with self.runner("version") as ctx:
             rc, out, err = ctx.run()
             self.vars.version = out.strip()

@@ -20,9 +20,9 @@ options:
 """
 
 EXAMPLES = r"""
-- name: Convert list of tuples into dictionary
+- name: Sort a list of strings by version
   ansible.builtin.set_fact:
-    dictionary: "{{ ['2.1', '2.10', '2.9'] | community.general.version_sort }}"
+    sorted_list: "{{ ['2.1', '2.10', '2.9'] | community.general.version_sort }}"
     # Result is ['2.1', '2.9', '2.10']
 """
 
@@ -33,7 +33,7 @@ _value:
   elements: string
 """
 
-from ansible_collections.community.general.plugins.module_utils.version import LooseVersion
+from ansible_collections.community.general.plugins.module_utils._version import LooseVersion
 
 
 def version_sort(value, reverse=False):

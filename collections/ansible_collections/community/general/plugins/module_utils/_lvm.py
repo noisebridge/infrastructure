@@ -9,7 +9,7 @@ from __future__ import annotations
 
 import typing as t
 
-from ansible_collections.community.general.plugins.module_utils.cmd_runner import CmdRunner, cmd_runner_fmt
+from ansible_collections.community.general.plugins.module_utils._cmd_runner import CmdRunner, cmd_runner_fmt
 
 if t.TYPE_CHECKING:
     from ansible.module_utils.basic import AnsibleModule
@@ -179,7 +179,7 @@ def pvmove_runner(module: AnsibleModule, **kwargs) -> CmdRunner:
 def vgs_runner(module: AnsibleModule, **kwargs) -> CmdRunner:
     """
     Runner for C(vgs). Used by: community.general.lvol, community.general.lvg,
-    community.general.lvg_rename.
+    community.general.lvg_rename, community.general.lxc_container.
 
     Suggested arg_formats keys: noheadings nosuffix readonly units separator fields select vg
     """
@@ -341,7 +341,7 @@ def vgrename_runner(module: AnsibleModule, **kwargs) -> CmdRunner:
 
 def lvs_runner(module: AnsibleModule, **kwargs) -> CmdRunner:
     """
-    Runner for C(lvs). Used by: community.general.lvol.
+    Runner for C(lvs). Used by: community.general.lvol, community.general.lxc_container.
 
     Suggested arg_formats keys: all noheadings nosuffix units separator fields select vg
 

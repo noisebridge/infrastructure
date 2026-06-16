@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 # Copyright (c) 2016, Adfinis SyGroup AG
-# Tobias Rueetschi <tobias.ruetschi@adfinis-sygroup.ch>
+# @keachi
 # GNU General Public License v3.0+ (see LICENSES/GPL-3.0-or-later.txt or https://www.gnu.org/licenses/gpl-3.0.txt)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
@@ -10,7 +10,7 @@ from __future__ import annotations
 DOCUMENTATION = r"""
 module: udm_user
 author:
-  - Tobias Rüetschi (@keachi)
+  - keachi (@keachi)
 short_description: Manage posix users on a univention corporate server
 description:
   - This module allows to manage posix users on a univention corporate server (UCS). It uses the Python API of the UCS to
@@ -22,7 +22,7 @@ requirements:
   - passlib (Python library, recommended), or legacycrypt on Python 3.13 or newer
   - It requires no dependency on Python 3.12 and earlier, but then it relies on the deprecated standard library C(crypt).
 extends_documentation_fragment:
-  - community.general.attributes
+  - community.general._attributes
 attributes:
   check_mode:
     support: full
@@ -322,7 +322,7 @@ from datetime import date, timedelta
 
 from ansible.module_utils.basic import AnsibleModule
 
-from ansible_collections.community.general.plugins.module_utils import deps
+from ansible_collections.community.general.plugins.module_utils import _deps as deps
 
 with deps.declare("crypt_context"):
     from ansible_collections.community.general.plugins.module_utils._crypt import CryptContext, has_crypt_context
@@ -330,7 +330,7 @@ with deps.declare("crypt_context"):
     if not has_crypt_context:
         raise ImportError("Failed to import any of: passlib, crypt, legacycrypt")
 
-from ansible_collections.community.general.plugins.module_utils.univention_umc import (
+from ansible_collections.community.general.plugins.module_utils._univention_umc import (
     base_dn,
     ldap_search,
     umc_module_for_add,

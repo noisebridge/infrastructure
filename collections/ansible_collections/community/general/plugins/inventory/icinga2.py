@@ -14,7 +14,7 @@ description:
   - Get inventory hosts from the Icinga2 API.
   - Uses a configuration file as an inventory source, it must end in C(.icinga2.yml) or C(.icinga2.yaml).
 extends_documentation_fragment:
-  - constructed
+  - ansible.builtin.constructed
 options:
   strict:
     version_added: 4.4.0
@@ -100,7 +100,7 @@ from ansible.errors import AnsibleParserError
 from ansible.module_utils.urls import open_url
 from ansible.plugins.inventory import BaseInventoryPlugin, Constructable
 
-from ansible_collections.community.general.plugins.plugin_utils.unsafe import make_unsafe
+from ansible_collections.community.general.plugins.plugin_utils._unsafe import make_unsafe
 
 
 class InventoryModule(BaseInventoryPlugin, Constructable):
