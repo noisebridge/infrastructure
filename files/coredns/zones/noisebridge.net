@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026050501 ; Serial
+                                2026061701 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -22,7 +22,7 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
 ; Google Domain Verification
-@       86400   IN      TXT     "google-site-verification=oAGwafoLsiW_TSw8gtYuncSuHxRV1KDIvCNeBwY2t2g"
+@       86400   IN      TXT     "google-site-verification=ic9UzBw_VXfHokfo7hREQaDHisGig7TcfI-GvaRuRaU"
 
 ; DKIM keys
 mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; t=y; "
