@@ -5,6 +5,10 @@
 
 	{{ noisebridge_caddy_global_security }}
 	{{ noisebridge_caddy_global_metrics }}
+
+	servers {
+		trusted_proxies static 127.0.0.1
+	}
 }
 
 # Internal MediaWiki backend (used by Anubis)
