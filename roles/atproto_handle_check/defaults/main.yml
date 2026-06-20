@@ -1,0 +1,22 @@
+---
+# atproto / Bluesky handle to verify, and the DID it must resolve to.
+# Not secret: the same DID is published in the public DNS zone
+# (files/coredns/zones/noisebridge.net) and in the .well-known path historically.
+atproto_handle: noisebridge.net
+atproto_did: "did:plc:4fn5ffs6txnxxozezxio3v7o"
+
+# Vantage points queried for the _atproto.<handle> TXT record, as "label=server"
+# pairs: central public resolvers (global visibility) + our authoritative NS
+# (live, authoritative answer). Mirrors the prometheus blackbox dns job targets.
+atproto_handle_resolvers:
+  - "cloudflare=1.1.1.1"
+  - "google=8.8.8.8"
+  - "quad9=9.9.9.9"
+  - "ns1=ns1.noisebridge.net"
+  - "ns2=ns2.noisebridge.net"
+
+# node_exporter textfile-collector directory (same one mydumper writes to).
+atproto_handle_metrics_dir: /var/lib/node_exporter
+
+# How often the timer runs the check.
+atproto_handle_check_oncalendar: "*:0/15"

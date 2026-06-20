@@ -52,6 +52,7 @@
   roles:
     - { role: cloudalchemy.coredns, tags: ["coredns"] }
     - { role: prometheus.prometheus.blackbox_exporter, tags: ["blackbox"] }
+    - { role: atproto_handle_check, tags: ["atproto_handle_check"] }
     - { role: prometheus.prometheus.alertmanager, tags: [ 'alertmanager' ] }
     - { role: prometheus.prometheus.prometheus, tags: ["prometheus"] }
     - { role: grafana.grafana.grafana, tags: ["grafana"] }
