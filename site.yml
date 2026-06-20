@@ -52,6 +52,7 @@
   roles:
     - { role: cloudalchemy.coredns, tags: ["coredns"] }
     - { role: prometheus.prometheus.blackbox_exporter, tags: ["blackbox"] }
+    - { role: atproto_handle_check, tags: ["atproto_handle_check"] }
     - { role: prometheus.prometheus.alertmanager, tags: [ 'alertmanager' ] }
     - { role: prometheus.prometheus.prometheus, tags: ["prometheus"] }
     - { role: grafana.grafana.grafana, tags: ["grafana"] }
@@ -74,6 +75,25 @@
   tags: [dns]
   roles:
     - cloudalchemy.coredns
+    - { role: dns_verify, tags: ["dns_verify"] }
+  post_tasks:
+    # Hard gate: after the zone is deployed to the primary and (via NOTIFY/AXFR)
+    # the secondary, confirm every authoritative server is actually serving the
+    # committed serial and key records. Run once from the Ansible runner against
+    # the public authoritative servers. The script retries internally to absorb
+    # secondary-transfer lag; a non-zero exit fails the deploy.
+    - name: Verify authoritative servers are serving the deployed zone
+      ansible.builtin.command:
+        cmd: >-
+          {{ playbook_dir }}/scripts/verify_dns.sh
+          --zone-file {{ playbook_dir }}/files/coredns/zones/noisebridge.net
+          --timeout {{ dns_verify_gate_timeout | default(180) }}
+      delegate_to: localhost
+      run_once: true
+      become: false
+      changed_when: false
+      when: not ansible_check_mode
+      tags: [dns_verify]
 
 - name: Space
   hosts: space_noisebridge_net

@@ -35,3 +35,18 @@ blackbox_exporter_configuration_modules:
       preferred_ip_protocol: "ip6"
       ip_protocol_fallback: false
       query_response: "{{ blackbox_smtp_query_response }}"
+  # atproto / Bluesky handle verification: confirm the _atproto.noisebridge.net
+  # TXT record resolves to our DID. The scrape target is the DNS server to query
+  # (central resolvers + our authoritative ns), so probe_success only goes to 1
+  # when that resolver returns an answer matching the DID at request time.
+  dns_atproto_txt:
+    prober: dns
+    timeout: 5s
+    dns:
+      query_name: "_atproto.noisebridge.net"
+      query_type: "TXT"
+      valid_rcodes:
+        - NOERROR
+      validate_answer_rrs:
+        fail_if_not_matching_regexp:
+          - 'did=did:plc:4fn5ffs6txnxxozezxio3v7o'

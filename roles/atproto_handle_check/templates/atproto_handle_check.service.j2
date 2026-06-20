@@ -1,0 +1,17 @@
+[Unit]
+Description=atproto/Bluesky handle DNS verification check
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+Environment=ATPROTO_HANDLE={{ atproto_handle }}
+Environment=ATPROTO_DID={{ atproto_did }}
+# Quoted: the value contains spaces, and systemd otherwise splits Environment=
+# on whitespace into multiple variables.
+Environment="ATPROTO_RESOLVERS={{ atproto_handle_resolvers | join(' ') }}"
+# Write node_exporter textfile metrics; --textfile path is the collector dir.
+ExecStart=/usr/local/sbin/check_atproto_handle --textfile {{ atproto_handle_metrics_dir }}/atproto_handle.prom
+# A failing DNS vantage point makes the script exit non-zero (= failure count);
+# that is expected/visible state, not a unit crash, so don't flap the unit on it.
+SuccessExitStatus=0 1 2 3 4 5

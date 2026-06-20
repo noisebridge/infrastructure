@@ -1,0 +1,22 @@
+---
+- name: Install dig (dnsutils) for the DNS check
+  ansible.builtin.apt:
+    package:
+      - bind9-dnsutils
+    state: present
+
+- name: Deploy verify_dns check script
+  ansible.builtin.copy:
+    src: "{{ playbook_dir }}/scripts/verify_dns.sh"
+    dest: "{{ dns_verify_script_dest }}"
+    mode: "0755"
+    owner: root
+    group: root
+
+- name: Deploy login-time MOTD DNS self-check
+  ansible.builtin.template:
+    src: 99-noisebridge-dns.j2
+    dest: "{{ dns_verify_motd_path }}"
+    mode: "0755"
+    owner: root
+    group: root

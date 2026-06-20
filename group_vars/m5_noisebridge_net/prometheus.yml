@@ -135,6 +135,21 @@ prometheus_scrape_configs:
           - https://safespace.noisebridge.net
           - https://www.noisebridge.net/wiki/About
     relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
+  - job_name: blackbox_dns_atproto
+    # Verify the _atproto.noisebridge.net TXT (Bluesky handle) is live and
+    # matches our DID, as seen by central public resolvers and our own
+    # authoritative name servers. probe_success drops to 0 (and the generic
+    # ProbeFailing alert fires) if the record is missing, stale, or changed.
+    metrics_path: /probe
+    params:
+      module: [dns_atproto_txt]
+    static_configs:
+      - targets:
+          - 1.1.1.1:53
+          - 8.8.8.8:53
+          - ns1.noisebridge.net:53
+          - ns2.noisebridge.net:53
+    relabel_configs: "{{ prometheus_blackbox_relabel_configs }}"
   - job_name: blackbox_smtp_v4
     metrics_path: /probe
     params:

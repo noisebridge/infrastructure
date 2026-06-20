@@ -1,0 +1,9 @@
+[Unit]
+Description=atproto/Bluesky handle DNS verification timer
+
+[Timer]
+OnCalendar={{ atproto_handle_check_oncalendar }}
+Persistent=true
+
+[Install]
+WantedBy=timers.target
