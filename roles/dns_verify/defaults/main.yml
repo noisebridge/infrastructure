@@ -1,0 +1,6 @@
+---
+dns_verify_zone: noisebridge.net
+# Canonical check script (single source of truth lives at repo scripts/).
+dns_verify_script_dest: /usr/local/sbin/verify_dns
+# Debian update-motd.d snippet: runs the check at each interactive login.
+dns_verify_motd_path: /etc/update-motd.d/99-noisebridge-dns

@@ -1,0 +1,10 @@
+#!/bin/sh
+# {{ ansible_managed }}
+# Login-time DNS self-check: confirm this authoritative server is actually
+# serving {{ dns_verify_zone }} (SOA answers + records present), queried against
+# the local CoreDNS on 127.0.0.1. Informational banner only; the deploy-time
+# gate in site.yml is what enforces correctness.
+{{ dns_verify_script_dest }} --summary --zone {{ dns_verify_zone }} \
+  --authoritative "local=127.0.0.1" --no-recursive --timeout 3
+# Never fail the login MOTD on a transient DNS hiccup.
+exit 0
