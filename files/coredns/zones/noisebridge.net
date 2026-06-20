@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026061701 ; Serial
+                                2026061901 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -23,6 +23,9 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
 ; Google Domain Verification
 @       86400   IN      TXT     "google-site-verification=ic9UzBw_VXfHokfo7hREQaDHisGig7TcfI-GvaRuRaU"
+; atproto / Bluesky handle verification for noisebridge.net
+; Replaces the m3/caddy /.well-known/atproto-did HTTP handler (was #417).
+_atproto        86400   IN      TXT     "did=did:plc:4fn5ffs6txnxxozezxio3v7o"
 
 ; DKIM keys
 mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; t=y; "
