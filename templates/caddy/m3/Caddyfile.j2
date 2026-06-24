@@ -231,3 +231,11 @@ dumps.noisebridge.net {
 	root * {{ wiki_dumps_public_dir }}
 	file_server browse
 }
+
+https:// {
+  tls internal
+  respond 400 {
+    body "Host header not valid"
+    close
+  }
+}
