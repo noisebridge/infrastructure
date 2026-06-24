@@ -13,6 +13,11 @@ if [[ ! -d "${PUBLIC_DIR}" ]]; then
 fi
 PUBLIC_KEEP_DAYS="${PUBLIC_KEEP_DAYS:-7}"
 
+# Comma-separated base titles to strip from the public dump (incl. their
+# subpages and Talk pages). Keep in sync with roles/mediawiki/files/robots.txt.
+EXCLUDE_TITLES="${EXCLUDE_TITLES:-86}"
+FILTER="${FILTER:-/usr/local/sbin/wiki_dump_filter}"
+
 PHP="${PHP:-php}"
 TS=$(date -u '+%Y%m%d')
 OUTFILE="${PUBLIC_DIR}/noisebridge-${TS}-public.xml.gz"
@@ -21,7 +26,17 @@ echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Starting public dump -> ${OUTFILE}"
 "${PHP}" "${MEDIAWIKI_PATH}/maintenance/dumpBackup.php" \
   --conf "${LOCALSETTINGS}" \
   --current \
-  --output "gzip:${OUTFILE}.tmp"
+  --output "gzip:${OUTFILE}.raw.gz"
+
+# Strip excluded pages before publishing. If the filter fails we abort (set -e)
+# rather than publish an unfiltered dump that would leak those pages.
+if [[ -n "${EXCLUDE_TITLES}" ]]; then
+  echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Filtering excluded pages: ${EXCLUDE_TITLES}"
+  python3 "${FILTER}" "${OUTFILE}.raw.gz" "${OUTFILE}.tmp" "${EXCLUDE_TITLES}"
+  rm -f "${OUTFILE}.raw.gz"
+else
+  mv "${OUTFILE}.raw.gz" "${OUTFILE}.tmp"
+fi
 mv "${OUTFILE}.tmp" "${OUTFILE}"
 ln -sf "${OUTFILE}" "${PUBLIC_DIR}/latest.xml.gz"
 echo "[$(date -u '+%Y-%m-%dT%H:%M:%SZ')] Completed dump ($(du -sh "${OUTFILE}" | cut -f1))"

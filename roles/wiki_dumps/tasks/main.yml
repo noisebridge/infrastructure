@@ -35,6 +35,14 @@
     owner: root
     group: root
 
+- name: Deploy dump filter
+  ansible.builtin.copy:
+    src: dump_filter.py
+    dest: /usr/local/sbin/wiki_dump_filter
+    mode: "0755"
+    owner: root
+    group: root
+
 - name: Deploy systemd service unit
   ansible.builtin.template:
     src: wiki_dump.service.j2
