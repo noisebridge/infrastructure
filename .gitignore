@@ -1,6 +1,7 @@
 site.retry
 .vault-password
 .DS_Store
+.direnv/
 *.swp
 /.ansible
 /roles/*/.github
