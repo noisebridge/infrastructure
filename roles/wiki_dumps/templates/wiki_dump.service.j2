@@ -10,5 +10,6 @@ Environment=MEDIAWIKI_PATH={{ wiki_dumps_mediawiki_path }}
 Environment=LOCALSETTINGS={{ wiki_dumps_localsettings }}
 Environment=PUBLIC_DIR={{ wiki_dumps_public_dir }}
 Environment=PUBLIC_KEEP_DAYS={{ wiki_dumps_public_keep_days }}
+Environment=EXCLUDE_TITLES={{ wiki_dumps_exclude_titles | join(',') }}
 Environment=PHP=/usr/bin/php8.2
 ExecStart=/usr/local/sbin/wiki_dump
