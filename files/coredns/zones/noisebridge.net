@@ -250,8 +250,7 @@ upotagma        IN      AAAA    2604:a880:1:20:0:0:c3:a001
 _acme-challenge             IN      CNAME   9d3537e8-f82c-490b-a915-3c1d3a497024.acme.noisebridge.io.
 ; NOT migrated, deliberately: each is a separate account held by the machine of
 ; that name, whose own cert-manager has the credentials. Repointing them from
-; here would break their renewals.
+; here would break their renewals. (garden was dropped -- host decommissioned.)
 _acme-challenge.colossus    IN      CNAME   16c8a8b7-44cc-4c18-8c43-0ae57d21b118.auth.acme-dns.io.
 _acme-challenge.ducky       IN      CNAME   331d1498-d188-4fea-935c-7b2a225f684a.auth.acme-dns.io.
-_acme-challenge.garden      IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io.
 _acme-challenge.hw          IN      CNAME   2d7577da-b584-44d9-a247-789807870e7b.auth.acme-dns.io.
