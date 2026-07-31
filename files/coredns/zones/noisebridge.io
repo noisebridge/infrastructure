@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridge.io.  (
-        2026073100 ; Serial
+        2026073101 ; Serial
         3600 ; Refresh
         300 ; Retry
         604800 ; Expire
@@ -27,6 +27,15 @@ barnyard        86400   IN      NS      brony.noisebridge.io.
 ;; Primary hosting servers.
 ; hetzner VPS
 noisegarden-root        IN      A       204.168.192.161
+
+; Services hosted on noisegarden-root
+auth            IN      CNAME   noisegarden-root
+code            IN      CNAME   noisegarden-root
+git             IN      CNAME   noisegarden-root
+headscale       IN      CNAME   noisegarden-root
+mail            IN      CNAME   noisegarden-root
+vault           IN      CNAME   noisegarden-root
+zulip           IN      CNAME   noisegarden-root
 
 ; aliases
 blog            10800   IN      CNAME   blogs.vip.gandi.net.
