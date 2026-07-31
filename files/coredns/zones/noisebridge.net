@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026071700 ; Serial
+                                2026073100 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -234,7 +234,25 @@ upotagma        IN      AAAA    2604:a880:1:20:0:0:c3:a001
 ; * Use the provided credentials to self-provision a letsEncrypt cert.
 ;
 ; Note: We currently use auth.acme-dns.io but we can also self-host this service.
-_acme-challenge             IN      CNAME   f025e3fe-fbc8-4d3d-8d4f-cb8a2ac38f5e.auth.acme-dns.io.
+; MIGRATED to the self-hosted acme-dns on the NoiseGarden root cluster. This is
+; the apex delegation, used by the *.noisebridge.net wildcard certificate that
+; the root cluster issues.
+;
+; The target is in noisebridge.io, not a subzone of this one, and that is
+; deliberate: a CNAME may point anywhere, so this zone needs no delegation of
+; its own. noisebridge.net is DNSSEC-signed, and adding an unsigned subzone
+; under it would raise a DS / insecure-delegation question that repointing one
+; CNAME does not. The CNAME itself stays signed exactly as before, and the
+; target being in an unsigned zone is no different from auth.acme-dns.io.
+;
+; Rollback is reverting this one line: the old account below still exists on
+; auth.acme-dns.io and is still valid.
+;   was: f025e3fe-fbc8-4d3d-8d4f-cb8a2ac38f5e.auth.acme-dns.io.
+_acme-challenge             IN      CNAME   9d3537e8-f82c-490b-a915-3c1d3a497024.acme.noisebridge.io.
+; The four host records below are NOT migrated and must not be: each is a
+; separate acme-dns account held by the machine of that name, whose own
+; cert-manager has the credentials. Repointing them here without also replacing
+; the credentials on those hosts would break their renewals.
 _acme-challenge.colossus    IN      CNAME   16c8a8b7-44cc-4c18-8c43-0ae57d21b118.auth.acme-dns.io.
 _acme-challenge.ducky       IN      CNAME   331d1498-d188-4fea-935c-7b2a225f684a.auth.acme-dns.io.
 _acme-challenge.garden      IN      CNAME   89d749fd-a9c9-40f7-94e1-2c3cb32ec5c2.auth.acme-dns.io.
