@@ -24,6 +24,10 @@ noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridg
 ; subdomains
 barnyard        86400   IN      NS      brony.noisebridge.io.
 
+;; Primary hosting servers.
+; hetzner VPS
+noisegarden-root        IN      A       204.168.192.161
+
 ; aliases
 blog            10800   IN      CNAME   blogs.vip.gandi.net.
 brony           1800    IN      A       199.241.139.224
@@ -45,32 +49,26 @@ zeppelin        1800    IN      CNAME   zeppelin.noisebridge.net.
 ; * https://cert-manager.io/docs/configuration/acme/dns01/acme-dns/
 ; * https://github.com/joohoi/acme-dns/
 ;
-; Unlike noisebridge.net, this zone does NOT use the public auth.acme-dns.io.
-; It delegates to a self-hosted acme-dns on the NoiseGarden root cluster --
-; the "we can also self-host this service" note in noisebridge.net, done. The
-; delegation is a real subzone, so acme-dns is authoritative for
-; acme.noisebridge.io and answers the challenge lookups directly.
+; This zone uses a self-hosted acme-dns on the NoiseGarden root cluster, not the
+; public auth.acme-dns.io. It is a real subzone delegation, so that server is
+; authoritative for acme.noisebridge.io and answers challenge lookups directly.
 ;
-; acme-dns is authoritative for acme.noisebridge.io. Its NS host lives here in
-; the parent zone rather than inside the delegated subzone, so no glue record
-; is needed. Both records point at the root cluster's public IP; that address
-; is also written into the acme-dns config, so the two must be changed
-; together (infra/clusters/root/infra/acme-dns/ in the noisegarden repo).
-acme                        IN      NS      acme-dns.noisebridge.io.
-acme-dns                    IN      A       204.168.192.161
+; The NS host lives here in the parent zone rather than inside the delegated
+; subzone, so no glue is needed. It is the noisegarden-root record above; the
+; same address is also in the acme-dns config
+; (infra/clusters/root/infra/acme-dns/ in the noisegarden repo), and the two
+; must change together.
+acme                        IN      NS      noisegarden-root.noisebridge.io.
 
-; The wildcard delegation. cert-manager writes its challenge token to the
-; subdomain below over acme-dns's in-cluster HTTP API; Let's Encrypt follows
-; this CNAME to find it. One record covers every name in the zone -- apex,
-; subdomains and *.noisebridge.io alike -- so adding a hostname later needs no
-; zone change here.
+; One record covers every name in the zone -- apex, subdomains and the wildcard
+; alike -- so adding a hostname later needs no change here.
 ;
-; The subdomain is minted by the acme-dns server at registration and exists
-; ONLY in that server's database. It cannot be regenerated to match: if that
-; database is lost this CNAME dangles and every renewal for the zone fails
-; until someone re-registers and edits this line.
+; The subdomain is minted by the acme-dns server at registration and exists ONLY
+; in that server's database; it cannot be regenerated to match. If that database
+; is lost, this CNAME dangles and every renewal for the zone fails until someone
+; re-registers and edits this line.
 ;
-; To register a further zone against the same server, POST to /register from
-; inside the cluster (it has no public endpoint by design) -- see
+; To register a further zone, POST to /register from inside the cluster (it has
+; no public endpoint by design) -- see
 ; infra/clusters/root/infra/acme-dns/README.md in the noisegarden repo.
 _acme-challenge             IN      CNAME   03171cac-3a64-4105-a1a6-eacf70b4a076.acme.noisebridge.io.
