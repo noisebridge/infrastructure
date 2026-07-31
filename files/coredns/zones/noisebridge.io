@@ -41,34 +41,25 @@ www             10800   IN      CNAME   m3.noisebridge.net.
 zeppelin        1800    IN      CNAME   zeppelin.noisebridge.net.
 
 ; DNS-01 challenges enable automatic provisioning of certificates for services
-; whose names have no publically accessible HTTP-01 route, and are the ONLY way
-; to get a wildcard certificate.
+; with no publically accessible HTTP-01 route, and are the ONLY way to get a
+; wildcard certificate.
+;
+; Challenges here are answered by a self-hosted acme-dns on the NoiseGarden root
+; cluster. To register a new subdomain, POST to /register from inside that
+; cluster -- it has no public endpoint by design -- then point a CNAME at the
+; fulldomain it returns.
 ;
 ; More info:
 ; * https://www.noisebridge.net/wiki/NoiseGarden
 ; * https://cert-manager.io/docs/configuration/acme/dns01/acme-dns/
-; * https://github.com/joohoi/acme-dns/
+; * infra/clusters/root/infra/acme-dns/README.md in the noisegarden repo
 ;
-; This zone uses a self-hosted acme-dns on the NoiseGarden root cluster, not the
-; public auth.acme-dns.io. It is a real subzone delegation, so that server is
-; authoritative for acme.noisebridge.io and answers challenge lookups directly.
-;
-; The NS host lives here in the parent zone rather than inside the delegated
-; subzone, so no glue is needed. It is the noisegarden-root record above; the
-; same address is also in the acme-dns config
-; (infra/clusters/root/infra/acme-dns/ in the noisegarden repo), and the two
-; must change together.
+; The delegated subzone. Its NS host is the noisegarden-root record above, so no
+; glue is needed; that address is also in the acme-dns config and the two must
+; change together.
 acme                        IN      NS      noisegarden-root.noisebridge.io.
 
-; One record covers every name in the zone -- apex, subdomains and the wildcard
-; alike -- so adding a hostname later needs no change here.
-;
-; The subdomain is minted by the acme-dns server at registration and exists ONLY
-; in that server's database; it cannot be regenerated to match. If that database
-; is lost, this CNAME dangles and every renewal for the zone fails until someone
-; re-registers and edits this line.
-;
-; To register a further zone, POST to /register from inside the cluster (it has
-; no public endpoint by design) -- see
-; infra/clusters/root/infra/acme-dns/README.md in the noisegarden repo.
+; One CNAME covers every name in the zone, wildcard included. The target
+; subdomain exists only in the acme-dns database and cannot be regenerated -- if
+; that is lost, renewals fail until someone re-registers and edits this line.
 _acme-challenge             IN      CNAME   03171cac-3a64-4105-a1a6-eacf70b4a076.acme.noisebridge.io.
