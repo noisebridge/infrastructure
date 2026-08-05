@@ -86,9 +86,6 @@ noisebridge.net {
 		}
 	{{ noisebridge_caddy_log_filter }}
 	}
-	handle /.well-known/atproto-did {
-		respond "{{ noisebridge_atproto_did }}" 200
-	}
 	redir https://www.noisebridge.net{uri}
 }
 
