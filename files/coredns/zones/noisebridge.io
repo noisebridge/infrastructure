@@ -45,6 +45,10 @@ git             IN      CNAME   noisegarden-root
 headscale       IN      CNAME   noisegarden-root
 mail            IN      CNAME   noisegarden-root
 vault           IN      CNAME   noisegarden-root
+; intent: test live deploy of https://github.com/noisebridge/noisebridge-wiki
+; alpha: push whatever, whenever ; beta: focus on pre-deploy stability
+wiki-alpha      IN      CNAME   noisegarden-root
+wiki-beta       IN      CNAME   noisegarden-root
 zulip           IN      CNAME   noisegarden-root
 
 ; aliases
