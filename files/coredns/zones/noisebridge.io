@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridge.io.  (
-        2026073101 ; Serial
+        2026080400 ; Serial
         3600 ; Refresh
         300 ; Retry
         604800 ; Expire
@@ -19,7 +19,17 @@ noisebridge.io.        IN      SOA     ns.noisebridge.net. hostmaster.noisebridg
 @       300     IN      AAAA    2602:ff06:725:5:dc::1337
 
 ; SPF
-@       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
+@       300     IN      TXT     "v=spf1 mx -all"
+
+; DMARC
+_dmarc  300     IN      TXT     "v=DMARC1; p=none; rua=mailto:root@noisegarden.nexus;"
+
+; DKIM
+v1-rsa-20260706._domainkey IN TXT ( "v=DKIM1; k=rsa; "
+          "p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAuje5z7r6FkT1XKMrq+0TeaH50XlZfqVuDv+2p7cjJDCuzeGtfcSa1Yf5mnQOxVaee/Dr0r+dlNB6YQLwaNRgBIX6+6qGRbIyegLXMoAX41SWm7+HoJdM/S+Gr/ITrFZOs3h0CxRTIvSVJjPj44OPp6sscjexG6RdQ4lai7tndesIPFITrwhQYR8Plht9DcB41"
+          "ygXHr/YpV9t4gYZyH10f2e5xnLvG7jhR5n7ugUu+EFeBVa6t294icpj/eioP6wgtPVDB5cfWHzk+jq1XmgQCYyDHORM8P+XKHfxN8V2WNUJ59IIPN8oUgIRDLOkPA4qHXEjclz2bLkoIL4jLB2ctQIDAQAB"
+)
+mail._domainkey       IN      CNAME mail._domainkey
 
 ; subdomains
 barnyard        86400   IN      NS      brony.noisebridge.io.
