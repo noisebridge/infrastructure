@@ -83,6 +83,12 @@ users:
     fullname: "Ronald Miloh Alexander"
     email: "..."
 
+  noisegarden:
+    fullname: "noisegarden wiki-migration service account (read-only)"
+    ssh_key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIN4eRBenRW/b0UDq9EkZ54DqqcMmhjd1GsrAeDx8b+qy noisegarden-migration"
+    groups:
+      - www-data
+
   nthmost:
     fullname: "Naomi Most"
     email: "..."

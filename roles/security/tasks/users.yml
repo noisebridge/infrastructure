@@ -35,3 +35,13 @@
   when: security_users_directory[item].ssh_key is defined
   tags:
     - access
+
+- name: Supplementary groups
+  ansible.builtin.user:
+    name: "{{ item }}"
+    groups: "{{ security_users_directory[item].groups }}"
+    append: true
+  loop: "{{ security_admins + security_users | flatten | unique }}"
+  when: security_users_directory[item].groups is defined
+  tags:
+    - access
