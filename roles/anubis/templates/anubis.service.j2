@@ -16,7 +16,6 @@ Environment=BIND_NETWORK=unix
 Environment=SOCKET_MODE=0660
 Environment=TARGET={{ anubis_target }}
 Environment=DIFFICULTY={{ anubis_difficulty }}
-Environment=METRICS_BIND=:9103
 {% if anubis_cookie_domain is defined %}
 Environment=COOKIE_DOMAIN={{ anubis_cookie_domain }}
 {% endif %}
