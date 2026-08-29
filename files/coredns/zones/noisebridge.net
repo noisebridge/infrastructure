@@ -180,10 +180,15 @@ prometheus      IN      CNAME   m5
 test-safespace  IN      CNAME   m5
 
 ; Services hosted on noisegarden-root (Hetzner VPS)
-; The donate.* records below sit under a CNAME, which strictly speaking
-; occludes them; CoreDNS serves them anyway (verified). Worth knowing if this
-; zone ever moves to another server.
 donate          IN      CNAME   noisegarden-root
+library         IN      CNAME   noisegarden-root
+matrix          IN      CNAME   noisegarden-root
+parts           IN      CNAME   noisegarden-root
+
+; intent: test live deploy of https://github.com/noisebridge/noisebridge-wiki
+; alpha: push whatever, whenever ; beta: focus on pre-deploy stability
+wiki-alpha      IN      CNAME   noisegarden-root
+wiki-beta       IN      CNAME   noisegarden-root
 
 ; donate.noisebridge.net email records (resend.com)
 resend._domainkey.donate  IN  TXT  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCoQWXGT4XLCErI5+ILqqMcSybWz1DxAqGyw9cxuaPN39YIyD6+SsvoP0p83iX3appGI4EXAVXe2YNPmNaa9UBnG7eio0tUe61L/J/82XEV/XbYTZpCGE5laIbQWZh77BBD9Ie6RpmYW2p1frnSUuz6BmnsT63fCToPfVU8K3jC/wIDAQAB"
@@ -191,17 +196,8 @@ send.donate               IN  MX   10 feedback-smtp.us-east-1.amazonses.com.
 send.donate               IN  TXT  "v=spf1 include:amazonses.com ~all"
 _dmarc.donate             IN  TXT  "v=DMARC1; p=none;"
 
-; Services hosted on m6
-stuff           IN      CNAME   m6
-parts           IN      CNAME   m6
-library         IN      CNAME   m6
-
 ; Services hosted on m7
 auth            IN      CNAME   m7
-
-; pegasus CNAMES
-; added matrix 2016-12-23 @patrickod
-matrix          IN      CNAME   pegasus
 
 ; zeppelin config
 ; 2018-05-21 @rizend
