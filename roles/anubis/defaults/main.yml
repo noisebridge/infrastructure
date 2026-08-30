@@ -1,6 +1,6 @@
 ---
-anubis_version: "1.25.0"
-anubis_checksum: "sha256:958d17e52e9445a0f60c2f35ab05b7464841e4714d8df6c5ec986800f06471f7"
+anubis_version: "1.27.0"
+anubis_checksum: "sha256:092f92b1710ee2eb208f019733f6ce06cbc041884272340bea13635a4515c357"
 
 anubis_metrics_bind: ":9103"
 anubis_metrics_username: "prometheus"

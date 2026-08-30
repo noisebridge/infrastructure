@@ -1,16 +1,15 @@
 {{ ansible_managed | comment }}
 # Anubis Bot Policy Configuration
 
-# This will be in Anubis >= 1.26.0.
-# metrics:
-#   bind: "{{ anubis_metrics_bind }}"
-#   network: tcp
-#   tls:
-#     certificate: "/etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.crt"
-#     key: "/etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.key"
-#   basicAuth:
-#     username: "{{ anubis_metrics_username }}"
-#     password: "{{ anubis_metrics_password }}"
+metrics:
+  bind: "{{ anubis_metrics_bind }}"
+  network: tcp
+  tls:
+    certificate: "/etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.crt"
+    key: "/etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.key"
+  basicAuth:
+    username: "{{ anubis_metrics_username }}"
+    password: "{{ anubis_metrics_password }}"
 
 impressum:
   # Footer shown on every Anubis challenge/deny page — points bots to the dump.
