@@ -187,6 +187,12 @@ library         IN      CNAME   noisegarden-root
 matrix          IN      CNAME   noisegarden-root
 parts           IN      CNAME   noisegarden-root
 
+; TEMPORARY alias while the old name drains; retire it and the HTTPRoute
+; hostname together. It targets `parts` rather than noisegarden-root so it
+; follows parts. The CNAME alone is not enough -- a request still carries
+; Host: stuff.noisebridge.net, which the root cluster's HTTPRoute must list.
+stuff           IN      CNAME   parts
+
 ; intent: test live deploy of https://github.com/noisebridge/noisebridge-wiki
 ; alpha: push whatever, whenever ; beta: focus on pre-deploy stability
 wiki-alpha      IN      CNAME   noisegarden-root
