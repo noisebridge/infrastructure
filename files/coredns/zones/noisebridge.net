@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026090500 ; Serial
+                                2026090800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -21,8 +21,15 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 ; SPF
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
 ; Reached only via the apex redirect, so <domain> here is spf.noisebridge.net,
-; which has no MX: an `mx` mechanism would authorise nothing.
-spf     86400   IN      TXT     "v=spf1 a:lists.noisebridge.net a:m3.noisebridge.net a:m6.noisebridge.net ~all"
+; which has no MX: an `mx` mechanism would authorise nothing. `a:` rather than
+; `ip4:` so each entry follows its host if it moves.
+spf     86400   IN      TXT     "v=spf1 a:lists.noisebridge.net a:m3.noisebridge.net a:m6.noisebridge.net a:mail.noisegarden.nexus ~all"
+
+; DMARC, monitoring only. `rua` must stay on this domain -- a cross-domain rua
+; needs a _report._dmarc opt-in that reporters otherwise silently decline.
+; p=none is required while Stalwart forwards: forwarding breaks SPF on the
+; second hop with no aligned DKIM signature, so p=reject would lose that mail.
+_dmarc  300     IN      TXT     "v=DMARC1; p=none; rua=mailto:postmaster@noisebridge.net"
 ; Google Domain Verification
 @       86400   IN      TXT     "google-site-verification=ic9UzBw_VXfHokfo7hREQaDHisGig7TcfI-GvaRuRaU"
 ; atproto / Bluesky handle verification for noisebridge.net
@@ -35,6 +42,13 @@ mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; t=y; "
           "UEWzpJOZL1oG80KhOfHRkFUdsgY+SYmQMKjaDMThCDLvh6718tbssSfUI8YPKbsGlNNleXpoIZZ4MCJ0TfbRTXmSqOyHh6XTLGPIVI2qajqiLEcBj0biwO0TF0bV7pLodlRfWZRiaRp3ATMBiDY/Zo68RlmuxqOrxrweN/JMS0kALoVAs3vVFhrH2CTu9zwZf5blVUfvs80+CxWorQOdV7Vjp1K+6JukH0vuMCK72L4W7AGbK76QQFKcG1"
           "CS+EEgiBMBr98i64wKPeqPpGT6Bj5AKR14oPYRFwW0JbZGMpwX+FOmqT9X8BfnhH7b2Y7q25y/r94OdvmBxyabZBu4S+BaYRFN04B6+LpzPgD5YfVn3BMVoBlctjL6NIHhacRnnGsQRkrqTB43slGpM40gDUe1+3R3NpkHl3p59q/6RPafX9fwi9Vcvp+oxjFNXqaAdXdOr04zUbmJcgzzbOF9u2rtqcBI8CAwEAAQ==" )
 mail._domainkey.lists IN      CNAME mail._domainkey
+
+; Stalwart's auto-generated selectors for this domain. They rotate every 90
+; days (minted 2026-09-05, so next ~2026-12-04) -- re-read them from the
+; server rather than hand-editing.
+v1-ed25519-20260905._domainkey IN TXT "v=DKIM1; k=ed25519; h=sha256; p=eMg3O3S39ZujSFKgdREioTo/m4hr4IsMQen5enEi8Tk="
+v1-rsa-20260905._domainkey IN TXT ( "v=DKIM1; k=rsa; h=sha256; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5maoBPZMezT/+y2RpFaIi42RcuzBzNTbh96JiVmA3RxXpkBw7gBpfg28WVBcEpeeKKFa0tMvRF4tvuIAl1NvEMhAEgFIU7cH5dLiEOVTKz+zYCjs7Rt0z6q3BaUUiFjv32hFHaflthn9VSTzCaE/i2QCzDpsKC/1u8pD9GSq9up74rb/e43Xq5l"
+          "Az4qho3S3bfJd6hFQQwMK7QgtpDVbNCrr3cSCe7beeE2z0YcsJmudj9kRPh95NvGNgdI5qMvOnnQL/QPoCvAVTpEomOMRslXYeCnuiZc/VyoW0Oy0iyVHqAcqPODAej2dnLxSMq1AkWog1wm3qq66JJF6p0QJdQIDAQAB" )
 
 ; name servers
 ns      86400   IN      A       216.252.162.220 ; m3 in iocoop SCL
