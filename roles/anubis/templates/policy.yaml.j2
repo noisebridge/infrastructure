@@ -5,8 +5,8 @@ metrics:
   bind: "{{ anubis_metrics_bind }}"
   network: tcp
   tls:
-    certificate: "/etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.crt"
-    key: "/etc/ssl/{{ ansible_fqdn }}/{{ ansible_fqdn }}.key"
+    certificate: "/etc/ssl/{{ ansible_facts['fqdn'] }}/{{ ansible_facts['fqdn'] }}.crt"
+    key: "/etc/ssl/{{ ansible_facts['fqdn'] }}/{{ ansible_facts['fqdn'] }}.key"
   basicAuth:
     username: "{{ anubis_metrics_username }}"
     password: "{{ anubis_metrics_password }}"

@@ -55,7 +55,7 @@
 }
 
 # Metrics server
-{{ ansible_fqdn }} {
+{{ ansible_facts['fqdn'] }} {
 	{{ noisebridge_caddy_metrics_route }}
 	{{ noisebridge_caddy_cadvisor_route }}
 	{{ noisebridge_caddy_coredns_route }}
@@ -66,7 +66,7 @@
 		root * /var/www/goaccess
 		file_server # /var/www/goaccess/live.html
 	}
-	respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+	respond "Noisebridge Infrastructure - {{ ansible_facts['fqdn'] }}"
 }
 
 noisebridge.io, www.noisebridge.io {
