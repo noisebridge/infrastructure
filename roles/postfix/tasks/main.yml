@@ -65,7 +65,7 @@
     group: root
     owner: root
     mode: "0644"
-    content: "{{ postfix_mailname | default(ansible_fqdn) }}\n"
+    content: "{{ postfix_mailname | default(ansible_facts['fqdn']) }}\n"
   tags:
     - postfix
     - mail

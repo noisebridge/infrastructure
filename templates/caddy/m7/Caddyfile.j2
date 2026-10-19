@@ -33,11 +33,11 @@
 	{{ noisebridge_caddy_global_metrics }}
 }
 # Metrics server
-{{ ansible_fqdn }} {
+{{ ansible_facts['fqdn'] }} {
 	{{ noisebridge_caddy_metrics_route }}
 	{{ noisebridge_caddy_cadvisor_route }}
 	{{ noisebridge_caddy_coredns_route }}
-	respond "Noisebridge Infrastructure - {{ ansible_fqdn }}"
+	respond "Noisebridge Infrastructure - {{ ansible_facts['fqdn'] }}"
 }
 
 # Authentication portal
