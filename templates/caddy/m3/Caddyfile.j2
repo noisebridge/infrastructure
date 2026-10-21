@@ -193,7 +193,25 @@ safespace.noisebridge.net {
 	}
 	{{ noisebridge_caddy_secure_header }}
 	# Temporarily offline for maintenance. Revert this change to restore.
-	respond "Noisebridge is temporarily offline for maintenance" 503
+	header Content-Type "text/html; charset=utf-8"
+	respond <<HTML
+		<!DOCTYPE html>
+		<html>
+		<head><title>Safespace Reporting Tool</title></head>
+		<body>
+			<h2>Noisebridge safe space reporting tool</h2>
+			<p>The reporting form is temporarily offline for maintenance. To report an incident:</p>
+			<ul>
+				<li>On the Noisebridge Discord, mention <strong>@space-guardians</strong> in
+					<a href="https://discord.com/channels/720514857094348840/1346730707250184202">#safety-incidents-public</a>,
+					or send a direct message to any space-guardian.</li>
+				<li>At the space, find a space-guardian or steward in person.</li>
+				<li>In an emergency, call 911.</li>
+			</ul>
+			<p>These channels are not anonymous. #safety-incidents-public is potentially viewable by anyone.</p>
+		</body>
+		</html>
+		HTML 503
 }
 
 # Wiki dumps (public, for bot consumption)
