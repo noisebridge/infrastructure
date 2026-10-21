@@ -109,34 +109,14 @@ www.noisebridge.net {
 	}
 	{{ noisebridge_caddy_secure_header }}
 
-	# Anubis challenge assets (served directly from Anubis)
-	handle /.within.website/* {
-		reverse_proxy unix//run/anubis/anubis.sock {
-			header_up X-Real-IP {remote_host}
-			header_up X-Forwarded-For {remote_host}
-			header_up X-Forwarded-Proto {scheme}
-		}
-	}
-
-	# Adminer - bypass Anubis, requires GitHub auth
-	route /adminer* {
-		authorize with noisebridge-github-rack
-		root * /srv/adminer
-		try_files {path} adminer.php
-		php_fastcgi unix//run/php/php8.2-fpm.sock
-	}
+	# Temporarily offline for maintenance.
+	# Revert this change to restore Anubis, MediaWiki and Adminer.
 
 	# Legacy mailman redirects
 	redir /pipermail https://lists.noisebridge.net{uri}
 	redir /mailman https://lists.noisebridge.net{uri}
 
-	# All other traffic goes through Anubis
-	reverse_proxy unix//run/anubis/anubis.sock {
-		header_up X-Real-IP {remote_host}
-		header_up X-Forwarded-For {remote_host}
-		header_up X-Forwarded-Proto {scheme}
-		header_up Host {host}
-	}
+	respond "Noisebridge is temporarily offline for maintenance" 503
 }
 
 # Mailman
@@ -212,8 +192,8 @@ safespace.noisebridge.net {
 	{{ noisebridge_caddy_log_filter }}
 	}
 	{{ noisebridge_caddy_secure_header }}
-	root * /var/www/safespace.noisebridge.net
-	php_fastcgi unix//run/php/php8.2-fpm.sock
+	# Temporarily offline for maintenance. Revert this change to restore.
+	respond "Noisebridge is temporarily offline for maintenance" 503
 }
 
 # Wiki dumps (public, for bot consumption)
