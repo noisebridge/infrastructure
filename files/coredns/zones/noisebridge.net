@@ -4,7 +4,7 @@
 $TTL 3600
 
 noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebridge.net.  (
-                                2026073100 ; Serial
+                                2026090800 ; Serial
                                 3600 ; Refresh
                                 300 ; Retry
                                 604800 ; Expire
@@ -20,7 +20,16 @@ noisebridge.net.        IN      SOA     ns1.noisebridge.net. hostmaster.noisebri
 
 ; SPF
 @       86400   IN      TXT     "v=spf1 redirect=spf.noisebridge.net"
-spf     86400   IN      TXT     "v=spf1 mx a:lists.noisebridge.net a:m3.noisebridge.net a:m5.noiesbridge.net a:m6.noisebridge.net ~all"
+; Reached only via the apex redirect, so <domain> here is spf.noisebridge.net,
+; which has no MX: an `mx` mechanism would authorise nothing. `a:` rather than
+; `ip4:` so each entry follows its host if it moves.
+spf     86400   IN      TXT     "v=spf1 a:lists.noisebridge.net a:m3.noisebridge.net a:m6.noisebridge.net a:mail.noisegarden.nexus ~all"
+
+; DMARC, monitoring only. `rua` must stay on this domain -- a cross-domain rua
+; needs a _report._dmarc opt-in that reporters otherwise silently decline.
+; p=none is required while Stalwart forwards: forwarding breaks SPF on the
+; second hop with no aligned DKIM signature, so p=reject would lose that mail.
+_dmarc  300     IN      TXT     "v=DMARC1; p=none; rua=mailto:postmaster@noisebridge.net"
 ; Google Domain Verification
 @       86400   IN      TXT     "google-site-verification=ic9UzBw_VXfHokfo7hREQaDHisGig7TcfI-GvaRuRaU"
 ; atproto / Bluesky handle verification for noisebridge.net
@@ -33,6 +42,13 @@ mail._domainkey IN      TXT     ( "v=DKIM1; h=sha256; k=rsa; t=y; "
           "UEWzpJOZL1oG80KhOfHRkFUdsgY+SYmQMKjaDMThCDLvh6718tbssSfUI8YPKbsGlNNleXpoIZZ4MCJ0TfbRTXmSqOyHh6XTLGPIVI2qajqiLEcBj0biwO0TF0bV7pLodlRfWZRiaRp3ATMBiDY/Zo68RlmuxqOrxrweN/JMS0kALoVAs3vVFhrH2CTu9zwZf5blVUfvs80+CxWorQOdV7Vjp1K+6JukH0vuMCK72L4W7AGbK76QQFKcG1"
           "CS+EEgiBMBr98i64wKPeqPpGT6Bj5AKR14oPYRFwW0JbZGMpwX+FOmqT9X8BfnhH7b2Y7q25y/r94OdvmBxyabZBu4S+BaYRFN04B6+LpzPgD5YfVn3BMVoBlctjL6NIHhacRnnGsQRkrqTB43slGpM40gDUe1+3R3NpkHl3p59q/6RPafX9fwi9Vcvp+oxjFNXqaAdXdOr04zUbmJcgzzbOF9u2rtqcBI8CAwEAAQ==" )
 mail._domainkey.lists IN      CNAME mail._domainkey
+
+; Stalwart's auto-generated selectors for this domain. They rotate every 90
+; days (minted 2026-09-05, so next ~2026-12-04) -- re-read them from the
+; server rather than hand-editing.
+v1-ed25519-20260905._domainkey IN TXT "v=DKIM1; k=ed25519; h=sha256; p=eMg3O3S39ZujSFKgdREioTo/m4hr4IsMQen5enEi8Tk="
+v1-rsa-20260905._domainkey IN TXT ( "v=DKIM1; k=rsa; h=sha256; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA5maoBPZMezT/+y2RpFaIi42RcuzBzNTbh96JiVmA3RxXpkBw7gBpfg28WVBcEpeeKKFa0tMvRF4tvuIAl1NvEMhAEgFIU7cH5dLiEOVTKz+zYCjs7Rt0z6q3BaUUiFjv32hFHaflthn9VSTzCaE/i2QCzDpsKC/1u8pD9GSq9up74rb/e43Xq5l"
+          "Az4qho3S3bfJd6hFQQwMK7QgtpDVbNCrr3cSCe7beeE2z0YcsJmudj9kRPh95NvGNgdI5qMvOnnQL/QPoCvAVTpEomOMRslXYeCnuiZc/VyoW0Oy0iyVHqAcqPODAej2dnLxSMq1AkWog1wm3qq66JJF6p0QJdQIDAQAB" )
 
 ; name servers
 ns      86400   IN      A       216.252.162.220 ; m3 in iocoop SCL
@@ -180,10 +196,21 @@ prometheus      IN      CNAME   m5
 test-safespace  IN      CNAME   m5
 
 ; Services hosted on noisegarden-root (Hetzner VPS)
-; The donate.* records below sit under a CNAME, which strictly speaking
-; occludes them; CoreDNS serves them anyway (verified). Worth knowing if this
-; zone ever moves to another server.
 donate          IN      CNAME   noisegarden-root
+library         IN      CNAME   noisegarden-root
+matrix          IN      CNAME   noisegarden-root
+parts           IN      CNAME   noisegarden-root
+
+; TEMPORARY alias while the old name drains; retire it and the HTTPRoute
+; hostname together. It targets `parts` rather than noisegarden-root so it
+; follows parts. The CNAME alone is not enough -- a request still carries
+; Host: stuff.noisebridge.net, which the root cluster's HTTPRoute must list.
+stuff           IN      CNAME   parts
+
+; intent: test live deploy of https://github.com/noisebridge/noisebridge-wiki
+; alpha: push whatever, whenever ; beta: focus on pre-deploy stability
+wiki-alpha      IN      CNAME   noisegarden-root
+wiki-beta       IN      CNAME   noisegarden-root
 
 ; donate.noisebridge.net email records (resend.com)
 resend._domainkey.donate  IN  TXT  "p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCoQWXGT4XLCErI5+ILqqMcSybWz1DxAqGyw9cxuaPN39YIyD6+SsvoP0p83iX3appGI4EXAVXe2YNPmNaa9UBnG7eio0tUe61L/J/82XEV/XbYTZpCGE5laIbQWZh77BBD9Ie6RpmYW2p1frnSUuz6BmnsT63fCToPfVU8K3jC/wIDAQAB"
@@ -191,17 +218,8 @@ send.donate               IN  MX   10 feedback-smtp.us-east-1.amazonses.com.
 send.donate               IN  TXT  "v=spf1 include:amazonses.com ~all"
 _dmarc.donate             IN  TXT  "v=DMARC1; p=none;"
 
-; Services hosted on m6
-stuff           IN      CNAME   m6
-parts           IN      CNAME   m6
-library         IN      CNAME   m6
-
 ; Services hosted on m7
 auth            IN      CNAME   m7
-
-; pegasus CNAMES
-; added matrix 2016-12-23 @patrickod
-matrix          IN      CNAME   pegasus
 
 ; zeppelin config
 ; 2018-05-21 @rizend
