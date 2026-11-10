@@ -4,6 +4,13 @@
     rule: allow
     name: WWW Full
 
+- name: Allow HTTP/3 (QUIC)
+  community.general.ufw:
+    rule: allow
+    proto: udp
+    to_port: "443"
+    comment: Caddy HTTP/3
+
 - name: Install
   ansible.builtin.include_role:
     name: caddy-ansible.caddy-ansible
